@@ -1,0 +1,21 @@
+/**
+   @mainpage Template doxygen docs for time-generator
+
+
+
+   @author F. Izzy Cyst <icyst@milky.way>
+
+   @section Overview
+
+   This is a template overview document for the project time-generator.
+   You should customize these documents.
+
+   The build system will also build documentation from the source
+   files themselves.
+
+   If you "make doxygen", you will find the generated html in 
+   $I3_WORK/docs/time-generator
+
+   @todo Add examples of syntax highlighting and doxygen features.
+
+*/
