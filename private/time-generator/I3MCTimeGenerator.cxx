@@ -21,7 +21,7 @@
 
 using namespace std;
 
-const int64_t MAX_DAQTIME =  1000000;//315569260000000000; //Number of tenths of ns in a year
+const int64_t MAX_DAQTIME =  315569260000000000LL; //Number of tenths of ns in a year
 const int64_t MAX_EVENT_TIME = 10000000; //10^7 tenths of ns (= 1 ms)
 
 I3MCTimeGenerator::I3MCTimeGenerator(const I3Context& ctx) : 
