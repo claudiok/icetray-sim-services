@@ -14,7 +14,7 @@
  * (c) 2005 IceCube Collaboration
  */
 
-#include "icetray/I3Module.h"
+#include "phys-services/I3EventService.h"
 #include "icetray/I3Tray.h"
 
 class I3Context;
@@ -27,32 +27,20 @@ class I3EventHeader;
  * Sets the time of the simulated event
  */
 
-class I3MCTimeGenerator : public I3Module{
+class I3MCTimeGeneratorService : public I3EventService
+{
  public:
 
   SET_LOGGER("I3MCTimeGenerator");
 
-  I3MCTimeGenerator(const I3Context& ctx);
-  virtual ~I3MCTimeGenerator();
-  void Configure();
-  void Physics(I3FramePtr);
-
+  virtual bool MoreEvents();
+  virtual I3Time PopEvent(I3FramePtr);
+  virtual ~I3EventService() { };
  private:
   
-  I3MCTimeGenerator();
-  I3MCTimeGenerator(const I3MCTimeGenerator&);
-  I3MCTimeGenerator& operator=(const I3MCTimeGenerator&);
-
-  ///Parameter to set time extension of frame
-  int64_t timePad_;             
-
   ///Start time of run period
-  int startRunYear_;
-  int64_t startDAQTime_;
-
-  ///End time of run period
-  int endRunYear_;
-  int64_t endDAQTime_;
+  int year_;
+  int64_t daqTime_;
 
 };
 
