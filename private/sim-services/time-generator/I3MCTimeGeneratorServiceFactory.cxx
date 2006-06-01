@@ -20,6 +20,8 @@
 
 using namespace std;
 
+I3_SERVICE_FACTORY(I3MCTimeGeneratorServiceFactory);
+
 I3MCTimeGeneratorServiceFactory::I3MCTimeGeneratorServiceFactory(const I3Context& ctx) : 
   I3ServiceFactory(ctx),
   year_(2006),
