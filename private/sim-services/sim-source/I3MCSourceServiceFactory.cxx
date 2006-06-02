@@ -1,6 +1,6 @@
-#include "phys-services/source/I3MCSourceServiceFactory.h"
-#include "phys-services/source/I3MCRawDOMStatusService.h"
-#include "phys-services/source/I3MCCalibrationService.h"
+#include "sim-services/sim-source/I3MCSourceServiceFactory.h"
+#include "sim-services/sim-source/I3MCRawDOMStatusService.h"
+#include "sim-services/sim-source/I3MCCalibrationService.h"
 #include "dataclasses/physics/I3Trigger.h"
 #include "dataclasses/status/I3TriggerStatus.h"
 

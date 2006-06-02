@@ -1,4 +1,4 @@
-#include "phys-services/source/I3MCRawDOMStatusService.h"
+#include "sim-services/sim-source/I3MCRawDOMStatusService.h"
 #include "dataclasses/status/I3DOMStatus.h"
 #include "dataclasses/geometry/I3Geometry.h"
 #include "dataclasses/status/I3DetectorStatus.h"
