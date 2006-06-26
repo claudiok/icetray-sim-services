@@ -36,7 +36,7 @@ class I3MCSourceServiceFactory
 
   int configID_;
   int threshold_;
-  int timeWindow_;
+  double timeWindow_;
 
   std::string calServiceName_;
   std::string statusServiceName_;

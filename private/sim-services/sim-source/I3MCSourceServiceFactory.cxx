@@ -3,6 +3,7 @@
 #include "sim-services/sim-source/I3MCCalibrationService.h"
 #include "dataclasses/physics/I3Trigger.h"
 #include "dataclasses/status/I3TriggerStatus.h"
+#include "dataclasses/I3Units.h"
 
 I3_SERVICE_FACTORY(I3MCSourceServiceFactory);
 
@@ -10,8 +11,8 @@ I3MCSourceServiceFactory::
 I3MCSourceServiceFactory(const I3Context& context) : 
   I3ServiceFactory(context),
   configID_(0),
-  threshold_(16),
-  timeWindow_(7000)
+  threshold_(8),
+  timeWindow_(5.*I3Units::microsecond)
 {
   calServiceName_ = I3DefaultName<I3CalibrationService>::value();
   statusServiceName_ = I3DefaultName<I3DetectorStatusService>::value();
@@ -40,7 +41,7 @@ void I3MCSourceServiceFactory::Configure()
 
   TrigStatus.GetTriggerName().append("simple_multiplicity");
   TrigStatus.GetTriggerSettings().insert(make_pair("threshold", threshold_));
-  TrigStatus.GetTriggerSettings().insert(make_pair("timeWindow", timeWindow_));
+  TrigStatus.GetTriggerSettings().insert(make_pair("timeWindow", static_cast<int>(timeWindow_)));
 }
 
 bool I3MCSourceServiceFactory::InstallService(I3Context& services)
