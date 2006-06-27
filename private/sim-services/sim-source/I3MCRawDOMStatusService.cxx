@@ -45,8 +45,8 @@ I3MCRawDOMStatusService::GetDetectorStatus(I3Time time)
       raw.trigMode = I3DOMStatus::SPE;
       raw.lcMode = I3DOMStatus::UpOrDown;
 	
-      raw.lcWindowPre = -800.0*I3Units::mV;
-      raw.lcWindowPost = 800.0*I3Units::mV;
+      raw.lcWindowPre = -800.0*I3Units::ns;
+      raw.lcWindowPost = 800.0*I3Units::ns;
 
       raw.statusATWDa = I3DOMStatus::On;
       raw.statusATWDb = I3DOMStatus::On;
