@@ -1,5 +1,5 @@
 #include <icetray/serialization.h>
-#include <icetray/I3PhysicsTimer.h>
+#include <sim-services/I3PhysicsTimer.h>
 #include <icetray/I3Units.h>
 #include <icetray/I3Frame.h>
 
