@@ -45,11 +45,8 @@ I3MCRawDOMStatusService::GetDetectorStatus(I3Time time)
 
       if ( type == I3OMGeo::IceTop )
       {
-	  // Not sure what these actually are but 
-	  // pretty sure they're not the same as for 
-	  // IceCube
-	  raw.lcWindowPre = -100.0*I3Units::ns;
-	  raw.lcWindowPost = 100.0*I3Units::ns;
+	  raw.lcWindowPre = -125.0*I3Units::ns;
+	  raw.lcWindowPost = 125.0*I3Units::ns;
 
 	  if ( thiskey.GetOM() == 61 ||
 	       thiskey.GetOM() == 63 )
