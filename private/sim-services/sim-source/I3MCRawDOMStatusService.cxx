@@ -39,20 +39,46 @@ I3MCRawDOMStatusService::GetDetectorStatus(I3Time time)
        iter++ )
     {
       OMKey thiskey = iter->first;
-
+      I3OMGeo::OMType type = iter->second.omtype;
+      
       I3DOMStatus raw;
+
+      if ( type == I3OMGeo::IceTop )
+      {
+	  // Not sure what these actually are but 
+	  // pretty sure they're not the same as for 
+	  // IceCube
+	  raw.lcWindowPre = -100.0*I3Units::ns;
+	  raw.lcWindowPost = 100.0*I3Units::ns;
+
+	  if ( thiskey.GetOM() == 61 ||
+	       thiskey.GetOM() == 63 )
+	  {	
+	      raw.pmtHV = 1172*I3Units::volt;
+	  }
+	  
+	  else if ( thiskey.GetOM() == 62 ||
+		    thiskey.GetOM() == 64 )
+	  {
+	      raw.pmtHV = 698*I3Units::volt;
+	  }
+      }	
+      
+      else
+      {
+	   raw.lcWindowPre = -800.0*I3Units::ns;
+	   raw.lcWindowPost = 800.0*I3Units::ns;
+
+	   raw.pmtHV = 1350*I3Units::volt;
+      }
 
       raw.trigMode = I3DOMStatus::SPE;
       raw.lcMode = I3DOMStatus::UpOrDown;
-	
-      raw.lcWindowPre = -800.0*I3Units::ns;
-      raw.lcWindowPost = 800.0*I3Units::ns;
 
       raw.statusATWDa = I3DOMStatus::On;
       raw.statusATWDb = I3DOMStatus::On;
       raw.statusFADC = I3DOMStatus::On;
 	
-      raw.pmtHV = 1350*I3Units::volt;
       raw.speThreshold= 4.0*I3Units::mV;
       raw.fePedestal = 2.6*I3Units::volt;
 
