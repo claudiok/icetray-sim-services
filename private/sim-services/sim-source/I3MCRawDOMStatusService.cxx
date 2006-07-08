@@ -33,6 +33,7 @@ I3MCRawDOMStatusService::GetDetectorStatus(I3Time time)
 
   status_->startTime = start;
   status_->endTime = end;
+
   //changed all inice to om_geo
   for( iter  = om_geo.begin(); 
        iter != om_geo.end(); 
@@ -63,6 +64,8 @@ I3MCRawDOMStatusService::GetDetectorStatus(I3Time time)
       
       else
       {
+	   raw.lcSpan = 1;
+
 	   raw.lcWindowPre = -800.0*I3Units::ns;
 	   raw.lcWindowPost = 800.0*I3Units::ns;
 
