@@ -46,7 +46,7 @@ I3MCRawDOMStatusService::GetDetectorStatus(I3Time time)
 
       if ( type == I3OMGeo::IceTop )
       {
-	  raw.lcWindowPre = -125.0*I3Units::ns;
+	  raw.lcWindowPre = 125.0*I3Units::ns;
 	  raw.lcWindowPost = 125.0*I3Units::ns;
 
 	  if ( thiskey.GetOM() == 61 ||
@@ -66,8 +66,8 @@ I3MCRawDOMStatusService::GetDetectorStatus(I3Time time)
       {
 	   raw.lcSpan = 1;
 
-	   raw.lcWindowPre = -800.0*I3Units::ns;
-	   raw.lcWindowPost = 800.0*I3Units::ns;
+	   raw.lcWindowPre = 1000.0*I3Units::ns;
+	   raw.lcWindowPost = 1000.0*I3Units::ns;
 
 	   raw.pmtHV = 1350*I3Units::volt;
       }
