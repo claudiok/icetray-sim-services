@@ -34,16 +34,28 @@ class I3MCSourceServiceFactory
 
  private:
 
-  int configID_;
-  int threshold_;
-  int timeWindow_;
+  /**
+   *InIce trigger parameters
+   */
+  int ic_configID_;
+  int ic_threshold_;
+  double ic_timeWindow_;
+  I3Trigger ic_trigger_;
+  I3TriggerStatus ic_trigStatus_;
+
+  /**
+   *IceTop trigger parameters
+   */
+  int it_configID_;
+  int it_threshold_;
+  double it_timeWindow_;
+  I3Trigger it_trigger_;
+  I3TriggerStatus it_trigStatus_;
 
   std::string calServiceName_;
   std::string statusServiceName_;
   std::string geoServiceName_;
 
-  I3Trigger Trigger;
-  I3TriggerStatus TrigStatus;
 
   shared_ptr<I3MCRawDOMStatusService> status_;
   shared_ptr<I3MCCalibrationService> calibration_;

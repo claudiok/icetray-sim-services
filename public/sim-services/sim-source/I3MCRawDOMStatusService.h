@@ -38,7 +38,7 @@ public:
   }
 
   virtual I3DetectorStatusConstPtr GetDetectorStatus(I3Time time);
-  void SetTriggerStatus(I3Trigger trig, I3TriggerStatus trigstatus);
+  void InsertTriggerStatus(I3Trigger trig, I3TriggerStatus trigstatus);
 
   virtual ~I3MCRawDOMStatusService() { };
 

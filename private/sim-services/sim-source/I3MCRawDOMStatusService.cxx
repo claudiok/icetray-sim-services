@@ -8,9 +8,10 @@
 #include "dataclasses/physics/I3Trigger.h"
 #include "dataclasses/status/I3TriggerStatus.h"
 
-void I3MCRawDOMStatusService::SetTriggerStatus(I3Trigger trig, I3TriggerStatus trigstatus)
+void I3MCRawDOMStatusService::InsertTriggerStatus(I3Trigger trig, I3TriggerStatus trigstatus)
 {
-  status_ = I3DetectorStatusPtr(new I3DetectorStatus);
+  if (!status_)
+    status_ = I3DetectorStatusPtr(new I3DetectorStatus);
   if(!status_->triggerStatus.insert(make_pair(trig.GetTriggerKey(), trigstatus)).second)
     log_fatal("trigger status insertion in detector status failed.");
 }
