@@ -23,9 +23,9 @@ I3MCSourceServiceFactory(const I3Context& context) :
   AddParameter("Threshold","InIce Multiplicity Trigger Threshold",ic_threshold_);
   AddParameter("TimeWindow","InIce Multiplicity Trigger Time Window",ic_timeWindow_);
   AddParameter("ConfigID","InIce Trigger Status Config ID",ic_configID_);
-  AddParameter("IceTopThreshold","IceTop Multiplicity Trigger Threshold",it_threshold_);
-  AddParameter("IceTopTimeWindow","IceTop Multiplicity Trigger Time Window",it_timeWindow_);
-  AddParameter("IceTopConfigID","IceTop Trigger Status Config ID",it_configID_);
+  AddParameter("IceTop_Threshold","IceTop Multiplicity Trigger Threshold",it_threshold_);
+  AddParameter("IceTop_TimeWindow","IceTop Multiplicity Trigger Time Window",it_timeWindow_);
+  AddParameter("IceTop_ConfigID","IceTop Trigger Status Config ID",it_configID_);
   AddParameter("CalServiceName","Name of calibration service to install",calServiceName_);
   AddParameter("StatusServiceName","Name of detector status service to install",statusServiceName_);
   AddParameter("GeoServiceName","Name of geometry service",geoServiceName_);
