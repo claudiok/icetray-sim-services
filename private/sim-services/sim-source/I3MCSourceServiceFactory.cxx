@@ -12,10 +12,10 @@ I3MCSourceServiceFactory(const I3Context& context) :
   I3ServiceFactory(context),
   ic_configID_(0),
   ic_threshold_(8),
-  ic_timeWindow_(5.*I3Units::ns),
+  ic_timeWindow_(5000.*I3Units::ns),
   it_configID_(15),
   it_threshold_(6),
-  it_timeWindow_(2.*I3Units::ns)
+  it_timeWindow_(2000.*I3Units::ns)
 {
   calServiceName_ = I3DefaultName<I3CalibrationService>::value();
   statusServiceName_ = I3DefaultName<I3DetectorStatusService>::value();

@@ -80,7 +80,7 @@ I3MCRawDOMStatusService::GetDetectorStatus(I3Time time)
       raw.statusATWDb = I3DOMStatus::On;
       raw.statusFADC = I3DOMStatus::On;
 	
-      raw.speThreshold= 4.0*I3Units::mV;
+      raw.speThreshold= 1.422*I3Units::mV;
       raw.fePedestal = 2.6*I3Units::volt;
 
       raw.dacTriggerBias0 = 850;
@@ -89,10 +89,10 @@ I3MCRawDOMStatusService::GetDetectorStatus(I3Time time)
       raw.dacFADCRef = 800;
     
       raw.nBinsATWD0 = 128;
-      raw.nBinsATWD1 = 128;
-      raw.nBinsATWD2  = 128;
+      raw.nBinsATWD1 = 32;
+      raw.nBinsATWD2  = 32;
 
-      raw.nBinsFADC = 256;
+      raw.nBinsFADC = 50;
 
       status_->domStatus[thiskey] = raw;
     }
