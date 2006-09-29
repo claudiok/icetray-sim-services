@@ -52,6 +52,11 @@ class I3MCSourceServiceFactory
   I3Trigger it_trigger_;
   I3TriggerStatus it_trigStatus_;
 
+  /**
+   *Detector Status parameters
+   */
+  int ds_nBinsFADC_;
+
   std::string calServiceName_;
   std::string statusServiceName_;
   std::string geoServiceName_;

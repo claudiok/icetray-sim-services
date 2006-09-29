@@ -15,7 +15,8 @@ I3MCSourceServiceFactory(const I3Context& context) :
   ic_timeWindow_(5000.*I3Units::ns),
   it_configID_(15),
   it_threshold_(6),
-  it_timeWindow_(2000.*I3Units::ns)
+  it_timeWindow_(2000.*I3Units::ns),
+  ds_nBinsFADC_(50)
 {
   calServiceName_ = I3DefaultName<I3CalibrationService>::value();
   statusServiceName_ = I3DefaultName<I3DetectorStatusService>::value();
@@ -29,6 +30,7 @@ I3MCSourceServiceFactory(const I3Context& context) :
   AddParameter("CalServiceName","Name of calibration service to install",calServiceName_);
   AddParameter("StatusServiceName","Name of detector status service to install",statusServiceName_);
   AddParameter("GeoServiceName","Name of geometry service",geoServiceName_);
+  AddParameter("DetStat_NBinsFADC","Number of FADC bins",ds_nBinsFADC_);
 }
 
 I3MCSourceServiceFactory::
@@ -45,6 +47,9 @@ void I3MCSourceServiceFactory::Configure()
   GetParameter("CalServiceName",calServiceName_);
   GetParameter("StatusServiceName",statusServiceName_);
   GetParameter("GeoServiceName",geoServiceName_);
+
+  //DetectorStatus Parameters
+  GetParameter("DetStat_NBinsFADC",ds_nBinsFADC_);
 
   ic_trigger_.GetTriggerKey() = TriggerKey(TriggerKey::IN_ICE, TriggerKey::SIMPLE_MULTIPLICITY, ic_configID_);
   ic_trigStatus_.GetTriggerName().append("simple_multiplicity");
@@ -71,6 +76,8 @@ bool I3MCSourceServiceFactory::InstallService(I3Context& services)
 
     status_->InsertTriggerStatus(ic_trigger_, ic_trigStatus_);
     status_->InsertTriggerStatus(it_trigger_, it_trigStatus_);
+
+    status_->SetNBinsFADC(ds_nBinsFADC_);
   }
 
   if(!calibration_){

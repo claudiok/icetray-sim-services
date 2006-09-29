@@ -36,17 +36,14 @@ I3MCRawDOMStatusService::GetDetectorStatus(I3Time time)
   status_->endTime = end;
 
   //changed all inice to om_geo
-  for( iter  = om_geo.begin(); 
-       iter != om_geo.end(); 
-       iter++ )
-    {
+  for( iter  = om_geo.begin(); iter != om_geo.end(); iter++ ){
       OMKey thiskey = iter->first;
       I3OMGeo::OMType type = iter->second.omtype;
       
       I3DOMStatus raw;
 
       if ( type == I3OMGeo::IceTop )
-      {
+	{
 	  raw.lcWindowPre = 125.0*I3Units::ns;
 	  raw.lcWindowPost = 125.0*I3Units::ns;
 
@@ -62,15 +59,14 @@ I3MCRawDOMStatusService::GetDetectorStatus(I3Time time)
 	      raw.pmtHV = 698*I3Units::volt;
 	  }
       }	
-      
       else
       {
-	   raw.lcSpan = 1;
+	raw.lcSpan = 1;
 
-	   raw.lcWindowPre = 1000.0*I3Units::ns;
-	   raw.lcWindowPost = 1000.0*I3Units::ns;
+	raw.lcWindowPre = 1000.0*I3Units::ns;
+	raw.lcWindowPost = 1000.0*I3Units::ns;
 
-	   raw.pmtHV = 1350*I3Units::volt;
+	raw.pmtHV = 1350*I3Units::volt;
       }
 
       raw.trigMode = I3DOMStatus::SPE;
@@ -92,7 +88,7 @@ I3MCRawDOMStatusService::GetDetectorStatus(I3Time time)
       raw.nBinsATWD1 = 32;
       raw.nBinsATWD2  = 32;
 
-      raw.nBinsFADC = 50;
+      raw.nBinsFADC = nBinsFADC_;
 
       status_->domStatus[thiskey] = raw;
     }

@@ -20,6 +20,11 @@
 #include "dataclasses/physics/I3Trigger.h"
 #include "dataclasses/status/I3TriggerStatus.h"
 
+/**
+ *Default vaules for Detector Status
+ */
+const int NBINS_FADC = 50;
+
 class I3Geometry;
 I3_POINTER_TYPEDEFS(I3Geometry);
 /**
@@ -33,22 +38,35 @@ class I3MCRawDOMStatusService : public I3DetectorStatusService
 {
 public:
 
-  I3MCRawDOMStatusService(I3GeometryServicePtr g){
-    geo_service_ = g;
-  }
+  I3MCRawDOMStatusService(I3GeometryServicePtr g) :
+    nBinsFADC_(NBINS_FADC)
+    {
+      geo_service_ = g;
+    }
 
   virtual I3DetectorStatusConstPtr GetDetectorStatus(I3Time time);
   void InsertTriggerStatus(I3Trigger trig, I3TriggerStatus trigstatus);
 
-  virtual ~I3MCRawDOMStatusService() { };
+  virtual ~I3MCRawDOMStatusService(){};
 
   SET_LOGGER("I3MCRawDOMStatusService");
+
+  void SetNBinsFADC(int n){ nBinsFADC_ = n; };
 
  private:
   I3MCRawDOMStatusService();
   I3GeometryServicePtr geo_service_;
 
   shared_ptr<I3DetectorStatus> status_;
+
+  /**
+   *Configuration parameters for detector status
+   */
+
+  /**
+   *Number of bins to ude for the FADC
+   */
+  int nBinsFADC_;
 };
 
 #endif
