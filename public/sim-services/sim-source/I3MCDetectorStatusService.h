@@ -1,0 +1,143 @@
+/**
+ * Definition of I3MCDetectorStatusFiller class
+ *
+ * copyright  (C) 2004
+ * the IceCube collaboration
+ * $Id: I3MCDetectorStatusService.h 6917 2005-04-26 02:56:37Z tmccauley $
+ * 
+ * @file I3MCDetectorStatusService.h
+ * @version $Revision: 1.14 $
+ * @date $Date: 2005-04-25 22:56:37 -0400 (Mon , 25 Apr 2005) $
+ * @author olivas
+ */
+
+#ifndef I3MCDETECTORSTATUSSERVICE_H
+#define I3MCDETECTORSTATUSSERVICE_H
+
+#include "phys-services/I3DetectorStatusService.h"
+#include "phys-services/I3GeometryService.h"
+#include "dataclasses/physics/I3Trigger.h"
+#include "dataclasses/status/I3TriggerStatus.h"
+
+class I3Geometry;
+I3_POINTER_TYPEDEFS(I3Geometry);
+/**
+ *
+ * @brief This service allows you to fill the detector status data 
+ *	contained on the DetectorStatus stream by hand. 
+ *	The information gets cloned for all of the IceCube
+ * 	DOMs contained in the geometry.
+ */
+class I3MCDetectorStatusService : public I3DetectorStatusService
+{
+public:
+
+  I3MCDetectorStatusService(I3GeometryServicePtr);
+
+  virtual I3DetectorStatusConstPtr GetDetectorStatus(I3Time time);
+  void InsertTriggerStatus(I3Trigger trig, I3TriggerStatus trigstatus);
+
+  virtual ~I3MCDetectorStatusService(){};
+
+  SET_LOGGER("I3MCDetectorStatusService");
+
+  void SetStartYear(int32_t t){startYear_= t;};
+  void SetStartDAQTime(int64_t t){startDAQTime_= t;};
+  void SetEndYear(int32_t t){endYear_= t;};
+  void SetEndDAQTime(int64_t t){endDAQTime_= t;};
+
+  void SetIceTopLCWindowPre(double p){icetopLCWindowPre_= p;};
+  void SetIceTopLCWindowPost(double p){icetopLCWindowPost_= p;};
+  void SetIceTopHighGainVoltage(double v){icetopHighGainVoltage_= v;};
+  void SetIceTopLowGainVoltage(double v){icetopLowGainVoltage_= v;};
+  void SetInIceLCWindowPre(double p){iniceLCWindowPre_= p;};
+  void SetInIceLCWindowPost(double p){iniceLCWindowPost_= p;};
+  void SetLCSpan(int s){lcSpan_= s;};
+  void SetInIceVoltage(double v){iniceVoltage_= v;};
+  void SetTriggerMode(I3DOMStatus::TrigMode m){triggerMode_= m;};
+  void SetLCMode(I3DOMStatus::LCMode m){lcMode_= m;};
+  void SetStatusATWDa(I3DOMStatus::OnOff o){statusATWDa_= o;};
+  void SetStatusATWDb(I3DOMStatus::OnOff o){statusATWDb_= o;};
+  void SetStatusFADC(I3DOMStatus::OnOff o){statusFADC_= o;};
+  void SetSPEThreshold(double t){speThreshold_= t;};
+  void SetFEPedestal(double t){fePedestal_= t;};
+  void SetDACTriggerBias0(int b){dacTriggerBias0_= b;};
+  void SetDACTriggerBias1(int b){dacTriggerBias1_= b;};
+  void SetDACFADCRef(int r){ dacFADCRef_ = r; };
+  void SetNBinsATWD0(int n){ nBinsATWD0_ = n; };
+  void SetNBinsATWD1(int n){ nBinsATWD1_ = n; };
+  void SetNBinsATWD2(int n){ nBinsATWD2_ = n; };
+  void SetNBinsFADC(int n){ nBinsFADC_ = n; };
+
+ private:
+  I3MCDetectorStatusService();
+  I3GeometryServicePtr geo_service_;
+
+  shared_ptr<I3DetectorStatus> status_;
+
+  /**
+   *Configuration parameters for detector status
+   */
+
+  /**
+   *Start of the valid time range of the detector status
+   */
+  int32_t startYear_;
+  int64_t startDAQTime_;
+
+  /**
+   *End of the valid time range of the detector status
+   */
+  int32_t endYear_;
+  int64_t endDAQTime_;
+
+  /**
+   * Icetop local coincidence trigger windows
+   */
+  double icetopLCWindowPre_;
+  double icetopLCWindowPost_;
+
+  /**
+   * IceTop PMT voltages for high and low gain
+   */
+  double icetopHighGainVoltage_;
+  double icetopLowGainVoltage_;
+
+  /**
+   * InIce local coincidence trigger windows
+   */
+  double iniceLCWindowPre_;
+  double iniceLCWindowPost_;
+
+  /**
+   * Number of neighbors required to satisfy local coincidence
+   */
+  int lcSpan_;
+
+  /**
+   * InIce PMT voltage
+   */
+  double iniceVoltage_;
+
+  I3DOMStatus::TrigMode triggerMode_;
+  I3DOMStatus::LCMode lcMode_;
+  I3DOMStatus::OnOff statusATWDa_;
+  I3DOMStatus::OnOff statusATWDb_;
+  I3DOMStatus::OnOff statusFADC_;
+
+  double speThreshold_;
+  double fePedestal_;
+  int dacTriggerBias0_;
+  int dacTriggerBias1_;
+  int dacFADCRef_;
+
+  /**
+   *Number of FADC bins
+   */
+  int nBinsATWD0_;
+  int nBinsATWD1_;
+  int nBinsATWD2_;
+  int nBinsFADC_;
+};
+
+#endif
