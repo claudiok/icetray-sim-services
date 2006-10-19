@@ -54,11 +54,11 @@ public:
   void SetInIceLCWindowPost(double p){iniceLCWindowPost_= p;};
   void SetLCSpan(int s){lcSpan_= s;};
   void SetInIceVoltage(double v){iniceVoltage_= v;};
-  void SetTriggerMode(I3DOMStatus::TrigMode m){triggerMode_= m;};
-  void SetLCMode(I3DOMStatus::LCMode m){lcMode_= m;};
-  void SetStatusATWDa(I3DOMStatus::OnOff o){statusATWDa_= o;};
-  void SetStatusATWDb(I3DOMStatus::OnOff o){statusATWDb_= o;};
-  void SetStatusFADC(I3DOMStatus::OnOff o){statusFADC_= o;};
+  void SetTriggerMode(int m){triggerMode_= static_cast<I3DOMStatus::TrigMode>(m);};
+  void SetLCMode(int m){lcMode_= static_cast<I3DOMStatus::LCMode>(m);};
+  void SetStatusATWDa(int o){statusATWDa_= static_cast<I3DOMStatus::OnOff>(o);};
+  void SetStatusATWDb(int o){statusATWDb_= static_cast<I3DOMStatus::OnOff>(o);};
+  void SetStatusFADC(int o){statusFADC_= static_cast<I3DOMStatus::OnOff>(o);};
   void SetSPEThreshold(double t){speThreshold_= t;};
   void SetFEPedestal(double t){fePedestal_= t;};
   void SetDACTriggerBias0(int b){dacTriggerBias0_= b;};

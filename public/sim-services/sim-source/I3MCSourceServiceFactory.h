@@ -111,11 +111,17 @@ class I3MCSourceServiceFactory
    */
   double ds_iniceVoltage_;
 
-  I3DOMStatus::TrigMode ds_triggerMode_;
-  I3DOMStatus::LCMode ds_lcMode_;
-  I3DOMStatus::OnOff ds_statusATWDa_;
-  I3DOMStatus::OnOff ds_statusATWDb_;
-  I3DOMStatus::OnOff ds_statusFADC_;
+//  I3DOMStatus::TrigMode ds_triggerMode_;
+//  I3DOMStatus::LCMode ds_lcMode_;
+//  I3DOMStatus::OnOff ds_statusATWDa_;
+//  I3DOMStatus::OnOff ds_statusATWDb_;
+//  I3DOMStatus::OnOff ds_statusFADC_;
+
+  int ds_triggerMode_;
+  int ds_lcMode_;
+  int ds_statusATWDa_;
+  int ds_statusATWDb_;
+  int ds_statusFADC_;
 
   double ds_speThreshold_;
   double ds_fePedestal_;

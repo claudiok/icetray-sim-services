@@ -129,6 +129,33 @@ bool I3MCSourceServiceFactory::InstallService(I3Context& services)
     status_->InsertTriggerStatus(it_trigger_, it_trigStatus_);
 
     //Configure the new detector status service
+
+    status_->SetStartYear(ds_startYear_);
+    status_->SetStartDAQTime(ds_startDAQTime_);
+    status_->SetEndYear(ds_endYear_);
+    status_->SetEndDAQTime(ds_endDAQTime_);
+    
+    status_->SetIceTopLCWindowPre(ds_icetopLCWindowPre_);
+    status_->SetIceTopLCWindowPost(ds_icetopLCWindowPost_);
+    status_->SetIceTopHighGainVoltage(ds_icetopHighGainVoltage_);
+    status_->SetIceTopLowGainVoltage(ds_icetopLowGainVoltage_);
+    status_->SetInIceLCWindowPre(ds_iniceLCWindowPre_);
+    status_->SetInIceLCWindowPost(ds_iniceLCWindowPost_);
+    status_->SetLCSpan(ds_lcSpan_);
+    status_->SetInIceVoltage(ds_iniceVoltage_);
+    status_->SetTriggerMode(ds_triggerMode_);
+    status_->SetLCMode(ds_lcMode_);
+    status_->SetStatusATWDa(ds_statusATWDa_);
+    status_->SetStatusATWDb(ds_statusATWDb_);
+    status_->SetStatusFADC(ds_statusFADC_);
+    status_->SetSPEThreshold(ds_speThreshold_);
+    status_->SetFEPedestal(ds_fePedestal_);
+    status_->SetDACTriggerBias0(ds_dacTriggerBias0_);
+    status_->SetDACTriggerBias1(ds_dacTriggerBias1_);
+    status_->SetDACFADCRef(ds_dacFADCRef_);
+    status_->SetNBinsATWD0(ds_nBinsATWD0_);
+    status_->SetNBinsATWD1(ds_nBinsATWD1_);
+    status_->SetNBinsATWD2(ds_nBinsATWD2_);
     status_->SetNBinsFADC(ds_nBinsFADC_);
   }
 

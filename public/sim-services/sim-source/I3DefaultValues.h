@@ -78,11 +78,57 @@ namespace I3DetStatDefaults{
 
 }
 
-namespace I3CalDefaults{
+namespace I3CalibDefaults{
   /**
    *Default vaules for Detector Status
    */
+  /**
+   *Start of the valid time range of the detector status
+   */
+  const int32_t START_YEAR = 2000;
+  const int64_t START_DAQTIME = 0;
 
+  /**
+   *End of the valid time range of the detector status
+   */
+  const int32_t END_YEAR = 3000;
+  const int64_t END_DAQTIME = 0;
+  /**
+   *Slope and intercept if FADC Baseline Fit
+   */
+  const double FADC_BASELINE_FIT_SLOPE = 1.248;
+  const double FADC_BASSLINE_FIT_INTERCEPT = -864.32;
+  /**
+   *FADC Gain
+   */
+  const double FADC_GAIN = 9.733e-5*I3Units::V;
+  /**
+   *Gain for ATWD Channels 0,1,and 2
+   */
+  const double ATWD0_GAIN = -16.0;
+  const double ATWD1_GAIN = -2.0;
+  const double ATWD2_GAIN = -0.25;
+  /**
+   *Quadratic fit values for ATWD a and b
+   */
+  const double ATWD_A_FREQFIT_A = 2.5858788;
+  const double ATWD_A_FREQFIT_B = 0.013337472;
+  const double ATWD_A_FREQFIT_C = NAN;
+  const double ATWD_B_FREQFIT_A = 2.3853257;
+  const double ATWD_B_FREQFIT_B = 0.014224272;
+  const double ATWD_B_FREQFIT_C = NAN;
+
+  /**
+   *High Voltage gain slope and intercept
+   */
+  const double HV_GAIN_FIT_SLOPE = 7.0842533;
+  const double HV_GAIN_FIT_INTERCEPT = -15.1997;
+
+  /**
+   *ATWD bin calibration slope and intercept
+   */
+  const double ATWD_BINCALIB_FIT_SLOPE = -0.002*I3Units::V;
+  const double ATWD_BINCALIB_FIT_INTERCEPT = 2.9*I3Units::V;
 
 }
 
