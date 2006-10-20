@@ -1,11 +1,11 @@
 /**
- * Definition of I3MCRawDOMStatusFiller class
+ * Definition of I3MCCalibrationService class
  *
  * copyright  (C) 2004
  * the IceCube collaboration
- * $Id: I3MCRawDOMStatusFiller.h 6917 2005-04-26 02:56:37Z tmccauley $
+ * $Id: I3MCCalibrationService.h 6917 2005-04-26 02:56:37Z tmccauley $
  * 
- * @file I3MCRawDOMStatusFiller.h
+ * @file I3MCCalibrationService.h
  * @version $Revision: 1.14 $
  * @date $Date: 2005-04-25 22:56:37 -0400 (Mon , 25 Apr 2005) $
  * @author pretz

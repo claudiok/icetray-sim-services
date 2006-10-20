@@ -1,0 +1,29 @@
+/**
+   @page time-generator 
+
+   @author Alex Olivas <olivas@icecube.umd.edu>
+
+   @section Overview
+This service is very simple.  It injects a single Driving Time into the frame.  This is 
+useful, for example, for simulating certain run periods of the detector.  You can set the time
+of the event (year and DAQ time) and the geometry, detector status, and calibration objects
+are retrieved from the database.  This assumes, of course, that you're using I3Db to get these
+objects. 
+
+There are only two parameters:
+- <b>Year</b> - Sets the year of the event.
+- <b>DAQTime</b> - Sets the DAQ time.  Number of thenths of nanoseconds since the beginning of the year.
+
+A code snippet follows.
+@code
+  tray.AddService("I3MCTimeGeneratorServiceFactory","time-gen")(
+        ("Year",2001),
+        ("DAQTime",314159)
+        )
+@endcode
+
+@todo
+- <b>Random Times</b> - It would be nice to have a feature that simulates a time distribution.  This
+way we could produce simulation samples that better match the data.
+
+*/
