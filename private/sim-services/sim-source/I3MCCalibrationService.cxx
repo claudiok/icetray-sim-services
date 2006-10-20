@@ -54,7 +54,7 @@ I3MCCalibrationService::GetCalibration(I3Time time){
   
   LinearFit fadcBaselineFit;
   fadcBaselineFit.slope = fadcBaselineFit_slope_;
-  fadcBaselineFit.intercept = fadcBaselineFit_slope_;
+  fadcBaselineFit.intercept = fadcBaselineFit_intercept_;
   
   domCalib.SetFADCBaselineFit(fadcBaselineFit);
   
@@ -79,8 +79,8 @@ I3MCCalibrationService::GetCalibration(I3Time time){
   domCalib.SetATWDFreqFit(1,qfit1);
   
   LinearFit hvgainfit;	
-  hvgainfit.intercept = hvGainFit_slope_;
-  hvgainfit.slope = hvGainFit_intercept_;
+  hvgainfit.slope = hvGainFit_slope_;
+  hvgainfit.intercept = hvGainFit_intercept_;
   
   domCalib.SetHVGainFit(hvgainfit);
   

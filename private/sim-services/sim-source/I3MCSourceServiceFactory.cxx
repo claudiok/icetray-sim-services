@@ -4,6 +4,7 @@
 #include "dataclasses/physics/I3Trigger.h"
 #include "dataclasses/status/I3TriggerStatus.h"
 #include "dataclasses/I3Units.h"
+#include "sim-services/sim-source/I3DefaultValues.h"
 
 I3_SERVICE_FACTORY(I3MCSourceServiceFactory);
 
@@ -16,11 +17,57 @@ I3MCSourceServiceFactory(const I3Context& context) :
   it_configID_(15),
   it_threshold_(6),
   it_timeWindow_(2000.*I3Units::ns),
-  ds_nBinsFADC_(50)
+  ds_startYear_(I3DetStatDefaults::START_YEAR),
+  ds_startDAQTime_(I3DetStatDefaults::START_DAQTIME),
+  ds_endYear_(I3DetStatDefaults::END_YEAR),
+  ds_endDAQTime_(I3DetStatDefaults::END_DAQTIME),
+  ds_icetopLCWindowPre_(I3DetStatDefaults::ICETOP_LCWINDOW_PRE),
+  ds_icetopLCWindowPost_(I3DetStatDefaults::ICETOP_LCWINDOW_POST),
+  ds_icetopHighGainVoltage_(I3DetStatDefaults::ICETOP_HIGHGAIN_VOLTAGE),
+  ds_icetopLowGainVoltage_(I3DetStatDefaults::ICETOP_LOWGAIN_VOLTAGE),
+  ds_iniceLCWindowPre_(I3DetStatDefaults::INICE_LCWINDOW_PRE),
+  ds_iniceLCWindowPost_(I3DetStatDefaults::INICE_LCWINDOW_POST),
+  ds_lcSpan_(I3DetStatDefaults::LCSPAN),
+  ds_iniceVoltage_(I3DetStatDefaults::INICE_VOLTAGE),
+  ds_triggerMode_(I3DetStatDefaults::TRIGGER_MODE),
+  ds_lcMode_(I3DetStatDefaults::LCMODE),
+  ds_statusATWDa_(I3DetStatDefaults::STATUS_ATWDa),
+  ds_statusATWDb_(I3DetStatDefaults::STATUS_ATWDb),
+  ds_statusFADC_(I3DetStatDefaults::STATUS_FADC),
+  ds_speThreshold_(I3DetStatDefaults::SPE_THRESHOLD),
+  ds_fePedestal_(I3DetStatDefaults::FE_PEDESTAL),
+  ds_dacTriggerBias0_(I3DetStatDefaults::DAC_TRIGGER_BIAS0),
+  ds_dacTriggerBias1_(I3DetStatDefaults::DAC_TRIGGER_BIAS1),
+  ds_dacFADCRef_(I3DetStatDefaults::DAC_FADC_REF),
+  ds_nBinsATWD0_(I3DetStatDefaults::NBINS_ATWD0),
+  ds_nBinsATWD1_(I3DetStatDefaults::NBINS_ATWD1),
+  ds_nBinsATWD2_(I3DetStatDefaults::NBINS_ATWD2),
+  ds_nBinsFADC_(I3DetStatDefaults::NBINS_FADC),
+  cal_startYear_(I3CalibDefaults::START_YEAR),
+  cal_startDAQTime_(I3CalibDefaults::START_DAQTIME),
+  cal_endYear_(I3CalibDefaults::END_YEAR),
+  cal_endDAQTime_(I3CalibDefaults::END_DAQTIME),
+  cal_fadcBaselineFit_slope_(I3CalibDefaults::FADC_BASELINE_FIT_SLOPE),
+  cal_fadcBaselineFit_intercept_(I3CalibDefaults::FADC_BASSLINE_FIT_INTERCEPT),
+  cal_fadcGain_(I3CalibDefaults::FADC_GAIN),
+  cal_atwd0Gain_(I3CalibDefaults::ATWD0_GAIN),
+  cal_atwd1Gain_(I3CalibDefaults::ATWD1_GAIN),
+  cal_atwd2Gain_(I3CalibDefaults::ATWD2_GAIN),
+  cal_atwd_a_FreqFit_A_(I3CalibDefaults::ATWD_A_FREQFIT_A ),
+  cal_atwd_a_FreqFit_B_(I3CalibDefaults::ATWD_A_FREQFIT_B),
+  cal_atwd_a_FreqFit_C_(I3CalibDefaults::ATWD_A_FREQFIT_C),
+  cal_atwd_b_FreqFit_A_(I3CalibDefaults::ATWD_B_FREQFIT_A),
+  cal_atwd_b_FreqFit_B_(I3CalibDefaults::ATWD_B_FREQFIT_B),
+  cal_atwd_b_FreqFit_C_(I3CalibDefaults::ATWD_B_FREQFIT_C),
+  cal_hvGainFit_slope_(I3CalibDefaults::HV_GAIN_FIT_SLOPE),
+  cal_hvGainFit_intercept_(I3CalibDefaults::HV_GAIN_FIT_INTERCEPT),
+  cal_atwdBinCalibFit_slope_(I3CalibDefaults::ATWD_BINCALIB_FIT_SLOPE),
+  cal_atwdBinCalibFit_intercept_(I3CalibDefaults::ATWD_BINCALIB_FIT_INTERCEPT)
 {
   calServiceName_ = I3DefaultName<I3CalibrationService>::value();
   statusServiceName_ = I3DefaultName<I3DetectorStatusService>::value();
   geoServiceName_ = I3DefaultName<I3GeometryService>::value();
+
   AddParameter("Threshold","InIce Multiplicity Trigger Threshold",ic_threshold_);
   AddParameter("TimeWindow","InIce Multiplicity Trigger Time Window",ic_timeWindow_);
   AddParameter("ConfigID","InIce Trigger Status Config ID",ic_configID_);
@@ -57,6 +104,28 @@ I3MCSourceServiceFactory(const I3Context& context) :
   AddParameter("DetStat_NBinsATWD1","",ds_nBinsATWD1_);
   AddParameter("DetStat_NBinsATWD2","",ds_nBinsATWD2_);
   AddParameter("DetStat_NBinsFADC","Number of FADC bins",ds_nBinsFADC_);
+
+  AddParameter("Calib_StartYear","",cal_startYear_);
+  AddParameter("Calib_StartDAQTime","",cal_startDAQTime_);
+  AddParameter("Calib_EndYear","",cal_endYear_);
+  AddParameter("Calib_EndDAQTime","",cal_endDAQTime_);
+  AddParameter("Calib_fadcBaselineFit_slope","",cal_fadcBaselineFit_slope_);
+  AddParameter("Calib_fadcBaselineFit_intercept","",cal_fadcBaselineFit_intercept_);
+  AddParameter("Calib_fadcGain","",cal_fadcGain_);
+  AddParameter("Calib_atwd0Gain","",cal_atwd0Gain_);
+  AddParameter("Calib_atwd1Gain","",cal_atwd1Gain_);
+  AddParameter("Calib_atwd2Gain","",cal_atwd2Gain_);
+  AddParameter("Calib_atwd_a_FreqFit_A","",cal_atwd_a_FreqFit_A_);
+  AddParameter("Calib_atwd_a_FreqFit_B","",cal_atwd_a_FreqFit_B_);
+  AddParameter("Calib_atwd_a_FreqFit_C","",cal_atwd_a_FreqFit_C_);
+  AddParameter("Calib_atwd_b_FreqFit_A","",cal_atwd_b_FreqFit_A_);
+  AddParameter("Calib_atwd_b_FreqFit_B","",cal_atwd_b_FreqFit_B_);
+  AddParameter("Calib_atwd_b_FreqFit_C","",cal_atwd_b_FreqFit_C_);
+  AddParameter("Calib_hvGainFit_slope","",cal_hvGainFit_slope_);
+  AddParameter("Calib_hvGainFit_intercept","",cal_hvGainFit_intercept_);
+  AddParameter("Calib_atwdBinCalibFit_slope","",cal_atwdBinCalibFit_slope_);
+  AddParameter("Calib_atwdBinCalibFit_intercept","",cal_atwdBinCalibFit_intercept_);
+
 }
 
 I3MCSourceServiceFactory::
@@ -101,6 +170,28 @@ void I3MCSourceServiceFactory::Configure()
   GetParameter("DetStat_NBinsATWD1",ds_nBinsATWD1_);
   GetParameter("DetStat_NBinsATWD2",ds_nBinsATWD2_);
   GetParameter("DetStat_NBinsFADC",ds_nBinsFADC_);
+
+  //Calibration Parameters
+  GetParameter("Calib_StartYear",cal_startYear_);
+  GetParameter("Calib_StartDAQTime",cal_startDAQTime_);
+  GetParameter("Calib_EndYear",cal_endYear_);
+  GetParameter("Calib_EndDAQTime",cal_endDAQTime_);
+  GetParameter("Calib_fadcBaselineFit_slope",cal_fadcBaselineFit_slope_);
+  GetParameter("Calib_fadcBaselineFit_intercept",cal_fadcBaselineFit_intercept_);
+  GetParameter("Calib_fadcGain",cal_fadcGain_);
+  GetParameter("Calib_atwd0Gain",cal_atwd0Gain_);
+  GetParameter("Calib_atwd1Gain",cal_atwd1Gain_);
+  GetParameter("Calib_atwd2Gain",cal_atwd2Gain_);
+  GetParameter("Calib_atwd_a_FreqFit_A",cal_atwd_a_FreqFit_A_);
+  GetParameter("Calib_atwd_a_FreqFit_B",cal_atwd_a_FreqFit_B_);
+  GetParameter("Calib_atwd_a_FreqFit_C",cal_atwd_a_FreqFit_C_);
+  GetParameter("Calib_atwd_b_FreqFit_A",cal_atwd_b_FreqFit_A_);
+  GetParameter("Calib_atwd_b_FreqFit_B",cal_atwd_b_FreqFit_B_);
+  GetParameter("Calib_atwd_b_FreqFit_C",cal_atwd_b_FreqFit_C_);
+  GetParameter("Calib_hvGainFit_slope",cal_hvGainFit_slope_);
+  GetParameter("Calib_hvGainFit_intercept",cal_hvGainFit_intercept_);
+  GetParameter("Calib_atwdBinCalibFit_slope",cal_atwdBinCalibFit_slope_);
+  GetParameter("Calib_atwdBinCalibFit_intercept",cal_atwdBinCalibFit_intercept_);
 
   ic_trigger_.GetTriggerKey() = TriggerKey(TriggerKey::IN_ICE, TriggerKey::SIMPLE_MULTIPLICITY, ic_configID_);
   ic_trigStatus_.GetTriggerName().append("simple_multiplicity");
@@ -164,8 +255,29 @@ bool I3MCSourceServiceFactory::InstallService(I3Context& services)
       shared_ptr<I3MCCalibrationService>
       (new I3MCCalibrationService(geo_service));
     log_debug("Made new I3MCCalibrationService.");
-  }
 
+    calibration_->SetStartYear(cal_startYear_);
+    calibration_->SetStartDAQTime(cal_startDAQTime_);
+    calibration_->SetEndYear(cal_endYear_);
+    calibration_->SetEndDAQTime(cal_endDAQTime_);
+
+    calibration_->SetFADCBaselineSlope(cal_fadcBaselineFit_slope_);
+    calibration_->SetFADCBaselineIntercept(cal_fadcBaselineFit_intercept_);
+    calibration_->SetFADCGain(cal_fadcGain_);
+    calibration_->SetATWD0(cal_atwd0Gain_);
+    calibration_->SetATWD1(cal_atwd1Gain_);
+    calibration_->SetATWD2(cal_atwd2Gain_);
+    calibration_->SetATWDaFreqFitA(cal_atwd_a_FreqFit_A_);
+    calibration_->SetATWDaFreqFitB(cal_atwd_a_FreqFit_B_);
+    calibration_->SetATWDaFreqFitC(cal_atwd_a_FreqFit_C_);
+    calibration_->SetATWDbFreqFitA(cal_atwd_b_FreqFit_A_);
+    calibration_->SetATWDbFreqFitB(cal_atwd_b_FreqFit_B_);
+    calibration_->SetATWDbFreqFitC(cal_atwd_b_FreqFit_C_);
+    calibration_->SetHVGainSlope(cal_hvGainFit_slope_);
+    calibration_->SetHVGainIntercept(cal_hvGainFit_intercept_);
+    calibration_->SetATWDBinCalibSlope(cal_atwdBinCalibFit_slope_);
+    calibration_->SetATWDBinCalibIntercept(cal_atwdBinCalibFit_intercept_);
+  }
 
   bool good_calib = services.Put<I3CalibrationService>(calServiceName_,calibration_);
   log_debug("good_calib %d",good_calib);

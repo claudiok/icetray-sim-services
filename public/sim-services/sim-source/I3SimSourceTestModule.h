@@ -1,52 +1,39 @@
-#ifndef I3MCSOURCESERVICEFACTORY_H
-#define I3MCSOURCESERVICEFACTORY_H
-/*
- * class: I3MCSourceServiceFactory
+#ifndef I3SIMSOURCETESTMODULE_H
+#define I3SIMSOURCETESTMODULE_H
+/**
+ * class: I3SimSourceTestModule
  *
- * Version $Id: I3MCSourceServiceFactory.h 11148 2005-10-03 21:55:04Z olivas $
+ * Version $Id: I3SimSourceTestModule.h,v 1.11 2005/03/03 00:43:41 olivas Exp $
  *
- * Date: 17 Feb 2004
+ * date:  2 July 2004
  *
- * (c) IceCube Collaboration
+ * (c) 2004 IceCube Collaboration
  */
 
-class I3Context;
+#include "icetray/I3Module.h"
+#include "dataclasses/I3Position.h"
+#include "phys-services/I3RandomService.h"
 
-#include "icetray/I3ServiceFactory.h"
-#include "dataclasses/physics/I3Trigger.h"
-#include "dataclasses/status/I3TriggerStatus.h"
-#include "dataclasses/status/I3DOMStatus.h"
+/** 
+ *@class I3SimSourceTestModule I3SimSourceTestModule.h 
+ */
 
-class I3MCDetectorStatusService;
-class I3MCCalibrationService;
-
-class I3MCSourceServiceFactory
-: public I3ServiceFactory
+class I3SimSourceTestModule : public I3Module
 {
  public:
 
-  I3MCSourceServiceFactory(const I3Context& context);
-
-  virtual ~I3MCSourceServiceFactory();
-
-  virtual bool InstallService(I3Context& services);
-
-  virtual void Configure();
+  I3SimSourceTestModule(const I3Context& ctx);
+  ~I3SimSourceTestModule();
+  
+  void Configure();
+  void Physics(I3FramePtr frame);
 
  private:
+  I3SimSourceTestModule();
+  I3SimSourceTestModule(const I3SimSourceTestModule&);
+  I3SimSourceTestModule& operator=(const I3SimSourceTestModule&);
 
-  std::string calServiceName_;
-  std::string statusServiceName_;
-  std::string geoServiceName_;
-
-
-  shared_ptr<I3MCDetectorStatusService> status_;
-  shared_ptr<I3MCCalibrationService> calibration_;
-
-  I3MCSourceServiceFactory
-    (const I3MCSourceServiceFactory& rhs); // stop default
-  I3MCSourceServiceFactory operator=
-    (const I3MCSourceServiceFactory& rhs); // stop default
+  SET_LOGGER("I3SimSourceTestModule");
 
   /**
    *Detector Status parameters
@@ -58,8 +45,6 @@ class I3MCSourceServiceFactory
   int ic_configID_;
   int ic_threshold_;
   double ic_timeWindow_;
-  I3Trigger ic_trigger_;
-  I3TriggerStatus ic_trigStatus_;
 
   /**
    *IceTop trigger parameters
@@ -67,8 +52,6 @@ class I3MCSourceServiceFactory
   int it_configID_;
   int it_threshold_;
   double it_timeWindow_;
-  I3Trigger it_trigger_;
-  I3TriggerStatus it_trigStatus_;
 
   /**
    *Start of the valid time range of the detector status
@@ -131,10 +114,10 @@ class I3MCSourceServiceFactory
   /**
    *Number of FADC bins
    */
-  int ds_nBinsATWD0_;
-  int ds_nBinsATWD1_;
-  int ds_nBinsATWD2_;
-  int ds_nBinsFADC_;
+  unsigned int ds_nBinsATWD0_;
+  unsigned int ds_nBinsATWD1_;
+  unsigned int ds_nBinsATWD2_;
+  unsigned int ds_nBinsFADC_;
 
 
   /**
@@ -151,8 +134,6 @@ class I3MCSourceServiceFactory
    */
   int32_t cal_endYear_;
   int64_t cal_endDAQTime_;
-
-
 
   double cal_fadcBaselineFit_slope_;
   double cal_fadcBaselineFit_intercept_;
@@ -176,7 +157,6 @@ class I3MCSourceServiceFactory
   double cal_atwdBinCalibFit_slope_;
   double cal_atwdBinCalibFit_intercept_;
 
-  SET_LOGGER("I3MCSourceServiceFactory");
 };
 
-#endif 
+#endif //I3SIMSOURCETESTMODULE_H

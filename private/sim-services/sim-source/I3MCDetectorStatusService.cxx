@@ -70,12 +70,34 @@ I3MCDetectorStatusService::GetDetectorStatus(I3Time time)
   status_->startTime = start;
   status_->endTime = end;
 
+  I3DOMStatus domStatus;
+
+  domStatus.trigMode = triggerMode_;
+  domStatus.lcMode = lcMode_;
+  
+  domStatus.statusATWDa = statusATWDa_;
+  domStatus.statusATWDb = statusATWDb_;
+  domStatus.statusFADC = statusFADC_;
+  
+  domStatus.speThreshold = speThreshold_;
+  domStatus.fePedestal = fePedestal_;
+  
+  domStatus.dacTriggerBias0 = dacTriggerBias0_;
+  domStatus.dacTriggerBias1 = dacTriggerBias1_;
+  
+  domStatus.dacFADCRef = dacFADCRef_;
+  
+  domStatus.nBinsATWD0 = nBinsATWD0_;
+  domStatus.nBinsATWD1 = nBinsATWD1_;
+  domStatus.nBinsATWD2 = nBinsATWD2_;
+  
+  domStatus.nBinsFADC = nBinsFADC_;
+
   //changed all inice to om_geo
   for( iter  = om_geo.begin(); iter != om_geo.end(); iter++ ){
       OMKey thiskey = iter->first;
       I3OMGeo::OMType type = iter->second.omtype;
       
-      I3DOMStatus domStatus;
 
       if ( type == I3OMGeo::IceTop )
 	{
@@ -103,27 +125,6 @@ I3MCDetectorStatusService::GetDetectorStatus(I3Time time)
 
 	domStatus.pmtHV = iniceVoltage_;
       }
-
-      domStatus.trigMode = triggerMode_;
-      domStatus.lcMode = lcMode_;
-
-      domStatus.statusATWDa = statusATWDa_;
-      domStatus.statusATWDb = statusATWDb_;
-      domStatus.statusFADC = statusFADC_;
-	
-      domStatus.speThreshold = speThreshold_;
-      domStatus.fePedestal = fePedestal_;
-
-      domStatus.dacTriggerBias0 = dacTriggerBias0_;
-      domStatus.dacTriggerBias1 = dacTriggerBias1_;
-
-      domStatus.dacFADCRef = dacFADCRef_;
-    
-      domStatus.nBinsATWD0 = nBinsATWD0_;
-      domStatus.nBinsATWD1 = nBinsATWD1_;
-      domStatus.nBinsATWD2 = nBinsATWD2_;
-
-      domStatus.nBinsFADC = nBinsFADC_;
 
       status_->domStatus[thiskey] = domStatus;
     }
