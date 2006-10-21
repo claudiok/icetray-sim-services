@@ -3,33 +3,6 @@
 #include "dataclasses/geometry/I3Geometry.h"
 #include "dataclasses/I3Units.h"
 #include "icetray/I3TrayHeaders.h"
-#include "sim-services/sim-source/I3DefaultValues.h"
-
-I3MCCalibrationService::I3MCCalibrationService(I3GeometryServicePtr g) :
-  startYear_(I3CalibDefaults::START_YEAR),
-  startDAQTime_(I3CalibDefaults::START_DAQTIME),
-  endYear_(I3CalibDefaults::END_YEAR),
-  endDAQTime_(I3CalibDefaults::END_DAQTIME),
-  fadcBaselineFit_slope_(I3CalibDefaults::FADC_BASELINE_FIT_SLOPE),
-  fadcBaselineFit_intercept_(I3CalibDefaults::FADC_BASSLINE_FIT_INTERCEPT),
-  fadcGain_(I3CalibDefaults::FADC_GAIN),
-  atwd0Gain_(I3CalibDefaults::ATWD0_GAIN),
-  atwd1Gain_(I3CalibDefaults::ATWD1_GAIN),
-  atwd2Gain_(I3CalibDefaults::ATWD2_GAIN),
-  atwd_a_FreqFit_A_(I3CalibDefaults::ATWD_A_FREQFIT_A ),
-  atwd_a_FreqFit_B_(I3CalibDefaults::ATWD_A_FREQFIT_B),
-  atwd_a_FreqFit_C_(I3CalibDefaults::ATWD_A_FREQFIT_C),
-  atwd_b_FreqFit_A_(I3CalibDefaults::ATWD_B_FREQFIT_A),
-  atwd_b_FreqFit_B_(I3CalibDefaults::ATWD_B_FREQFIT_B),
-  atwd_b_FreqFit_C_(I3CalibDefaults::ATWD_B_FREQFIT_C),
-  hvGainFit_slope_(I3CalibDefaults::HV_GAIN_FIT_SLOPE),
-  hvGainFit_intercept_(I3CalibDefaults::HV_GAIN_FIT_INTERCEPT),
-  atwdBinCalibFit_slope_(I3CalibDefaults::ATWD_BINCALIB_FIT_SLOPE),
-  atwdBinCalibFit_intercept_(I3CalibDefaults::ATWD_BINCALIB_FIT_INTERCEPT)
-{
-  geo_service_ = g;
-}
-
 
 I3CalibrationConstPtr
 I3MCCalibrationService::GetCalibration(I3Time time){
@@ -43,60 +16,73 @@ I3MCCalibrationService::GetCalibration(I3Time time){
 
   I3CalibrationPtr calibration = I3CalibrationPtr(new I3Calibration);
 
-  I3Time start(startYear_,startDAQTime_);
-  I3Time end(endYear_,endDAQTime_);
+  I3Time start(2000,0);
+  I3Time end(3000,0);
 
   calibration->startTime = start;
   calibration->endTime = end;
   //changed all inice to om_geo
+  for( iter  = om_geo.begin(); iter != om_geo.end(); iter++ ){
+    OMKey thiskey = iter->first;
 
-  I3DOMCalibration domCalib;
-  
-  LinearFit fadcBaselineFit;
-  fadcBaselineFit.slope = fadcBaselineFit_slope_;
-  fadcBaselineFit.intercept = fadcBaselineFit_intercept_;
-  
-  domCalib.SetFADCBaselineFit(fadcBaselineFit);
-  
-  // Units are actually V/count
-  domCalib.SetFADCGain(fadcGain_);
-  
-  domCalib.SetATWDGain(0, atwd0Gain_);
-  domCalib.SetATWDGain(1, atwd1Gain_);
-  domCalib.SetATWDGain(2, atwd2Gain_);
-  
-  QuadraticFit qfit0;
-  qfit0.quadFitA = atwd_a_FreqFit_A_;
-  qfit0.quadFitB = atwd_a_FreqFit_B_;
-  qfit0.quadFitC = atwd_a_FreqFit_C_;
-  
-  QuadraticFit qfit1;
-  qfit1.quadFitA = atwd_b_FreqFit_A_;
-  qfit1.quadFitB = atwd_b_FreqFit_B_;
-  qfit1.quadFitC = atwd_b_FreqFit_C_;
-  
-  domCalib.SetATWDFreqFit(0,qfit0);
-  domCalib.SetATWDFreqFit(1,qfit1);
-  
-  LinearFit hvgainfit;	
-  hvgainfit.slope = hvGainFit_slope_;
-  hvgainfit.intercept = hvGainFit_intercept_;
-  
-  domCalib.SetHVGainFit(hvgainfit);
-  
-  LinearFit binfit;
-  binfit.slope = atwdBinCalibFit_slope_;
-  binfit.intercept = atwdBinCalibFit_intercept_;
+    if (thiskey.GetString() < 0 )
+    {
+      log_debug("Skipping AMANDA OM");
+      continue;
+    }//end sanity check
 
-  for( unsigned int channel = 0; channel < 3; ++channel )
-      for( unsigned int id = 0; id <= 1; ++id )
-	  for( unsigned int bin = 0; bin < 128; ++bin )	      
-	      domCalib.SetATWDBinCalibFit(id,channel,bin,binfit);
+    I3DOMCalibration domCalib;
 
-  for( iter  = om_geo.begin(); iter != om_geo.end(); iter++ )
-    calibration->domCal[iter->first] = domCalib;
-  
-  return calibration;
+    LinearFit fadcBaselineFit;
+    fadcBaselineFit.slope = 1.248;
+    fadcBaselineFit.intercept = -864.32;
+    
+    domCalib.SetFADCBaselineFit(fadcBaselineFit);
+
+    // Units are actually V/count
+    domCalib.SetFADCGain(9.733e-5*I3Units::V);
+
+    domCalib.SetATWDGain(0, -16.0);
+    domCalib.SetATWDGain(1, -2.0);
+    domCalib.SetATWDGain(2, -0.25);
+	
+    QuadraticFit qfit0,qfit1;
+	
+    qfit0.quadFitA = 2.5858788;
+    qfit0.quadFitB = 0.013337472;
+    qfit0.quadFitC = NAN;
+	
+    qfit1.quadFitA = 2.3853257;
+    qfit1.quadFitB = 0.014224272;
+    qfit1.quadFitC = NAN; 
+
+    domCalib.SetATWDFreqFit(0,qfit0);
+    domCalib.SetATWDFreqFit(1,qfit1);
+
+    LinearFit hvgainfit;	
+    hvgainfit.intercept = -15.1997;
+    hvgainfit.slope = 7.0842533;
+
+    domCalib.SetHVGainFit(hvgainfit);
+
+    for( unsigned int channel = 0; channel < 3; ++channel )
+      {
+	for( unsigned int id = 0; id <= 1; ++id )
+	  {
+	    for( unsigned int bin = 0; bin < 128; ++bin )
+	      {
+		LinearFit binfit;
+		binfit.slope = -0.002*I3Units::V;
+		binfit.intercept = 2.9*I3Units::V;
+	   
+		domCalib.SetATWDBinCalibFit(id,channel,bin,
+					    binfit);
+	      }
+	  }
+      }
+    calibration->domCal[thiskey] = domCalib;
+  }
+  return static_cast<I3CalibrationConstPtr>(calibration);
 
 }
 
