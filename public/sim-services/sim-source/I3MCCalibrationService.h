@@ -41,6 +41,7 @@ public:
   void SetEndYear(int32_t t){endYear_= t;};
   void SetEndDAQTime(int64_t t){endDAQTime_= t;};
 
+  void SetTemperature(double x){ temperature_ = x; };
   void SetFADCBaselineSlope(double x){fadcBaselineFit_slope_=x; };
   void SetFADCBaselineIntercept(double x){fadcBaselineFit_intercept_=x;};
   void SetFADCGain(double x){fadcGain_=x;};
@@ -75,6 +76,8 @@ public:
    */
   int32_t endYear_;
   int64_t endDAQTime_;
+
+  double temperature_;
 
   double fadcBaselineFit_slope_;
   double fadcBaselineFit_intercept_;

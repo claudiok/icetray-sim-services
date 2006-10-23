@@ -82,6 +82,9 @@ namespace I3CalibDefaults{
   /**
    *Default vaules for Detector Status
    */
+
+  const double TEMPERATURE = 250.*I3Units::kelvin;
+
   /**
    *Start of the valid time range of the detector status
    */

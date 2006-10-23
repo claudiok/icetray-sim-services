@@ -19,46 +19,13 @@ tray = I3Tray()
 
 nevents = 4
 
-# The following DAQTime of 240258490029587286
-# corresponds to the first event time of run 00089771
-
-# The following DAQTime of 236184998900773063
-# corresponds to the first event time of run 00089742
-tray.AddService("I3MCTimeGeneratorServiceFactory","time-gen")(
-        ("Year",2006),
-        ("DAQTime",236184998900773063)
-        )
-
-tray.AddService("I3FileOMKey2MBIDFactory","omkey2mbid")
-tray.SetParameter("omkey2mbid","Infile",expandvars("$I3_WORK/phys-services/resources/doms.txt"))
-
-#db = "icedb.umh.ac.be"
-#db = "ppemons.umh.ac.be"
-db = "dbs2.icecube.wisc.edu"
-
-tray.AddService("I3DbGeometryServiceFactory","geometry")
-tray.SetParameter("geometry","CompleteGeometry",0)
-tray.SetParameter("geometry","CustomDate",0)
-tray.SetParameter("geometry","XShift",450.)
-tray.SetParameter("geometry","YShift",0.0)
-tray.SetParameter("geometry","Host",db)
-
-tray.AddService("I3DbCalibrationServiceFactory","dbcalibration")
-tray.SetParameter("dbcalibration","customdate",0)
-tray.SetParameter("dbcalibration","host",db)
-
-tray.AddService("I3DbDetectorStatusServiceFactory","dbdetectorstatus")
-tray.SetParameter("dbdetectorstatus","customdate",0)
-tray.SetParameter("dbdetectorstatus","host",db)
+tray.AddService("I3ReaderServiceFactory","i3reader")
+tray.SetParameter("i3reader","filename","database.i3")
 
 tray.AddModule("I3Muxer","muxer")
 tray.AddModule("I3DBHistogram","histo")
-tray.AddModule("I3Writer","writer")(
-    ("filename", expandvars("book-histo-GDC.i3")),
-#    ("SkipKeys",["I3Geometry","I3DetectorStatus","I3Calibration"])
-     )
 
 tray.AddModule("TrashCan", "the can")
 
-tray.Execute(nevents)
+tray.Execute()
 tray.Finish()

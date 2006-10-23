@@ -10,6 +10,7 @@ I3MCCalibrationService::I3MCCalibrationService(I3GeometryServicePtr g) :
   startDAQTime_(I3CalibDefaults::START_DAQTIME),
   endYear_(I3CalibDefaults::END_YEAR),
   endDAQTime_(I3CalibDefaults::END_DAQTIME),
+  temperature_(I3CalibDefaults::TEMPERATURE),
   fadcBaselineFit_slope_(I3CalibDefaults::FADC_BASELINE_FIT_SLOPE),
   fadcBaselineFit_intercept_(I3CalibDefaults::FADC_BASSLINE_FIT_INTERCEPT),
   fadcGain_(I3CalibDefaults::FADC_GAIN),
@@ -51,6 +52,8 @@ I3MCCalibrationService::GetCalibration(I3Time time){
   //changed all inice to om_geo
 
   I3DOMCalibration domCalib;
+
+  domCalib.SetTemperature(temperature_);
   
   LinearFit fadcBaselineFit;
   fadcBaselineFit.slope = fadcBaselineFit_slope_;

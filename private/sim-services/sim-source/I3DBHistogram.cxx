@@ -71,7 +71,7 @@ void BookDOMCalibHistograms(I3CalibrationConstPtr calib,
   cout<<"calib->amandaCal.size(): "<<calib->amandaCal.size()<<endl;
   cout<<"calib->tankCal.size(): "<<calib->tankCal.size()<<endl;
 
-  TH1D temp_h("temp","Temperature(K)",50,233,283);
+  TH1D temp_h("temp","DOM Temperature",50,233,283);
   TH1D fadc_bl_slope_h("fadc_bl_slope","FADC Baseline Slope",10,1.2,1.3);
   TH1D fadc_bl_int_h("fadc_bl_int","FADC Baseline Intercept",70,-900,-830);
 
@@ -98,45 +98,45 @@ void BookDOMCalibHistograms(I3CalibrationConstPtr calib,
 
   TH1D atwd0_a_bc_slope_h("atwd0_A_bc_slope",
 			  "ATWD_A Channel 0 BinCalib Fit Slope",
-			  100,-0.001*I3Units::V,-0.003*I3Units::V);
+			  100,-0.003*I3Units::V,-0.0005*I3Units::V);
   TH1D atwd0_a_bc_int_h("atwd0_A_bc_int",
 			"ATWD_A Channel 0 BinCalib Fit Intercept",
-			100,2.5*I3Units::V,3.5*I3Units::V);
+			100,2.8*I3Units::V,3.0*I3Units::V);
 
   TH1D atwd1_a_bc_slope_h("atwd1_A_bc_slope",
 			  "ATWD_A Channel 1 BinCalib Fit Slope",
-			  100,-0.001*I3Units::V,-0.003*I3Units::V);
+			  100,-0.003*I3Units::V,-0.0005*I3Units::V);
   TH1D atwd1_a_bc_int_h("atwd1_A_bc_int",
 			"ATWD_A Channel 1 BinCalib Fit Intercept",
-			100,2.5*I3Units::V,3.5*I3Units::V);
+			100,2.8*I3Units::V,3.0*I3Units::V);
 
   TH1D atwd2_a_bc_slope_h("atwd2_A_bc_slope",
 			  "ATWD_A Channel 2 BinCalib Fit Slope",
-			  100,-0.001*I3Units::V,-0.003*I3Units::V);
+			  100,-0.003*I3Units::V,-0.0005*I3Units::V);
   TH1D atwd2_a_bc_int_h("atwd2_A_bc_int",
 			"ATWD_A Channel 2 BinCalib Fit Intercept",
-			100,2.5*I3Units::V,3.5*I3Units::V);
+			100,2.8*I3Units::V,3.0*I3Units::V);
 
   TH1D atwd0_b_bc_slope_h("atwd0_B_bc_slope",
 			  "ATWD_B Channel 0 BinCalib Fit Slope",
-			  100,-0.001*I3Units::V,-0.003*I3Units::V);
+			  100,-0.003*I3Units::V,-0.0005*I3Units::V);
   TH1D atwd0_b_bc_int_h("atwd0_B_bc_int",
 			"ATWD_B Channel 0 BinCalib Fit Intercept",
-			100,2.5*I3Units::V,3.5*I3Units::V);
+			100,2.8*I3Units::V,3.0*I3Units::V);
 
   TH1D atwd1_b_bc_slope_h("atwd1_B_bc_slope",
 			  "ATWD_B Channel 1 BinCalib Fit Slope",
-			  100,-0.001*I3Units::V,-0.003*I3Units::V);
+			  100,-0.003*I3Units::V,-0.0005*I3Units::V);
   TH1D atwd1_b_bc_int_h("atwd1_B_bc_int",
 			"ATWD_B Channel 1 BinCalib Fit Intercept",
-			100,2.5*I3Units::V,3.5*I3Units::V);
+			100,2.8*I3Units::V,3.0*I3Units::V);
 
   TH1D atwd2_b_bc_slope_h("atwd2_B_bc_slope",
 			  "ATWD_B Channel 2 BinCalib Fit Slope",
-			  100,-0.001*I3Units::V,-0.003*I3Units::V);
+			  100,-0.003*I3Units::V,-0.0005*I3Units::V);
   TH1D atwd2_b_bc_int_h("atwd2_B_bc_int",
 			"ATWD_B Channel 2 BinCalib Fit Intercept",
-			100,2.5*I3Units::V,3.5*I3Units::V);
+			100,2.8*I3Units::V,3.0*I3Units::V);
 
 
   map<OMKey, I3DOMCalibration>::const_iterator cal_iter;
@@ -214,6 +214,9 @@ void BookDOMCalibHistograms(I3CalibrationConstPtr calib,
   quadfitB_1_h.Write();
   quadfitC_1_h.Write();
 
+  hvgain_slope_h.Write();
+  hvgain_int_h.Write();
+
   atwd0_a_bc_slope_h.Write();
   atwd1_a_bc_slope_h.Write();
   atwd2_a_bc_slope_h.Write();
@@ -247,9 +250,9 @@ void BookDOMStatusHistograms(I3DetectorStatusConstPtr status,
 		    80,800.*I3Units::volt, 1600.0*I3Units::volt);
   TH1D trigMode_h("trigMode","Trigger Mode",5,-1,3);
   TH1D lcMode_h("lcMode","Local Coincidence Mode",6,-1,4);
-  TH1D statusATWDa_h("statusATWDa","Status ATWDa",3,-1,1);
-  TH1D statusATWDb_h("statusATWDb","Status ATWDb",3,-1,1);
-  TH1D statusFADC_h("statusFADC","Status FADC",3,-1,1);
+  TH1D statusATWDa_h("statusATWDa","Status ATWDa",3,-2,2);
+  TH1D statusATWDb_h("statusATWDb","Status ATWDb",3,-2,2);
+  TH1D statusFADC_h("statusFADC","Status FADC",3,-2,2);
 
   TH1D speThreshold_h("speThreshold","SPE Threshold",100,0,5.*I3Units::mV);
   TH1D fePedestal_h("fePedestal","FE Pedestal",100,2.5*I3Units::volt,2.7*I3Units::volt);

@@ -135,6 +135,8 @@ class I3SimSourceTestModule : public I3Module
   int32_t cal_endYear_;
   int64_t cal_endDAQTime_;
 
+  double cal_temperature_;
+
   double cal_fadcBaselineFit_slope_;
   double cal_fadcBaselineFit_intercept_;
 

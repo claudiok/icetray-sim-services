@@ -67,6 +67,7 @@ I3SimSourceTestModule::I3SimSourceTestModule(const I3Context& ctx) :
   AddParameter("Calib_EndYear","",cal_endYear_);
   AddParameter("Calib_EndDAQTime","",cal_endDAQTime_);
 
+  AddParameter("Calib_Temperature","",cal_temperature_);
   AddParameter("Calib_fadcBaselineFit_slope","",cal_fadcBaselineFit_slope_);
   AddParameter("Calib_fadcBaselineFit_intercept","",cal_fadcBaselineFit_intercept_);
   AddParameter("Calib_fadcGain","",cal_fadcGain_);
@@ -133,6 +134,7 @@ void I3SimSourceTestModule::Configure()
   GetParameter("Calib_StartDAQTime",cal_startDAQTime_);
   GetParameter("Calib_EndYear",cal_endYear_);
   GetParameter("Calib_EndDAQTime",cal_endDAQTime_);
+  GetParameter("Calib_Temperature",cal_temperature_);
   GetParameter("Calib_fadcBaselineFit_slope",cal_fadcBaselineFit_slope_);
   GetParameter("Calib_fadcBaselineFit_intercept",cal_fadcBaselineFit_intercept_);
   GetParameter("Calib_fadcGain",cal_fadcGain_);
@@ -164,6 +166,8 @@ void I3SimSourceTestModule::Physics(I3FramePtr frame)
       cal_iter++){
 
     ENSURE(cal_iter->first.GetString()>0,"There should be no AMANDA OMs.");
+
+    ENSURE(cal_iter->second.GetTemperature() == cal_temperature_);
 
     ENSURE(cal_iter->second.GetFADCBaselineFit().slope == cal_fadcBaselineFit_slope_);
     ENSURE(cal_iter->second.GetFADCBaselineFit().intercept == cal_fadcBaselineFit_intercept_);

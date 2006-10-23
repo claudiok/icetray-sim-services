@@ -47,6 +47,7 @@ I3MCSourceServiceFactory(const I3Context& context) :
   cal_startDAQTime_(I3CalibDefaults::START_DAQTIME),
   cal_endYear_(I3CalibDefaults::END_YEAR),
   cal_endDAQTime_(I3CalibDefaults::END_DAQTIME),
+  cal_temperature_(I3CalibDefaults::TEMPERATURE),
   cal_fadcBaselineFit_slope_(I3CalibDefaults::FADC_BASELINE_FIT_SLOPE),
   cal_fadcBaselineFit_intercept_(I3CalibDefaults::FADC_BASSLINE_FIT_INTERCEPT),
   cal_fadcGain_(I3CalibDefaults::FADC_GAIN),
@@ -109,6 +110,7 @@ I3MCSourceServiceFactory(const I3Context& context) :
   AddParameter("Calib_StartDAQTime","",cal_startDAQTime_);
   AddParameter("Calib_EndYear","",cal_endYear_);
   AddParameter("Calib_EndDAQTime","",cal_endDAQTime_);
+  AddParameter("Calib_Temperature","",cal_temperature_);
   AddParameter("Calib_fadcBaselineFit_slope","",cal_fadcBaselineFit_slope_);
   AddParameter("Calib_fadcBaselineFit_intercept","",cal_fadcBaselineFit_intercept_);
   AddParameter("Calib_fadcGain","",cal_fadcGain_);
@@ -176,6 +178,7 @@ void I3MCSourceServiceFactory::Configure()
   GetParameter("Calib_StartDAQTime",cal_startDAQTime_);
   GetParameter("Calib_EndYear",cal_endYear_);
   GetParameter("Calib_EndDAQTime",cal_endDAQTime_);
+  GetParameter("Calib_Temperature",cal_temperature_);
   GetParameter("Calib_fadcBaselineFit_slope",cal_fadcBaselineFit_slope_);
   GetParameter("Calib_fadcBaselineFit_intercept",cal_fadcBaselineFit_intercept_);
   GetParameter("Calib_fadcGain",cal_fadcGain_);
@@ -261,6 +264,7 @@ bool I3MCSourceServiceFactory::InstallService(I3Context& services)
     calibration_->SetEndYear(cal_endYear_);
     calibration_->SetEndDAQTime(cal_endDAQTime_);
 
+    calibration_->SetTemperature(cal_temperature_);
     calibration_->SetFADCBaselineSlope(cal_fadcBaselineFit_slope_);
     calibration_->SetFADCBaselineIntercept(cal_fadcBaselineFit_intercept_);
     calibration_->SetFADCGain(cal_fadcGain_);

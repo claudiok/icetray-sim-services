@@ -64,6 +64,7 @@ TEST(default_config)
     ("Calib_StartDAQTime",I3CalibDefaults::START_DAQTIME)
     ("Calib_EndYear",I3CalibDefaults::END_YEAR)
     ("Calib_EndDAQTime",I3CalibDefaults::END_DAQTIME)
+    ("Calib_Temperature",I3CalibDefaults::TEMPERATURE)
     ("Calib_fadcBaselineFit_slope",I3CalibDefaults::FADC_BASELINE_FIT_SLOPE)
     ("Calib_fadcBaselineFit_intercept",I3CalibDefaults::FADC_BASSLINE_FIT_INTERCEPT)
     ("Calib_fadcGain",I3CalibDefaults::FADC_GAIN)
@@ -126,6 +127,7 @@ TEST(custom_config)
   int32_t cal_endYear(2009);
   int64_t cal_endDAQTime(220390192849823984LL);
 
+  double temperature(273.);
   double fadcBaselineFit_slope(1.333);
   double fadcBaselineFit_intercept(-932.6);
 
@@ -193,6 +195,7 @@ TEST(custom_config)
     ("Calib_StartDAQTime",cal_startDAQTime)
     ("Calib_EndYear",cal_endYear)
     ("Calib_EndDAQTime",cal_endDAQTime)
+    ("Calib_Temperature",temperature)
     ("Calib_fadcBaselineFit_slope",fadcBaselineFit_slope)
     ("Calib_fadcBaselineFit_intercept",fadcBaselineFit_intercept)
     ("Calib_fadcGain",fadcGain)
@@ -244,6 +247,7 @@ TEST(custom_config)
     ("Calib_StartDAQTime",cal_startDAQTime)
     ("Calib_EndYear",cal_endYear)
     ("Calib_EndDAQTime",cal_endDAQTime)
+    ("Calib_Temperature",temperature)
     ("Calib_fadcBaselineFit_slope",fadcBaselineFit_slope)
     ("Calib_fadcBaselineFit_intercept",fadcBaselineFit_intercept)
     ("Calib_fadcGain",fadcGain)
