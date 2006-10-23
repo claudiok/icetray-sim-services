@@ -163,6 +163,8 @@ void I3SimSourceTestModule::Physics(I3FramePtr frame)
       cal_iter != calib->domCal.end(); 
       cal_iter++){
 
+    ENSURE(cal_iter->first.GetString()>0,"There should be no AMANDA OMs.");
+
     ENSURE(cal_iter->second.GetFADCBaselineFit().slope == cal_fadcBaselineFit_slope_);
     ENSURE(cal_iter->second.GetFADCBaselineFit().intercept == cal_fadcBaselineFit_intercept_);
     ENSURE(cal_iter->second.GetFADCGain() == cal_fadcGain_);
@@ -208,6 +210,8 @@ void I3SimSourceTestModule::Physics(I3FramePtr frame)
   for(stat_iter = status->domStatus.begin();
       stat_iter != status->domStatus.end(); 
       stat_iter++){
+
+    ENSURE(stat_iter->first.GetString()>0,"There should be no AMANDA OMs.");
 
       if ( stat_iter->first.GetOM() > 60 ){
 	ENSURE(stat_iter->second.lcWindowPre == ds_icetopLCWindowPre_);

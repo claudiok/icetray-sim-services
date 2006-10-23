@@ -98,35 +98,37 @@ I3MCDetectorStatusService::GetDetectorStatus(I3Time time)
       OMKey thiskey = iter->first;
       I3OMGeo::OMType type = iter->second.omtype;
       
-
-      if ( type == I3OMGeo::IceTop )
-	{
-	  domStatus.lcWindowPre = icetopLCWindowPre_;
-	  domStatus.lcWindowPost = icetopLCWindowPost_;
-
-	  if ( thiskey.GetOM() == 61 ||
-	       thiskey.GetOM() == 63 )
-	  {	
-	      domStatus.pmtHV = icetopHighGainVoltage_;
-	  }
-	  
-	  else if ( thiskey.GetOM() == 62 ||
-		    thiskey.GetOM() == 64 )
+      if (type != I3OMGeo :: AMANDA){
+	//Don't do AMANDA OMs
+	if ( type == I3OMGeo::IceTop )
 	  {
-	      domStatus.pmtHV = icetopLowGainVoltage_;
+	    domStatus.lcWindowPre = icetopLCWindowPre_;
+	    domStatus.lcWindowPost = icetopLCWindowPost_;
+	    
+	    if ( thiskey.GetOM() == 61 ||
+		 thiskey.GetOM() == 63 )
+	      {	
+		domStatus.pmtHV = icetopHighGainVoltage_;
+	      }
+	    
+	    else if ( thiskey.GetOM() == 62 ||
+		      thiskey.GetOM() == 64 )
+	      {
+		domStatus.pmtHV = icetopLowGainVoltage_;
+	      }
+	  }	
+	else
+	  {
+	    domStatus.lcSpan = lcSpan_;
+	    
+	    domStatus.lcWindowPre = iniceLCWindowPre_;
+	    domStatus.lcWindowPost = iniceLCWindowPost_;
+	    
+	    domStatus.pmtHV = iniceVoltage_;
 	  }
-      }	
-      else
-      {
-	domStatus.lcSpan = lcSpan_;
-
-	domStatus.lcWindowPre = iniceLCWindowPre_;
-	domStatus.lcWindowPost = iniceLCWindowPost_;
-
-	domStatus.pmtHV = iniceVoltage_;
+	
+	status_->domStatus[thiskey] = domStatus;
       }
-
-      status_->domStatus[thiskey] = domStatus;
-    }
+  }
   return status_;
 }
