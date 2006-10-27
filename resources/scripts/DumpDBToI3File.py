@@ -32,31 +32,31 @@ tray.AddService("I3MCTimeGeneratorServiceFactory","time-gen")(
 tray.AddService("I3FileOMKey2MBIDFactory","omkey2mbid")
 tray.SetParameter("omkey2mbid","Infile",expandvars("$I3_WORK/phys-services/resources/doms.txt"))
 
-db = "icedb.umh.ac.be"
-#db = "ppemons.umh.ac.be"
-#db = "dbs2.icecube.wisc.edu"
+db_host = "icedb.umh.ac.be"
+#db_host = "ppemons.umh.ac.be"
+#db_host = "dbs2.icecube.wisc.edu"
 
 tray.AddService("I3DbGeometryServiceFactory","geometry")
 tray.SetParameter("geometry","CompleteGeometry",0)
 tray.SetParameter("geometry","CustomDate",0)
 tray.SetParameter("geometry","XShift",450.)
 tray.SetParameter("geometry","YShift",0.0)
-tray.SetParameter("geometry","Host",db)
+tray.SetParameter("geometry","Host",db_host)
 
 tray.AddService("I3DbCalibrationServiceFactory","dbcalibration")
 tray.SetParameter("dbcalibration","customdate",0)
-tray.SetParameter("dbcalibration","host",db)
+tray.SetParameter("dbcalibration","host",db_host)
 
 tray.AddService("I3DbDetectorStatusServiceFactory","dbdetectorstatus")
 tray.SetParameter("dbdetectorstatus","customdate",0)
-tray.SetParameter("dbdetectorstatus","host",db)
+tray.SetParameter("dbdetectorstatus","host",db_host)
 
 tray.AddModule("I3Muxer","muxer")
 tray.AddModule("I3Writer","writer")(
-    ("filename", expandvars("database.i3"))
+    ("filename", "database.i3")
      )
 
 tray.AddModule("TrashCan", "the can")
 
-tray.Execute()
+tray.Execute(nevents)
 tray.Finish()

@@ -37,7 +37,9 @@ void SetATWD2bBinCalibIntercept(TH1D*);
 void SetLCSpan(TH1D*);
 void SetLCWindowPre(TH1D*);
 void SetLCWindowPost(TH1D*);
-void SetPMTHV(TH1D*);
+void SetPMTHVInIce(TH1D*);
+void SetPMTHVIceTopHG(TH1D*);
+void SetPMTHVIceTopLG(TH1D*);
 void SetTriggerMode(TH1D*);
 void SetLCMode(TH1D*);
 void SetStatusATWDa(TH1D*);
@@ -60,6 +62,8 @@ void ProcessDetectorStatus();
 int main(){
   gROOT->SetStyle("Plain");
   gStyle->SetFrameLineWidth(2);
+  gStyle->SetOptStat(111011);
+  gStyle->SetOptFit(1);
 
   ProcessCalibration();
   ProcessDetectorStatus();
@@ -194,8 +198,14 @@ void ProcessDetectorStatus(){
   TH1D* lcWindowPost_h = (TH1D*)f.Get("lcWindowPost");
   SetLCWindowPost(lcWindowPost_h);
 
-  TH1D* pmtHV_h = (TH1D*)f.Get("pmtHV"); 
-  SetPMTHV(pmtHV_h);
+  TH1D* pmtHV_inice_h = (TH1D*)f.Get("pmtHV_inice"); 
+  SetPMTHVInIce(pmtHV_inice_h);
+
+  TH1D* pmtHV_icetopHG_h = (TH1D*)f.Get("pmtHV_icetopHG"); 
+  SetPMTHVIceTopHG(pmtHV_icetopHG_h);
+
+  TH1D* pmtHV_icetopLG_h = (TH1D*)f.Get("pmtHV_icetopLG"); 
+  SetPMTHVIceTopLG(pmtHV_icetopLG_h);
 
   TH1D* trigMode_h = (TH1D*)f.Get("trigMode");
   SetTriggerMode(trigMode_h);
@@ -246,7 +256,9 @@ void ProcessDetectorStatus(){
   lcspan_h->Write();
   lcWindowPre_h->Write();
   lcWindowPost_h->Write();
-  pmtHV_h->Write();
+  pmtHV_inice_h->Write();
+  pmtHV_icetopHG_h->Write();
+  pmtHV_icetopLG_h->Write();
   trigMode_h->Write();
   lcMode_h->Write();
   statusATWDa_h->Write();
@@ -265,15 +277,24 @@ void ProcessDetectorStatus(){
   g.Close();
 }
 
-void DrawHisto(TH1D* h, string filename, string defVal){
+void DrawHisto(TH1D* h, string filename, string defVal, bool fit=false){
 
-  TPaveText* t = new TPaveText(0.55,0.66,0.8,0.7,"NDC");
+  TPaveText* t;
+  if(defVal.size() < 30){
+    t = new TPaveText(0.55,0.4,0.8,0.5,"NDC");
+  }else if((defVal.size() > 30) && (defVal.size()<60)){
+    t = new TPaveText(0.35,0.4,0.8,0.5,"NDC");
+  }else{
+    t = new TPaveText(0.15,0.4,0.8,0.5,"NDC");
+  }
+
   t->AddText(defVal.c_str());
   t->SetTextColor(2);
   t->SetFillColor(0);
   t->SetBorderSize(1);
 
   TCanvas c;
+  if(fit) h->Fit("gaus");
   h->Draw();
   t->Draw();
   c.SaveAs(filename.c_str());
@@ -281,7 +302,6 @@ void DrawHisto(TH1D* h, string filename, string defVal){
 
 void SetTemperature(TH1D* h){
 
-  gStyle->SetOptStat(111101);
   std::stringstream defVal;
   defVal<<"Default = "
        <<I3CalibDefaults::TEMPERATURE
@@ -291,268 +311,241 @@ void SetTemperature(TH1D* h){
 };
 
 void SetFADCBaselineSlope(TH1D* h){
-  gStyle->SetOptStat(111101);
   std::stringstream defVal;
   defVal<<"Default = "
        <<I3CalibDefaults::FADC_BASELINE_FIT_SLOPE
        <<" ADC ticks/DAC-10-Units";
   h->SetXTitle("ADC ticks/DAC-10-Units");
-  DrawHisto(h,"SetFADCBaselineSlope.gif",defVal.str());
+  DrawHisto(h,"SetFADCBaselineSlope.gif",defVal.str(),true);
 };
 
 void SetFADCBaselineIntercept(TH1D* h){
-  gStyle->SetOptStat(111101);
   std::stringstream defVal;
   defVal<<"Default = "
        <<I3CalibDefaults::FADC_BASSLINE_FIT_INTERCEPT
        <<" ADC ticks";
   h->SetXTitle("ADC ticks");
-  DrawHisto(h,"SetFADCBaselineIntercept.gif",defVal.str());
+  DrawHisto(h,"SetFADCBaselineIntercept.gif",defVal.str(),true);
 };
 
 void SetFADCGain(TH1D* h){
-  gStyle->SetOptStat(111101);
   std::stringstream defVal;
   defVal<<"Default = "
-       <<I3CalibDefaults::FADC_GAIN
+       <<I3CalibDefaults::FADC_GAIN/I3Units::V
        <<" V/tick";
   h->SetXTitle("FADC Gain(V/tick)");
-  DrawHisto(h,"FADCGain.gif",defVal.str());
+  DrawHisto(h,"FADCGain.gif",defVal.str(),true);
 };
 
 void SetATWD0Gain(TH1D* h){
-  gStyle->SetOptStat(111101);
   std::stringstream defVal;
   defVal<<"Default = "
        <<I3CalibDefaults::ATWD0_GAIN
        <<" ";
   //h->SetXTitle("Units ???");
-  DrawHisto(h,"ATWD0Gain.gif",defVal.str());
+  DrawHisto(h,"ATWD0Gain.gif",defVal.str(),true);
 };
 
 void SetATWD1Gain(TH1D* h){
-  gStyle->SetOptStat(111101);
   std::stringstream defVal;
   defVal<<"Default = "
        <<I3CalibDefaults::ATWD1_GAIN
        <<" ";
   //h->SetXTitle("Units???");
-  DrawHisto(h,"ATWD1Gain.gif",defVal.str());
+  DrawHisto(h,"ATWD1Gain.gif",defVal.str(),true);
 };
 
 void SetATWD2Gain(TH1D* h){
-  gStyle->SetOptStat(111101);
   std::stringstream defVal;
   defVal<<"Default = "
        <<I3CalibDefaults::ATWD2_GAIN
        <<" ";
   //h->SetXTitle("Units");
-  DrawHisto(h,"ATWD2Gain.gif",defVal.str());
+  DrawHisto(h,"ATWD2Gain.gif",defVal.str(),true);
 };
 
 void SetATWDaFreqFit_A(TH1D* h){
-  gStyle->SetOptStat(111101);
   std::stringstream defVal;
   defVal<<"Default = "
        <<I3CalibDefaults::ATWD_A_FREQFIT_A
        <<" MHz";
   h->SetXTitle("MHz");
-  DrawHisto(h,"ATWDaFreqFit_A.gif",defVal.str());
+  DrawHisto(h,"ATWDaFreqFit_A.gif",defVal.str(),true);
 };
 
 void SetATWDaFreqFit_B(TH1D* h){
-  gStyle->SetOptStat(111101);
   std::stringstream defVal;
   defVal<<"Default = "
        <<I3CalibDefaults::ATWD_A_FREQFIT_B
        <<" ";
   //h->SetXTitle("");
-  DrawHisto(h,"ATWDaFreqFit_B.gif",defVal.str());
+  DrawHisto(h,"ATWDaFreqFit_B.gif",defVal.str(),true);
 };
 
 void SetATWDaFreqFit_C(TH1D* h){
-  gStyle->SetOptStat(111101);
   std::stringstream defVal;
   defVal<<"Default = "
        <<I3CalibDefaults::ATWD_A_FREQFIT_C
        <<"";
   //h->SetXTitle("");
-  DrawHisto(h,"ATWDaFreqFit_C.gif",defVal.str());
+  DrawHisto(h,"ATWDaFreqFit_C.gif",defVal.str(),true);
 };
 
 void SetATWDbFreqFit_A(TH1D* h){
-  gStyle->SetOptStat(111101);
   std::stringstream defVal;
   defVal<<"Default = "
        <<I3CalibDefaults::ATWD_B_FREQFIT_A
        <<" MHz";
   h->SetXTitle("MHz");
-  DrawHisto(h,"ATWDbFreqFit_A.gif",defVal.str());
+  DrawHisto(h,"ATWDbFreqFit_A.gif",defVal.str(),true);
 };
 
 void SetATWDbFreqFit_B(TH1D* h){
-  gStyle->SetOptStat(111101);
   std::stringstream defVal;
   defVal<<"Default = "
        <<I3CalibDefaults::ATWD_B_FREQFIT_B
        <<"";
   //h->SetXTitle("");
-  DrawHisto(h,"ATWDbFreqFit_B.gif",defVal.str());
+  DrawHisto(h,"ATWDbFreqFit_B.gif",defVal.str(),true);
 };
 
 void SetATWDbFreqFit_C(TH1D* h){
-  gStyle->SetOptStat(111101);
   std::stringstream defVal;
   defVal<<"Default = "
        <<I3CalibDefaults::ATWD_B_FREQFIT_C
        <<"";
   //h->SetXTitle("");
-  DrawHisto(h,"ATWDbFreqFit_C.gif",defVal.str());
+  DrawHisto(h,"ATWDbFreqFit_C.gif",defVal.str(),true);
 };
 
 void SetHVGainSlope(TH1D* h){
-  gStyle->SetOptStat(111101);
   std::stringstream defVal;
   defVal<<"Default = "
        <<I3CalibDefaults::HV_GAIN_FIT_SLOPE
        <<" ";
   h->SetXTitle("Slope");
-  DrawHisto(h,"HVGainFitSlope.gif",defVal.str());
+  DrawHisto(h,"HVGainFitSlope.gif",defVal.str(),true);
 };
 
 void SetHVGainIntercept(TH1D* h){
-  gStyle->SetOptStat(111101);
   std::stringstream defVal;
   defVal<<"Default = "
-       <<I3CalibDefaults::HV_GAIN_FIT_INTERCEPT
+	<<I3CalibDefaults::HV_GAIN_FIT_INTERCEPT
        <<" ";
   h->SetXTitle("Intercept");
-  DrawHisto(h,"HVGainFitIntercept.gif",defVal.str());
+  DrawHisto(h,"HVGainFitIntercept.gif",defVal.str(),true);
 };
 
 void SetATWD0aBinCalibSlope(TH1D* h){
-  gStyle->SetOptStat(111101);
   std::stringstream defVal;
   defVal<<"Default = "
-       <<I3CalibDefaults::ATWD_BINCALIB_FIT_SLOPE
+       <<I3CalibDefaults::ATWD_BINCALIB_FIT_SLOPE/I3Units::V
        <<" V";
   h->SetXTitle("Slope(V)");
-  DrawHisto(h,"ATWD0aBinCalibSlope.gif",defVal.str());
+ DrawHisto(h,"ATWD0aBinCalibSlope.gif",defVal.str(),true);
 };
 
 void SetATWD0aBinCalibIntercept(TH1D* h){
-  gStyle->SetOptStat(111101);
   std::stringstream defVal;
   defVal<<"Default = "
-       <<I3CalibDefaults::ATWD_BINCALIB_FIT_INTERCEPT
+       <<I3CalibDefaults::ATWD_BINCALIB_FIT_INTERCEPT/I3Units::V
        <<" V";
   h->SetXTitle("Intercept(V)");
-  DrawHisto(h,"ATWD0aBinCalibIntercept.gif",defVal.str());
+  DrawHisto(h,"ATWD0aBinCalibIntercept.gif",defVal.str(),true);
 };
 
 void SetATWD1aBinCalibSlope(TH1D* h){
-  gStyle->SetOptStat(111101);
   std::stringstream defVal;
   defVal<<"Default = "
-       <<I3CalibDefaults::ATWD_BINCALIB_FIT_SLOPE
+       <<I3CalibDefaults::ATWD_BINCALIB_FIT_SLOPE/I3Units::V
        <<" V";
   h->SetXTitle("Slope(V)");
-  DrawHisto(h,"ATWD1aBinCalibSlope.gif",defVal.str());
+  DrawHisto(h,"ATWD1aBinCalibSlope.gif",defVal.str(),true);
 };
 
 void SetATWD1aBinCalibIntercept(TH1D* h){
-  gStyle->SetOptStat(111101);
   std::stringstream defVal;
   defVal<<"Default = "
-       <<I3CalibDefaults::ATWD_BINCALIB_FIT_INTERCEPT
+       <<I3CalibDefaults::ATWD_BINCALIB_FIT_INTERCEPT/I3Units::V
        <<" V";
   h->SetXTitle("Intercept(V)");
-  DrawHisto(h,"ATWD1aBinCalibIntercept.gif",defVal.str());
+  DrawHisto(h,"ATWD1aBinCalibIntercept.gif",defVal.str(),true);
 };
 
 void SetATWD2aBinCalibSlope(TH1D* h){
-  gStyle->SetOptStat(111101);
   std::stringstream defVal;
   defVal<<"Default = "
-       <<I3CalibDefaults::ATWD_BINCALIB_FIT_SLOPE
+       <<I3CalibDefaults::ATWD_BINCALIB_FIT_SLOPE/I3Units::V
        <<" V";
   h->SetXTitle("Slope(V)");
-  DrawHisto(h,"ATWD2aBinCalibSlope.gif",defVal.str());
+  DrawHisto(h,"ATWD2aBinCalibSlope.gif",defVal.str(),true);
 };
 
 void SetATWD2aBinCalibIntercept(TH1D* h){
-  gStyle->SetOptStat(111101);
   std::stringstream defVal;
   defVal<<"Default = "
-       <<I3CalibDefaults::ATWD_BINCALIB_FIT_INTERCEPT
+       <<I3CalibDefaults::ATWD_BINCALIB_FIT_INTERCEPT/I3Units::V
        <<" V";
   h->SetXTitle("Intercept(V)");
-  DrawHisto(h,"ATWD2aBinCalibIntercept.gif",defVal.str());
+  DrawHisto(h,"ATWD2aBinCalibIntercept.gif",defVal.str(),true);
 };
 
 
 void SetATWD0bBinCalibSlope(TH1D* h){
-  gStyle->SetOptStat(111101);
   std::stringstream defVal;
   defVal<<"Default = "
-       <<I3CalibDefaults::ATWD_BINCALIB_FIT_SLOPE
+       <<I3CalibDefaults::ATWD_BINCALIB_FIT_SLOPE/I3Units::V
        <<" V";
   h->SetXTitle("Slope(V)");
-  DrawHisto(h,"ATWD0bBinCalibSlope.gif",defVal.str());
+  DrawHisto(h,"ATWD0bBinCalibSlope.gif",defVal.str(),true);
 };
 
 void SetATWD0bBinCalibIntercept(TH1D* h){
-  gStyle->SetOptStat(111101);
   std::stringstream defVal;
   defVal<<"Default = "
-       <<I3CalibDefaults::ATWD_BINCALIB_FIT_INTERCEPT
+       <<I3CalibDefaults::ATWD_BINCALIB_FIT_INTERCEPT/I3Units::V
        <<" V";
   h->SetXTitle("Intercept(V)");
-  DrawHisto(h,"ATWD0bBinCalibIntercept.gif",defVal.str());
+  DrawHisto(h,"ATWD0bBinCalibIntercept.gif",defVal.str(),true);
 };
 
 void SetATWD1bBinCalibSlope(TH1D* h){
-  gStyle->SetOptStat(111101);
   std::stringstream defVal;
   defVal<<"Default = "
-       <<I3CalibDefaults::ATWD_BINCALIB_FIT_SLOPE
+       <<I3CalibDefaults::ATWD_BINCALIB_FIT_SLOPE/I3Units::V
        <<" V";
   h->SetXTitle("Slope(V)");
-  DrawHisto(h,"ATWD1bBinCalibSlope.gif",defVal.str());
+  DrawHisto(h,"ATWD1bBinCalibSlope.gif",defVal.str(),true);
 };
 
 void SetATWD1bBinCalibIntercept(TH1D* h){
-  gStyle->SetOptStat(111101);
   std::stringstream defVal;
   defVal<<"Default = "
-       <<I3CalibDefaults::ATWD_BINCALIB_FIT_INTERCEPT
+       <<I3CalibDefaults::ATWD_BINCALIB_FIT_INTERCEPT/I3Units::V
        <<" V";
   h->SetXTitle("Intercept(V)");
-  DrawHisto(h,"ATWD1bBinCalibIntercept.gif",defVal.str());
+  DrawHisto(h,"ATWD1bBinCalibIntercept.gif",defVal.str(),true);
 };
 
 void SetATWD2bBinCalibSlope(TH1D* h){
-  gStyle->SetOptStat(111101);
   std::stringstream defVal;
   defVal<<"Default = "
-       <<I3CalibDefaults::ATWD_BINCALIB_FIT_SLOPE
+       <<I3CalibDefaults::ATWD_BINCALIB_FIT_SLOPE/I3Units::V
        <<" V";
   h->SetXTitle("Slope(V)");
-  DrawHisto(h,"ATWD2bBinCalibSlope.gif",defVal.str());
+  DrawHisto(h,"ATWD2bBinCalibSlope.gif",defVal.str(),true);
 };
 
 void SetATWD2bBinCalibIntercept(TH1D* h){
-  gStyle->SetOptStat(111101);
   std::stringstream defVal;
   defVal<<"Default = "
-       <<I3CalibDefaults::ATWD_BINCALIB_FIT_INTERCEPT
+       <<I3CalibDefaults::ATWD_BINCALIB_FIT_INTERCEPT/I3Units::V
        <<" V";
   h->SetXTitle("Intercept(V)");
-  DrawHisto(h,"ATWD2bBinCalibIntercept.gif",defVal.str());
+  DrawHisto(h,"ATWD2bBinCalibIntercept.gif",defVal.str(),true);
 };
 
 void SetLCSpan(TH1D* h){
-  gStyle->SetOptStat(111101);
   std::stringstream defVal;
   defVal<<"Default = "
        <<I3DetStatDefaults::LCSPAN
@@ -561,49 +554,62 @@ void SetLCSpan(TH1D* h){
   DrawHisto(h,"LCSpan.gif",defVal.str());
 }
 void SetLCWindowPre(TH1D* h){
-  gStyle->SetOptStat(111101);
   std::stringstream defVal;
   defVal<<"IceTop Default = "
 	<<I3DetStatDefaults::ICETOP_LCWINDOW_PRE
-	<<" "
+	<<"ns "
 	<<"InIce Default = "
-	<<I3DetStatDefaults::INICE_LCWINDOW_PRE;
+	<<I3DetStatDefaults::INICE_LCWINDOW_PRE
+	<<"ns ";
   h->SetXTitle("Window(ns)");
   DrawHisto(h,"LCWindowPre.gif",defVal.str());
 
 }
 
 void SetLCWindowPost(TH1D* h){
-  gStyle->SetOptStat(111101);
   std::stringstream defVal;
   defVal<<"IceTop Default = "
 	<<I3DetStatDefaults::ICETOP_LCWINDOW_POST
-	<<" "
+	<<"ns "
 	<<"InIce Default = "
-	<<I3DetStatDefaults::INICE_LCWINDOW_POST;
+	<<I3DetStatDefaults::INICE_LCWINDOW_POST
+	<<"ns ";
   h->SetXTitle("Window(ns)");
   DrawHisto(h,"LCWindowPost.gif",defVal.str());
 
 }
 
-void SetPMTHV(TH1D* h){
-  gStyle->SetOptStat(111101);
+void SetPMTHVInIce(TH1D* h){
   std::stringstream defVal;
-  defVal<<"Default IceTop HG "
-	<<I3DetStatDefaults::ICETOP_HIGHGAIN_VOLTAGE
-	<<" "
-	<<"Default IceTop LG "
-	<<I3DetStatDefaults::ICETOP_LOWGAIN_VOLTAGE
-	<<" "
-	<<"Default InIce "
-	<<I3DetStatDefaults::INICE_VOLTAGE
-	<<" ";
+  defVal<<"Default "
+	<<I3DetStatDefaults::INICE_VOLTAGE/I3Units::volt
+	<<"V ";
   h->SetXTitle("PMT Voltage(V)");
-  DrawHisto(h,"PMTVoltage.gif",defVal.str());
+  DrawHisto(h,"PMTVoltageInIce.gif",defVal.str());
 
 }
+
+void SetPMTHVIceTopHG(TH1D* h){
+  std::stringstream defVal;
+  defVal<<"Default "
+	<<I3DetStatDefaults::ICETOP_HIGHGAIN_VOLTAGE/I3Units::volt
+	<<"V ";
+  h->SetXTitle("PMT Voltage(V)");
+  DrawHisto(h,"PMTVoltageIceTopHG.gif",defVal.str());
+
+}
+
+void SetPMTHVIceTopLG(TH1D* h){
+  std::stringstream defVal;
+  defVal<<"Default "
+	<<I3DetStatDefaults::ICETOP_LOWGAIN_VOLTAGE/I3Units::volt
+	<<"V ";
+  h->SetXTitle("PMT Voltage(V)");
+  DrawHisto(h,"PMTVoltageIceTopLG.gif",defVal.str());
+
+}
+
 void SetTriggerMode(TH1D* h){
-  gStyle->SetOptStat(111101);
   std::stringstream defVal;
   defVal<<"Default = "
 	<<static_cast<int>(I3DetStatDefaults::TRIGGER_MODE)
@@ -613,7 +619,6 @@ void SetTriggerMode(TH1D* h){
 
 }
 void SetLCMode(TH1D* h){
-  gStyle->SetOptStat(111101);
   std::stringstream defVal;
   defVal<<"Default = "
 	<<static_cast<int>(I3DetStatDefaults::LCMODE)
@@ -623,7 +628,6 @@ void SetLCMode(TH1D* h){
 
 }
 void SetStatusATWDa(TH1D* h){
-  gStyle->SetOptStat(111101);
   std::stringstream defVal;
   defVal<<"Default = "
 	<<static_cast<int>(I3DetStatDefaults::STATUS_ATWDa)
@@ -633,7 +637,6 @@ void SetStatusATWDa(TH1D* h){
 
 }
 void SetStatusATWDb(TH1D* h){
-  gStyle->SetOptStat(111101);
   std::stringstream defVal;
   defVal<<"Default = "
 	<<static_cast<int>(I3DetStatDefaults::STATUS_ATWDb)
@@ -643,7 +646,6 @@ void SetStatusATWDb(TH1D* h){
 
 }
 void SetStatusFADC(TH1D* h){
-  gStyle->SetOptStat(111101);
   std::stringstream defVal;
   defVal<<"Default = "
 	<<static_cast<int>(I3DetStatDefaults::STATUS_FADC)
@@ -654,27 +656,24 @@ void SetStatusFADC(TH1D* h){
 }
 
 void SetSPEThreshold(TH1D* h){
-  gStyle->SetOptStat(111101);
   std::stringstream defVal;
   defVal<<"Default = "
-       <<I3DetStatDefaults::SPE_THRESHOLD
+       <<I3DetStatDefaults::SPE_THRESHOLD/I3Units::mV
        <<" mV";
   h->SetXTitle("threshold(mV)");
   DrawHisto(h,"SPEThreshold.gif",defVal.str());
 
 }
 void SetFEPedestal(TH1D* h){
-  gStyle->SetOptStat(111101);
   std::stringstream defVal;
   defVal<<"Default = "
-       <<I3DetStatDefaults::FE_PEDESTAL
-       <<" ";
+       <<I3DetStatDefaults::FE_PEDESTAL/I3Units::V
+       <<"V ";
   h->SetXTitle("pedestal(V)");
   DrawHisto(h,"fePedestal.gif",defVal.str());
 
 }
 void SetDACTriggerBias0(TH1D* h){
-  gStyle->SetOptStat(111101);
   std::stringstream defVal;
   defVal<<"Default = "
        <<I3DetStatDefaults::DAC_TRIGGER_BIAS0
@@ -684,7 +683,6 @@ void SetDACTriggerBias0(TH1D* h){
 
 }
 void SetDACTriggerBias1(TH1D* h){
-  gStyle->SetOptStat(111101);
   std::stringstream defVal;
   defVal<<"Default = "
        <<I3DetStatDefaults::DAC_TRIGGER_BIAS1
@@ -694,7 +692,6 @@ void SetDACTriggerBias1(TH1D* h){
 
 }
 void SetFADCRef(TH1D* h){
-  gStyle->SetOptStat(111101);
   std::stringstream defVal;
   defVal<<"Default = "
        <<I3DetStatDefaults::DAC_FADC_REF
@@ -704,7 +701,6 @@ void SetFADCRef(TH1D* h){
 
 }
 void SetNBinsATWD0(TH1D* h){
-  gStyle->SetOptStat(111101);
   std::stringstream defVal;
   defVal<<"Default = "
        <<I3DetStatDefaults::NBINS_ATWD0
@@ -714,7 +710,6 @@ void SetNBinsATWD0(TH1D* h){
 
 }
 void SetNBinsATWD1(TH1D* h){
-  gStyle->SetOptStat(111101);
   std::stringstream defVal;
   defVal<<"Default = "
        <<I3DetStatDefaults::NBINS_ATWD1
@@ -724,7 +719,6 @@ void SetNBinsATWD1(TH1D* h){
 
 }
 void SetNBinsATWD2(TH1D* h){
-  gStyle->SetOptStat(111101);
   std::stringstream defVal;
   defVal<<"Default = "
        <<I3DetStatDefaults::NBINS_ATWD2
@@ -734,7 +728,6 @@ void SetNBinsATWD2(TH1D* h){
 
 }
 void SetNBinsFADC(TH1D* h){
-  gStyle->SetOptStat(111101);
   std::stringstream defVal;
   defVal<<"Default = "
        <<I3DetStatDefaults::NBINS_FADC
