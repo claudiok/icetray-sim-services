@@ -103,7 +103,9 @@ class I3SimSourceTestModule : public I3Module
   int ds_lcMode_;
   int ds_statusATWDa_;
   int ds_statusATWDb_;
-  int ds_statusFADC_;
+
+  int ds_statusFADC_InIce_;
+  int ds_statusFADC_IceTop_;
 
   double ds_speThreshold_;
   double ds_fePedestal_;
@@ -114,10 +116,15 @@ class I3SimSourceTestModule : public I3Module
   /**
    *Number of FADC bins
    */
-  unsigned int ds_nBinsATWD0_;
-  unsigned int ds_nBinsATWD1_;
-  unsigned int ds_nBinsATWD2_;
-  unsigned int ds_nBinsFADC_;
+  unsigned int ds_nBinsATWD0_InIce_;
+  unsigned int ds_nBinsATWD1_InIce_;
+  unsigned int ds_nBinsATWD2_InIce_;
+  unsigned int ds_nBinsFADC_InIce_;
+
+  unsigned int ds_nBinsATWD0_IceTop_;
+  unsigned int ds_nBinsATWD1_IceTop_;
+  unsigned int ds_nBinsATWD2_IceTop_;
+  unsigned int ds_nBinsFADC_IceTop_;
 
 
   /**

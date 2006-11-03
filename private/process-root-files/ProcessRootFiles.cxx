@@ -648,7 +648,10 @@ void SetStatusATWDb(TH1D* h){
 void SetStatusFADC(TH1D* h){
   std::stringstream defVal;
   defVal<<"Default = "
-	<<static_cast<int>(I3DetStatDefaults::STATUS_FADC)
+	<<" InIce = "
+	<<static_cast<int>(I3DetStatDefaults::STATUS_FADC_INICE)
+	<<"  IceTop = "
+	<<static_cast<int>(I3DetStatDefaults::STATUS_FADC_ICETOP)
 	<<" ";
   h->SetXTitle("FADC Status");
   DrawHisto(h,"FADCStatus.gif",defVal.str());
@@ -703,8 +706,12 @@ void SetFADCRef(TH1D* h){
 void SetNBinsATWD0(TH1D* h){
   std::stringstream defVal;
   defVal<<"Default = "
-       <<I3DetStatDefaults::NBINS_ATWD0
-       <<" bins";
+	<<" InIce = "
+	<<I3DetStatDefaults::NBINS_ATWD0_INICE
+	<<" bins"
+	<<"   IceTop = "
+	<<I3DetStatDefaults::NBINS_ATWD0_ICETOP
+	<<" bins";
   h->SetXTitle("N Bins");
   DrawHisto(h,"NBinsATWD0.gif",defVal.str());
 
@@ -712,8 +719,12 @@ void SetNBinsATWD0(TH1D* h){
 void SetNBinsATWD1(TH1D* h){
   std::stringstream defVal;
   defVal<<"Default = "
-       <<I3DetStatDefaults::NBINS_ATWD1
-       <<" bins";
+	<<" InIce = "
+	<<I3DetStatDefaults::NBINS_ATWD1_INICE
+	<<" bins"
+	<<"   IceTop = "
+	<<I3DetStatDefaults::NBINS_ATWD1_ICETOP
+	<<" bins";
   h->SetXTitle("N Bins");
   DrawHisto(h,"NBinsATWD1.gif",defVal.str());
 
@@ -721,8 +732,12 @@ void SetNBinsATWD1(TH1D* h){
 void SetNBinsATWD2(TH1D* h){
   std::stringstream defVal;
   defVal<<"Default = "
-       <<I3DetStatDefaults::NBINS_ATWD2
-       <<" bins";
+	<<" InIce = "
+	<<I3DetStatDefaults::NBINS_ATWD2_INICE
+	<<" bins"
+	<<"   IceTop = "
+	<<I3DetStatDefaults::NBINS_ATWD2_ICETOP
+	<<" bins";
   h->SetXTitle("N Bins");
   DrawHisto(h,"NBinsATWD2.gif",defVal.str());
 
@@ -730,8 +745,12 @@ void SetNBinsATWD2(TH1D* h){
 void SetNBinsFADC(TH1D* h){
   std::stringstream defVal;
   defVal<<"Default = "
-       <<I3DetStatDefaults::NBINS_FADC
-       <<" bins";
+	<<" InIce = "
+	<<I3DetStatDefaults::NBINS_FADC_INICE
+	<<" bins"
+	<<"   IceTop = "
+	<<I3DetStatDefaults::NBINS_FADC_ICETOP
+	<<" bins";
   h->SetXTitle("N Bins");
   DrawHisto(h,"NBinsFADC.gif",defVal.str());
 

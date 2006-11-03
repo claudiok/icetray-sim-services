@@ -29,16 +29,21 @@ I3MCDetectorStatusService::I3MCDetectorStatusService(I3GeometryServicePtr g) :
   lcMode_(I3DetStatDefaults::LCMODE),
   statusATWDa_(I3DetStatDefaults::STATUS_ATWDa),
   statusATWDb_(I3DetStatDefaults::STATUS_ATWDb),
-  statusFADC_(I3DetStatDefaults::STATUS_FADC),
+  statusFADC_InIce_(I3DetStatDefaults::STATUS_FADC_INICE),
+  statusFADC_IceTop_(I3DetStatDefaults::STATUS_FADC_ICETOP),
   speThreshold_(I3DetStatDefaults::SPE_THRESHOLD),
   fePedestal_(I3DetStatDefaults::FE_PEDESTAL),
   dacTriggerBias0_(I3DetStatDefaults::DAC_TRIGGER_BIAS0),
   dacTriggerBias1_(I3DetStatDefaults::DAC_TRIGGER_BIAS1),
   dacFADCRef_(I3DetStatDefaults::DAC_FADC_REF),
-  nBinsATWD0_(I3DetStatDefaults::NBINS_ATWD0),
-  nBinsATWD1_(I3DetStatDefaults::NBINS_ATWD1),
-  nBinsATWD2_(I3DetStatDefaults::NBINS_ATWD2),
-  nBinsFADC_(I3DetStatDefaults::NBINS_FADC)
+  nBinsATWD0_InIce_(I3DetStatDefaults::NBINS_ATWD0_INICE),
+  nBinsATWD1_InIce_(I3DetStatDefaults::NBINS_ATWD1_INICE),
+  nBinsATWD2_InIce_(I3DetStatDefaults::NBINS_ATWD2_INICE),
+  nBinsFADC_InIce_(I3DetStatDefaults::NBINS_FADC_INICE),
+  nBinsATWD0_IceTop_(I3DetStatDefaults::NBINS_ATWD0_ICETOP),
+  nBinsATWD1_IceTop_(I3DetStatDefaults::NBINS_ATWD1_ICETOP),
+  nBinsATWD2_IceTop_(I3DetStatDefaults::NBINS_ATWD2_ICETOP),
+  nBinsFADC_IceTop_(I3DetStatDefaults::NBINS_FADC_ICETOP)
 {
   geo_service_ = g;
 }
@@ -77,7 +82,6 @@ I3MCDetectorStatusService::GetDetectorStatus(I3Time time)
   
   domStatus.statusATWDa = statusATWDa_;
   domStatus.statusATWDb = statusATWDb_;
-  domStatus.statusFADC = statusFADC_;
   
   domStatus.speThreshold = speThreshold_;
   domStatus.fePedestal = fePedestal_;
@@ -87,12 +91,6 @@ I3MCDetectorStatusService::GetDetectorStatus(I3Time time)
   
   domStatus.dacFADCRef = dacFADCRef_;
   
-  domStatus.nBinsATWD0 = nBinsATWD0_;
-  domStatus.nBinsATWD1 = nBinsATWD1_;
-  domStatus.nBinsATWD2 = nBinsATWD2_;
-  
-  domStatus.nBinsFADC = nBinsFADC_;
-
   //changed all inice to om_geo
   for( iter  = om_geo.begin(); iter != om_geo.end(); iter++ ){
       OMKey thiskey = iter->first;
@@ -102,6 +100,12 @@ I3MCDetectorStatusService::GetDetectorStatus(I3Time time)
 	//Don't do AMANDA OMs
 	if ( type == I3OMGeo::IceTop )
 	  {
+	    domStatus.statusFADC = statusFADC_IceTop_;
+	    domStatus.nBinsATWD0 = nBinsATWD0_IceTop_;
+	    domStatus.nBinsATWD1 = nBinsATWD1_IceTop_;
+	    domStatus.nBinsATWD2 = nBinsATWD2_IceTop_;
+	    domStatus.nBinsFADC = nBinsFADC_IceTop_;
+
 	    domStatus.lcWindowPre = icetopLCWindowPre_;
 	    domStatus.lcWindowPost = icetopLCWindowPost_;
 	    
@@ -119,6 +123,11 @@ I3MCDetectorStatusService::GetDetectorStatus(I3Time time)
 	  }	
 	else
 	  {
+	    domStatus.statusFADC = statusFADC_InIce_;
+	    domStatus.nBinsATWD0 = nBinsATWD0_InIce_;
+	    domStatus.nBinsATWD1 = nBinsATWD1_InIce_;
+	    domStatus.nBinsATWD2 = nBinsATWD2_InIce_;
+	    domStatus.nBinsFADC = nBinsFADC_InIce_;
 	    domStatus.lcSpan = lcSpan_;
 	    
 	    domStatus.lcWindowPre = iniceLCWindowPre_;

@@ -110,17 +110,13 @@ class I3MCSourceServiceFactory
    */
   double ds_iniceVoltage_;
 
-//  I3DOMStatus::TrigMode ds_triggerMode_;
-//  I3DOMStatus::LCMode ds_lcMode_;
-//  I3DOMStatus::OnOff ds_statusATWDa_;
-//  I3DOMStatus::OnOff ds_statusATWDb_;
-//  I3DOMStatus::OnOff ds_statusFADC_;
-
   int ds_triggerMode_;
   int ds_lcMode_;
   int ds_statusATWDa_;
   int ds_statusATWDb_;
-  int ds_statusFADC_;
+
+  int ds_statusFADC_InIce_;
+  int ds_statusFADC_IceTop_;
 
   double ds_speThreshold_;
   double ds_fePedestal_;
@@ -131,10 +127,15 @@ class I3MCSourceServiceFactory
   /**
    *Number of FADC bins
    */
-  int ds_nBinsATWD0_;
-  int ds_nBinsATWD1_;
-  int ds_nBinsATWD2_;
-  int ds_nBinsFADC_;
+  int ds_nBinsATWD0_InIce_;
+  int ds_nBinsATWD1_InIce_;
+  int ds_nBinsATWD2_InIce_;
+  int ds_nBinsFADC_InIce_;
+
+  int ds_nBinsATWD0_IceTop_;
+  int ds_nBinsATWD1_IceTop_;
+  int ds_nBinsATWD2_IceTop_;
+  int ds_nBinsFADC_IceTop_;
 
 
   /**

@@ -50,16 +50,21 @@ TEST(default_config)
     ("DetStat_LCMode",static_cast<int>(I3DetStatDefaults::LCMODE))
     ("DetStat_StatusATWDa",static_cast<int>(I3DetStatDefaults::STATUS_ATWDa))
     ("DetStat_StatusATWDb",static_cast<int>(I3DetStatDefaults::STATUS_ATWDb))
-    ("DetStat_StatusFADC",static_cast<int>(I3DetStatDefaults::STATUS_FADC))
+    ("DetStat_StatusFADCInIce",static_cast<int>(I3DetStatDefaults::STATUS_FADC_INICE))
+    ("DetStat_StatusFADCIceTop",static_cast<int>(I3DetStatDefaults::STATUS_FADC_ICETOP))
     ("DetStat_SPEThreshold",I3DetStatDefaults::SPE_THRESHOLD)
     ("DetStat_FEPedestal",I3DetStatDefaults::FE_PEDESTAL)
     ("DetStat_DACTriggerBias0",I3DetStatDefaults::DAC_TRIGGER_BIAS0)
     ("DetStat_DACTriggerBias1",I3DetStatDefaults::DAC_TRIGGER_BIAS1)
     ("DetStat_DACFADCRef",I3DetStatDefaults::DAC_FADC_REF)
-    ("DetStat_NBinsATWD0",I3DetStatDefaults::NBINS_ATWD0)
-    ("DetStat_NBinsATWD1",I3DetStatDefaults::NBINS_ATWD1)
-    ("DetStat_NBinsATWD2",I3DetStatDefaults::NBINS_ATWD2)
-    ("DetStat_NBinsFADC",I3DetStatDefaults::NBINS_FADC)
+    ("DetStat_NBinsATWD0InIce",I3DetStatDefaults::NBINS_ATWD0_INICE)
+    ("DetStat_NBinsATWD1InIce",I3DetStatDefaults::NBINS_ATWD1_INICE)
+    ("DetStat_NBinsATWD2InIce",I3DetStatDefaults::NBINS_ATWD2_INICE)
+    ("DetStat_NBinsFADCInIce",I3DetStatDefaults::NBINS_FADC_INICE)
+    ("DetStat_NBinsATWD0IceTop",I3DetStatDefaults::NBINS_ATWD0_ICETOP)
+    ("DetStat_NBinsATWD1IceTop",I3DetStatDefaults::NBINS_ATWD1_ICETOP)
+    ("DetStat_NBinsATWD2IceTop",I3DetStatDefaults::NBINS_ATWD2_ICETOP)
+    ("DetStat_NBinsFADCIceTop",I3DetStatDefaults::NBINS_FADC_ICETOP)
     ("Calib_StartYear",I3CalibDefaults::START_YEAR)
     ("Calib_StartDAQTime",I3CalibDefaults::START_DAQTIME)
     ("Calib_EndYear",I3CalibDefaults::END_YEAR)
@@ -111,16 +116,22 @@ TEST(custom_config)
   int lcMode(2);
   int statusATWDa(1);
   int statusATWDb(0);
-  int statusFADC(-1);
+  int statusFADCInIce(-1);
+  int statusFADCIceTop(1);
   double speThreshold(1.618*I3Units::mV);
   double fePedestal(3.14*I3Units::volt);
   int dacTriggerBias0(900);
   int dacTriggerBias1(1000);
   int dacFADCRef(666);
-  int nBinsATWD0(256);
-  int nBinsATWD1(123);
-  int nBinsATWD2(4);
-  int nBinsFADC(42);
+  int nBinsATWD0InIce(256);
+  int nBinsATWD1InIce(123);
+  int nBinsATWD2InIce(4);
+  int nBinsFADCInIce(42);
+
+  int nBinsATWD0IceTop(1024);
+  int nBinsATWD1IceTop(8);
+  int nBinsATWD2IceTop(666);
+  int nBinsFADCIceTop(765);
 
   int32_t cal_startYear(2006);
   int64_t cal_startDAQTime(240258491946728273LL);
@@ -181,16 +192,21 @@ TEST(custom_config)
     ("DetStat_LCMode",lcMode)
     ("DetStat_StatusATWDa",statusATWDa)
     ("DetStat_StatusATWDb",statusATWDb)
-    ("DetStat_StatusFADC",statusFADC)
+    ("DetStat_StatusFADCInIce",statusFADCInIce)
+    ("DetStat_StatusFADCIceTop",statusFADCIceTop)
     ("DetStat_SPEThreshold",speThreshold)
     ("DetStat_FEPedestal",fePedestal)
     ("DetStat_DACTriggerBias0",dacTriggerBias0)
     ("DetStat_DACTriggerBias1",dacTriggerBias1)
     ("DetStat_DACFADCRef",dacFADCRef)
-    ("DetStat_NBinsATWD0",nBinsATWD0)
-    ("DetStat_NBinsATWD1",nBinsATWD1)
-    ("DetStat_NBinsATWD2",nBinsATWD2)
-    ("DetStat_NBinsFADC",nBinsFADC)
+    ("DetStat_NBinsATWD0InIce",nBinsATWD0InIce)
+    ("DetStat_NBinsATWD1InIce",nBinsATWD1InIce)
+    ("DetStat_NBinsATWD2InIce",nBinsATWD2InIce)
+    ("DetStat_NBinsFADCInIce",nBinsFADCInIce)
+    ("DetStat_NBinsATWD0IceTop",nBinsATWD0IceTop)
+    ("DetStat_NBinsATWD1IceTop",nBinsATWD1IceTop)
+    ("DetStat_NBinsATWD2IceTop",nBinsATWD2IceTop)
+    ("DetStat_NBinsFADCIceTop",nBinsFADCIceTop)
     ("Calib_StartYear",cal_startYear)
     ("Calib_StartDAQTime",cal_startDAQTime)
     ("Calib_EndYear",cal_endYear)
@@ -233,16 +249,21 @@ TEST(custom_config)
     ("DetStat_LCMode",lcMode)
     ("DetStat_StatusATWDa",statusATWDa)
     ("DetStat_StatusATWDb",statusATWDb)
-    ("DetStat_StatusFADC",statusFADC)
+    ("DetStat_StatusFADCInIce",statusFADCInIce)
+    ("DetStat_StatusFADCIceTop",statusFADCIceTop)
     ("DetStat_SPEThreshold",speThreshold)
     ("DetStat_FEPedestal",fePedestal)
     ("DetStat_DACTriggerBias0",dacTriggerBias0)
     ("DetStat_DACTriggerBias1",dacTriggerBias1)
     ("DetStat_DACFADCRef",dacFADCRef)
-    ("DetStat_NBinsATWD0",nBinsATWD0)
-    ("DetStat_NBinsATWD1",nBinsATWD1)
-    ("DetStat_NBinsATWD2",nBinsATWD2)
-    ("DetStat_NBinsFADC",nBinsFADC)
+    ("DetStat_NBinsATWD0InIce",nBinsATWD0InIce)
+    ("DetStat_NBinsATWD1InIce",nBinsATWD1InIce)
+    ("DetStat_NBinsATWD2InIce",nBinsATWD2InIce)
+    ("DetStat_NBinsFADCInIce",nBinsFADCInIce)
+    ("DetStat_NBinsATWD0IceTop",nBinsATWD0IceTop)
+    ("DetStat_NBinsATWD1IceTop",nBinsATWD1IceTop)
+    ("DetStat_NBinsATWD2IceTop",nBinsATWD2IceTop)
+    ("DetStat_NBinsFADCIceTop",nBinsFADCIceTop)
     ("Calib_StartYear",cal_startYear)
     ("Calib_StartDAQTime",cal_startDAQTime)
     ("Calib_EndYear",cal_endYear)

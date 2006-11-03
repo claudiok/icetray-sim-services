@@ -61,7 +61,9 @@ namespace I3DetStatDefaults{
   const I3DOMStatus::LCMode LCMODE = I3DOMStatus::UpOrDown; //NO CHANGE
   const I3DOMStatus::OnOff STATUS_ATWDa = I3DOMStatus::On; //NO CHANGE
   const I3DOMStatus::OnOff STATUS_ATWDb = I3DOMStatus::On; //NO CHANGE
-  const I3DOMStatus::OnOff STATUS_FADC = I3DOMStatus::On; //NO CHANGE
+  const I3DOMStatus::OnOff STATUS_FADC_INICE = I3DOMStatus::On; //NO CHANGE
+
+  const I3DOMStatus::OnOff STATUS_FADC_ICETOP = I3DOMStatus::On; //NO CHANGE
 
   const double SPE_THRESHOLD = 1.422*I3Units::mV; //OLD: 4.0*I3Units::mV
   const double FE_PEDESTAL = 2.6*I3Units::volt;   //NO CHANGE
@@ -72,10 +74,15 @@ namespace I3DetStatDefaults{
   /**
    *Number of FADC bins
    */
-  const int NBINS_ATWD0 = 128; //NO CHANGE
-  const int NBINS_ATWD1 = 32; //OLD: 128
-  const int NBINS_ATWD2 = 32; //OLD: 128
-  const int NBINS_FADC = 50;  //OLD: 256
+  const int NBINS_ATWD0_INICE = 128; //NO CHANGE
+  const int NBINS_ATWD1_INICE = 32; //OLD: 128
+  const int NBINS_ATWD2_INICE = 32; //OLD: 128
+  const int NBINS_FADC_INICE = 50;  //OLD: 256
+
+  const int NBINS_ATWD0_ICETOP = 128; //NO CHANGE
+  const int NBINS_ATWD1_ICETOP = 128; //OLD: 128
+  const int NBINS_ATWD2_ICETOP = 128; //OLD: 128
+  const int NBINS_FADC_ICETOP = 50;  //OLD: 256
 
 }
 
@@ -117,19 +124,10 @@ namespace I3CalibDefaults{
    */
   const double ATWD_A_FREQFIT_A = 26.04;  //OLD: 2.5858788
   const double ATWD_A_FREQFIT_B = 0.3202; //OLD: 0.013337472
-  //const double ATWD_A_FREQFIT_C = NAN;    //NO CHANGE
   const double ATWD_A_FREQFIT_C = -2.842e-5;    //From DOMCal files
   const double ATWD_B_FREQFIT_A = 26.46;  //OLD: 2.3853257
   const double ATWD_B_FREQFIT_B = 0.3202; //OLD: 0.014224272
-  //const double ATWD_B_FREQFIT_C = NAN;    //NO CHANGE
   const double ATWD_B_FREQFIT_C = -2.853e-5;    //From DOMCal files
-
-//  const double ATWD_A_FREQFIT_A = 2.5858788;  
-//  const double ATWD_A_FREQFIT_B = 0.013337472; 
-//  const double ATWD_A_FREQFIT_C = NAN;    
-//  const double ATWD_B_FREQFIT_A = 2.3853257;  
-//  const double ATWD_B_FREQFIT_B = 0.014224272; 
-//  const double ATWD_B_FREQFIT_C = NAN;    
 
   /**
    *High Voltage gain slope and intercept

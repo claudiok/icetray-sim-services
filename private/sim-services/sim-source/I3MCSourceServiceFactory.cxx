@@ -33,16 +33,21 @@ I3MCSourceServiceFactory(const I3Context& context) :
   ds_lcMode_(I3DetStatDefaults::LCMODE),
   ds_statusATWDa_(I3DetStatDefaults::STATUS_ATWDa),
   ds_statusATWDb_(I3DetStatDefaults::STATUS_ATWDb),
-  ds_statusFADC_(I3DetStatDefaults::STATUS_FADC),
+  ds_statusFADC_InIce_(I3DetStatDefaults::STATUS_FADC_INICE),
+  ds_statusFADC_IceTop_(I3DetStatDefaults::STATUS_FADC_ICETOP),
   ds_speThreshold_(I3DetStatDefaults::SPE_THRESHOLD),
   ds_fePedestal_(I3DetStatDefaults::FE_PEDESTAL),
   ds_dacTriggerBias0_(I3DetStatDefaults::DAC_TRIGGER_BIAS0),
   ds_dacTriggerBias1_(I3DetStatDefaults::DAC_TRIGGER_BIAS1),
   ds_dacFADCRef_(I3DetStatDefaults::DAC_FADC_REF),
-  ds_nBinsATWD0_(I3DetStatDefaults::NBINS_ATWD0),
-  ds_nBinsATWD1_(I3DetStatDefaults::NBINS_ATWD1),
-  ds_nBinsATWD2_(I3DetStatDefaults::NBINS_ATWD2),
-  ds_nBinsFADC_(I3DetStatDefaults::NBINS_FADC),
+  ds_nBinsATWD0_InIce_(I3DetStatDefaults::NBINS_ATWD0_INICE),
+  ds_nBinsATWD1_InIce_(I3DetStatDefaults::NBINS_ATWD1_INICE),
+  ds_nBinsATWD2_InIce_(I3DetStatDefaults::NBINS_ATWD2_INICE),
+  ds_nBinsFADC_InIce_(I3DetStatDefaults::NBINS_FADC_INICE),
+  ds_nBinsATWD0_IceTop_(I3DetStatDefaults::NBINS_ATWD0_ICETOP),
+  ds_nBinsATWD1_IceTop_(I3DetStatDefaults::NBINS_ATWD1_ICETOP),
+  ds_nBinsATWD2_IceTop_(I3DetStatDefaults::NBINS_ATWD2_ICETOP),
+  ds_nBinsFADC_IceTop_(I3DetStatDefaults::NBINS_FADC_ICETOP),
   cal_startYear_(I3CalibDefaults::START_YEAR),
   cal_startDAQTime_(I3CalibDefaults::START_DAQTIME),
   cal_endYear_(I3CalibDefaults::END_YEAR),
@@ -95,16 +100,23 @@ I3MCSourceServiceFactory(const I3Context& context) :
   AddParameter("DetStat_LCMode","",ds_lcMode_);
   AddParameter("DetStat_StatusATWDa","",ds_statusATWDa_);
   AddParameter("DetStat_StatusATWDb","",ds_statusATWDb_);
-  AddParameter("DetStat_StatusFADC","",ds_statusFADC_);
+  AddParameter("DetStat_StatusFADCInIce","",ds_statusFADC_InIce_);
+  AddParameter("DetStat_StatusFADCIceTop","",ds_statusFADC_IceTop_);
   AddParameter("DetStat_SPEThreshold","",ds_speThreshold_);
   AddParameter("DetStat_FEPedestal","",ds_fePedestal_);
   AddParameter("DetStat_DACTriggerBias0","",ds_dacTriggerBias0_);
   AddParameter("DetStat_DACTriggerBias1","",ds_dacTriggerBias1_);
   AddParameter("DetStat_DACFADCRef","",ds_dacFADCRef_);
-  AddParameter("DetStat_NBinsATWD0","",ds_nBinsATWD0_);
-  AddParameter("DetStat_NBinsATWD1","",ds_nBinsATWD1_);
-  AddParameter("DetStat_NBinsATWD2","",ds_nBinsATWD2_);
-  AddParameter("DetStat_NBinsFADC","Number of FADC bins",ds_nBinsFADC_);
+
+  AddParameter("DetStat_NBinsATWD0InIce","",ds_nBinsATWD0_InIce_);
+  AddParameter("DetStat_NBinsATWD1InIce","",ds_nBinsATWD1_InIce_);
+  AddParameter("DetStat_NBinsATWD2InIce","",ds_nBinsATWD2_InIce_);
+  AddParameter("DetStat_NBinsFADCInIce","",ds_nBinsFADC_InIce_);
+
+  AddParameter("DetStat_NBinsATWD0IceTop","",ds_nBinsATWD0_IceTop_);
+  AddParameter("DetStat_NBinsATWD1IceTop","",ds_nBinsATWD1_IceTop_);
+  AddParameter("DetStat_NBinsATWD2IceTop","",ds_nBinsATWD2_IceTop_);
+  AddParameter("DetStat_NBinsFADCIceTop","",ds_nBinsFADC_IceTop_);
 
   AddParameter("Calib_StartYear","",cal_startYear_);
   AddParameter("Calib_StartDAQTime","",cal_startDAQTime_);
@@ -162,16 +174,23 @@ void I3MCSourceServiceFactory::Configure()
   GetParameter("DetStat_LCMode",ds_lcMode_);
   GetParameter("DetStat_StatusATWDa",ds_statusATWDa_);
   GetParameter("DetStat_StatusATWDb",ds_statusATWDb_);
-  GetParameter("DetStat_StatusFADC",ds_statusFADC_);
+  GetParameter("DetStat_StatusFADCInIce",ds_statusFADC_InIce_);
+  GetParameter("DetStat_StatusFADCIceTop",ds_statusFADC_IceTop_);
   GetParameter("DetStat_SPEThreshold",ds_speThreshold_);
   GetParameter("DetStat_FEPedestal",ds_fePedestal_);
   GetParameter("DetStat_DACTriggerBias0",ds_dacTriggerBias0_);
   GetParameter("DetStat_DACTriggerBias1",ds_dacTriggerBias1_);
   GetParameter("DetStat_DACFADCRef",ds_dacFADCRef_);
-  GetParameter("DetStat_NBinsATWD0",ds_nBinsATWD0_);
-  GetParameter("DetStat_NBinsATWD1",ds_nBinsATWD1_);
-  GetParameter("DetStat_NBinsATWD2",ds_nBinsATWD2_);
-  GetParameter("DetStat_NBinsFADC",ds_nBinsFADC_);
+
+  GetParameter("DetStat_NBinsATWD0InIce",ds_nBinsATWD0_InIce_);
+  GetParameter("DetStat_NBinsATWD1InIce",ds_nBinsATWD1_InIce_);
+  GetParameter("DetStat_NBinsATWD2InIce",ds_nBinsATWD2_InIce_);
+  GetParameter("DetStat_NBinsFADCInIce",ds_nBinsFADC_InIce_);
+
+  GetParameter("DetStat_NBinsATWD0IceTop",ds_nBinsATWD0_IceTop_);
+  GetParameter("DetStat_NBinsATWD1IceTop",ds_nBinsATWD1_IceTop_);
+  GetParameter("DetStat_NBinsATWD2IceTop",ds_nBinsATWD2_IceTop_);
+  GetParameter("DetStat_NBinsFADCIceTop",ds_nBinsFADC_IceTop_);
 
   //Calibration Parameters
   GetParameter("Calib_StartYear",cal_startYear_);
@@ -241,16 +260,21 @@ bool I3MCSourceServiceFactory::InstallService(I3Context& services)
     status_->SetLCMode(ds_lcMode_);
     status_->SetStatusATWDa(ds_statusATWDa_);
     status_->SetStatusATWDb(ds_statusATWDb_);
-    status_->SetStatusFADC(ds_statusFADC_);
+    status_->SetStatusFADCInIce(ds_statusFADC_InIce_);
+    status_->SetStatusFADCIceTop(ds_statusFADC_IceTop_);
     status_->SetSPEThreshold(ds_speThreshold_);
     status_->SetFEPedestal(ds_fePedestal_);
     status_->SetDACTriggerBias0(ds_dacTriggerBias0_);
     status_->SetDACTriggerBias1(ds_dacTriggerBias1_);
     status_->SetDACFADCRef(ds_dacFADCRef_);
-    status_->SetNBinsATWD0(ds_nBinsATWD0_);
-    status_->SetNBinsATWD1(ds_nBinsATWD1_);
-    status_->SetNBinsATWD2(ds_nBinsATWD2_);
-    status_->SetNBinsFADC(ds_nBinsFADC_);
+    status_->SetNBinsATWD0InIce(ds_nBinsATWD0_InIce_);
+    status_->SetNBinsATWD1InIce(ds_nBinsATWD1_InIce_);
+    status_->SetNBinsATWD2InIce(ds_nBinsATWD2_InIce_);
+    status_->SetNBinsFADCInIce(ds_nBinsFADC_InIce_);
+    status_->SetNBinsATWD0IceTop(ds_nBinsATWD0_IceTop_);
+    status_->SetNBinsATWD1IceTop(ds_nBinsATWD1_IceTop_);
+    status_->SetNBinsATWD2IceTop(ds_nBinsATWD2_IceTop_);
+    status_->SetNBinsFADCIceTop(ds_nBinsFADC_IceTop_);
   }
 
   if(!calibration_){

@@ -32,9 +32,9 @@ tray.AddService("I3MCTimeGeneratorServiceFactory","time-gen")(
 tray.AddService("I3FileOMKey2MBIDFactory","omkey2mbid")
 tray.SetParameter("omkey2mbid","Infile",expandvars("$I3_WORK/phys-services/resources/doms.txt"))
 
-db_host = "icedb.umh.ac.be"
+#db_host = "icedb.umh.ac.be"
 #db_host = "ppemons.umh.ac.be"
-#db_host = "dbs2.icecube.wisc.edu"
+db_host = "dbs2.icecube.wisc.edu"
 
 tray.AddService("I3DbGeometryServiceFactory","geometry")
 tray.SetParameter("geometry","CompleteGeometry",0)

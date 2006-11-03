@@ -51,16 +51,21 @@ I3SimSourceTestModule::I3SimSourceTestModule(const I3Context& ctx) :
   AddParameter("DetStat_LCMode","",ds_lcMode_);
   AddParameter("DetStat_StatusATWDa","",ds_statusATWDa_);
   AddParameter("DetStat_StatusATWDb","",ds_statusATWDb_);
-  AddParameter("DetStat_StatusFADC","",ds_statusFADC_);
+  AddParameter("DetStat_StatusFADCInIce","",ds_statusFADC_InIce_);
+  AddParameter("DetStat_StatusFADCIceTop","",ds_statusFADC_IceTop_);
   AddParameter("DetStat_SPEThreshold","",ds_speThreshold_);
   AddParameter("DetStat_FEPedestal","",ds_fePedestal_);
   AddParameter("DetStat_DACTriggerBias0","",ds_dacTriggerBias0_);
   AddParameter("DetStat_DACTriggerBias1","",ds_dacTriggerBias1_);
   AddParameter("DetStat_DACFADCRef","",ds_dacFADCRef_);
-  AddParameter("DetStat_NBinsATWD0","",ds_nBinsATWD0_);
-  AddParameter("DetStat_NBinsATWD1","",ds_nBinsATWD1_);
-  AddParameter("DetStat_NBinsATWD2","",ds_nBinsATWD2_);
-  AddParameter("DetStat_NBinsFADC","Number of FADC bins",ds_nBinsFADC_);
+  AddParameter("DetStat_NBinsATWD0InIce","",ds_nBinsATWD0_InIce_);
+  AddParameter("DetStat_NBinsATWD1InIce","",ds_nBinsATWD1_InIce_);
+  AddParameter("DetStat_NBinsATWD2InIce","",ds_nBinsATWD2_InIce_);
+  AddParameter("DetStat_NBinsFADCInIce","Number of FADC bins",ds_nBinsFADC_InIce_);
+  AddParameter("DetStat_NBinsATWD0IceTop","",ds_nBinsATWD0_IceTop_);
+  AddParameter("DetStat_NBinsATWD1IceTop","",ds_nBinsATWD1_IceTop_);
+  AddParameter("DetStat_NBinsATWD2IceTop","",ds_nBinsATWD2_IceTop_);
+  AddParameter("DetStat_NBinsFADCIceTop","Number of FADC bins",ds_nBinsFADC_IceTop_);
 
   AddParameter("Calib_StartYear","",cal_startYear_);
   AddParameter("Calib_StartDAQTime","",cal_startDAQTime_);
@@ -118,16 +123,21 @@ void I3SimSourceTestModule::Configure()
   GetParameter("DetStat_LCMode",ds_lcMode_);
   GetParameter("DetStat_StatusATWDa",ds_statusATWDa_);
   GetParameter("DetStat_StatusATWDb",ds_statusATWDb_);
-  GetParameter("DetStat_StatusFADC",ds_statusFADC_);
+  GetParameter("DetStat_StatusFADCInIce",ds_statusFADC_InIce_);
+  GetParameter("DetStat_StatusFADCIceTop",ds_statusFADC_IceTop_);
   GetParameter("DetStat_SPEThreshold",ds_speThreshold_);
   GetParameter("DetStat_FEPedestal",ds_fePedestal_);
   GetParameter("DetStat_DACTriggerBias0",ds_dacTriggerBias0_);
   GetParameter("DetStat_DACTriggerBias1",ds_dacTriggerBias1_);
   GetParameter("DetStat_DACFADCRef",ds_dacFADCRef_);
-  GetParameter("DetStat_NBinsATWD0",ds_nBinsATWD0_);
-  GetParameter("DetStat_NBinsATWD1",ds_nBinsATWD1_);
-  GetParameter("DetStat_NBinsATWD2",ds_nBinsATWD2_);
-  GetParameter("DetStat_NBinsFADC",ds_nBinsFADC_);
+  GetParameter("DetStat_NBinsATWD0InIce",ds_nBinsATWD0_InIce_);
+  GetParameter("DetStat_NBinsATWD1InIce",ds_nBinsATWD1_InIce_);
+  GetParameter("DetStat_NBinsATWD2InIce",ds_nBinsATWD2_InIce_);
+  GetParameter("DetStat_NBinsFADCInIce",ds_nBinsFADC_InIce_);
+  GetParameter("DetStat_NBinsATWD0IceTop",ds_nBinsATWD0_IceTop_);
+  GetParameter("DetStat_NBinsATWD1IceTop",ds_nBinsATWD1_IceTop_);
+  GetParameter("DetStat_NBinsATWD2IceTop",ds_nBinsATWD2_IceTop_);
+  GetParameter("DetStat_NBinsFADCIceTop",ds_nBinsFADC_IceTop_);
 
   //Calibration Parameters
   GetParameter("Calib_StartYear",cal_startYear_);
@@ -220,7 +230,13 @@ void I3SimSourceTestModule::Physics(I3FramePtr frame)
       if ( stat_iter->first.GetOM() > 60 ){
 	ENSURE(stat_iter->second.lcWindowPre == ds_icetopLCWindowPre_);
 	ENSURE(stat_iter->second.lcWindowPost == ds_icetopLCWindowPost_);
+	ENSURE(static_cast<int>(stat_iter->second.statusFADC) == ds_statusFADC_IceTop_);
 	
+	ENSURE(stat_iter->second.nBinsATWD0 == ds_nBinsATWD0_IceTop_);
+	ENSURE(stat_iter->second.nBinsATWD1 == ds_nBinsATWD1_IceTop_);
+	ENSURE(stat_iter->second.nBinsATWD2 == ds_nBinsATWD2_IceTop_);
+	ENSURE(stat_iter->second.nBinsFADC == ds_nBinsFADC_IceTop_);
+
 	if ( stat_iter->first.GetOM() == 61 || stat_iter->first.GetOM() == 63 ){	
 	      ENSURE(stat_iter->second.pmtHV == ds_icetopHighGainVoltage_);
 	}else if ( stat_iter->first.GetOM() == 62 || stat_iter->first.GetOM() == 64 ){
@@ -231,22 +247,23 @@ void I3SimSourceTestModule::Physics(I3FramePtr frame)
 	ENSURE(stat_iter->second.lcWindowPre == ds_iniceLCWindowPre_);
 	ENSURE(stat_iter->second.lcWindowPost == ds_iniceLCWindowPost_);
 	ENSURE(stat_iter->second.pmtHV == ds_iniceVoltage_);
+	ENSURE(static_cast<int>(stat_iter->second.statusFADC) == ds_statusFADC_InIce_);
+
+	ENSURE(stat_iter->second.nBinsATWD0 == ds_nBinsATWD0_InIce_);
+	ENSURE(stat_iter->second.nBinsATWD1 == ds_nBinsATWD1_InIce_);
+	ENSURE(stat_iter->second.nBinsATWD2 == ds_nBinsATWD2_InIce_);
+	ENSURE(stat_iter->second.nBinsFADC == ds_nBinsFADC_InIce_);
       }
 
     ENSURE(static_cast<int>(stat_iter->second.trigMode) == ds_triggerMode_);
     ENSURE(static_cast<int>(stat_iter->second.lcMode) == ds_lcMode_);
     ENSURE(static_cast<int>(stat_iter->second.statusATWDa) == ds_statusATWDa_);
     ENSURE(static_cast<int>(stat_iter->second.statusATWDb) == ds_statusATWDb_);
-    ENSURE(static_cast<int>(stat_iter->second.statusFADC) == ds_statusFADC_);
     ENSURE(stat_iter->second.speThreshold == ds_speThreshold_);
     ENSURE(stat_iter->second.fePedestal == ds_fePedestal_);
     ENSURE(stat_iter->second.dacTriggerBias0 == ds_dacTriggerBias0_);
     ENSURE(stat_iter->second.dacTriggerBias1 == ds_dacTriggerBias1_);
     ENSURE(stat_iter->second.dacFADCRef == ds_dacFADCRef_);
-    ENSURE(stat_iter->second.nBinsATWD0 == ds_nBinsATWD0_);
-    ENSURE(stat_iter->second.nBinsATWD1 == ds_nBinsATWD1_);
-    ENSURE(stat_iter->second.nBinsATWD2 == ds_nBinsATWD2_);
-    ENSURE(stat_iter->second.nBinsFADC == ds_nBinsFADC_);
   }
 
   PushFrame(frame,"OutBox");

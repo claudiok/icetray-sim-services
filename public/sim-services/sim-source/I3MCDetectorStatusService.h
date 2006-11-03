@@ -58,16 +58,21 @@ public:
   void SetLCMode(int m){lcMode_= static_cast<I3DOMStatus::LCMode>(m);};
   void SetStatusATWDa(int o){statusATWDa_= static_cast<I3DOMStatus::OnOff>(o);};
   void SetStatusATWDb(int o){statusATWDb_= static_cast<I3DOMStatus::OnOff>(o);};
-  void SetStatusFADC(int o){statusFADC_= static_cast<I3DOMStatus::OnOff>(o);};
+  void SetStatusFADCInIce(int o){statusFADC_InIce_= static_cast<I3DOMStatus::OnOff>(o);};
+  void SetStatusFADCIceTop(int o){statusFADC_IceTop_= static_cast<I3DOMStatus::OnOff>(o);};
   void SetSPEThreshold(double t){speThreshold_= t;};
   void SetFEPedestal(double t){fePedestal_= t;};
   void SetDACTriggerBias0(int b){dacTriggerBias0_= b;};
   void SetDACTriggerBias1(int b){dacTriggerBias1_= b;};
   void SetDACFADCRef(int r){ dacFADCRef_ = r; };
-  void SetNBinsATWD0(int n){ nBinsATWD0_ = n; };
-  void SetNBinsATWD1(int n){ nBinsATWD1_ = n; };
-  void SetNBinsATWD2(int n){ nBinsATWD2_ = n; };
-  void SetNBinsFADC(int n){ nBinsFADC_ = n; };
+  void SetNBinsATWD0InIce(int n){ nBinsATWD0_InIce_ = n; };
+  void SetNBinsATWD1InIce(int n){ nBinsATWD1_InIce_ = n; };
+  void SetNBinsATWD2InIce(int n){ nBinsATWD2_InIce_ = n; };
+  void SetNBinsFADCInIce(int n){ nBinsFADC_InIce_ = n; };
+  void SetNBinsATWD0IceTop(int n){ nBinsATWD0_IceTop_ = n; };
+  void SetNBinsATWD1IceTop(int n){ nBinsATWD1_IceTop_ = n; };
+  void SetNBinsATWD2IceTop(int n){ nBinsATWD2_IceTop_ = n; };
+  void SetNBinsFADCIceTop(int n){ nBinsFADC_IceTop_ = n; };
 
  private:
   I3MCDetectorStatusService();
@@ -123,7 +128,9 @@ public:
   I3DOMStatus::LCMode lcMode_;
   I3DOMStatus::OnOff statusATWDa_;
   I3DOMStatus::OnOff statusATWDb_;
-  I3DOMStatus::OnOff statusFADC_;
+
+  I3DOMStatus::OnOff statusFADC_InIce_;
+  I3DOMStatus::OnOff statusFADC_IceTop_;
 
   double speThreshold_;
   double fePedestal_;
@@ -134,10 +141,15 @@ public:
   /**
    *Number of FADC bins
    */
-  int nBinsATWD0_;
-  int nBinsATWD1_;
-  int nBinsATWD2_;
-  int nBinsFADC_;
+  int nBinsATWD0_InIce_;
+  int nBinsATWD1_InIce_;
+  int nBinsATWD2_InIce_;
+  int nBinsFADC_InIce_;
+
+  int nBinsATWD0_IceTop_;
+  int nBinsATWD1_IceTop_;
+  int nBinsATWD2_IceTop_;
+  int nBinsFADC_IceTop_;
 };
 
 #endif
