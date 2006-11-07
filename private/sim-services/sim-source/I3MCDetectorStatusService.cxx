@@ -12,7 +12,8 @@
 //for the detector status in the I3DetStatDefaults namespace
 #include "sim-services/sim-source/I3DefaultValues.h"
 
-I3MCDetectorStatusService::I3MCDetectorStatusService(I3GeometryServicePtr g) :
+I3MCDetectorStatusService::I3MCDetectorStatusService(I3GeometryServicePtr g,
+						     I3DetectorStatusServicePtr s) :
   startYear_(I3DetStatDefaults::START_YEAR),
   startDAQTime_(I3DetStatDefaults::START_DAQTIME),
   endYear_(I3DetStatDefaults::END_YEAR),
@@ -46,13 +47,12 @@ I3MCDetectorStatusService::I3MCDetectorStatusService(I3GeometryServicePtr g) :
   nBinsFADC_IceTop_(I3DetStatDefaults::NBINS_FADC_ICETOP)
 {
   geo_service_ = g;
+  old_status_service_ = s;
 }
 
 void I3MCDetectorStatusService::InsertTriggerStatus(I3Trigger trig, I3TriggerStatus trigstatus)
 {
-  if (!status_)
-    status_ = I3DetectorStatusPtr(new I3DetectorStatus);
-  if(!status_->triggerStatus.insert(make_pair(trig.GetTriggerKey(), trigstatus)).second)
+  if(!triggerStatus_.insert(make_pair(trig.GetTriggerKey(), trigstatus)).second)
     log_fatal("trigger status insertion in detector status failed.");
 }
 
@@ -64,16 +64,24 @@ I3MCDetectorStatusService::GetDetectorStatus(I3Time time)
   I3GeometryConstPtr geo = geo_service_->GetGeometry(time);
   const I3OMGeoMap& om_geo = geo->omgeo;
 
-  if (!status_)
-    status_ = I3DetectorStatusPtr(new I3DetectorStatus);
+  if(!status_){
+    if(old_status_service_){
+      cerr<<"...found old status..."<<endl;
+      status_ = I3DetectorStatusPtr(new I3DetectorStatus(*(old_status_service_->GetDetectorStatus(time))));
+    }else{
+      cerr<<"...making a new status..."<<endl;
+      status_ = I3DetectorStatusPtr(new I3DetectorStatus);
+      I3Time start(startYear_,startDAQTime_);
+      I3Time end(endYear_,endDAQTime_);
+      
+      status_->startTime = start;
+      status_->endTime = end;
 
-  I3OMGeoMap::const_iterator iter;
-
-  I3Time start(startYear_,startDAQTime_);
-  I3Time end(endYear_,endDAQTime_);
-
-  status_->startTime = start;
-  status_->endTime = end;
+      status_->triggerStatus = triggerStatus_;
+    }
+  }else{
+    cerr<<"*** Status already exists."<<endl;
+  }
 
   I3DOMStatus domStatus;
 
@@ -91,11 +99,22 @@ I3MCDetectorStatusService::GetDetectorStatus(I3Time time)
   
   domStatus.dacFADCRef = dacFADCRef_;
   
+  I3OMGeoMap::const_iterator iter;
   //changed all inice to om_geo
+  int nSkipped(0);
+  int nCreated(0);
   for( iter  = om_geo.begin(); iter != om_geo.end(); iter++ ){
       OMKey thiskey = iter->first;
       I3OMGeo::OMType type = iter->second.omtype;
       
+      if(status_->domStatus.find(thiskey) != status_->domStatus.end()){
+	cerr<<"this one exists already.  skipping..."<<endl;
+	nSkipped++;
+	continue;
+      }else{
+	nCreated++;
+      }
+
       if (type != I3OMGeo :: AMANDA){
 	//Don't do AMANDA OMs
 	if ( type == I3OMGeo::IceTop )
@@ -139,5 +158,7 @@ I3MCDetectorStatusService::GetDetectorStatus(I3Time time)
 	status_->domStatus[thiskey] = domStatus;
       }
   }
+  cerr<<"nSkipped: "<<nSkipped<<endl;
+  cerr<<"nCreated: "<<nCreated<<endl;
   return status_;
 }

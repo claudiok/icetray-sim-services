@@ -233,9 +233,11 @@ bool I3MCSourceServiceFactory::InstallService(I3Context& services)
   if(!geo_service) log_fatal("Couldn't find the geometry service.");
 
   if(!status_){
+    I3DetectorStatusServicePtr old_status = context_.Get<I3DetectorStatusServicePtr>();
+    cerr<<"old_status: "<<old_status<<endl;
     status_ = 
       shared_ptr<I3MCDetectorStatusService>
-      (new I3MCDetectorStatusService(geo_service));
+      (new I3MCDetectorStatusService(geo_service,old_status));
     log_debug("Made new I3MCDetectorStatusService.");
 
     status_->InsertTriggerStatus(ic_trigger_, ic_trigStatus_);
@@ -278,9 +280,10 @@ bool I3MCSourceServiceFactory::InstallService(I3Context& services)
   }
 
   if(!calibration_){
+    I3CalibrationServicePtr old_cal = context_.Get<I3CalibrationServicePtr>();
     calibration_ = 
       shared_ptr<I3MCCalibrationService>
-      (new I3MCCalibrationService(geo_service));
+      (new I3MCCalibrationService(geo_service,old_cal));
     log_debug("Made new I3MCCalibrationService.");
 
     calibration_->SetStartYear(cal_startYear_);

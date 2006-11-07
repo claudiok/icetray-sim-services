@@ -31,7 +31,8 @@ class I3MCCalibrationService : public I3CalibrationService
 {
 public:
 
-  I3MCCalibrationService(I3GeometryServicePtr g);
+  I3MCCalibrationService(I3GeometryServicePtr g,
+			 I3CalibrationServicePtr c);
 
   virtual I3CalibrationConstPtr GetCalibration(I3Time time);
   virtual ~I3MCCalibrationService() { };
@@ -64,6 +65,7 @@ public:
  private:
   I3MCCalibrationService();
   I3GeometryServicePtr geo_service_;
+  I3CalibrationServicePtr cal_service_;
 
   /**
    *Start of the valid time range of the detector status

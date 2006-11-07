@@ -32,7 +32,7 @@ class I3MCDetectorStatusService : public I3DetectorStatusService
 {
 public:
 
-  I3MCDetectorStatusService(I3GeometryServicePtr);
+  I3MCDetectorStatusService(I3GeometryServicePtr,I3DetectorStatusServicePtr);
 
   virtual I3DetectorStatusConstPtr GetDetectorStatus(I3Time time);
   void InsertTriggerStatus(I3Trigger trig, I3TriggerStatus trigstatus);
@@ -77,8 +77,10 @@ public:
  private:
   I3MCDetectorStatusService();
   I3GeometryServicePtr geo_service_;
+  I3DetectorStatusServicePtr old_status_service_;
 
   shared_ptr<I3DetectorStatus> status_;
+  map<TriggerKey, I3TriggerStatus> triggerStatus_;
 
   /**
    *Configuration parameters for detector status

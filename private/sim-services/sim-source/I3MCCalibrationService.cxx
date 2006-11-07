@@ -5,7 +5,8 @@
 #include "icetray/I3TrayHeaders.h"
 #include "sim-services/sim-source/I3DefaultValues.h"
 
-I3MCCalibrationService::I3MCCalibrationService(I3GeometryServicePtr g) :
+I3MCCalibrationService::I3MCCalibrationService(I3GeometryServicePtr g,
+					       I3CalibrationServicePtr c) :
   startYear_(I3CalibDefaults::START_YEAR),
   startDAQTime_(I3CalibDefaults::START_DAQTIME),
   endYear_(I3CalibDefaults::END_YEAR),
@@ -29,6 +30,7 @@ I3MCCalibrationService::I3MCCalibrationService(I3GeometryServicePtr g) :
   atwdBinCalibFit_intercept_(I3CalibDefaults::ATWD_BINCALIB_FIT_INTERCEPT)
 {
   geo_service_ = g;
+  cal_service_ = c;
 }
 
 
@@ -42,13 +44,19 @@ I3MCCalibrationService::GetCalibration(I3Time time){
 
   I3OMGeoMap::const_iterator iter;
 
-  I3CalibrationPtr calibration = I3CalibrationPtr(new I3Calibration);
+  I3CalibrationPtr calibration;
+  if(cal_service_){
+    calibration = 
+      I3CalibrationPtr(new I3Calibration(*(cal_service_->GetCalibration(time))));
+  }else{
+    calibration = I3CalibrationPtr(new I3Calibration);
+    I3Time start(startYear_,startDAQTime_);
+    I3Time end(endYear_,endDAQTime_);
+    
+    calibration->startTime = start;
+    calibration->endTime = end;
+  }
 
-  I3Time start(startYear_,startDAQTime_);
-  I3Time end(endYear_,endDAQTime_);
-
-  calibration->startTime = start;
-  calibration->endTime = end;
   //changed all inice to om_geo
 
   I3DOMCalibration domCalib;
@@ -100,7 +108,11 @@ I3MCCalibrationService::GetCalibration(I3Time time){
   {
     if (iter->second.omtype == I3OMGeo :: AMANDA)
       continue;
-    calibration->domCal[iter->first] = domCalib;
+
+    //Only add a default if an object does not already exist
+    if(calibration->domCal.find(iter->first) ==
+       calibration->domCal.end())
+      calibration->domCal[iter->first] = domCalib;
   }
   
   return calibration;
