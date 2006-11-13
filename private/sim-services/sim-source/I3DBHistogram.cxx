@@ -224,8 +224,6 @@ void BookDOMCalibHistograms(I3CalibrationConstPtr calib,
 void BookDOMStatusHistograms(I3DetectorStatusConstPtr status, 
 			    std::string rootFileName){
 
-  cout<<"status->domStatus.size(): "<<status->domStatus.size()<<endl;
-
   TH1D lcspan_h("lcspan","Local Coincidence Span",4,0,3);
   TH1D lcWindowPre_h("lcWindowPre","Local Coincidence Window Pre",
 		    200,0, 2000.0*I3Units::ns);
