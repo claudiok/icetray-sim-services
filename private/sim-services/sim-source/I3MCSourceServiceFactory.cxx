@@ -234,7 +234,6 @@ bool I3MCSourceServiceFactory::InstallService(I3Context& services)
 
   if(!status_){
     I3DetectorStatusServicePtr old_status = context_.Get<I3DetectorStatusServicePtr>();
-    cerr<<"old_status: "<<old_status<<endl;
     status_ = 
       shared_ptr<I3MCDetectorStatusService>
       (new I3MCDetectorStatusService(geo_service,old_status));

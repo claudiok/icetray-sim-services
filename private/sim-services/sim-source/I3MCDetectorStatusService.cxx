@@ -66,10 +66,8 @@ I3MCDetectorStatusService::GetDetectorStatus(I3Time time)
 
   if(!status_){
     if(old_status_service_){
-      cerr<<"...found old status..."<<endl;
       status_ = I3DetectorStatusPtr(new I3DetectorStatus(*(old_status_service_->GetDetectorStatus(time))));
     }else{
-      cerr<<"...making a new status..."<<endl;
       status_ = I3DetectorStatusPtr(new I3DetectorStatus);
       I3Time start(startYear_,startDAQTime_);
       I3Time end(endYear_,endDAQTime_);
@@ -79,8 +77,6 @@ I3MCDetectorStatusService::GetDetectorStatus(I3Time time)
 
       status_->triggerStatus = triggerStatus_;
     }
-  }else{
-    cerr<<"*** Status already exists."<<endl;
   }
 
   I3DOMStatus domStatus;
@@ -108,7 +104,6 @@ I3MCDetectorStatusService::GetDetectorStatus(I3Time time)
       I3OMGeo::OMType type = iter->second.omtype;
       
       if(status_->domStatus.find(thiskey) != status_->domStatus.end()){
-	cerr<<"this one exists already.  skipping..."<<endl;
 	nSkipped++;
 	continue;
       }else{
@@ -158,7 +153,6 @@ I3MCDetectorStatusService::GetDetectorStatus(I3Time time)
 	status_->domStatus[thiskey] = domStatus;
       }
   }
-  cerr<<"nSkipped: "<<nSkipped<<endl;
-  cerr<<"nCreated: "<<nCreated<<endl;
+  log_debug("nSkipped: %d nCreated: %d",nSkipped,nCreated);
   return status_;
 }
