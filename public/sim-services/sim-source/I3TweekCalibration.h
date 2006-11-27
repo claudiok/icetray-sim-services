@@ -8,8 +8,7 @@
  * @file I3TweekCalibration.h
  * @version $Revision: 1.14 $
  * @date $Date: 2005-04-25 22:56:37 -0400 (Mon , 25 Apr 2005) $
- * @author pretz
- * @author tmccauley
+ * @author olivas
  */
 
 #ifndef I3TWEEKCALIBRATION_H
@@ -18,8 +17,6 @@
 #include "phys-services/I3CalibrationService.h"
 #include "phys-services/I3GeometryService.h"
 
-class I3Geometry;
-I3_POINTER_TYPEDEFS(I3Geometry);
 /**
  *
  * @brief This module allow you to fill the RawDOMStatus data 
