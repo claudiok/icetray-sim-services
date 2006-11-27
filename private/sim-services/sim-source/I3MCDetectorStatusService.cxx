@@ -12,8 +12,7 @@
 //for the detector status in the I3DetStatDefaults namespace
 #include "sim-services/sim-source/I3DefaultValues.h"
 
-I3MCDetectorStatusService::I3MCDetectorStatusService(I3GeometryServicePtr g,
-						     I3DetectorStatusServicePtr s) :
+I3MCDetectorStatusService::I3MCDetectorStatusService(I3DetectorStatusServicePtr s) :						     
   startYear_(I3DetStatDefaults::START_YEAR),
   startDAQTime_(I3DetStatDefaults::START_DAQTIME),
   endYear_(I3DetStatDefaults::END_YEAR),
@@ -46,7 +45,6 @@ I3MCDetectorStatusService::I3MCDetectorStatusService(I3GeometryServicePtr g,
   nBinsATWD2_IceTop_(I3DetStatDefaults::NBINS_ATWD2_ICETOP),
   nBinsFADC_IceTop_(I3DetStatDefaults::NBINS_FADC_ICETOP)
 {
-  geo_service_ = g;
   old_status_service_ = s;
 }
 
