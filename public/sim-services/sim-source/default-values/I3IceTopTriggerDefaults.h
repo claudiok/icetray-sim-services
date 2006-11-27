@@ -21,7 +21,7 @@ namespace I3IceTopTriggerDefaults{
    */
   const int CONFIG_ID = 15;
   const int THRESHOLD = 6;
-  const double TIMEWINDOW = 2.*I3Units::microsecond;
+  const double TIME_WINDOW = 2.*I3Units::microsecond;
 
 }
 

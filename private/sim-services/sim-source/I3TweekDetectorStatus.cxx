@@ -8,10 +8,6 @@
 #include "dataclasses/physics/I3Trigger.h"
 #include "dataclasses/status/I3TriggerStatus.h"
 
-//In this file you'll find the default values
-//for the detector status in the I3DetStatDefaults namespace
-#include "sim-services/sim-source/I3DefaultValues.h"
-
 I3TweekDetectorStatus::I3TweekDetectorStatus(I3DetectorStatusServicePtr s) :						     
   icetopLCWindowPre_(NAN),
   icetopLCWindowPost_(NAN),
@@ -21,12 +17,12 @@ I3TweekDetectorStatus::I3TweekDetectorStatus(I3DetectorStatusServicePtr s) :
   iniceLCWindowPost_(NAN),
   lcSpan_(INT_MIN),
   iniceVoltage_(NAN),
-  triggerMode_(INT_MIN),
-  lcMode_(INT_MIN),
-  statusATWDa_(INT_MIN),
-  statusATWDb_(INT_MIN),
-  statusFADC_InIce_(INT_MIN),
-  statusFADC_IceTop_(INT_MIN),
+  triggerMode_(I3DOMStatus::UnknownTrigMode),
+  lcMode_(I3DOMStatus::UnknownLCMode),
+  statusATWDa_(I3DOMStatus::Unknown),
+  statusATWDb_(I3DOMStatus::Unknown),
+  statusFADC_InIce_(I3DOMStatus::Unknown),
+  statusFADC_IceTop_(I3DOMStatus::Unknown),
   speThreshold_(NAN),
   fePedestal_(NAN),
   dacTriggerBias0_(INT_MIN),
@@ -67,89 +63,86 @@ I3TweekDetectorStatus::GetDetectorStatus(I3Time time)
        iter != status_->domStatus.end(); 
        iter++ ){
 
-    if (iter->second.omtype == I3OMGeo :: AMANDA)
+    if (iter->first.GetString()<0 )//skip AMANDA
       continue;
 
-    if(trigMode_ != iter->trigMode)
-      iter->trigMode = triggerMode_;
-    if(lcMode_ != iter->lcMode)
-      iter->lcMode = lcMode_;
+    if(triggerMode_ != I3DOMStatus::UnknownTrigMode)
+      iter->second.trigMode = triggerMode_;
+    if(lcMode_ != I3DOMStatus::UnknownLCMode)
+      iter->second.lcMode = lcMode_;
    
-    if(statusATWDa_ != iter->statusATWDa)
-      iter->statusATWDa = statusATWDa_;
-    if(statusATWDb_ != iter->statusATWDb)
-      iter->statusATWDb = statusATWDb_;
+    if(statusATWDa_ != I3DOMStatus::Unknown)
+      iter->second.statusATWDa = statusATWDa_;
+    if(statusATWDb_ != I3DOMStatus::Unknown)
+      iter->second.statusATWDb = statusATWDb_;
     
-    if(!isnan)(speThreshold_)
-      iter->speThreshold = speThreshold_;
+    if(!isnan(speThreshold_))
+      iter->second.speThreshold = speThreshold_;
     if(!isnan(fePedestal_))
-      iter->fePedestal = fePedestal_;
+      iter->second.fePedestal = fePedestal_;
     
     if(dacTriggerBias0_ != INT_MIN)
-      iter->dacTriggerBias0 = dacTriggerBias0_;
+      iter->second.dacTriggerBias0 = dacTriggerBias0_;
     if(dacTriggerBias1_ != INT_MIN)
-      iter->dacTriggerBias1 = dacTriggerBias1_;
+      iter->second.dacTriggerBias1 = dacTriggerBias1_;
     
     if(dacFADCRef_ != INT_MIN)
-      iter->dacFADCRef = dacFADCRef_;
+      iter->second.dacFADCRef = dacFADCRef_;
   
-    if (type != I3OMGeo :: AMANDA){
-	//Don't do AMANDA OMs
-	if ( type == I3OMGeo::IceTop )
-	  {
-	    if(statusFADC_IceTop_ != INT_MIN )
-	      iter->statusFADC = statusFADC_IceTop_;
-	    if(iter->nBinsATWD0 != INT_MIN )
-	      iter->nBinsATWD0 = nBinsATWD0_IceTop_;
-	    if(iter->nBinsATWD1 != INT_MIN )
-	      iter->nBinsATWD1 = nBinsATWD1_IceTop_;
-	    if(iter->nBinsATWD2 != INT_MIN )
-	      iter->nBinsATWD2 = nBinsATWD2_IceTop_;
-	    if(iter->nBinsFADC != INT_MIN )
-	      iter->nBinsFADC = nBinsFADC_IceTop_;
-
-	    if(!isnan(icetopLCWindowPre_))
-	      iter->lcWindowPre = icetopLCWindowPre_;
-	    if(!isnan(icetopLCWindowPost_))
-	      iter->lcWindowPost = icetopLCWindowPost_;
-	    
-	    if ( thiskey.GetOM() == 61 ||
-		 thiskey.GetOM() == 63 )
-	      {	
-		if(!isnan(icetopHighGainVoltage_))
-		  iter->pmtHV = icetopHighGainVoltage_;
-	      }
-	    
-	    else if ( thiskey.GetOM() == 62 ||
-		      thiskey.GetOM() == 64 )
-	      {
-		if(!isnan(icetopLowGainVoltage_))
-		  iter->pmtHV = icetopLowGainVoltage_;
-	      }
-	  }	
-	else
-	  {
-	    if( statusFADC_InIce_ != INT_MIN)
-	      iter->statusFADC = statusFADC_InIce_;
-	    if( nBinsATWD0_InIce_ != INT_MIN)
-	      iter->nBinsATWD0 = nBinsATWD0_InIce_;
-	    if( nBinsATWD1_InIce_ != INT_MIN)
-	      iter->nBinsATWD1 = nBinsATWD1_InIce_;
-	    if( nBinsATWD2_InIce_ != INT_MIN)
-	      iter->nBinsATWD2 = nBinsATWD2_InIce_;
-	    if( nBinsFADC_InIce_ != INT_MIN)
-	      iter->nBinsFADC = nBinsFADC_InIce_;
-	    if( lcSpan_ != INT_MIN)
-	      iter->lcSpan = lcSpan_;
-
-	    if(!isnan(iniceLCWindowPre_))
-	      iter->lcWindowPre = iniceLCWindowPre_;
-	    if(!isnan(iniceLCWindowPost_))
-	      iter->lcWindowPost = iniceLCWindowPost_;
-	    
-	    if(!isnan(iniceVoltage_))
-	      iter->pmtHV = iniceVoltage_;
+    if ( iter->first.GetOM()>60 )
+      {
+	if(statusFADC_IceTop_ != I3DOMStatus::Unknown )
+	  iter->second.statusFADC = statusFADC_IceTop_;
+	if(static_cast<int>(iter->second.nBinsATWD0) != INT_MIN )
+	  iter->second.nBinsATWD0 = nBinsATWD0_IceTop_;
+	if(static_cast<int>(iter->second.nBinsATWD1) != INT_MIN )
+	  iter->second.nBinsATWD1 = nBinsATWD1_IceTop_;
+	if(static_cast<int>(iter->second.nBinsATWD2) != INT_MIN )
+	  iter->second.nBinsATWD2 = nBinsATWD2_IceTop_;
+	if(static_cast<int>(iter->second.nBinsFADC) != INT_MIN )
+	  iter->second.nBinsFADC = nBinsFADC_IceTop_;
+	
+	if(!isnan(icetopLCWindowPre_))
+	  iter->second.lcWindowPre = icetopLCWindowPre_;
+	if(!isnan(icetopLCWindowPost_))
+	  iter->second.lcWindowPost = icetopLCWindowPost_;
+	
+	if ( iter->first.GetOM() == 61 ||
+	     iter->first.GetOM() == 63 )
+	  {	
+	    if(!isnan(icetopHighGainVoltage_))
+	      iter->second.pmtHV = icetopHighGainVoltage_;
 	  }
+	
+	else if ( iter->first.GetOM() == 62 ||
+		  iter->first.GetOM() == 64 )
+	  {
+	    if(!isnan(icetopLowGainVoltage_))
+	      iter->second.pmtHV = icetopLowGainVoltage_;
+	  }
+      }	
+    else
+      {
+	if( statusFADC_InIce_ != I3DOMStatus::Unknown)
+	  iter->second.statusFADC = statusFADC_InIce_;
+	if( nBinsATWD0_InIce_ != INT_MIN)
+	  iter->second.nBinsATWD0 = nBinsATWD0_InIce_;
+	if( nBinsATWD1_InIce_ != INT_MIN)
+	  iter->second.nBinsATWD1 = nBinsATWD1_InIce_;
+	if( nBinsATWD2_InIce_ != INT_MIN)
+	  iter->second.nBinsATWD2 = nBinsATWD2_InIce_;
+	if( nBinsFADC_InIce_ != INT_MIN)
+	      iter->second.nBinsFADC = nBinsFADC_InIce_;
+	if( lcSpan_ != INT_MIN)
+	  iter->second.lcSpan = lcSpan_;
+	
+	if(!isnan(iniceLCWindowPre_))
+	  iter->second.lcWindowPre = iniceLCWindowPre_;
+	if(!isnan(iniceLCWindowPost_))
+	  iter->second.lcWindowPost = iniceLCWindowPost_;
+	
+	if(!isnan(iniceVoltage_))
+	  iter->second.pmtHV = iniceVoltage_;
       }
   }
   return status_;

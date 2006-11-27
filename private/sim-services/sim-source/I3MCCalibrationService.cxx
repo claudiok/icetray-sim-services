@@ -3,7 +3,7 @@
 #include "dataclasses/geometry/I3Geometry.h"
 #include "dataclasses/I3Units.h"
 #include "icetray/I3TrayHeaders.h"
-#include "sim-services/sim-source/I3DefaultValues.h"
+#include "sim-services/sim-source/default-values/I3CalibrationDefaults.h"
 
 I3MCCalibrationService::I3MCCalibrationService(I3GeometryServicePtr g,
 					       I3CalibrationServicePtr c) :
