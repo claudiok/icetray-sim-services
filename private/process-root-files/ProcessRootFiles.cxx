@@ -2,7 +2,8 @@
 #include <TH1D.h>
 #include <TCanvas.h>
 #include <TPaveText.h>
-#include "sim-services/sim-source/I3DefaultValues.h"
+#include "sim-services/sim-source/default-values/I3CalibrationDefaults.h"
+#include "sim-services/sim-source/default-values/I3DetectorStatusDefaults.h"
 #include <sstream>
 #include <TStyle.h>
 
