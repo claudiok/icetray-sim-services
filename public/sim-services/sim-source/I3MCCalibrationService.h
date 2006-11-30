@@ -104,5 +104,5 @@ public:
   double atwdBinCalibFit_intercept_;
 
 };
-
+I3_POINTER_TYPEDEFS(I3MCCalibrationService);
 #endif

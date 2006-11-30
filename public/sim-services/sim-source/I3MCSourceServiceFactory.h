@@ -14,9 +14,6 @@
 class I3Context;
 
 #include "icetray/I3ServiceFactory.h"
-#include "dataclasses/physics/I3Trigger.h"
-#include "dataclasses/status/I3TriggerStatus.h"
-#include "dataclasses/status/I3DOMStatus.h"
 
 class I3MCDetectorStatusService;
 class I3MCCalibrationService;
@@ -35,9 +32,20 @@ class I3MCSourceServiceFactory : public I3ServiceFactory
 
  private:
 
+  void FillTriggers(shared_ptr<I3MCDetectorStatusService>);
+  void Configure(shared_ptr<I3MCDetectorStatusService>);
+  void Configure(shared_ptr<I3MCCalibrationService>);
+
   std::string calServiceName_;
   std::string statusServiceName_;
   std::string geoServiceName_;
+
+  bool installCalibration_;
+  bool installDetectorStatus_;
+
+  bool installInIceTriggers_;
+  bool installIceTopTriggers_;
+  bool installTWRTriggers_;
 
   shared_ptr<I3MCDetectorStatusService> statusService_;
   shared_ptr<I3MCCalibrationService> calibrationService_;
@@ -46,12 +54,6 @@ class I3MCSourceServiceFactory : public I3ServiceFactory
     (const I3MCSourceServiceFactory& rhs); // stop default
   I3MCSourceServiceFactory operator=
     (const I3MCSourceServiceFactory& rhs); // stop default
-
-  I3Trigger ic_trigger_;
-  I3TriggerStatus ic_trigStatus_;
-
-  I3Trigger it_trigger_;
-  I3TriggerStatus it_trigStatus_;
 
   SET_LOGGER("I3MCSourceServiceFactory");
 };

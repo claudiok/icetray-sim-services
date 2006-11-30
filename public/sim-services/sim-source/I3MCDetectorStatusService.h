@@ -154,4 +154,5 @@ public:
   int nBinsFADC_IceTop_;
 };
 
+I3_POINTER_TYPEDEFS(I3MCDetectorStatusService);
 #endif
