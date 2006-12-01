@@ -16,6 +16,7 @@
 
 #include "phys-services/I3DetectorStatusService.h"
 #include "phys-services/I3GeometryService.h"
+#include "simclasses/I3MCTWRParams.h"
 #include "dataclasses/physics/I3Trigger.h"
 #include "dataclasses/status/I3TriggerStatus.h"
 
@@ -74,10 +75,18 @@ public:
   void SetNBinsATWD2IceTop(int n){ nBinsATWD2_IceTop_ = n; };
   void SetNBinsFADCIceTop(int n){ nBinsFADC_IceTop_ = n; };
 
+  void SetMCTWRParamsMap(I3MCTWRParamsMapPtr p){ twrParamsMap_ = p;};
+  void SetTWRBinSize(double b){twrBinSize_ = b; };
+  void SetTWRBaseline(unsigned b){twrBaseline_ = b; };
+
  private:
   I3MCDetectorStatusService();
   I3GeometryServicePtr geo_service_;
   I3DetectorStatusServicePtr old_status_service_;
+  I3MCTWRParamsMapPtr twrParamsMap_;
+
+  void SetDOMStatus(I3DetectorStatusPtr, const I3OMGeoMap&);
+  void SetAOMStatus(I3DetectorStatusPtr, const I3OMGeoMap&);
 
   shared_ptr<I3DetectorStatus> status_;
   map<TriggerKey, I3TriggerStatus> triggerStatus_;
@@ -152,6 +161,9 @@ public:
   int nBinsATWD1_IceTop_;
   int nBinsATWD2_IceTop_;
   int nBinsFADC_IceTop_;
+
+  double twrBinSize_;
+  unsigned twrBaseline_;
 };
 
 I3_POINTER_TYPEDEFS(I3MCDetectorStatusService);

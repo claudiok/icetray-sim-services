@@ -13,7 +13,7 @@
  */
 
 #include "icetray/OMKey.h"
-#include "simclasses//I3MCTWRParams.h"
+#include "simclasses/I3MCTWRParams.h"
 
 typedef std::map<OMKey,I3MCTWRParams> I3MCTWRParamsMap;
 I3_POINTER_TYPEDEFS(I3MCTWRParamsMap);

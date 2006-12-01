@@ -1,4 +1,5 @@
 #include "sim-services/sim-source/I3MCDetectorStatusService.h"
+#include "simclasses/I3MCTWRParams.h"
 #include "dataclasses/status/I3DOMStatus.h"
 #include "dataclasses/geometry/I3Geometry.h"
 #include "dataclasses/status/I3DetectorStatus.h"
@@ -79,6 +80,16 @@ I3MCDetectorStatusService::GetDetectorStatus(I3Time time)
     }
   }
 
+  SetDOMStatus(status_,om_geo);
+
+
+
+  log_debug("nSkipped: %d nCreated: %d",nSkipped,nCreated);
+  return status_;
+}
+
+void I3MCDetectorStatusService::SetDOMStatus(I3DetectorStatusPtr status, const I3OMGeoMap& omgeo){
+
   I3DOMStatus domStatus;
 
   domStatus.trigMode = triggerMode_;
@@ -96,14 +107,14 @@ I3MCDetectorStatusService::GetDetectorStatus(I3Time time)
   domStatus.dacFADCRef = dacFADCRef_;
   
   I3OMGeoMap::const_iterator iter;
-  //changed all inice to om_geo
+  //changed all inice to omgeo
   int nSkipped(0);
   int nCreated(0);
-  for( iter  = om_geo.begin(); iter != om_geo.end(); iter++ ){
+  for( iter  = omgeo.begin(); iter != omgeo.end(); iter++ ){
       OMKey thiskey = iter->first;
       I3OMGeo::OMType type = iter->second.omtype;
       
-      if(status_->domStatus.find(thiskey) != status_->domStatus.end()){
+      if(status->domStatus.find(thiskey) != status->domStatus.end()){
 	nSkipped++;
 	continue;
       }else{
@@ -150,9 +161,43 @@ I3MCDetectorStatusService::GetDetectorStatus(I3Time time)
 	    domStatus.pmtHV = iniceVoltage_;
 	  }
 	
-	status_->domStatus[thiskey] = domStatus;
+	status->domStatus[thiskey] = domStatus;
       }
   }
-  log_debug("nSkipped: %d nCreated: %d",nSkipped,nCreated);
-  return status_;
+
+}
+
+void I3MCDetectorStatusService::SetAOMStatus(I3DetectorStatusPtr status, 
+					     const I3OMGeoMap& omgeo){
+
+  TWRAOMStatus aomStatus;
+
+  aomStatus.SetBinSize(twrBinSize_);
+  aomStatus.SetBaseline(twrBaseline_);//
+
+  I3OMGeoMap::const_iterator iter;
+  for( iter  = omgeo.begin(); iter != omgeo.end(); iter++ ){
+      OMKey omKey = iter->first;
+      I3OMGeo::OMType type = iter->second.omtype;
+      
+      if (type != I3OMGeo :: AMANDA){
+	continue;//Only do AMANDA OMs
+      }else{
+	I3MCTWRParamsMap::iterator iter = twrParamsMap_->find(omKey);
+	if(iter != twrParamsMap_->end()){
+	  aomStatus.SetStopDelay(iter->second.stop_delay);
+	  aomStatus.SetThreshold(iter->second.TWR_thresh);
+	  //if(iter->second.optical) t = TWRAOMStatus::OPTICAL
+	  //else t = TWRAOMStatus::ELECTRICAL;
+	  TWRAOMStatus::CableType t = (iter->second.optical 
+				       ? TWRAOMStatus::OPTICAL :
+				       TWRAOMStatus::ELECTRICAL);
+	  aomStatus.SetCableType(t);
+	  status->aomStatus[omKey] = aomStatus;
+	}else{
+
+	}
+      }
+  }
+
 }

@@ -16,23 +16,6 @@
 
 using namespace std;
 
-//I3TWRParamFiller::I3TWRParamFiller()
-//{
-//  const string I3_WORK(getenv("I3_WORK"));
-//  elec_file_ = I3_WORK + "/sim-services/resources/tables/ama.elec.mc2005";
-//  cidfile_ = I3_WORK + "/amanda-core/resources/channel_ids.txt";
-//  DMADD_file_ = I3_WORK + "/sim-services/resources/tables/DMADD_thresh2005.dat";
-//  Stopdelay_file_ = I3_WORK + "/sim-services/resources/tables/stop_delay_mc.dat";
-//  cable_file_ = I3_WORK + "/sim-services/resources/tables/cable_delay.dat";
-//  relsens_file_ = I3_WORK + "/sim-services/resources/tables/omeff.dat.dat";
-//  param_map_ = I3MCTWRParamsMapPtr(new I3MCTWRParamsMap());
-//
-//  FillElecConstants();
-//  FillStopDelay();
-//  FillDMADDThreshold();
-//  FillCableDelay();
-//}
-
 void I3TWRParamFiller::FillElecConstants(string elec_file, 
 					 string cidfile,
 					 I3MCTWRParamsMapPtr params_map)
