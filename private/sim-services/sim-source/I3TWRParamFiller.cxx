@@ -58,6 +58,9 @@ void I3TWRParamFiller::FillElecConstants(string elec_file,
     params.afterpulse_prob = app;
     params.afterpulse_time = apdt;
     params.rel_sens = relsens;
+    params.stop_delay = 0;
+    params.DMADD_thresh = 0;
+    params.cable_delay = 0;
 
     for (int i = 0; i < 9; i++){
       ifs >> newblob;
@@ -134,7 +137,7 @@ void I3TWRParamFiller::FillRelativeSensitivity(string filename, I3MCTWRParamsMap
     ifs >> om;
     ifs >> omeff_fac;
     OMKey key(string,om);
-    (*params_map)[key].rel_sens *= omeff_fac;
+    (*params_map)[key].rel_sens = omeff_fac;
   }
   ifs.close(); 
 }
