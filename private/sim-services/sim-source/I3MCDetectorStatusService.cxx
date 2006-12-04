@@ -82,9 +82,6 @@ I3MCDetectorStatusService::GetDetectorStatus(I3Time time)
 
   SetDOMStatus(status_,om_geo);
 
-
-
-  log_debug("nSkipped: %d nCreated: %d",nSkipped,nCreated);
   return status_;
 }
 
@@ -164,7 +161,7 @@ void I3MCDetectorStatusService::SetDOMStatus(I3DetectorStatusPtr status, const I
 	status->domStatus[thiskey] = domStatus;
       }
   }
-
+  log_debug("nSkipped: %d nCreated: %d",nSkipped,nCreated);
 }
 
 void I3MCDetectorStatusService::SetAOMStatus(I3DetectorStatusPtr status, 
