@@ -4,7 +4,12 @@
 #include "sim-services/sim-source/I3SimSourceTestModule.h"
 #include "sim-services/sim-source/I3MCSourceServiceFactory.h"
 #include "dataclasses/I3Units.h"
-#include "sim-services/sim-source/I3DefaultValues.h"
+#include "sim-services/sim-source/default-values/I3CalibrationDefaults.h"
+#include "sim-services/sim-source/default-values/I3DetectorStatusDefaults.h"
+#include "sim-services/sim-source/default-values/I3InIceTriggerDefaults.h"
+#include "sim-services/sim-source/default-values/I3IceTopTriggerDefaults.h"
+#include "sim-services/tweak-sources/I3TweakDOMStatusService.h"
+#include "sim-services/tweak-sources/I3TweakCalibrationService.h"
 
 using namespace std;
 
@@ -27,9 +32,7 @@ TEST(default_config)
     ("AmandaGeoFile",amageofile)
     ("IceCubeGeoFile",icecubegeofile);
     
-  tray.AddService("I3MCSourceServiceFactory","mcsource")
-    ("Calib_atwd_a_FreqFit_C",0.)
-    ("Calib_atwd_b_FreqFit_C",0.);
+  tray.AddService("I3MCSourceServiceFactory","mcsource");
 
   tray.AddModule("I3Muxer","muxer");
 
@@ -78,12 +81,10 @@ TEST(default_config)
     ("Calib_atwd2Gain",I3CalibDefaults::ATWD2_GAIN)
     ("Calib_atwd_a_FreqFit_A",I3CalibDefaults::ATWD_A_FREQFIT_A)
     ("Calib_atwd_a_FreqFit_B",I3CalibDefaults::ATWD_A_FREQFIT_B)
-    //("Calib_atwd_a_FreqFit_C",I3CalibDefaults::ATWD_A_FREQFIT_C)
-    ("Calib_atwd_a_FreqFit_C",0.)
+    ("Calib_atwd_a_FreqFit_C",I3CalibDefaults::ATWD_A_FREQFIT_C)
     ("Calib_atwd_b_FreqFit_A",I3CalibDefaults::ATWD_B_FREQFIT_A)
     ("Calib_atwd_b_FreqFit_B",I3CalibDefaults::ATWD_B_FREQFIT_B)
-    //("Calib_atwd_b_FreqFit_C",I3CalibDefaults::ATWD_B_FREQFIT_C)
-    ("Calib_atwd_b_FreqFit_C",0.)
+    ("Calib_atwd_b_FreqFit_C",I3CalibDefaults::ATWD_B_FREQFIT_C)
     ("Calib_hvGainFit_slope",I3CalibDefaults::HV_GAIN_FIT_SLOPE)
     ("Calib_hvGainFit_intercept",I3CalibDefaults::HV_GAIN_FIT_INTERCEPT)
     ("Calib_atwdBinCalibFit_slope",I3CalibDefaults::ATWD_BINCALIB_FIT_SLOPE)
@@ -96,14 +97,9 @@ TEST(default_config)
 
 }
 
-
-TEST(custom_config)
+TEST(tweaked_config)
 {
 
-  int32_t ds_startYear(2005);
-  int64_t ds_startDAQTime(240258490029587286LL);
-  int32_t ds_endYear(2010);
-  int64_t ds_endDAQTime(236184998900773063LL);
   double icetopLCWindowPre(200.*I3Units::ns);
   double icetopLCWindowPost(300.*I3Units::ns);
   double icetopHighGainVoltage(1099*I3Units::volt);
@@ -116,7 +112,7 @@ TEST(custom_config)
   int lcMode(2);
   int statusATWDa(1);
   int statusATWDb(0);
-  int statusFADCInIce(-1);
+  int statusFADCInIce(10);
   int statusFADCIceTop(1);
   double speThreshold(1.618*I3Units::mV);
   double fePedestal(3.14*I3Units::volt);
@@ -132,11 +128,6 @@ TEST(custom_config)
   int nBinsATWD1IceTop(8);
   int nBinsATWD2IceTop(666);
   int nBinsFADCIceTop(765);
-
-  int32_t cal_startYear(2006);
-  int64_t cal_startDAQTime(240258491946728273LL);
-  int32_t cal_endYear(2009);
-  int64_t cal_endDAQTime(220390192849823984LL);
 
   double temperature(273.);
   double fadcBaselineFit_slope(1.333);
@@ -175,68 +166,61 @@ TEST(custom_config)
     ("AmandaGeoFile",amageofile)
     ("IceCubeGeoFile",icecubegeofile);
     
-  tray.AddService("I3MCSourceServiceFactory","mcsource")
-    ("DetStat_StartYear",ds_startYear)
-    ("DetStat_StartDAQTime",ds_startDAQTime)
-    ("DetStat_EndYear",ds_endYear)
-    ("DetStat_EndDAQTime",ds_endDAQTime)
-    ("DetStat_IceTopLCWindowPre",icetopLCWindowPre)
-    ("DetStat_IceTopLCWindowPost",icetopLCWindowPost)
-    ("DetStat_IceTopHighGainVoltage",icetopHighGainVoltage)
-    ("DetStat_IceTopLowGainVoltage",icetopLowGainVoltage)
-    ("DetStat_InIceLCWindowPre",iniceLCWindowPre)
-    ("DetStat_InIceLCWindowPost",iniceLCWindowPost)
-    ("DetStat_LCSpan",lcSpan)
-    ("DetStat_InIceVoltage",iniceVoltage)
-    ("DetStat_TriggerMode",triggerMode)
-    ("DetStat_LCMode",lcMode)
-    ("DetStat_StatusATWDa",statusATWDa)
-    ("DetStat_StatusATWDb",statusATWDb)
-    ("DetStat_StatusFADCInIce",statusFADCInIce)
-    ("DetStat_StatusFADCIceTop",statusFADCIceTop)
-    ("DetStat_SPEThreshold",speThreshold)
-    ("DetStat_FEPedestal",fePedestal)
-    ("DetStat_DACTriggerBias0",dacTriggerBias0)
-    ("DetStat_DACTriggerBias1",dacTriggerBias1)
-    ("DetStat_DACFADCRef",dacFADCRef)
-    ("DetStat_NBinsATWD0InIce",nBinsATWD0InIce)
-    ("DetStat_NBinsATWD1InIce",nBinsATWD1InIce)
-    ("DetStat_NBinsATWD2InIce",nBinsATWD2InIce)
-    ("DetStat_NBinsFADCInIce",nBinsFADCInIce)
-    ("DetStat_NBinsATWD0IceTop",nBinsATWD0IceTop)
-    ("DetStat_NBinsATWD1IceTop",nBinsATWD1IceTop)
-    ("DetStat_NBinsATWD2IceTop",nBinsATWD2IceTop)
-    ("DetStat_NBinsFADCIceTop",nBinsFADCIceTop)
-    ("Calib_StartYear",cal_startYear)
-    ("Calib_StartDAQTime",cal_startDAQTime)
-    ("Calib_EndYear",cal_endYear)
-    ("Calib_EndDAQTime",cal_endDAQTime)
-    ("Calib_Temperature",temperature)
-    ("Calib_fadcBaselineFit_slope",fadcBaselineFit_slope)
-    ("Calib_fadcBaselineFit_intercept",fadcBaselineFit_intercept)
-    ("Calib_fadcGain",fadcGain)
-    ("Calib_atwd0Gain",atwd0Gain)
-    ("Calib_atwd1Gain",atwd1Gain)
-    ("Calib_atwd2Gain",atwd2Gain)
-    ("Calib_atwd_a_FreqFit_A",atwd_a_FreqFit_A)
-    ("Calib_atwd_a_FreqFit_B",atwd_a_FreqFit_B)
-    ("Calib_atwd_a_FreqFit_C",atwd_a_FreqFit_C)
-    ("Calib_atwd_b_FreqFit_A",atwd_b_FreqFit_A)
-    ("Calib_atwd_b_FreqFit_B",atwd_b_FreqFit_B)
-    ("Calib_atwd_b_FreqFit_C",atwd_b_FreqFit_C)
-    ("Calib_hvGainFit_slope",hvGainFit_slope)
-    ("Calib_hvGainFit_intercept",hvGainFit_intercept)
-    ("Calib_atwdBinCalibFit_slope",atwdBinCalibFit_slope)
-    ("Calib_atwdBinCalibFit_intercept",atwdBinCalibFit_intercept);
+  tray.AddService("I3MCSourceServiceFactory","mcsource");
 
+  tray.AddService("I3TweakDOMStatusService","tweak-status")
+    ("IceTopLCWindowPre",icetopLCWindowPre)
+    ("IceTopLCWindowPost",icetopLCWindowPost)
+    ("IceTopHighGainVoltage",icetopHighGainVoltage)
+    ("IceTopLowGainVoltage",icetopLowGainVoltage)
+    ("InIceLCWindowPre",iniceLCWindowPre)
+    ("InIceLCWindowPost",iniceLCWindowPost)
+    ("LCSpan",lcSpan)
+    ("InIceVoltage",iniceVoltage)
+    ("TriggerMode",triggerMode)
+    ("LCMode",lcMode)
+    ("StatusATWDa",statusATWDa)
+    ("StatusATWDb",statusATWDb)
+    ("StatusFADCInIce",statusFADCInIce)
+    ("StatusFADCIceTop",statusFADCIceTop)
+    ("SPEThreshold",speThreshold)
+    ("FEPedestal",fePedestal)
+    ("DACTriggerBias0",dacTriggerBias0)
+    ("DACTriggerBias1",dacTriggerBias1)
+    ("DACFADCRef",dacFADCRef)
+    ("NBinsATWD0InIce",nBinsATWD0InIce)
+    ("NBinsATWD1InIce",nBinsATWD1InIce)
+    ("NBinsATWD2InIce",nBinsATWD2InIce)
+    ("NBinsFADCInIce",nBinsFADCInIce)
+    ("NBinsATWD0IceTop",nBinsATWD0IceTop)
+    ("NBinsATWD1IceTop",nBinsATWD1IceTop)
+    ("NBinsATWD2IceTop",nBinsATWD2IceTop)
+    ("NBinsFADCIceTop",nBinsFADCIceTop);
 
-  tray.AddModule("I3Muxer","muxer");
+  tray.AddService("I3TweakCalibrationService","tweak-cal")
+    ("Temperature",temperature)
+    ("FADCBaselineFit_slope",fadcBaselineFit_slope)
+    ("FADCBaselineFit_intercept",fadcBaselineFit_intercept)
+    ("FADCGain",fadcGain)
+    ("ATWD0Gain",atwd0Gain)
+    ("ATWD1Gain",atwd1Gain)
+    ("ATWD2Gain",atwd2Gain)
+    ("ATWD_a_FreqFit_A",atwd_a_FreqFit_A)
+    ("ATWD_a_FreqFit_B",atwd_a_FreqFit_B)
+    ("ATWD_a_FreqFit_C",atwd_a_FreqFit_C)
+    ("ATWD_b_FreqFit_A",atwd_b_FreqFit_A)
+    ("ATWD_b_FreqFit_B",atwd_b_FreqFit_B)
+    ("ATWD_b_FreqFit_C",atwd_b_FreqFit_C)
+    ("HVGainFit_slope",hvGainFit_slope)
+    ("HVGainFit_intercept",hvGainFit_intercept)
+    ("ATWDBinCalibFit_slope",atwdBinCalibFit_slope)
+    ("ATWDBinCalibFit_intercept",atwdBinCalibFit_intercept);
+
+  tray.AddModule("I3Muxer","muxer")
+    ("CalibrationService","I3TweakCalibrationService")
+    ("DetectorStatusService","I3TweakDOMStatusService");
 
   tray.AddModule("I3SimSourceTestModule","test_module")
-    ("DetStat_StartYear",ds_startYear)
-    ("DetStat_StartDAQTime",ds_startDAQTime)
-    ("DetStat_EndYear",ds_endYear)
-    ("DetStat_EndDAQTime",ds_endDAQTime)
     ("DetStat_IceTopLCWindowPre",icetopLCWindowPre)
     ("DetStat_IceTopLCWindowPost",icetopLCWindowPost)
     ("DetStat_IceTopHighGainVoltage",icetopHighGainVoltage)
@@ -264,10 +248,6 @@ TEST(custom_config)
     ("DetStat_NBinsATWD1IceTop",nBinsATWD1IceTop)
     ("DetStat_NBinsATWD2IceTop",nBinsATWD2IceTop)
     ("DetStat_NBinsFADCIceTop",nBinsFADCIceTop)
-    ("Calib_StartYear",cal_startYear)
-    ("Calib_StartDAQTime",cal_startDAQTime)
-    ("Calib_EndYear",cal_endYear)
-    ("Calib_EndDAQTime",cal_endDAQTime)
     ("Calib_Temperature",temperature)
     ("Calib_fadcBaselineFit_slope",fadcBaselineFit_slope)
     ("Calib_fadcBaselineFit_intercept",fadcBaselineFit_intercept)

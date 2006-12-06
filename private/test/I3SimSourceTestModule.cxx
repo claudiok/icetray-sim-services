@@ -20,6 +20,7 @@
 #include <phys-services/I3CalibrationService.h>
 #include <phys-services/I3DetectorStatusService.h>
 
+#include "sim-services/sim-source/default-values/I3CalibrationDefaults.h"
 
 I3_MODULE(I3SimSourceTestModule);
 
@@ -167,6 +168,8 @@ void I3SimSourceTestModule::Physics(I3FramePtr frame)
 {
   log_debug("Physics");
 
+  const double DISTANCE = 0.000001;
+
   I3CalibrationConstPtr calib = 
     frame->Get<I3CalibrationConstPtr>();
   
@@ -177,42 +180,42 @@ void I3SimSourceTestModule::Physics(I3FramePtr frame)
 
     ENSURE(cal_iter->first.GetString()>0,"There should be no AMANDA OMs.");
 
-    ENSURE(cal_iter->second.GetTemperature() == cal_temperature_);
+    ENSURE_DISTANCE(cal_iter->second.GetTemperature(), cal_temperature_, DISTANCE);
 
-    ENSURE(cal_iter->second.GetFADCBaselineFit().slope == cal_fadcBaselineFit_slope_);
-    ENSURE(cal_iter->second.GetFADCBaselineFit().intercept == cal_fadcBaselineFit_intercept_);
-    ENSURE(cal_iter->second.GetFADCGain() == cal_fadcGain_);
-    ENSURE(cal_iter->second.GetATWDGain(0) == cal_atwd0Gain_);
-    ENSURE(cal_iter->second.GetATWDGain(1) == cal_atwd1Gain_);
-    ENSURE(cal_iter->second.GetATWDGain(2) == cal_atwd2Gain_);
+    ENSURE_DISTANCE(cal_iter->second.GetFADCBaselineFit().slope, cal_fadcBaselineFit_slope_, DISTANCE);
+    ENSURE_DISTANCE(cal_iter->second.GetFADCBaselineFit().intercept, cal_fadcBaselineFit_intercept_, DISTANCE);
+    ENSURE_DISTANCE(cal_iter->second.GetFADCGain(), cal_fadcGain_, DISTANCE);
+    ENSURE_DISTANCE(cal_iter->second.GetATWDGain(0), cal_atwd0Gain_, DISTANCE);
+    ENSURE_DISTANCE(cal_iter->second.GetATWDGain(1), cal_atwd1Gain_, DISTANCE);
+    ENSURE_DISTANCE(cal_iter->second.GetATWDGain(2), cal_atwd2Gain_, DISTANCE);
 
-    ENSURE(cal_iter->second.GetATWDFreqFit(0).quadFitA == cal_atwd_a_FreqFit_A_);
-    ENSURE(cal_iter->second.GetATWDFreqFit(0).quadFitB == cal_atwd_a_FreqFit_B_);
-    ENSURE(cal_iter->second.GetATWDFreqFit(0).quadFitC == cal_atwd_a_FreqFit_C_);
+    ENSURE_DISTANCE(cal_iter->second.GetATWDFreqFit(0).quadFitA, cal_atwd_a_FreqFit_A_, DISTANCE);
+    ENSURE_DISTANCE(cal_iter->second.GetATWDFreqFit(0).quadFitB, cal_atwd_a_FreqFit_B_, DISTANCE);
+    ENSURE_DISTANCE(cal_iter->second.GetATWDFreqFit(0).quadFitC, cal_atwd_a_FreqFit_C_, DISTANCE);
 
-    ENSURE(cal_iter->second.GetATWDFreqFit(1).quadFitA == cal_atwd_b_FreqFit_A_);
-    ENSURE(cal_iter->second.GetATWDFreqFit(1).quadFitB == cal_atwd_b_FreqFit_B_);
-    ENSURE(cal_iter->second.GetATWDFreqFit(1).quadFitC == cal_atwd_b_FreqFit_C_);
+    ENSURE_DISTANCE(cal_iter->second.GetATWDFreqFit(1).quadFitA, cal_atwd_b_FreqFit_A_, DISTANCE);
+    ENSURE_DISTANCE(cal_iter->second.GetATWDFreqFit(1).quadFitB, cal_atwd_b_FreqFit_B_, DISTANCE);
+    ENSURE_DISTANCE(cal_iter->second.GetATWDFreqFit(1).quadFitC, cal_atwd_b_FreqFit_C_, DISTANCE);
 
-    ENSURE(cal_iter->second.GetHVGainFit().slope == cal_hvGainFit_slope_);
-    ENSURE(cal_iter->second.GetHVGainFit().intercept == cal_hvGainFit_intercept_);
+    ENSURE_DISTANCE(cal_iter->second.GetHVGainFit().slope, cal_hvGainFit_slope_, DISTANCE);
+    ENSURE_DISTANCE(cal_iter->second.GetHVGainFit().intercept, cal_hvGainFit_intercept_, DISTANCE);
 
     for( unsigned int bin = 0; bin < 128; ++bin ){
-      ENSURE(cal_iter->second.GetATWDBinCalibFit(0,0,bin).slope == cal_atwdBinCalibFit_slope_);
-      ENSURE(cal_iter->second.GetATWDBinCalibFit(0,1,bin).slope == cal_atwdBinCalibFit_slope_);
-      ENSURE(cal_iter->second.GetATWDBinCalibFit(0,2,bin).slope == cal_atwdBinCalibFit_slope_);
+      ENSURE_DISTANCE(cal_iter->second.GetATWDBinCalibFit(0,0,bin).slope, cal_atwdBinCalibFit_slope_, DISTANCE);
+      ENSURE_DISTANCE(cal_iter->second.GetATWDBinCalibFit(0,1,bin).slope, cal_atwdBinCalibFit_slope_, DISTANCE);
+      ENSURE_DISTANCE(cal_iter->second.GetATWDBinCalibFit(0,2,bin).slope, cal_atwdBinCalibFit_slope_, DISTANCE);
 
-      ENSURE(cal_iter->second.GetATWDBinCalibFit(1,0,bin).slope == cal_atwdBinCalibFit_slope_);
-      ENSURE(cal_iter->second.GetATWDBinCalibFit(1,1,bin).slope == cal_atwdBinCalibFit_slope_);
-      ENSURE(cal_iter->second.GetATWDBinCalibFit(1,2,bin).slope == cal_atwdBinCalibFit_slope_);
+      ENSURE_DISTANCE(cal_iter->second.GetATWDBinCalibFit(1,0,bin).slope, cal_atwdBinCalibFit_slope_, DISTANCE);
+      ENSURE_DISTANCE(cal_iter->second.GetATWDBinCalibFit(1,1,bin).slope, cal_atwdBinCalibFit_slope_, DISTANCE);
+      ENSURE_DISTANCE(cal_iter->second.GetATWDBinCalibFit(1,2,bin).slope, cal_atwdBinCalibFit_slope_, DISTANCE);
 
-      ENSURE(cal_iter->second.GetATWDBinCalibFit(0,0,bin).intercept == cal_atwdBinCalibFit_intercept_);
-      ENSURE(cal_iter->second.GetATWDBinCalibFit(0,1,bin).intercept == cal_atwdBinCalibFit_intercept_);
-      ENSURE(cal_iter->second.GetATWDBinCalibFit(0,2,bin).intercept == cal_atwdBinCalibFit_intercept_);
+      ENSURE_DISTANCE(cal_iter->second.GetATWDBinCalibFit(0,0,bin).intercept, cal_atwdBinCalibFit_intercept_, DISTANCE);
+      ENSURE_DISTANCE(cal_iter->second.GetATWDBinCalibFit(0,1,bin).intercept, cal_atwdBinCalibFit_intercept_, DISTANCE);
+      ENSURE_DISTANCE(cal_iter->second.GetATWDBinCalibFit(0,2,bin).intercept, cal_atwdBinCalibFit_intercept_, DISTANCE);
 
-      ENSURE(cal_iter->second.GetATWDBinCalibFit(1,0,bin).intercept == cal_atwdBinCalibFit_intercept_);
-      ENSURE(cal_iter->second.GetATWDBinCalibFit(1,1,bin).intercept == cal_atwdBinCalibFit_intercept_);
-      ENSURE(cal_iter->second.GetATWDBinCalibFit(1,2,bin).intercept == cal_atwdBinCalibFit_intercept_);
+      ENSURE_DISTANCE(cal_iter->second.GetATWDBinCalibFit(1,0,bin).intercept, cal_atwdBinCalibFit_intercept_, DISTANCE);
+      ENSURE_DISTANCE(cal_iter->second.GetATWDBinCalibFit(1,1,bin).intercept, cal_atwdBinCalibFit_intercept_, DISTANCE);
+      ENSURE_DISTANCE(cal_iter->second.GetATWDBinCalibFit(1,2,bin).intercept, cal_atwdBinCalibFit_intercept_, DISTANCE);
     }
   }
 
@@ -228,8 +231,8 @@ void I3SimSourceTestModule::Physics(I3FramePtr frame)
     ENSURE(stat_iter->first.GetString()>0,"There should be no AMANDA OMs.");
 
       if ( stat_iter->first.GetOM() > 60 ){
-	ENSURE(stat_iter->second.lcWindowPre == ds_icetopLCWindowPre_);
-	ENSURE(stat_iter->second.lcWindowPost == ds_icetopLCWindowPost_);
+	ENSURE_DISTANCE(stat_iter->second.lcWindowPre, ds_icetopLCWindowPre_, DISTANCE);
+	ENSURE_DISTANCE(stat_iter->second.lcWindowPost, ds_icetopLCWindowPost_, DISTANCE);
 	ENSURE(static_cast<int>(stat_iter->second.statusFADC) == ds_statusFADC_IceTop_);
 	
 	ENSURE(stat_iter->second.nBinsATWD0 == ds_nBinsATWD0_IceTop_);
@@ -238,15 +241,15 @@ void I3SimSourceTestModule::Physics(I3FramePtr frame)
 	ENSURE(stat_iter->second.nBinsFADC == ds_nBinsFADC_IceTop_);
 
 	if ( stat_iter->first.GetOM() == 61 || stat_iter->first.GetOM() == 63 ){	
-	      ENSURE(stat_iter->second.pmtHV == ds_icetopHighGainVoltage_);
+	      ENSURE_DISTANCE(stat_iter->second.pmtHV, ds_icetopHighGainVoltage_, DISTANCE);
 	}else if ( stat_iter->first.GetOM() == 62 || stat_iter->first.GetOM() == 64 ){
-	  ENSURE(stat_iter->second.pmtHV == ds_icetopLowGainVoltage_);
+	  ENSURE_DISTANCE(stat_iter->second.pmtHV, ds_icetopLowGainVoltage_, DISTANCE);
 	}
       }	else {
 	ENSURE(static_cast<int>(stat_iter->second.lcSpan) == ds_lcSpan_);
-	ENSURE(stat_iter->second.lcWindowPre == ds_iniceLCWindowPre_);
-	ENSURE(stat_iter->second.lcWindowPost == ds_iniceLCWindowPost_);
-	ENSURE(stat_iter->second.pmtHV == ds_iniceVoltage_);
+	ENSURE_DISTANCE(stat_iter->second.lcWindowPre, ds_iniceLCWindowPre_, DISTANCE);
+	ENSURE_DISTANCE(stat_iter->second.lcWindowPost, ds_iniceLCWindowPost_, DISTANCE);
+	ENSURE_DISTANCE(stat_iter->second.pmtHV, ds_iniceVoltage_, DISTANCE);
 	ENSURE(static_cast<int>(stat_iter->second.statusFADC) == ds_statusFADC_InIce_);
 
 	ENSURE(stat_iter->second.nBinsATWD0 == ds_nBinsATWD0_InIce_);
@@ -259,8 +262,8 @@ void I3SimSourceTestModule::Physics(I3FramePtr frame)
     ENSURE(static_cast<int>(stat_iter->second.lcMode) == ds_lcMode_);
     ENSURE(static_cast<int>(stat_iter->second.statusATWDa) == ds_statusATWDa_);
     ENSURE(static_cast<int>(stat_iter->second.statusATWDb) == ds_statusATWDb_);
-    ENSURE(stat_iter->second.speThreshold == ds_speThreshold_);
-    ENSURE(stat_iter->second.fePedestal == ds_fePedestal_);
+    ENSURE_DISTANCE(stat_iter->second.speThreshold, ds_speThreshold_, DISTANCE);
+    ENSURE_DISTANCE(stat_iter->second.fePedestal, ds_fePedestal_, DISTANCE);
     ENSURE(stat_iter->second.dacTriggerBias0 == ds_dacTriggerBias0_);
     ENSURE(stat_iter->second.dacTriggerBias1 == ds_dacTriggerBias1_);
     ENSURE(stat_iter->second.dacFADCRef == ds_dacFADCRef_);

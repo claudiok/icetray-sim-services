@@ -89,42 +89,24 @@ bool I3TweakCalibrationService::InstallService(I3Context& services)
       cal_service_->SetFADCBaselineIntercept(fadcBaselineFit_intercept_);
     if(!isnan(fadcGain_))
       cal_service_->SetFADCGain(fadcGain_);
-    if(!isnan(atwd0Gain_)){
-      log_fatal("Set AWTD Gain disabled.  Waiting for dataclasses fix.");
+    if(!isnan(atwd0Gain_))
       cal_service_->SetATWD0Gain(atwd0Gain_);
-    }
-    if(!isnan(atwd1Gain_)){
-      log_fatal("Set AWTD Gain disabled.  Waiting for dataclasses fix.");
+    if(!isnan(atwd1Gain_))
       cal_service_->SetATWD1Gain(atwd1Gain_);
-    }
-    if(!isnan(atwd2Gain_)){
-      log_fatal("Set AWTD Gain disabled.  Waiting for dataclasses fix.");
+    if(!isnan(atwd2Gain_))
       cal_service_->SetATWD2Gain(atwd2Gain_);
-    }
-    if(!isnan(atwd_a_FreqFit_A_)){
-      log_fatal("Set AWTD Freq Fit disabled.  Waiting for dataclasses fix.");
+    if(!isnan(atwd_a_FreqFit_A_))
       cal_service_->SetATWDaFreqFitA(atwd_a_FreqFit_A_);
-    }
-    if(!isnan(atwd_a_FreqFit_B_)){
-      log_fatal("Set AWTD Freq Fit disabled.  Waiting for dataclasses fix.");
+    if(!isnan(atwd_a_FreqFit_B_))
       cal_service_->SetATWDaFreqFitB(atwd_a_FreqFit_B_);
-    }
-    if(!isnan(atwd_a_FreqFit_C_)){
-      log_fatal("Set AWTD Freq Fit disabled.  Waiting for dataclasses fix.");
+    if(!isnan(atwd_a_FreqFit_C_))
       cal_service_->SetATWDaFreqFitC(atwd_a_FreqFit_C_);
-    }
-    if(!isnan(atwd_b_FreqFit_A_)){
-      log_fatal("Set AWTD Freq Fit disabled.  Waiting for dataclasses fix.");
+    if(!isnan(atwd_b_FreqFit_A_))
       cal_service_->SetATWDbFreqFitA(atwd_b_FreqFit_A_);
-    }
-    if(!isnan(atwd_b_FreqFit_B_)){
-      log_fatal("Set AWTD Freq Fit disabled.  Waiting for dataclasses fix.");
+    if(!isnan(atwd_b_FreqFit_B_))
       cal_service_->SetATWDbFreqFitB(atwd_b_FreqFit_B_);
-    }
-    if(!isnan(atwd_b_FreqFit_C_)){
-      log_fatal("Set AWTD Freq Fit disabled.  Waiting for dataclasses fix.");
+    if(!isnan(atwd_b_FreqFit_C_))
       cal_service_->SetATWDbFreqFitC(atwd_b_FreqFit_C_);
-    }
     if(!isnan(hvGainFit_slope_))
       cal_service_->SetHVGainSlope(hvGainFit_slope_);
     if(!isnan(hvGainFit_intercept_))
