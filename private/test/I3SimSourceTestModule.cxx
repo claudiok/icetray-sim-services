@@ -19,15 +19,21 @@
 
 #include <phys-services/I3CalibrationService.h>
 #include <phys-services/I3DetectorStatusService.h>
+#include <phys-services/geo-selector/GeoSelUtils.h>
 
 #include "sim-services/sim-source/default-values/I3CalibrationDefaults.h"
 
 I3_MODULE(I3SimSourceTestModule);
 
 I3SimSourceTestModule::I3SimSourceTestModule(const I3Context& ctx) : 
-  I3Module(ctx)
+  I3Module(ctx),
+  stringsToUse_(""),
+  stationsToUse_("")
 { 
   log_debug("Constructor I3SimSourceTestModule");  
+
+  AddParameter("StringsToUse","List of string in original geometry",stringsToUse_);
+  AddParameter("StationsToUse","List of stations in original geometry",stationsToUse_);
 
   AddParameter("Threshold","InIce Multiplicity Trigger Threshold",ic_threshold_);
   AddParameter("TimeWindow","InIce Multiplicity Trigger Time Window",ic_timeWindow_);
@@ -100,6 +106,9 @@ void I3SimSourceTestModule::Configure()
 {
   log_debug("Configuring I3SimSourceTestModule");
 
+  GetParameter("StringsToUse",stringsToUse_);
+  GetParameter("StationsToUse",stationsToUse_);
+
   GetParameter("Threshold",ic_threshold_);
   GetParameter("TimeWindow",ic_timeWindow_);
   GetParameter("ConfigID",ic_configID_);
@@ -168,15 +177,37 @@ void I3SimSourceTestModule::Physics(I3FramePtr frame)
 {
   log_debug("Physics");
 
+  vector<int> goodStrings = geo_sel_utils::make_good_strings(stringsToUse_, "");
+  vector<int> goodStations = geo_sel_utils::make_good_strings(stationsToUse_, "");
+
   const double DISTANCE = 0.000001;
 
   I3CalibrationConstPtr calib = 
     frame->Get<I3CalibrationConstPtr>();
   
+  cerr<<endl;
+
+  vector<int>::iterator i = goodStrings.begin();
+  cerr<<"goodStrings = ";
+  for( ; i != goodStrings.end(); i++) cerr<<*i<<" ";
+  cerr<<endl;
+
+  i = goodStations.begin();
+  cerr<<"goodStations = ";
+  for( ; i != goodStations.end(); i++) cerr<<*i<<" ";
+  cerr<<endl;
   map<OMKey, I3DOMCalibration>::const_iterator cal_iter;
   for(cal_iter = calib->domCal.begin();
       cal_iter != calib->domCal.end(); 
       cal_iter++){
+
+    if(!((geo_sel_utils::exists(cal_iter->first.GetString(),goodStrings) &&
+	  (cal_iter->first.GetOM() <= 60)) ||
+	 (geo_sel_utils::exists(cal_iter->first.GetString(),goodStations) &&
+	  (cal_iter->first.GetOM() > 60))))
+      continue;
+
+    cerr<<"testing DOM "<<cal_iter->first.str()<<endl;
 
     ENSURE(cal_iter->first.GetString()>0,"There should be no AMANDA OMs.");
 

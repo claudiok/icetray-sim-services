@@ -43,10 +43,10 @@ I3TweakTrigger::GetDetectorStatus(I3Time time)
     if(t_iter->second.GetTriggerSettings().find(set_iter->first) !=
        t_iter->second.GetTriggerSettings().end()){
       log_debug("changing the value for %s to %d",
-		set_iter->first, set_iter->second);
+		set_iter->first.c_str(), set_iter->second);
     }else{
       log_debug("adding a new setting %s value = %d",
-		set_iter->first, set_iter->second);
+		set_iter->first.c_str(), set_iter->second);
     }
     t_iter->second.GetTriggerSettings()[set_iter->first] = set_iter->second;
   }

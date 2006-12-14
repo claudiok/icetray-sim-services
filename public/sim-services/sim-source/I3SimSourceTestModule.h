@@ -35,6 +35,9 @@ class I3SimSourceTestModule : public I3Module
 
   SET_LOGGER("I3SimSourceTestModule");
 
+  string stringsToUse_;
+  string stationsToUse_;
+
   /**
    *Detector Status parameters
    */

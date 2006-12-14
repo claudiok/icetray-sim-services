@@ -36,6 +36,9 @@ class I3MCSourceServiceFactory : public I3ServiceFactory
   void Configure(shared_ptr<I3MCDetectorStatusService>);
   void Configure(shared_ptr<I3MCCalibrationService>);
 
+  std::string oldCalServiceName_;
+  std::string oldStatusServiceName_;
+
   std::string calServiceName_;
   std::string statusServiceName_;
   std::string geoServiceName_;

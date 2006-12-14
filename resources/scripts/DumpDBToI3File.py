@@ -25,7 +25,7 @@ nevents = 4
 # The following DAQTime of 236184998900773063
 # corresponds to the first event time of run 00089742
 tray.AddService("I3MCTimeGeneratorServiceFactory","time-gen")(
-        ("Year",2006),
+        ("Year",2007),
         ("DAQTime",236184998900773063)
         )
 
@@ -38,9 +38,10 @@ db_host = "dbs2.icecube.wisc.edu"
 
 tray.AddService("I3DbGeometryServiceFactory","geometry")
 tray.SetParameter("geometry","CompleteGeometry",0)
-tray.SetParameter("geometry","CustomDate",0)
-tray.SetParameter("geometry","XShift",450.)
-tray.SetParameter("geometry","YShift",0.0)
+tray.SetParameter("geometry","CustomDate",1)
+tray.SetParameter("geometry","Mjd",54101)
+tray.SetParameter("geometry","XShift",310.)
+tray.SetParameter("geometry","YShift",189.0)
 tray.SetParameter("geometry","Host",db_host)
 
 tray.AddService("I3DbCalibrationServiceFactory","dbcalibration")

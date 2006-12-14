@@ -22,12 +22,16 @@ I3MCSourceServiceFactory(const I3Context& context) :
   installIceTopTriggers_(true),
   installTWRTriggers_(true)
 {
+  oldCalServiceName_ = I3DefaultName<I3CalibrationService>::value();
+  oldStatusServiceName_ = I3DefaultName<I3DetectorStatusService>::value();
   calServiceName_ = I3DefaultName<I3CalibrationService>::value();
   statusServiceName_ = I3DefaultName<I3DetectorStatusService>::value();
   geoServiceName_ = I3DefaultName<I3GeometryService>::value();
 
   AddParameter("CalServiceName","Name of calibration service to install",calServiceName_);
   AddParameter("StatusServiceName","Name of detector status service to install",statusServiceName_);
+  AddParameter("OldCalServiceName","Name of calibration service to retrieve",oldCalServiceName_);
+  AddParameter("OldStatusServiceName","Name of detector status service to retrieve",oldStatusServiceName_);
   AddParameter("GeoServiceName","Name of geometry service",geoServiceName_);
   AddParameter("InstallCalibration","Install Calibration",installCalibration_);
   AddParameter("InstallDetectorStatus","Install DetectorStatus",installDetectorStatus_);
@@ -41,6 +45,8 @@ I3MCSourceServiceFactory::
 
 void I3MCSourceServiceFactory::Configure()
 {
+  GetParameter("OldCalServiceName",oldCalServiceName_);
+  GetParameter("OldStatusServiceName",oldStatusServiceName_);
   GetParameter("CalServiceName",calServiceName_);
   GetParameter("StatusServiceName",statusServiceName_);
   GetParameter("GeoServiceName",geoServiceName_);
@@ -53,12 +59,13 @@ void I3MCSourceServiceFactory::Configure()
 
 bool I3MCSourceServiceFactory::InstallService(I3Context& services)
 {
+  log_debug("InstallService");
 
   I3GeometryServicePtr geo_service = context_.Get<I3GeometryServicePtr>(geoServiceName_);
   if(!geo_service) log_fatal("Couldn't find the geometry service.");
 
   if(!statusService_){
-    I3DetectorStatusServicePtr old_status = context_.Get<I3DetectorStatusServicePtr>();
+    I3DetectorStatusServicePtr old_status = context_.Get<I3DetectorStatusServicePtr>(oldStatusServiceName_);
     statusService_ = 
       shared_ptr<I3MCDetectorStatusService>
       (new I3MCDetectorStatusService(geo_service,old_status));
@@ -72,7 +79,7 @@ bool I3MCSourceServiceFactory::InstallService(I3Context& services)
   }
 
   if(!calibrationService_){
-    I3CalibrationServicePtr old_cal = context_.Get<I3CalibrationServicePtr>();
+    I3CalibrationServicePtr old_cal = context_.Get<I3CalibrationServicePtr>(oldCalServiceName_);
     calibrationService_ = 
       shared_ptr<I3MCCalibrationService>
       (new I3MCCalibrationService(geo_service,old_cal));
@@ -83,13 +90,17 @@ bool I3MCSourceServiceFactory::InstallService(I3Context& services)
   bool good_calib(true);
   bool good_status(true);
   if(installCalibration_){
-    //Only install a new service if the use has specified a name
     good_calib = services.Put<I3CalibrationService>(calServiceName_,calibrationService_);
     log_debug("good_calib %d",good_calib);
+  }else{
+    log_debug("Not installing Calibration");
   }
+
   if(installDetectorStatus_){
     good_status = services.Put<I3DetectorStatusService>(statusServiceName_,statusService_);
     log_debug("good_status %d",good_status);
+  }else{
+    log_debug("Not installing Detector Status");
   }
 
   return (good_calib && good_status);

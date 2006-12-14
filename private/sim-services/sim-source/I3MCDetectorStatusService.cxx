@@ -67,8 +67,10 @@ I3MCDetectorStatusService::GetDetectorStatus(I3Time time)
 
   if(!status_){
     if(old_status_service_){
+      log_trace("...copying old detector status...");
       status_ = I3DetectorStatusPtr(new I3DetectorStatus(*(old_status_service_->GetDetectorStatus(time))));
     }else{
+      log_trace("...making new detector status...");
       status_ = I3DetectorStatusPtr(new I3DetectorStatus);
       I3Time start(startYear_,startDAQTime_);
       I3Time end(endYear_,endDAQTime_);
@@ -81,6 +83,8 @@ I3MCDetectorStatusService::GetDetectorStatus(I3Time time)
   }
 
   SetDOMStatus(status_,om_geo);
+
+  log_trace("size of I3DOMStatus Map = %zu",status_->domStatus.size());
 
   return status_;
 }
@@ -105,8 +109,10 @@ void I3MCDetectorStatusService::SetDOMStatus(I3DetectorStatusPtr status, const I
   
   I3OMGeoMap::const_iterator iter;
   //changed all inice to omgeo
-  int nSkipped(0);
-  int nCreated(0);
+  unsigned nSkipped(0);
+  unsigned nCreated(0);
+  unsigned nAMANDA(0);
+  log_trace("omgeo.size() = %zu",omgeo.size());
   for( iter  = omgeo.begin(); iter != omgeo.end(); iter++ ){
       OMKey thiskey = iter->first;
       I3OMGeo::OMType type = iter->second.omtype;
@@ -114,54 +120,57 @@ void I3MCDetectorStatusService::SetDOMStatus(I3DetectorStatusPtr status, const I
       if(status->domStatus.find(thiskey) != status->domStatus.end()){
 	nSkipped++;
 	continue;
-      }else{
-	nCreated++;
-      }
+      }	
 
       if (type != I3OMGeo :: AMANDA){
 	//Don't do AMANDA OMs
-	if ( type == I3OMGeo::IceTop )
-	  {
-	    domStatus.statusFADC = statusFADC_IceTop_;
-	    domStatus.nBinsATWD0 = nBinsATWD0_IceTop_;
-	    domStatus.nBinsATWD1 = nBinsATWD1_IceTop_;
-	    domStatus.nBinsATWD2 = nBinsATWD2_IceTop_;
-	    domStatus.nBinsFADC = nBinsFADC_IceTop_;
-
-	    domStatus.lcWindowPre = icetopLCWindowPre_;
-	    domStatus.lcWindowPost = icetopLCWindowPost_;
-	    
-	    if ( thiskey.GetOM() == 61 ||
-		 thiskey.GetOM() == 63 )
-	      {	
-		domStatus.pmtHV = icetopHighGainVoltage_;
-	      }
-	    
-	    else if ( thiskey.GetOM() == 62 ||
-		      thiskey.GetOM() == 64 )
-	      {
-		domStatus.pmtHV = icetopLowGainVoltage_;
-	      }
-	  }	
-	else
-	  {
-	    domStatus.statusFADC = statusFADC_InIce_;
-	    domStatus.nBinsATWD0 = nBinsATWD0_InIce_;
-	    domStatus.nBinsATWD1 = nBinsATWD1_InIce_;
-	    domStatus.nBinsATWD2 = nBinsATWD2_InIce_;
-	    domStatus.nBinsFADC = nBinsFADC_InIce_;
-	    domStatus.lcSpan = lcSpan_;
-	    
-	    domStatus.lcWindowPre = iniceLCWindowPre_;
-	    domStatus.lcWindowPost = iniceLCWindowPost_;
-	    
-	    domStatus.pmtHV = iniceVoltage_;
-	  }
-	
+	if ( type == I3OMGeo::IceTop ){
+	  domStatus.statusFADC = statusFADC_IceTop_;
+	  domStatus.nBinsATWD0 = nBinsATWD0_IceTop_;
+	  domStatus.nBinsATWD1 = nBinsATWD1_IceTop_;
+	  domStatus.nBinsATWD2 = nBinsATWD2_IceTop_;
+	  domStatus.nBinsFADC = nBinsFADC_IceTop_;
+	  
+	  domStatus.lcWindowPre = icetopLCWindowPre_;
+	  domStatus.lcWindowPost = icetopLCWindowPost_;
+	  
+	  if ( thiskey.GetOM() == 61 ||
+	       thiskey.GetOM() == 63 )
+	    {	
+	      domStatus.pmtHV = icetopHighGainVoltage_;
+	    }
+	  
+	  else if ( thiskey.GetOM() == 62 ||
+		    thiskey.GetOM() == 64 )
+	    {
+	      domStatus.pmtHV = icetopLowGainVoltage_;
+	    }
+	}else{
+	  domStatus.statusFADC = statusFADC_InIce_;
+	  domStatus.nBinsATWD0 = nBinsATWD0_InIce_;
+	  domStatus.nBinsATWD1 = nBinsATWD1_InIce_;
+	  domStatus.nBinsATWD2 = nBinsATWD2_InIce_;
+	  domStatus.nBinsFADC = nBinsFADC_InIce_;
+	  domStatus.lcSpan = lcSpan_;
+	  
+	  domStatus.lcWindowPre = iniceLCWindowPre_;
+	  domStatus.lcWindowPost = iniceLCWindowPost_;
+	  
+	  domStatus.pmtHV = iniceVoltage_;
+	}
 	status->domStatus[thiskey] = domStatus;
+	log_trace("creating record for DOM %s",thiskey.str().c_str());
+	nCreated++;
+      }else{
+	log_trace("skipping AMANDA OM %s",thiskey.str().c_str());
+	nAMANDA++;
       }
   }
-  log_debug("nSkipped: %d nCreated: %d",nSkipped,nCreated);
+  log_debug("nSkipped: %d nCreated: %d ",nSkipped,nCreated);
+  log_debug("status->domStatus.size() = %zu",status->domStatus.size());
+  log_debug("nAMANDA: %d", nAMANDA);
+  if(nSkipped + nCreated  != status->domStatus.size())
+    log_fatal("missing status records!!!");
 }
 
 void I3MCDetectorStatusService::SetAOMStatus(I3DetectorStatusPtr status, 
