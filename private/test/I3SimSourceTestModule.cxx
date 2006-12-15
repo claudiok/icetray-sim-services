@@ -207,9 +207,13 @@ void I3SimSourceTestModule::Physics(I3FramePtr frame)
 	  (cal_iter->first.GetOM() > 60))))
       continue;
 
-    cerr<<"testing DOM "<<cal_iter->first.str()<<endl;
+    cerr<<"calibration: testing DOM "<<cal_iter->first.str()<<endl;
 
     ENSURE(cal_iter->first.GetString()>0,"There should be no AMANDA OMs.");
+
+    if(fabs(cal_iter->second.GetTemperature() - cal_temperature_) > DISTANCE)
+      cerr<<"cal_iter->second.GetTemperature() = "<<cal_iter->second.GetTemperature()<<endl
+	  <<"cal_temperature_ = "<<cal_temperature_<<endl;
 
     ENSURE_DISTANCE(cal_iter->second.GetTemperature(), cal_temperature_, DISTANCE);
 
@@ -254,10 +258,20 @@ void I3SimSourceTestModule::Physics(I3FramePtr frame)
   I3DetectorStatusConstPtr status = 
     frame->Get<I3DetectorStatusConstPtr>();
 
+  cerr<<"status->domStatus.size(): "<<status->domStatus.size()<<endl;
+
   map<OMKey, I3DOMStatus>::const_iterator stat_iter;
   for(stat_iter = status->domStatus.begin();
       stat_iter != status->domStatus.end(); 
       stat_iter++){
+
+    if(!((geo_sel_utils::exists(stat_iter->first.GetString(),goodStrings) &&
+	  (stat_iter->first.GetOM() <= 60)) ||
+	 (geo_sel_utils::exists(stat_iter->first.GetString(),goodStations) &&
+	  (stat_iter->first.GetOM() > 60))))
+      continue;
+
+    cerr<<"DOM status: testing DOM "<<stat_iter->first.str()<<endl;
 
     ENSURE(stat_iter->first.GetString()>0,"There should be no AMANDA OMs.");
 
@@ -277,6 +291,9 @@ void I3SimSourceTestModule::Physics(I3FramePtr frame)
 	  ENSURE_DISTANCE(stat_iter->second.pmtHV, ds_icetopLowGainVoltage_, DISTANCE);
 	}
       }	else {
+	if(static_cast<int>(stat_iter->second.lcSpan) != ds_lcSpan_)
+	  cerr<<"static_cast<int>(stat_iter->second.lcSpan) = "<<static_cast<int>(stat_iter->second.lcSpan)<<endl
+	      <<"ds_lcSpan_ = "<<ds_lcSpan_<<endl;
 	ENSURE(static_cast<int>(stat_iter->second.lcSpan) == ds_lcSpan_);
 	ENSURE_DISTANCE(stat_iter->second.lcWindowPre, ds_iniceLCWindowPre_, DISTANCE);
 	ENSURE_DISTANCE(stat_iter->second.lcWindowPost, ds_iniceLCWindowPost_, DISTANCE);

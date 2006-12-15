@@ -111,8 +111,12 @@ I3MCCalibrationService::GetCalibration(I3Time time){
 
     //Only add a default if an object does not already exist
     if(calibration->domCal.find(iter->first) ==
-       calibration->domCal.end())
+       calibration->domCal.end()){
       calibration->domCal[iter->first] = domCalib;
+      log_trace("creating record for DOM %s",iter->first.str().c_str());
+		
+		
+    }
   }
   
   return calibration;
