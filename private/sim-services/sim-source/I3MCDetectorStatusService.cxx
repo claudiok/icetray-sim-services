@@ -53,6 +53,7 @@ I3MCDetectorStatusService::I3MCDetectorStatusService(I3GeometryServicePtr g,
 
 void I3MCDetectorStatusService::InsertTriggerStatus(I3Trigger trig, I3TriggerStatus trigstatus)
 {
+  log_trace("inserting trigger %s",trigstatus.GetTriggerName().c_str());
   if(!triggerStatus_.insert(make_pair(trig.GetTriggerKey(), trigstatus)).second)
     log_fatal("trigger status insertion in detector status failed.");
 }
@@ -69,6 +70,11 @@ I3MCDetectorStatusService::GetDetectorStatus(I3Time time)
     if(old_status_service_){
       log_trace("...copying old detector status...");
       status_ = I3DetectorStatusPtr(new I3DetectorStatus(*(old_status_service_->GetDetectorStatus(time))));
+
+      map<TriggerKey, I3TriggerStatus>::iterator i = triggerStatus_.begin();
+      for( ;i != triggerStatus_.end(); i++)
+	status_->triggerStatus.insert(*i);
+
     }else{
       log_trace("...making new detector status...");
       status_ = I3DetectorStatusPtr(new I3DetectorStatus);
@@ -77,7 +83,6 @@ I3MCDetectorStatusService::GetDetectorStatus(I3Time time)
       
       status_->startTime = start;
       status_->endTime = end;
-
       status_->triggerStatus = triggerStatus_;
     }
   }

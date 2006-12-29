@@ -71,8 +71,10 @@ bool I3MCSourceServiceFactory::InstallService(I3Context& services)
       (new I3MCDetectorStatusService(geo_service,old_status));
     log_debug("Made new I3MCDetectorStatusService.");
 
+    log_trace("number of triggers before insertion = %zu",statusService_->GetTriggerStatusSize());
     //Fill it with triggers
     FillTriggers(statusService_);
+    log_trace("number of triggers after insertion = %zu",statusService_->GetTriggerStatusSize());
 
     //Configure with default parameters
     Configure(statusService_);    
@@ -99,6 +101,7 @@ bool I3MCSourceServiceFactory::InstallService(I3Context& services)
   if(installDetectorStatus_){
     good_status = services.Put<I3DetectorStatusService>(statusServiceName_,statusService_);
     log_debug("good_status %d",good_status);
+    log_debug("%s has %zu triggers.",statusServiceName_.c_str(),statusService_->GetTriggerStatusSize());
   }else{
     log_debug("Not installing Detector Status");
   }
@@ -121,6 +124,7 @@ void I3MCSourceServiceFactory::FillTriggers(I3MCDetectorStatusServicePtr s){
     ts.GetTriggerSettings().insert(make_pair("timeWindow", 
 					     static_cast<int>(I3InIceTriggerDefaults::TIME_WINDOW)));
     s->InsertTriggerStatus(t, ts);
+
   }    
 
   if(installIceTopTriggers_){
@@ -222,6 +226,7 @@ void I3MCSourceServiceFactory::FillTriggers(I3MCDetectorStatusServicePtr s){
     vol_stat.GetTriggerSettings().insert(make_pair("twr_soft_vol_stopmult",
 						   I3TWRDefaults::TWR_SOFT_VOL_STOPMULT));
     s->InsertTriggerStatus(vol_trig, vol_stat);
+
   }
 }
 

@@ -38,6 +38,9 @@ public:
   virtual I3DetectorStatusConstPtr GetDetectorStatus(I3Time time);
   void InsertTriggerStatus(I3Trigger trig, I3TriggerStatus trigstatus);
 
+  size_t GetTriggerStatusSize(){ return triggerStatus_.size(); }; 
+  size_t GetDOMStatusSize(){ return status_->domStatus.size(); }; 
+
   virtual ~I3MCDetectorStatusService(){};
 
   SET_LOGGER("I3MCDetectorStatusService");
