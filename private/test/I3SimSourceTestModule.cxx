@@ -11,7 +11,7 @@
  */
 
 #include <I3Test.h>
-#include "sim-services/sim-source/I3SimSourceTestModule.h"
+#include "I3SimSourceTestModule.h"
 
 #include "icetray/I3TrayHeaders.h"
 #include "icetray/I3Module.h"

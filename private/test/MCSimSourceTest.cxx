@@ -1,7 +1,7 @@
 #include <I3Test.h>
 
 #include "icetray/I3Tray.h"
-#include "sim-services/sim-source/I3SimSourceTestModule.h"
+#include "I3SimSourceTestModule.h"
 #include "sim-services/sim-source/I3MCSourceServiceFactory.h"
 #include "dataclasses/I3Units.h"
 #include "sim-services/sim-source/default-values/I3CalibrationDefaults.h"

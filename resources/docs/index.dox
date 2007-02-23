@@ -5,8 +5,7 @@
 
    @section Overview
 
-   - <b>@ref time-generator</b> - Allows set the driving time of the event.
-   - <b>@ref sim-source</b> - Installs "dummy" detector status and calibration objects into the frame.
-   - <b>icetop</b> - ???
+This documentation has moved to http://wiki.icecube.wisc.edu/index.php/Sim-Services.
+
    
 */
