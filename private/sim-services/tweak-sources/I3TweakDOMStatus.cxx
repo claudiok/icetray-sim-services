@@ -87,13 +87,13 @@ I3TweakDOMStatus::GetDetectorStatus(I3Time time)
       {
 	if(statusFADC_IceTop_ != I3DOMStatus::Unknown )
 	  iter->second.statusFADC = statusFADC_IceTop_;
-	if(static_cast<int>(iter->second.nBinsATWD0) != INT_MIN )
+	if(nBinsATWD0_IceTop_ != INT_MIN )
 	  iter->second.nBinsATWD0 = nBinsATWD0_IceTop_;
-	if(static_cast<int>(iter->second.nBinsATWD1) != INT_MIN )
+	if(nBinsATWD1_IceTop_ != INT_MIN )
 	  iter->second.nBinsATWD1 = nBinsATWD1_IceTop_;
-	if(static_cast<int>(iter->second.nBinsATWD2) != INT_MIN )
+	if(nBinsATWD2_IceTop_ != INT_MIN )
 	  iter->second.nBinsATWD2 = nBinsATWD2_IceTop_;
-	if(static_cast<int>(iter->second.nBinsFADC) != INT_MIN )
+	if(nBinsFADC_IceTop_ != INT_MIN )
 	  iter->second.nBinsFADC = nBinsFADC_IceTop_;
 	
 	if(!isnan(icetopLCWindowPre_))

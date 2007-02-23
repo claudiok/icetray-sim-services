@@ -27,8 +27,8 @@ I3_MODULE(I3SimSourceTestModule);
 
 I3SimSourceTestModule::I3SimSourceTestModule(const I3Context& ctx) : 
   I3Module(ctx),
-  stringsToUse_(""),
-  stationsToUse_("")
+  stringsToUse_("1:80"),
+  stationsToUse_("1:80")
 { 
   log_debug("Constructor I3SimSourceTestModule");  
 
@@ -284,6 +284,8 @@ void I3SimSourceTestModule::Physics(I3FramePtr frame)
 	ENSURE(stat_iter->second.nBinsATWD1 == ds_nBinsATWD1_IceTop_);
 	ENSURE(stat_iter->second.nBinsATWD2 == ds_nBinsATWD2_IceTop_);
 	ENSURE(stat_iter->second.nBinsFADC == ds_nBinsFADC_IceTop_);
+	cerr<<"Does "<<stat_iter->second.nBinsFADC<< " == "
+	    <<ds_nBinsFADC_IceTop_<<" ???"<<endl;
 
 	if ( stat_iter->first.GetOM() == 61 || stat_iter->first.GetOM() == 63 ){	
 	      ENSURE_DISTANCE(stat_iter->second.pmtHV, ds_icetopHighGainVoltage_, DISTANCE);

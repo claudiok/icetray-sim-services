@@ -40,8 +40,6 @@ I3TweakCalibration::GetCalibration(I3Time time){
     log_fatal("This service does not create calibration objects.");
   }
 
-  cerr<<"calibration->domCal.size() = "<<calibration->domCal.size()<<endl;
-
   //changed all inice to om_geo
   map<OMKey,I3DOMCalibration>::iterator iter;
   for( iter  = calibration->domCal.begin(); 
