@@ -53,6 +53,9 @@ tray.SetParameter("dbdetectorstatus","customdate",0)
 tray.SetParameter("dbdetectorstatus","host",db_host)
 
 tray.AddModule("I3Muxer","muxer")
+
+tray.AddModule("I3DBHistogram","histo")
+
 tray.AddModule("I3Writer","writer")(
     ("filename", "database.i3")
      )

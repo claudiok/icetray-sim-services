@@ -74,15 +74,15 @@ namespace I3DetStatDefaults{
   /**
    *Number of FADC bins
    */
-  const int NBINS_ATWD0_INICE = 128; //NO CHANGE
-  const int NBINS_ATWD1_INICE = 32; //OLD: 128
-  const int NBINS_ATWD2_INICE = 32; //OLD: 128
-  const int NBINS_FADC_INICE = 50;  //OLD: 256
+  const unsigned NBINS_ATWD0_INICE = 128; //NO CHANGE
+  const unsigned NBINS_ATWD1_INICE = 32; //OLD: 128
+  const unsigned NBINS_ATWD2_INICE = 32; //OLD: 128
+  const unsigned NBINS_FADC_INICE = 50;  //OLD: 256
 
-  const int NBINS_ATWD0_ICETOP = 128; //NO CHANGE
-  const int NBINS_ATWD1_ICETOP = 128; //OLD: 128
-  const int NBINS_ATWD2_ICETOP = 128; //OLD: 128
-  const int NBINS_FADC_ICETOP = 50;  //OLD: 256
+  const unsigned NBINS_ATWD0_ICETOP = 128; //NO CHANGE
+  const unsigned NBINS_ATWD1_ICETOP = 128; //OLD: 128
+  const unsigned NBINS_ATWD2_ICETOP = 128; //OLD: 128
+  const unsigned NBINS_FADC_ICETOP = 50;  //OLD: 256
 
 }
 
