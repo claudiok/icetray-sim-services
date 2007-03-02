@@ -18,7 +18,10 @@ I3TweakDOMStatus::I3TweakDOMStatus(I3DetectorStatusServicePtr s) :
   lcSpan_(INT_MIN),
   iniceVoltage_(NAN),
   triggerMode_(I3DOMStatus::UnknownTrigMode),
-  lcMode_(I3DOMStatus::UnknownLCMode),
+  lcMode_inice_first_(I3DOMStatus::UnknownLCMode),
+  lcMode_inice_bulk_(I3DOMStatus::UnknownLCMode),
+  lcMode_inice_last_(I3DOMStatus::UnknownLCMode),
+  lcMode_icetop_(I3DOMStatus::UnknownLCMode),
   statusATWDa_(I3DOMStatus::Unknown),
   statusATWDb_(I3DOMStatus::Unknown),
   statusFADC_InIce_(I3DOMStatus::Unknown),
@@ -62,8 +65,6 @@ I3TweakDOMStatus::GetDetectorStatus(I3Time time)
 
     if(triggerMode_ != I3DOMStatus::UnknownTrigMode)
       iter->second.trigMode = triggerMode_;
-    if(lcMode_ != I3DOMStatus::UnknownLCMode)
-      iter->second.lcMode = lcMode_;
    
     if(statusATWDa_ != I3DOMStatus::Unknown)
       iter->second.statusATWDa = statusATWDa_;
@@ -85,6 +86,10 @@ I3TweakDOMStatus::GetDetectorStatus(I3Time time)
   
     if ( iter->first.GetOM()>60 )
       {
+
+	if(lcMode_icetop_ != I3DOMStatus::UnknownLCMode)
+	  iter->second.lcMode = lcMode_icetop_;
+
 	if(statusFADC_IceTop_ != I3DOMStatus::Unknown )
 	  iter->second.statusFADC = statusFADC_IceTop_;
 	if(nBinsATWD0_IceTop_ != INT_MIN )
@@ -117,6 +122,15 @@ I3TweakDOMStatus::GetDetectorStatus(I3Time time)
       }	
     else
       {
+	if(iter->first.GetOM() == 1 && 
+	   lcMode_inice_first_ != I3DOMStatus::UnknownLCMode)
+	  iter->second.lcMode = lcMode_inice_first_;
+	else if(iter->first.GetOM() == 60 && 
+		lcMode_inice_last_ != I3DOMStatus::UnknownLCMode)
+	  iter->second.lcMode = lcMode_inice_last_;
+	else if(lcMode_inice_bulk_ != I3DOMStatus::UnknownLCMode)	  
+	  iter->second.lcMode = lcMode_inice_bulk_;
+
 	if( statusFADC_InIce_ != I3DOMStatus::Unknown)
 	  iter->second.statusFADC = statusFADC_InIce_;
 	if( nBinsATWD0_InIce_ != INT_MIN)

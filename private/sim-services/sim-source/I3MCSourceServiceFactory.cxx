@@ -245,7 +245,12 @@ void I3MCSourceServiceFactory::Configure(I3MCDetectorStatusServicePtr s){
   s->SetLCSpan(I3DetStatDefaults::LCSPAN);
   s->SetInIceVoltage(I3DetStatDefaults::INICE_VOLTAGE);
   s->SetTriggerMode(I3DetStatDefaults::TRIGGER_MODE);
-  s->SetLCMode(I3DetStatDefaults::LCMODE);
+
+  s->SetLCModeInIceFirstDOM(I3DetStatDefaults::LCMODE_INICE_FIRST);
+  s->SetLCModeInIceBulkDOMs(I3DetStatDefaults::LCMODE_INICE_BULK);
+  s->SetLCModeInIceLastDOM(I3DetStatDefaults::LCMODE_INICE_LAST);
+  s->SetLCModeIceTopDOMs(I3DetStatDefaults::LCMODE_ICETOP);
+
   s->SetStatusATWDa(I3DetStatDefaults::STATUS_ATWDa);
   s->SetStatusATWDb(I3DetStatDefaults::STATUS_ATWDb);
   s->SetStatusFADCInIce(I3DetStatDefaults::STATUS_FADC_INICE);

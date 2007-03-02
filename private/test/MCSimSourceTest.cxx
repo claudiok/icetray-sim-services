@@ -50,7 +50,10 @@ TEST(default_config)
     ("DetStat_LCSpan",I3DetStatDefaults::LCSPAN)
     ("DetStat_InIceVoltage",I3DetStatDefaults::INICE_VOLTAGE)
     ("DetStat_TriggerMode",static_cast<int>(I3DetStatDefaults::TRIGGER_MODE))
-    ("DetStat_LCMode",static_cast<int>(I3DetStatDefaults::LCMODE))
+    ("DetStat_LCModeInIceFirstDOM",static_cast<int>(I3DetStatDefaults::LCMODE_INICE_FIRST))
+    ("DetStat_LCModeInIceBulkDOMs",static_cast<int>(I3DetStatDefaults::LCMODE_INICE_BULK))
+    ("DetStat_LCModeInIceLastDOM",static_cast<int>(I3DetStatDefaults::LCMODE_INICE_LAST))
+    ("DetStat_LCModeIceTopDOMs",static_cast<int>(I3DetStatDefaults::LCMODE_ICETOP))
     ("DetStat_StatusATWDa",static_cast<int>(I3DetStatDefaults::STATUS_ATWDa))
     ("DetStat_StatusATWDb",static_cast<int>(I3DetStatDefaults::STATUS_ATWDb))
     ("DetStat_StatusFADCInIce",static_cast<int>(I3DetStatDefaults::STATUS_FADC_INICE))
@@ -109,7 +112,12 @@ TEST(tweaked_config)
   int lcSpan(2);
   double iniceVoltage(2076*I3Units::volt);
   int triggerMode(0);
-  int lcMode(2);
+
+  int lcMode_inice_first(0);
+  int lcMode_inice_bulk(3);
+  int lcMode_inice_last(4);
+  int lcMode_icetop(2);
+
   int statusATWDa(1);
   int statusATWDb(0);
   int statusFADCInIce(10);
@@ -178,7 +186,10 @@ TEST(tweaked_config)
     ("LCSpan",lcSpan)
     ("InIceVoltage",iniceVoltage)
     ("TriggerMode",triggerMode)
-    ("LCMode",lcMode)
+    ("LCModeInIceFirstDOM",lcMode_inice_first)
+    ("LCModeInIceBulkDOMs",lcMode_inice_bulk)
+    ("LCModeInIceLastDOM",lcMode_inice_last)
+    ("LCModeIceTopDOMs",lcMode_icetop)
     ("StatusATWDa",statusATWDa)
     ("StatusATWDb",statusATWDb)
     ("StatusFADCInIce",statusFADCInIce)
@@ -230,7 +241,10 @@ TEST(tweaked_config)
     ("DetStat_LCSpan",lcSpan)
     ("DetStat_InIceVoltage",iniceVoltage)
     ("DetStat_TriggerMode",triggerMode)
-    ("DetStat_LCMode",lcMode)
+    ("DetStat_LCModeInIceFirstDOM",lcMode_inice_first)
+    ("DetStat_LCModeInIceBulkDOMs",lcMode_inice_bulk)
+    ("DetStat_LCModeInIceLastDOM",lcMode_inice_last)
+    ("DetStat_LCModeIceTopDOMs",lcMode_icetop)
     ("DetStat_StatusATWDa",statusATWDa)
     ("DetStat_StatusATWDb",statusATWDb)
     ("DetStat_StatusFADCInIce",statusFADCInIce)
@@ -285,7 +299,12 @@ TEST(tweaked_extended_config)
   int lcSpan(2);
   double iniceVoltage(2076*I3Units::volt);
   int triggerMode(0);
-  int lcMode(2);
+
+  int lcMode_inice_first(0);
+  int lcMode_inice_bulk(3);
+  int lcMode_inice_last(4);
+  int lcMode_icetop(2);
+
   int statusATWDa(1);
   int statusATWDb(0);
   int statusFADCInIce(10);
@@ -367,7 +386,10 @@ TEST(tweaked_extended_config)
     ("LCSpan",lcSpan)
     ("InIceVoltage",iniceVoltage)
     ("TriggerMode",triggerMode)
-    ("LCMode",lcMode)
+    ("LCModeInIceFirstDOM",lcMode_inice_first)
+    ("LCModeInIceBulkDOMs",lcMode_inice_bulk)
+    ("LCModeInIceLastDOM",lcMode_inice_last)
+    ("LCModeIceTopDOMs",lcMode_icetop)
     ("StatusATWDa",statusATWDa)
     ("StatusATWDb",statusATWDb)
     ("StatusFADCInIce",statusFADCInIce)
@@ -434,7 +456,12 @@ TEST(tweaked_extended_config)
     ("DetStat_LCSpan",lcSpan)
     ("DetStat_InIceVoltage",iniceVoltage)
     ("DetStat_TriggerMode",triggerMode)
-    ("DetStat_LCMode",lcMode)
+
+    ("DetStat_LCModeInIceFirstDOM",lcMode_inice_first)
+    ("DetStat_LCModeInIceBulkDOMs",lcMode_inice_bulk)
+    ("DetStat_LCModeInIceLastDOM",lcMode_inice_last)
+    ("DetStat_LCModeIceTopDOMs",lcMode_icetop)
+
     ("DetStat_StatusATWDa",statusATWDa)
     ("DetStat_StatusATWDb",statusATWDb)
     ("DetStat_StatusFADCInIce",statusFADCInIce)
@@ -483,7 +510,10 @@ TEST(tweaked_extended_config)
     ("DetStat_LCSpan",I3DetStatDefaults::LCSPAN)
     ("DetStat_InIceVoltage",I3DetStatDefaults::INICE_VOLTAGE)
     ("DetStat_TriggerMode",static_cast<int>(I3DetStatDefaults::TRIGGER_MODE))
-    ("DetStat_LCMode",static_cast<int>(I3DetStatDefaults::LCMODE))
+    ("DetStat_LCModeInIceFirstDOM",static_cast<int>(I3DetStatDefaults::LCMODE_INICE_FIRST))
+    ("DetStat_LCModeInIceBulkDOMs",static_cast<int>(I3DetStatDefaults::LCMODE_INICE_BULK))
+    ("DetStat_LCModeInIceLastDOM",static_cast<int>(I3DetStatDefaults::LCMODE_INICE_LAST))
+    ("DetStat_LCModeIceTopDOMs",static_cast<int>(I3DetStatDefaults::LCMODE_ICETOP))
     ("DetStat_StatusATWDa",static_cast<int>(I3DetStatDefaults::STATUS_ATWDa))
     ("DetStat_StatusATWDb",static_cast<int>(I3DetStatDefaults::STATUS_ATWDb))
     ("DetStat_StatusFADCInIce",static_cast<int>(I3DetStatDefaults::STATUS_FADC_INICE))
@@ -518,7 +548,6 @@ TEST(tweaked_extended_config)
     ("Calib_hvGainFit_intercept",I3CalibDefaults::HV_GAIN_FIT_INTERCEPT)
     ("Calib_atwdBinCalibFit_slope",I3CalibDefaults::ATWD_BINCALIB_FIT_SLOPE)
     ("Calib_atwdBinCalibFit_intercept",I3CalibDefaults::ATWD_BINCALIB_FIT_INTERCEPT);
-
   
   tray.AddModule("TrashCan","trash");
   
@@ -568,7 +597,10 @@ TEST(do_no_harm)
     ("DetStat_LCSpan",I3DetStatDefaults::LCSPAN)
     ("DetStat_InIceVoltage",I3DetStatDefaults::INICE_VOLTAGE)
     ("DetStat_TriggerMode",static_cast<int>(I3DetStatDefaults::TRIGGER_MODE))
-    ("DetStat_LCMode",static_cast<int>(I3DetStatDefaults::LCMODE))
+    ("DetStat_LCModeInIceFirstDOM",static_cast<int>(I3DetStatDefaults::LCMODE_INICE_FIRST))
+    ("DetStat_LCModeInIceBulkDOMs",static_cast<int>(I3DetStatDefaults::LCMODE_INICE_BULK))
+    ("DetStat_LCModeInIceLastDOM",static_cast<int>(I3DetStatDefaults::LCMODE_INICE_LAST))
+    ("DetStat_LCModeIceTopDOMs",static_cast<int>(I3DetStatDefaults::LCMODE_ICETOP))
     ("DetStat_StatusATWDa",static_cast<int>(I3DetStatDefaults::STATUS_ATWDa))
     ("DetStat_StatusATWDb",static_cast<int>(I3DetStatDefaults::STATUS_ATWDb))
     ("DetStat_StatusFADCInIce",static_cast<int>(I3DetStatDefaults::STATUS_FADC_INICE))

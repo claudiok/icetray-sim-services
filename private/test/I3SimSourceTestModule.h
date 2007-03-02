@@ -96,14 +96,11 @@ class I3SimSourceTestModule : public I3Module
    */
   double ds_iniceVoltage_;
 
-//  I3DOMStatus::TrigMode ds_triggerMode_;
-//  I3DOMStatus::LCMode ds_lcMode_;
-//  I3DOMStatus::OnOff ds_statusATWDa_;
-//  I3DOMStatus::OnOff ds_statusATWDb_;
-//  I3DOMStatus::OnOff ds_statusFADC_;
-
   int ds_triggerMode_;
-  int ds_lcMode_;
+  int ds_lcMode_inice_first_;
+  int ds_lcMode_inice_bulk_;
+  int ds_lcMode_inice_last_;
+  int ds_lcMode_icetop_;
   int ds_statusATWDa_;
   int ds_statusATWDb_;
 

@@ -59,7 +59,12 @@ public:
   void SetLCSpan(int s){lcSpan_= s;};
   void SetInIceVoltage(double v){iniceVoltage_= v;};
   void SetTriggerMode(int m){triggerMode_= static_cast<I3DOMStatus::TrigMode>(m);};
-  void SetLCMode(int m){lcMode_= static_cast<I3DOMStatus::LCMode>(m);};
+
+  void SetLCModeInIceFirstDOM(int m){lcMode_inice_first_= static_cast<I3DOMStatus::LCMode>(m);};
+  void SetLCModeInIceBulkDOMs(int m){lcMode_inice_bulk_= static_cast<I3DOMStatus::LCMode>(m);};
+  void SetLCModeInIceLastDOM(int m){lcMode_inice_last_= static_cast<I3DOMStatus::LCMode>(m);};
+  void SetLCModeIceTopDOMs(int m){lcMode_icetop_= static_cast<I3DOMStatus::LCMode>(m);};
+
   void SetStatusATWDa(int o){statusATWDa_= static_cast<I3DOMStatus::OnOff>(o);};
   void SetStatusATWDb(int o){statusATWDb_= static_cast<I3DOMStatus::OnOff>(o);};
   void SetStatusFADCInIce(int o){statusFADC_InIce_= static_cast<I3DOMStatus::OnOff>(o);};
@@ -139,7 +144,10 @@ public:
   double iniceVoltage_;
 
   I3DOMStatus::TrigMode triggerMode_;
-  I3DOMStatus::LCMode lcMode_;
+  I3DOMStatus::LCMode lcMode_inice_first_;
+  I3DOMStatus::LCMode lcMode_inice_bulk_;
+  I3DOMStatus::LCMode lcMode_inice_last_;
+  I3DOMStatus::LCMode lcMode_icetop_;
   I3DOMStatus::OnOff statusATWDa_;
   I3DOMStatus::OnOff statusATWDb_;
 
