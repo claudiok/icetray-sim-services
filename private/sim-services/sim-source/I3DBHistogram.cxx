@@ -319,7 +319,7 @@ void BookDOMCalibHistograms(I3CalibrationConstPtr calib,
 void BookDOMStatusHistograms(I3DetectorStatusConstPtr status, 
 			    std::string rootFileName){
 
-  TH1D* lcspan_h = new TH1D("lcspan","Local Coincidence Span",4,0,3);
+  TH1D* lcspan_h = new TH1D("lcspan","Local Coincidence Span",4,-0.5,3.5);
   TH1D* lcWindowPre_h = new TH1D("lcWindowPre","Local Coincidence Window Pre",
 		    200,0, 2000.0*I3Units::ns);
   TH1D* lcWindowPost_h = new TH1D("lcWindowPost","Local Coincidence Window Post",
@@ -327,11 +327,11 @@ void BookDOMStatusHistograms(I3DetectorStatusConstPtr status,
   TH1D* pmtHV_inice_h = new TH1D("pmtHV_inice","PMT High Voltage - InIce",60,1000., 1600.);
   TH1D* pmtHV_icetopHG_h = new TH1D("pmtHV_icetopHG","PMT High Voltage - IceTop High Gain",60,1000., 1600.);
   TH1D* pmtHV_icetopLG_h = new TH1D("pmtHV_icetopLG","PMT High Voltage - IceTop Low Gain",50,400,900.);
-  TH1D* trigMode_h = new TH1D("trigMode","Trigger Mode",5,-1,3);
-  TH1D* lcMode_h = new TH1D("lcMode","Local Coincidence Mode",6,-1,4);
-  TH1D* statusATWDa_h = new TH1D("statusATWDa","Status ATWDa",3,-2,2);
-  TH1D* statusATWDb_h = new TH1D("statusATWDb","Status ATWDb",3,-2,2);
-  TH1D* statusFADC_h = new TH1D("statusFADC","Status FADC",3,-2,2);
+  TH1D* trigMode_h = new TH1D("trigMode","Trigger Mode",6,-1.5,4.5);
+  TH1D* lcMode_h = new TH1D("lcMode","Local Coincidence Mode",6,-1.5,4.5);
+  TH1D* statusATWDa_h = new TH1D("statusATWDa","Status ATWDa",3,-1.5,1.5);
+  TH1D* statusATWDb_h = new TH1D("statusATWDb","Status ATWDb",3,-1.5,1.5);
+  TH1D* statusFADC_h = new TH1D("statusFADC","Status FADC",3,-1.5,1.5);
 
   TH1D* speThreshold_h = new TH1D("speThreshold","SPE Threshold",100,1.,2.);//I3Units::mV
   TH1D* fePedestal_h = new TH1D("fePedestal","FE Pedestal",100,2.5,2.7);//I3Units::V
@@ -368,6 +368,9 @@ void BookDOMStatusHistograms(I3DetectorStatusConstPtr status,
 
     trigMode_h->Fill(stat_iter->second.trigMode);
     lcMode_h->Fill(stat_iter->second.lcMode);
+    if(stat_iter->second.lcMode == I3DOMStatus::Down){
+      cerr<<"LCMode is 'Down' for DOM "<<stat_iter->first.str()<<endl;
+    }
     statusATWDa_h->Fill(stat_iter->second.statusATWDa);
     statusATWDb_h->Fill(stat_iter->second.statusATWDb);
     statusFADC_h->Fill(stat_iter->second.statusFADC);
@@ -781,9 +784,14 @@ void SetTriggerMode(TH1D* h){
 }
 void SetLCMode(TH1D* h){
   std::stringstream defVal;
-  defVal<<"Default = "
-	<<static_cast<int>(I3DetStatDefaults::LCMODE)
-	<<" ";
+  defVal<<" First InIce Default = "
+	<<static_cast<int>(I3DetStatDefaults::LCMODE_INICE_FIRST)<<" "
+	<<" Bulk InIce Default = "
+	<<static_cast<int>(I3DetStatDefaults::LCMODE_INICE_BULK)<<" "
+	<<" Last InIce Default = "
+	<<static_cast<int>(I3DetStatDefaults::LCMODE_INICE_LAST)<<" "
+	<<" IceTop InIce Default = "
+	<<static_cast<int>(I3DetStatDefaults::LCMODE_ICETOP)<<" ";       
   h->SetXTitle("LC Mode");
   FitAndFormatHisto(h,"LCMode.gif",defVal.str());
 

@@ -28,7 +28,10 @@ I3MCDetectorStatusService::I3MCDetectorStatusService(I3GeometryServicePtr g,
   lcSpan_(I3DetStatDefaults::LCSPAN),
   iniceVoltage_(I3DetStatDefaults::INICE_VOLTAGE),
   triggerMode_(I3DetStatDefaults::TRIGGER_MODE),
-  lcMode_(I3DetStatDefaults::LCMODE),
+  lcMode_inice_first_(I3DetStatDefaults::LCMODE_INICE_FIRST),
+  lcMode_inice_bulk_(I3DetStatDefaults::LCMODE_INICE_BULK),
+  lcMode_inice_last_(I3DetStatDefaults::LCMODE_INICE_LAST),
+  lcMode_icetop_(I3DetStatDefaults::LCMODE_ICETOP),
   statusATWDa_(I3DetStatDefaults::STATUS_ATWDa),
   statusATWDb_(I3DetStatDefaults::STATUS_ATWDb),
   statusFADC_InIce_(I3DetStatDefaults::STATUS_FADC_INICE),
@@ -99,7 +102,6 @@ void I3MCDetectorStatusService::SetDOMStatus(I3DetectorStatusPtr status, const I
   I3DOMStatus domStatus;
 
   domStatus.trigMode = triggerMode_;
-  domStatus.lcMode = lcMode_;
   
   domStatus.statusATWDa = statusATWDa_;
   domStatus.statusATWDb = statusATWDb_;
@@ -130,6 +132,7 @@ void I3MCDetectorStatusService::SetDOMStatus(I3DetectorStatusPtr status, const I
       if (type != I3OMGeo :: AMANDA){
 	//Don't do AMANDA OMs
 	if ( type == I3OMGeo::IceTop ){
+	  domStatus.lcMode = lcMode_icetop_;
 	  domStatus.statusFADC = statusFADC_IceTop_;
 	  domStatus.nBinsATWD0 = nBinsATWD0_IceTop_;
 	  domStatus.nBinsATWD1 = nBinsATWD1_IceTop_;
@@ -151,6 +154,13 @@ void I3MCDetectorStatusService::SetDOMStatus(I3DetectorStatusPtr status, const I
 	      domStatus.pmtHV = icetopLowGainVoltage_;
 	    }
 	}else{
+	  /**
+	   * the DOMs have different LC settings depending on where they are
+	   */
+	  if(thiskey.GetOM() == 1) domStatus.lcMode = lcMode_inice_first_;
+	  else if(thiskey.GetOM() == 60) domStatus.lcMode = lcMode_inice_last_;
+	  else domStatus.lcMode = lcMode_inice_bulk_;
+
 	  domStatus.statusFADC = statusFADC_InIce_;
 	  domStatus.nBinsATWD0 = nBinsATWD0_InIce_;
 	  domStatus.nBinsATWD1 = nBinsATWD1_InIce_;

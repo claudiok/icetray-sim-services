@@ -18,7 +18,10 @@ I3TweakDOMStatusService::I3TweakDOMStatusService(const I3Context& context) :
   lcSpan_(INT_MIN),
   iniceVoltage_(NAN),
   triggerMode_(INT_MIN),
-  lcMode_(INT_MIN),
+  lcMode_inice_first_(INT_MIN),
+  lcMode_inice_bulk_(INT_MIN),
+  lcMode_inice_last_(INT_MIN),
+  lcMode_icetop_(INT_MIN),
   statusATWDa_(INT_MIN),
   statusATWDb_(INT_MIN),
   statusFADC_InIce_(INT_MIN),
@@ -48,7 +51,10 @@ I3TweakDOMStatusService::I3TweakDOMStatusService(const I3Context& context) :
   AddParameter("LCSpan","",lcSpan_);
   AddParameter("InIceVoltage","",iniceVoltage_);
   AddParameter("TriggerMode","",triggerMode_);
-  AddParameter("LCMode","",lcMode_);
+  AddParameter("LCModeInIceFirstDOM","",lcMode_inice_first_);
+  AddParameter("LCModeInIceBulkDOMs","",lcMode_inice_bulk_);
+  AddParameter("LCModeInIceLastDOM","",lcMode_inice_last_);
+  AddParameter("LCModeIceTopDOMs","",lcMode_icetop_);
   AddParameter("StatusATWDa","",statusATWDa_);
   AddParameter("StatusATWDb","",statusATWDb_);
   AddParameter("StatusFADCInIce","",statusFADC_InIce_);
@@ -82,7 +88,10 @@ void I3TweakDOMStatusService::Configure()
   GetParameter("LCSpan",lcSpan_);
   GetParameter("InIceVoltage",iniceVoltage_);
   GetParameter("TriggerMode",triggerMode_);
-  GetParameter("LCMode",lcMode_);
+  GetParameter("LCModeInIceFirstDOM",lcMode_inice_first_);
+  GetParameter("LCModeInIceBulkDOMs",lcMode_inice_bulk_);
+  GetParameter("LCModeInIceLastDOM",lcMode_inice_last_);
+  GetParameter("LCModeIceTopDOMs",lcMode_icetop_);
   GetParameter("StatusATWDa",statusATWDa_);
   GetParameter("StatusATWDb",statusATWDb_);
   GetParameter("StatusFADCInIce",statusFADC_InIce_);
@@ -129,8 +138,16 @@ bool I3TweakDOMStatusService::InstallService(I3Context& services)
       status_service_->SetInIceVoltage(iniceVoltage_);
     if(triggerMode_ > INT_MIN)
       status_service_->SetTriggerMode(static_cast<I3DOMStatus::TrigMode>(triggerMode_));
-    if(lcMode_ > INT_MIN)
-      status_service_->SetLCMode(static_cast<I3DOMStatus::LCMode>(lcMode_));
+
+    if(lcMode_inice_first_ > INT_MIN)
+      status_service_->SetLCModeInIceFirstDOM(static_cast<I3DOMStatus::LCMode>(lcMode_inice_first_));
+    if(lcMode_inice_bulk_ > INT_MIN)
+      status_service_->SetLCModeInIceBulkDOMs(static_cast<I3DOMStatus::LCMode>(lcMode_inice_bulk_));
+    if(lcMode_inice_last_ > INT_MIN)
+      status_service_->SetLCModeInIceLastDOM(static_cast<I3DOMStatus::LCMode>(lcMode_inice_last_));
+    if(lcMode_icetop_ > INT_MIN)
+      status_service_->SetLCModeIceTopDOMs(static_cast<I3DOMStatus::LCMode>(lcMode_icetop_));
+
     if(statusATWDa_ > INT_MIN)
       status_service_->SetStatusATWDa(static_cast<I3DOMStatus::OnOff>(statusATWDa_));
     if(statusATWDb_ > INT_MIN)

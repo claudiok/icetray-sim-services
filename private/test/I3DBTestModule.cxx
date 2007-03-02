@@ -247,7 +247,15 @@ void TestDOMStatus(I3DetectorStatusConstPtr status){
       ENSURE(stat_iter->second.nBinsATWD2 == I3DetStatDefaults::NBINS_ATWD2_INICE);
       ENSURE(stat_iter->second.nBinsFADC == I3DetStatDefaults::NBINS_FADC_INICE);
 
+      if(stat_iter->first.GetOM() == 1) 
+	ENSURE(stat_iter->second.lcMode == I3DetStatDefaults::LCMODE_INICE_FIRST);
+      else if(stat_iter->first.GetOM() == 60) 
+	ENSURE(stat_iter->second.lcMode == I3DetStatDefaults::LCMODE_INICE_LAST);
+      else ENSURE(stat_iter->second.lcMode == I3DetStatDefaults::LCMODE_INICE_BULK);
+      
     }else{
+      ENSURE(stat_iter->second.lcMode == I3DetStatDefaults::LCMODE_ICETOP);
+
       ENSURE_DISTANCE(stat_iter->second.lcWindowPre,I3DetStatDefaults::ICETOP_LCWINDOW_PRE , TOLERANCE);
       ENSURE_DISTANCE(stat_iter->second.lcWindowPost, I3DetStatDefaults::ICETOP_LCWINDOW_POST, TOLERANCE);
       ENSURE(stat_iter->second.statusFADC == I3DetStatDefaults::STATUS_FADC_ICETOP);
@@ -266,7 +274,7 @@ void TestDOMStatus(I3DetectorStatusConstPtr status){
     }
 
     ENSURE(stat_iter->second.trigMode == I3DetStatDefaults::TRIGGER_MODE);
-    ENSURE(stat_iter->second.lcMode == I3DetStatDefaults::LCMODE);
+
     ENSURE(stat_iter->second.statusATWDa == I3DetStatDefaults::STATUS_ATWDa);
     ENSURE(stat_iter->second.statusATWDb == I3DetStatDefaults::STATUS_ATWDb);
 

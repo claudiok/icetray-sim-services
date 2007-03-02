@@ -79,7 +79,10 @@ public:
   double iniceVoltage_;
 
   int triggerMode_;
-  int lcMode_;
+  int lcMode_inice_first_;
+  int lcMode_inice_bulk_;
+  int lcMode_inice_last_;
+  int lcMode_icetop_;
   int statusATWDa_;
   int statusATWDb_;
 

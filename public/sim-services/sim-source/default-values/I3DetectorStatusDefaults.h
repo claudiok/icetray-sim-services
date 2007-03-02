@@ -58,12 +58,15 @@ namespace I3DetStatDefaults{
   const double INICE_VOLTAGE = 1350*I3Units::volt; //NO CHANGE
 
   const I3DOMStatus::TrigMode TRIGGER_MODE = I3DOMStatus::SPE; //NO CHANGE
-  const I3DOMStatus::LCMode LCMODE = I3DOMStatus::UpOrDown; //NO CHANGE
   const I3DOMStatus::OnOff STATUS_ATWDa = I3DOMStatus::On; //NO CHANGE
   const I3DOMStatus::OnOff STATUS_ATWDb = I3DOMStatus::On; //NO CHANGE
   const I3DOMStatus::OnOff STATUS_FADC_INICE = I3DOMStatus::On; //NO CHANGE
+  const I3DOMStatus::OnOff STATUS_FADC_ICETOP = I3DOMStatus::Off; //NO CHANGE
 
-  const I3DOMStatus::OnOff STATUS_FADC_ICETOP = I3DOMStatus::On; //NO CHANGE
+  const I3DOMStatus::LCMode LCMODE_INICE_BULK = I3DOMStatus::UpOrDown;
+  const I3DOMStatus::LCMode LCMODE_INICE_FIRST = I3DOMStatus::Down;
+  const I3DOMStatus::LCMode LCMODE_INICE_LAST = I3DOMStatus::Down; //Down?  Really? 
+  const I3DOMStatus::LCMode LCMODE_ICETOP = I3DOMStatus::Down;
 
   const double SPE_THRESHOLD = 1.422*I3Units::mV; //OLD: 4.0*I3Units::mV
   const double FE_PEDESTAL = 2.6*I3Units::volt;   //NO CHANGE
@@ -82,7 +85,7 @@ namespace I3DetStatDefaults{
   const unsigned NBINS_ATWD0_ICETOP = 128; //NO CHANGE
   const unsigned NBINS_ATWD1_ICETOP = 128; //OLD: 128
   const unsigned NBINS_ATWD2_ICETOP = 128; //OLD: 128
-  const unsigned NBINS_FADC_ICETOP = 50;  //OLD: 256
+  const unsigned NBINS_FADC_ICETOP = 0;  //OLD: 256
 
 }
 
