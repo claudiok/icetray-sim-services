@@ -368,11 +368,6 @@ void BookDOMStatusHistograms(I3DetectorStatusConstPtr status,
 
     trigMode_h->Fill(stat_iter->second.trigMode);
     lcMode_h->Fill(stat_iter->second.lcMode);
-    if(stat_iter->second.lcMode == I3DOMStatus::Down &&
-       stat_iter->first.GetOM()<60 &&
-       stat_iter->first.GetOM()>1 ){
-      cerr<<"LCMode is 'Down' for DOM "<<stat_iter->first.str()<<endl;
-    }
     statusATWDa_h->Fill(stat_iter->second.statusATWDa);
     statusATWDb_h->Fill(stat_iter->second.statusATWDb);
     statusFADC_h->Fill(stat_iter->second.statusFADC);
