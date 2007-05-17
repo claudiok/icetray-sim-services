@@ -25,10 +25,12 @@ I3_SERVICE_FACTORY(I3MCTimeGeneratorServiceFactory);
 I3MCTimeGeneratorServiceFactory::I3MCTimeGeneratorServiceFactory(const I3Context& ctx) : 
   I3ServiceFactory(ctx),
   year_(2006),
-  daqTime_(0)
+  daqTime_(0),
+  eventServiceName_(I3DefaultName<I3EventService>::value())
 {
   AddParameter("Year", "Year of the run", year_);
   AddParameter("DAQTime", "DAQTime of the run in 1/10 of ns", daqTime_);
+  AddParameter("InstallEventServiceAs", "Name to install event service under", eventServiceName_);
 }
 
 /**
@@ -47,6 +49,7 @@ void I3MCTimeGeneratorServiceFactory::Configure()
   
   GetParameter("Year", year_);
   GetParameter("DAQTime", daqTime_);
+  GetParameter("InstallEventServiceAs", eventServiceName_);
 }
 
 bool I3MCTimeGeneratorServiceFactory::InstallService(I3Context& services)
@@ -58,5 +61,5 @@ bool I3MCTimeGeneratorServiceFactory::InstallService(I3Context& services)
       (new I3MCTimeGeneratorService(year_,daqTime_));
     log_debug("Made new I3MCRawDOMStatusService.");
   }
-  return services.Put<I3EventService>(eventService_);
+  return services.Put<I3EventService>(eventService_,eventServiceName_);
 } 

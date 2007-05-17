@@ -39,6 +39,7 @@ class I3MCTimeGeneratorServiceFactory : public I3ServiceFactory
   ///Start time of run period
   int year_;
   int64_t daqTime_;
+  string eventServiceName_;
 
   shared_ptr<I3MCTimeGeneratorService> eventService_;
 };
