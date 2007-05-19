@@ -9,9 +9,5 @@ USE_TOOLS()
 
 USE_PROJECTS(icetray phys-services dataclasses amanda-core simclasses)
 
-ROOTCINT()
+TEST_EXECUTABLE(test private/test/*.cxx)
 
-#
-# Plus Executables: 
-# And tests test 
-#

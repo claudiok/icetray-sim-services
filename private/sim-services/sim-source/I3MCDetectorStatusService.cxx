@@ -157,8 +157,19 @@ void I3MCDetectorStatusService::SetDOMStatus(I3DetectorStatusPtr status, const I
 	  /**
 	   * the DOMs have different LC settings depending on where they are
 	   */
-	  if(thiskey.GetOM() == 1) domStatus.lcMode = lcMode_inice_first_;
-	  else if(thiskey.GetOM() == 60) domStatus.lcMode = lcMode_inice_last_;
+	  //take a peak at the neighboring DOMs
+	  I3OMGeoMap::const_iterator next_omgeo(iter); next_omgeo++;
+	  I3OMGeoMap::const_iterator prev_omgeo(iter); prev_omgeo--;
+
+	  if(iter == omgeo.begin() ||
+	     prev_omgeo->first.GetString() != iter->first.GetString()){
+	    //then we're at the top of a string
+	    domStatus.lcMode = lcMode_inice_first_;
+	  }else if(next_omgeo->second.omtype == I3OMGeo::IceTop ||
+		   next_omgeo->first.GetString() != iter->first.GetString()){
+	    //then we're at the bottom of a string
+	    domStatus.lcMode = lcMode_inice_last_;
+	  }
 	  else domStatus.lcMode = lcMode_inice_bulk_;
 
 	  domStatus.statusFADC = statusFADC_InIce_;
