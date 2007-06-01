@@ -13,12 +13,15 @@
 #define I3ICETOPTRIGGERDEFAULTS_H
 
 #include "dataclasses/I3Units.h"
+#include "dataclasses/TriggerKey.h"
 
 namespace I3IceTopTriggerDefaults{
 
   /**
    *IceCube trigger settings
    */
+  const TriggerKey::SourceID SOURCE_ID = TriggerKey::ICE_TOP;
+  const TriggerKey::TypeID TYPE_ID = TriggerKey::SIMPLE_MULTIPLICITY;
   const int CONFIG_ID = 15;
   const int THRESHOLD = 6;
   const double TIME_WINDOW = 2.*I3Units::microsecond;

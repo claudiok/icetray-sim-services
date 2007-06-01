@@ -114,8 +114,8 @@ void I3MCSourceServiceFactory::FillTriggers(I3MCDetectorStatusServicePtr s){
 
   if(installInIceTriggers_){
     I3Trigger t;
-    t.GetTriggerKey() = TriggerKey(TriggerKey::IN_ICE, 
-				   TriggerKey::SIMPLE_MULTIPLICITY, 
+    t.GetTriggerKey() = TriggerKey(I3InIceTriggerDefaults::SOURCE_ID, 
+				   I3InIceTriggerDefaults::TYPE_ID, 
 				   I3InIceTriggerDefaults::CONFIG_ID);
     I3TriggerStatus ts;
     ts.GetTriggerName().append("simple_multiplicity");
@@ -129,8 +129,8 @@ void I3MCSourceServiceFactory::FillTriggers(I3MCDetectorStatusServicePtr s){
 
   if(installIceTopTriggers_){
     I3Trigger t;
-    t.GetTriggerKey() = TriggerKey(TriggerKey::ICE_TOP, 
-				   TriggerKey::SIMPLE_MULTIPLICITY, 
+    t.GetTriggerKey() = TriggerKey(I3IceTopTriggerDefaults::SOURCE_ID,
+				   I3IceTopTriggerDefaults::TYPE_ID,
 				   I3IceTopTriggerDefaults::CONFIG_ID);
     I3TriggerStatus ts;
     ts.GetTriggerName().append("simple_multiplicity");

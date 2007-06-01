@@ -41,7 +41,7 @@ void I3TweakTriggerService::Configure()
   GetParameter("ValueNameList",setting_name_list_);
   GetParameter("ValueList",setting_value_list_);
 
-  if(setting_name_list_.size() !=setting_value_list_.size() )
+  if(setting_name_list_.size() != setting_value_list_.size() )
     log_fatal("The name list and the value list must be the same size.");
 
   if(trig_name_.size() ==0 &&
