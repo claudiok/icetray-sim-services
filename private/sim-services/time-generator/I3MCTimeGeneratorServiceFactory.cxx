@@ -22,14 +22,26 @@ using namespace std;
 
 I3_SERVICE_FACTORY(I3MCTimeGeneratorServiceFactory);
 
+const int DEFAULT_YEAR = 2006;
+const int64_t DEFAULT_DAQTIME = 0;
+
+const int DEFAULT_MJD_SECONDS(0);
+const double DEFAULT_MJD_NANOSECONDS(0.);
+
 I3MCTimeGeneratorServiceFactory::I3MCTimeGeneratorServiceFactory(const I3Context& ctx) : 
   I3ServiceFactory(ctx),
-  year_(2006),
-  daqTime_(0),
-  eventServiceName_(I3DefaultName<I3EventService>::value())
+  year_(DEFAULT_YEAR),
+  daqTime_(DEFAULT_DAQTIME),
+  eventServiceName_(I3DefaultName<I3EventService>::value()),
+  mjd_(INT_MIN),
+  mjd_s_(DEFAULT_MJD_SECONDS),
+  mjd_ns_(DEFAULT_MJD_NANOSECONDS)
 {
   AddParameter("Year", "Year of the run", year_);
   AddParameter("DAQTime", "DAQTime of the run in 1/10 of ns", daqTime_);
+  AddParameter("MJD","Modified Julian Date",mjd_);
+  AddParameter("MJDSeconds","Number of seconds after the start of the MJD.",mjd_s_);
+  AddParameter("MJDNanoSeconds","Number of nanoseconds after the start of the MJD.",mjd_ns_);
   AddParameter("InstallEventServiceAs", "Name to install event service under", eventServiceName_);
 }
 
@@ -49,7 +61,21 @@ void I3MCTimeGeneratorServiceFactory::Configure()
   
   GetParameter("Year", year_);
   GetParameter("DAQTime", daqTime_);
+  GetParameter("MJD",mjd_);
+  GetParameter("MJDSeconds",mjd_s_);
+  GetParameter("MJDNanoSeconds",mjd_ns_);
   GetParameter("InstallEventServiceAs", eventServiceName_);
+
+  if(mjd_ != INT_MIN && 
+     (year_ != DEFAULT_YEAR || daqTime_ != DEFAULT_DAQTIME ))
+     log_fatal("Ambiguous settings : Please choose either Mjd or Year and DAQTime.  Not both.");
+
+  if(mjd_ != INT_MIN){
+    I3Time t;
+    t.SetModJulianTime(mjd_,mjd_s_,mjd_ns_);
+    year_ = t.GetUTCYear();
+    daqTime_ = t.GetUTCDaqTime();
+  }
 }
 
 bool I3MCTimeGeneratorServiceFactory::InstallService(I3Context& services)

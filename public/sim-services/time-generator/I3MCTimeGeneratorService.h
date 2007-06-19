@@ -42,7 +42,7 @@ class I3MCTimeGeneratorService : public I3EventService
   ///Start time of run period
   int year_;
   int64_t daqTime_;
-
+  int mjd_;
 };
 
 #endif

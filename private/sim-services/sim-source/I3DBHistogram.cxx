@@ -746,7 +746,7 @@ void SetPMTHVInIce(TH1D* h){
 	<<I3DetStatDefaults::INICE_VOLTAGE/I3Units::volt
 	<<"V ";
   h->SetXTitle("PMT Voltage(V)");
-  FitAndFormatHisto(h,"PMTVoltageInIce.gif",defVal.str());
+  FitAndFormatHisto(h,"PMTVoltageInIce.gif",defVal.str(),true);
 
 }
 
@@ -756,7 +756,7 @@ void SetPMTHVIceTopHG(TH1D* h){
 	<<I3DetStatDefaults::ICETOP_HIGHGAIN_VOLTAGE/I3Units::volt
 	<<"V ";
   h->SetXTitle("PMT Voltage(V)");
-  FitAndFormatHisto(h,"PMTVoltageIceTopHG.gif",defVal.str());
+  FitAndFormatHisto(h,"PMTVoltageIceTopHG.gif",defVal.str(),true);
 
 }
 
@@ -766,7 +766,7 @@ void SetPMTHVIceTopLG(TH1D* h){
 	<<I3DetStatDefaults::ICETOP_LOWGAIN_VOLTAGE/I3Units::volt
 	<<"V ";
   h->SetXTitle("PMT Voltage(V)");
-  FitAndFormatHisto(h,"PMTVoltageIceTopLG.gif",defVal.str());
+  FitAndFormatHisto(h,"PMTVoltageIceTopLG.gif",defVal.str(),true);
 
 }
 
