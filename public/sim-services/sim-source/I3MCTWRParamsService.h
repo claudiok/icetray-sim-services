@@ -47,4 +47,6 @@ class I3MCTWRParamsService : public I3ServiceFactory
   SET_LOGGER("I3MCTWRParamsService");
 };
 
+I3_SERVICE_FACTORY(I3MCTWRParamsService);
+
 #endif 

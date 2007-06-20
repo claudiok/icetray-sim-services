@@ -3,6 +3,8 @@
 #include "icetray/I3Tray.h"
 #include "I3SimSourceTestModule.h"
 #include "sim-services/sim-source/I3MCSourceServiceFactory.h"
+#include "sim-services/sim-source/I3DBHistogram.h"
+#include "sim-services/time-generator/I3MCTimeGeneratorServiceFactory.h"
 #include "dataclasses/I3Units.h"
 #include "sim-services/sim-source/default-values/I3CalibrationDefaults.h"
 #include "sim-services/sim-source/default-values/I3DetectorStatusDefaults.h"
@@ -10,11 +12,26 @@
 #include "sim-services/sim-source/default-values/I3IceTopTriggerDefaults.h"
 #include "sim-services/tweak-sources/I3TweakDOMStatusService.h"
 #include "sim-services/tweak-sources/I3TweakCalibrationService.h"
+#include "sim-services/tweak-sources/I3TweakTriggerService.h"
+
+#include "sim-services/sim-source/I3MCTWRParamsService.h"
+
+#include "icetray/test/ConstructorTest.h"
 
 using namespace std;
 
 // Test some of Calibrate Module functionality
 TEST_GROUP(SimSource);
+
+TEST(clean_construction){
+  clean_constructor_test<I3MCSourceServiceFactory>();
+  clean_constructor_test<I3DBHistogram>();
+  clean_constructor_test<I3MCTimeGeneratorServiceFactory>();
+  clean_constructor_test<I3MCTWRParamsService>();
+  clean_constructor_test<I3TweakDOMStatusService>();
+  clean_constructor_test<I3TweakCalibrationService>();
+  clean_constructor_test<I3TweakTriggerService>();
+}
 
 TEST(default_config)
 {
