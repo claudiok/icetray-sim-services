@@ -2,6 +2,8 @@
 #include "sim-services/sim-source/I3TWRParamFiller.h"
 #include "simclasses/I3MCTWRParams.h"
 
+I3_SERVICE_FACTORY(I3MCTWRParamsService);
+
 I3MCTWRParamsService::
 I3MCTWRParamsService(const I3Context& context) : 
   I3ServiceFactory(context),
