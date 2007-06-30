@@ -753,3 +753,106 @@ TEST(do_no_harm_MJD)
   tray.Finish();
 
 }
+
+TEST(do_no_harm_skip)
+{
+  I3Tray tray;
+
+  std::string I3_WORK = getenv("I3_WORK");
+  std::string amageofile = I3_WORK + "/phys-services/resources/amanda.geo";
+  std::string icecubegeofile = I3_WORK + "/phys-services/resources/icecube.geo";
+
+  tray.AddService("I3MCTimeGeneratorServiceFactory","time-gen")    
+    ("MJD",54269);
+    
+  tray.AddService("I3TextFileGeometryServiceFactory","geometry")
+    ("AmandaGeoFile",amageofile)
+    ("IceCubeGeoFile",icecubegeofile);
+
+  vector<int> skipStrings;
+  skipStrings.push_back(1);
+  skipStrings.push_back(2);
+  skipStrings.push_back(3);
+
+  vector<int> skipStations;
+  skipStations.push_back(4);
+  skipStations.push_back(5);
+  skipStations.push_back(6);
+
+
+  tray.AddService("I3MCSourceServiceFactory","mcsource")
+    ("SkipStrings",skipStrings)
+    ("SkipStations",skipStations);
+
+  tray.AddService("I3TweakDOMStatusService","tweak-status");
+  tray.AddService("I3TweakCalibrationService","tweak-cal");
+    
+  tray.AddModule("I3Muxer","muxer")
+    ("CalibrationService","I3TweakCalibrationService")
+    ("DetectorStatusService","I3TweakDOMStatusService");
+
+  tray.AddModule("I3SimSourceTestModule","test_module")
+    ("StringsToUse","1:80")
+    ("StationsToUse","1:80")
+    ("DetStat_StartYear",I3DetStatDefaults::START_YEAR)
+    ("DetStat_StartDAQTime",I3DetStatDefaults::START_DAQTIME)
+    ("DetStat_EndYear",I3DetStatDefaults::END_YEAR)
+    ("DetStat_EndDAQTime",I3DetStatDefaults::END_DAQTIME)
+    ("DetStat_IceTopLCWindowPre",I3DetStatDefaults::ICETOP_LCWINDOW_PRE)
+    ("DetStat_IceTopLCWindowPost",I3DetStatDefaults::ICETOP_LCWINDOW_POST)
+    ("DetStat_IceTopHighGainVoltage",I3DetStatDefaults::ICETOP_HIGHGAIN_VOLTAGE)
+    ("DetStat_IceTopLowGainVoltage",I3DetStatDefaults::ICETOP_LOWGAIN_VOLTAGE)
+    ("DetStat_InIceLCWindowPre",I3DetStatDefaults::INICE_LCWINDOW_PRE)
+    ("DetStat_InIceLCWindowPost",I3DetStatDefaults::INICE_LCWINDOW_POST)
+    ("DetStat_LCSpan",I3DetStatDefaults::LCSPAN)
+    ("DetStat_InIceVoltage",I3DetStatDefaults::INICE_VOLTAGE)
+    ("DetStat_TriggerMode",static_cast<int>(I3DetStatDefaults::TRIGGER_MODE))
+    ("DetStat_LCModeInIceFirstDOM",static_cast<int>(I3DetStatDefaults::LCMODE_INICE_FIRST))
+    ("DetStat_LCModeInIceBulkDOMs",static_cast<int>(I3DetStatDefaults::LCMODE_INICE_BULK))
+    ("DetStat_LCModeInIceLastDOM",static_cast<int>(I3DetStatDefaults::LCMODE_INICE_LAST))
+    ("DetStat_LCModeIceTopDOMs",static_cast<int>(I3DetStatDefaults::LCMODE_ICETOP))
+    ("DetStat_StatusATWDa",static_cast<int>(I3DetStatDefaults::STATUS_ATWDa))
+    ("DetStat_StatusATWDb",static_cast<int>(I3DetStatDefaults::STATUS_ATWDb))
+    ("DetStat_StatusFADCInIce",static_cast<int>(I3DetStatDefaults::STATUS_FADC_INICE))
+    ("DetStat_StatusFADCIceTop",static_cast<int>(I3DetStatDefaults::STATUS_FADC_ICETOP))
+    ("DetStat_SPEThreshold",I3DetStatDefaults::SPE_THRESHOLD)
+    ("DetStat_FEPedestal",I3DetStatDefaults::FE_PEDESTAL)
+    ("DetStat_DACTriggerBias0",I3DetStatDefaults::DAC_TRIGGER_BIAS0)
+    ("DetStat_DACTriggerBias1",I3DetStatDefaults::DAC_TRIGGER_BIAS1)
+    ("DetStat_DACFADCRef",I3DetStatDefaults::DAC_FADC_REF)
+    ("DetStat_NBinsATWD0InIce",I3DetStatDefaults::NBINS_ATWD0_INICE)
+    ("DetStat_NBinsATWD1InIce",I3DetStatDefaults::NBINS_ATWD1_INICE)
+    ("DetStat_NBinsATWD2InIce",I3DetStatDefaults::NBINS_ATWD2_INICE)
+    ("DetStat_NBinsFADCInIce",I3DetStatDefaults::NBINS_FADC_INICE)
+    ("DetStat_NBinsATWD0IceTop",I3DetStatDefaults::NBINS_ATWD0_ICETOP)
+    ("DetStat_NBinsATWD1IceTop",I3DetStatDefaults::NBINS_ATWD1_ICETOP)
+    ("DetStat_NBinsATWD2IceTop",I3DetStatDefaults::NBINS_ATWD2_ICETOP)
+    ("DetStat_NBinsFADCIceTop",I3DetStatDefaults::NBINS_FADC_ICETOP)
+    ("Calib_StartYear",I3CalibDefaults::START_YEAR)
+    ("Calib_StartDAQTime",I3CalibDefaults::START_DAQTIME)
+    ("Calib_EndYear",I3CalibDefaults::END_YEAR)
+    ("Calib_EndDAQTime",I3CalibDefaults::END_DAQTIME)
+    ("Calib_Temperature",I3CalibDefaults::TEMPERATURE)
+    ("Calib_fadcBaselineFit_slope",I3CalibDefaults::FADC_BASELINE_FIT_SLOPE)
+    ("Calib_fadcBaselineFit_intercept",I3CalibDefaults::FADC_BASSLINE_FIT_INTERCEPT)
+    ("Calib_fadcGain",I3CalibDefaults::FADC_GAIN)
+    ("Calib_atwd0Gain",I3CalibDefaults::ATWD0_GAIN)
+    ("Calib_atwd1Gain",I3CalibDefaults::ATWD1_GAIN)
+    ("Calib_atwd2Gain",I3CalibDefaults::ATWD2_GAIN)
+    ("Calib_atwd_a_FreqFit_A",I3CalibDefaults::ATWD_A_FREQFIT_A)
+    ("Calib_atwd_a_FreqFit_B",I3CalibDefaults::ATWD_A_FREQFIT_B)
+    ("Calib_atwd_a_FreqFit_C",I3CalibDefaults::ATWD_A_FREQFIT_C)
+    ("Calib_atwd_b_FreqFit_A",I3CalibDefaults::ATWD_B_FREQFIT_A)
+    ("Calib_atwd_b_FreqFit_B",I3CalibDefaults::ATWD_B_FREQFIT_B)
+    ("Calib_atwd_b_FreqFit_C",I3CalibDefaults::ATWD_B_FREQFIT_C)
+    ("Calib_hvGainFit_slope",I3CalibDefaults::HV_GAIN_FIT_SLOPE)
+    ("Calib_hvGainFit_intercept",I3CalibDefaults::HV_GAIN_FIT_INTERCEPT)
+    ("Calib_atwdBinCalibFit_slope",I3CalibDefaults::ATWD_BINCALIB_FIT_SLOPE)
+    ("Calib_atwdBinCalibFit_intercept",I3CalibDefaults::ATWD_BINCALIB_FIT_INTERCEPT);
+
+  tray.AddModule("TrashCan","trash");
+  
+  tray.Execute(4);
+  tray.Finish();
+
+}

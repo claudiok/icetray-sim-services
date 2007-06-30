@@ -96,7 +96,7 @@ public:
   I3DetectorStatusServicePtr old_status_service_;
   I3MCTWRParamsMapPtr twrParamsMap_;
 
-  void SetDOMStatus(I3DetectorStatusPtr, const I3OMGeoMap&);
+  void SetDOMStatus(I3DetectorStatusPtr&, const I3OMGeoMap&);
   void SetAOMStatus(I3DetectorStatusPtr, const I3OMGeoMap&);
 
   shared_ptr<I3DetectorStatus> status_;

@@ -24,10 +24,11 @@ nevents = 4
 
 # The following DAQTime of 236184998900773063
 # corresponds to the first event time of run 00089742
+MJD = 54100
+
 tray.AddService("I3MCTimeGeneratorServiceFactory","time-gen")(
-        ("Year",2007),
-        ("DAQTime",94173450000000001)
-        )
+    ("Mjd",MJD)
+    )
 
 tray.AddService("I3FileOMKey2MBIDFactory","omkey2mbid")
 tray.SetParameter("omkey2mbid","Infile",expandvars("$I3_WORK/phys-services/resources/doms.txt"))
@@ -36,24 +37,15 @@ tray.SetParameter("omkey2mbid","Infile",expandvars("$I3_WORK/phys-services/resou
 #db_host = "ppemons.umh.ac.be"
 db_host = "dbs2.icecube.wisc.edu"
 
-MJD = 54210
-
 tray.AddService("I3DbGeometryServiceFactory","geometry")(
-    ("CompleteGeometry",0),
-    ("CustomDate",1),
-    ("Mjd",MJD),
     ("Host",db_host)
     )
 
 tray.AddService("I3DbCalibrationServiceFactory","dbcalibration")(
-    ("CustomDate",1),
-    ("Mjd",MJD),
     ("host",db_host)
     )
 
 tray.AddService("I3DbDetectorStatusServiceFactory","dbdetectorstatus")(
-    ("CustomDate",1),
-    ("Mjd",MJD),
     ("host",db_host)
     )
 

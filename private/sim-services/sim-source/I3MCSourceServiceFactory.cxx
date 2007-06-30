@@ -38,8 +38,8 @@ I3MCSourceServiceFactory(const I3Context& context) :
   AddParameter("InstallInIceTriggers","Install InIce Triggers",installInIceTriggers_);
   AddParameter("InstallIceTopTriggers","Install IceTop Triggers",installIceTopTriggers_);
   AddParameter("InstallTWRTriggers","Install TWR Triggers",installTWRTriggers_);
-  AddParameter("SkipStrings","Do not modify these strings",skipStrings_);
-  AddParameter("SkipStations","Do not modify these stations",skipStations_);
+  AddParameter("DoNotModifyStrings","Do not modify these strings",skipStrings_);
+  AddParameter("DoNotModifyStations","Do not modify these stations",skipStations_);
 }
 
 I3MCSourceServiceFactory::
@@ -57,8 +57,8 @@ void I3MCSourceServiceFactory::Configure()
   GetParameter("InstallInIceTriggers",installInIceTriggers_);
   GetParameter("InstallIceTopTriggers",installIceTopTriggers_);
   GetParameter("InstallTWRTriggers",installTWRTriggers_);
-  GetParameter("SkipStrings",skipStrings_);
-  GetParameter("SkipStations",skipStations_);
+  GetParameter("DoNotModifyStrings",skipStrings_);
+  GetParameter("DoNotModifyStations",skipStations_);
 }
 
 bool I3MCSourceServiceFactory::InstallService(I3Context& services)
@@ -70,6 +70,7 @@ bool I3MCSourceServiceFactory::InstallService(I3Context& services)
 
   if(!statusService_){
     I3DetectorStatusServicePtr old_status = context_.Get<I3DetectorStatusServicePtr>(oldStatusServiceName_);
+    log_debug("Couldn't find old status (%s).  Going to create one from scratch.",oldStatusServiceName_.c_str());
     statusService_ = 
       shared_ptr<I3MCDetectorStatusService>
       (new I3MCDetectorStatusService(geo_service,old_status));
@@ -85,6 +86,14 @@ bool I3MCSourceServiceFactory::InstallService(I3Context& services)
 
     statusService_->SetSkipStrings(skipStrings_);
     statusService_->SetSkipStations(skipStations_);
+
+    //Pass the TWR Params map to the detector status
+    I3MCTWRParamsMapPtr twrParams = context_.Get<I3MCTWRParamsMapPtr>("I3MCTWRParamsMap");
+    if(twrParams){
+      statusService_->SetMCTWRParamsMap(twrParams);
+    }else{
+      log_debug("Couldn't find TWR Params Map.  Assuming IceCube only mode.");
+    }
   }
 
   if(!calibrationService_){

@@ -98,7 +98,7 @@ I3MCDetectorStatusService::GetDetectorStatus(I3Time time)
   return status_;
 }
 
-void I3MCDetectorStatusService::SetDOMStatus(I3DetectorStatusPtr status, const I3OMGeoMap& omgeo){
+void I3MCDetectorStatusService::SetDOMStatus(I3DetectorStatusPtr& status, const I3OMGeoMap& omgeo){
 
   I3DOMStatus domStatus;
 
@@ -121,6 +121,7 @@ void I3MCDetectorStatusService::SetDOMStatus(I3DetectorStatusPtr status, const I
   unsigned nCreated(0);
   unsigned nAMANDA(0);
   log_trace("omgeo.size() = %zu",omgeo.size());
+  log_trace("original status size = %zu",status_->domStatus.size());
   for( iter  = omgeo.begin(); iter != omgeo.end(); iter++ ){
       OMKey thiskey = iter->first;
       I3OMGeo::OMType type = iter->second.omtype;
