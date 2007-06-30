@@ -38,6 +38,8 @@ I3MCSourceServiceFactory(const I3Context& context) :
   AddParameter("InstallInIceTriggers","Install InIce Triggers",installInIceTriggers_);
   AddParameter("InstallIceTopTriggers","Install IceTop Triggers",installIceTopTriggers_);
   AddParameter("InstallTWRTriggers","Install TWR Triggers",installTWRTriggers_);
+  AddParameter("SkipStrings","Do not modify these strings",skipStrings_);
+  AddParameter("SkipStations","Do not modify these stations",skipStations_);
 }
 
 I3MCSourceServiceFactory::
@@ -55,6 +57,8 @@ void I3MCSourceServiceFactory::Configure()
   GetParameter("InstallInIceTriggers",installInIceTriggers_);
   GetParameter("InstallIceTopTriggers",installIceTopTriggers_);
   GetParameter("InstallTWRTriggers",installTWRTriggers_);
+  GetParameter("SkipStrings",skipStrings_);
+  GetParameter("SkipStations",skipStations_);
 }
 
 bool I3MCSourceServiceFactory::InstallService(I3Context& services)
@@ -78,6 +82,9 @@ bool I3MCSourceServiceFactory::InstallService(I3Context& services)
 
     //Configure with default parameters
     Configure(statusService_);    
+
+    statusService_->SetSkipStrings(skipStrings_);
+    statusService_->SetSkipStations(skipStations_);
   }
 
   if(!calibrationService_){
@@ -87,6 +94,8 @@ bool I3MCSourceServiceFactory::InstallService(I3Context& services)
       (new I3MCCalibrationService(geo_service,old_cal));
     log_debug("Made new I3MCCalibrationService.");
 
+    calibrationService_->SetSkipStrings(skipStrings_);
+    calibrationService_->SetSkipStations(skipStations_);
   }
 
   bool good_calib(true);

@@ -60,6 +60,9 @@ public:
   void SetATWDBinCalibSlope(double x){atwdBinCalibFit_slope_=x;};
   void SetATWDBinCalibIntercept(double x){atwdBinCalibFit_intercept_=x;};
 
+  void SetSkipStrings(vector<int>& v){ skipStrings_ = v;};
+  void SetSkipStations(vector<int>& v){ skipStations_ = v;};
+
   SET_LOGGER("I3MCCalibrationService");
 
  private:
@@ -103,6 +106,11 @@ public:
   double atwdBinCalibFit_slope_;
   double atwdBinCalibFit_intercept_;
 
+  /**
+   * Don't modify these strings/stations
+   */
+  vector<int> skipStrings_;
+  vector<int> skipStations_;
 };
 I3_POINTER_TYPEDEFS(I3MCCalibrationService);
 #endif

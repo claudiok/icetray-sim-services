@@ -4,6 +4,7 @@
 #include "dataclasses/I3Units.h"
 #include "icetray/I3TrayHeaders.h"
 #include "sim-services/sim-source/default-values/I3CalibrationDefaults.h"
+#include "phys-services/geo-selector/GeoSelUtils.h"
 
 I3MCCalibrationService::I3MCCalibrationService(I3GeometryServicePtr g,
 					       I3CalibrationServicePtr c) :
@@ -110,13 +111,17 @@ I3MCCalibrationService::GetCalibration(I3Time time){
       continue;
 
     //Only add a default if an object does not already exist
-    if(calibration->domCal.find(iter->first) ==
-       calibration->domCal.end()){
-      calibration->domCal[iter->first] = domCalib;
-      log_trace("creating record for DOM %s",iter->first.str().c_str());
+    if(calibration->domCal.find(iter->first) != calibration->domCal.end() ||
+       (geo_sel_utils::exists(iter->first.GetString(),skipStrings_) && 
+	iter->second.omtype == I3OMGeo::IceCube) ||
+       (geo_sel_utils::exists(iter->first.GetString(),skipStations_) && 
+	iter->second.omtype == I3OMGeo::IceTop) ){
+      continue;
+    }	
+
+    calibration->domCal[iter->first] = domCalib;
+    log_trace("creating record for DOM %s",iter->first.str().c_str());
 		
-		
-    }
   }
   
   return calibration;

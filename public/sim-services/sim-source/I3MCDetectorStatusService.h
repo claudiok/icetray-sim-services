@@ -87,6 +87,9 @@ public:
   void SetTWRBinSize(double b){twrBinSize_ = b; };
   void SetTWRBaseline(unsigned b){twrBaseline_ = b; };
 
+  void SetSkipStrings(vector<int>& v){ skipStrings_ = v;};
+  void SetSkipStations(vector<int>& v){ skipStations_ = v;};
+
  private:
   I3MCDetectorStatusService();
   I3GeometryServicePtr geo_service_;
@@ -175,6 +178,12 @@ public:
 
   double twrBinSize_;
   unsigned twrBaseline_;
+
+  /**
+   * Don't modify these strings/stations
+   */
+  vector<int> skipStrings_;
+  vector<int> skipStations_;
 };
 
 I3_POINTER_TYPEDEFS(I3MCDetectorStatusService);

@@ -8,6 +8,7 @@
 #include "phys-services/I3GeometryService.h"
 #include "dataclasses/physics/I3Trigger.h"
 #include "dataclasses/status/I3TriggerStatus.h"
+#include "phys-services/geo-selector/GeoSelUtils.h"
 
 //In this file you'll find the default values
 //for the detector status in the I3DetStatDefaults namespace
@@ -124,7 +125,11 @@ void I3MCDetectorStatusService::SetDOMStatus(I3DetectorStatusPtr status, const I
       OMKey thiskey = iter->first;
       I3OMGeo::OMType type = iter->second.omtype;
       
-      if(status->domStatus.find(thiskey) != status->domStatus.end()){
+      if(status->domStatus.find(thiskey) != status->domStatus.end() ||
+	 (geo_sel_utils::exists(thiskey.GetString(),skipStrings_) && 
+	  type == I3OMGeo::IceCube) ||
+	 (geo_sel_utils::exists(thiskey.GetString(),skipStations_) && 
+	  type == I3OMGeo::IceTop) ){
 	nSkipped++;
 	continue;
       }	

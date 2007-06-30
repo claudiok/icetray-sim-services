@@ -50,6 +50,9 @@ class I3MCSourceServiceFactory : public I3ServiceFactory
   bool installIceTopTriggers_;
   bool installTWRTriggers_;
 
+  vector<int> skipStrings_;
+  vector<int> skipStations_;
+
   shared_ptr<I3MCDetectorStatusService> statusService_;
   shared_ptr<I3MCCalibrationService> calibrationService_;
 
