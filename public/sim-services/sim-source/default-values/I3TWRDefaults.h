@@ -16,6 +16,13 @@
 
 namespace I3TWRDefaults{
 
+  //need to verify this
+  const double BIN_SIZE = 10.*I3Units::ns;
+
+  //eyeballed it from the DB
+  //need to fit to a gaussian
+  const unsigned BASELINE = 3090;
+
   /**
    *TWR trigger settings
    */

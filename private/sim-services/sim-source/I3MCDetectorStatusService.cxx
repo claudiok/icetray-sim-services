@@ -9,6 +9,7 @@
 #include "dataclasses/physics/I3Trigger.h"
 #include "dataclasses/status/I3TriggerStatus.h"
 #include "phys-services/geo-selector/GeoSelUtils.h"
+#include "sim-services/sim-source/default-values/I3TWRDefaults.h"
 
 //In this file you'll find the default values
 //for the detector status in the I3DetStatDefaults namespace
@@ -49,7 +50,9 @@ I3MCDetectorStatusService::I3MCDetectorStatusService(I3GeometryServicePtr g,
   nBinsATWD0_IceTop_(I3DetStatDefaults::NBINS_ATWD0_ICETOP),
   nBinsATWD1_IceTop_(I3DetStatDefaults::NBINS_ATWD1_ICETOP),
   nBinsATWD2_IceTop_(I3DetStatDefaults::NBINS_ATWD2_ICETOP),
-  nBinsFADC_IceTop_(I3DetStatDefaults::NBINS_FADC_ICETOP)
+  nBinsFADC_IceTop_(I3DetStatDefaults::NBINS_FADC_ICETOP),
+  twrBinSize_(I3TWRDefaults::BIN_SIZE),
+  twrBaseline_(I3TWRDefaults::BASELINE)
 {
   geo_service_ = g;
   old_status_service_ = s;
@@ -92,8 +95,10 @@ I3MCDetectorStatusService::GetDetectorStatus(I3Time time)
   }
 
   SetDOMStatus(status_,om_geo);
+  SetAOMStatus(status_,om_geo);
 
   log_trace("size of I3DOMStatus Map = %zu",status_->domStatus.size());
+  log_trace("size of AOMStatus Map = %zu",status_->aomStatus.size());
 
   return status_;
 }
@@ -207,11 +212,12 @@ void I3MCDetectorStatusService::SetDOMStatus(I3DetectorStatusPtr& status, const 
 
 void I3MCDetectorStatusService::SetAOMStatus(I3DetectorStatusPtr status, 
 					     const I3OMGeoMap& omgeo){
+  log_debug("Setting AOMStatus");
 
   TWRAOMStatus aomStatus;
 
   aomStatus.SetBinSize(twrBinSize_);
-  aomStatus.SetBaseline(twrBaseline_);//
+  aomStatus.SetBaseline(twrBaseline_);
 
   I3OMGeoMap::const_iterator iter;
   for( iter  = omgeo.begin(); iter != omgeo.end(); iter++ ){
@@ -225,13 +231,13 @@ void I3MCDetectorStatusService::SetAOMStatus(I3DetectorStatusPtr status,
 	if(iter != twrParamsMap_->end()){
 	  aomStatus.SetStopDelay(iter->second.stop_delay);
 	  aomStatus.SetThreshold(iter->second.TWR_thresh);
-	  //if(iter->second.optical) t = TWRAOMStatus::OPTICAL
-	  //else t = TWRAOMStatus::ELECTRICAL;
+
 	  TWRAOMStatus::CableType t = (iter->second.optical 
 				       ? TWRAOMStatus::OPTICAL :
 				       TWRAOMStatus::ELECTRICAL);
 	  aomStatus.SetCableType(t);
 	  status->aomStatus[omKey] = aomStatus;
+	  log_trace("Added AOMStatus for %s",omKey.str().c_str());
 	}else{
 
 	}
