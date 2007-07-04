@@ -95,7 +95,8 @@ I3MCDetectorStatusService::GetDetectorStatus(I3Time time)
   }
 
   SetDOMStatus(status_,om_geo);
-  SetAOMStatus(status_,om_geo);
+  if(twrParamsMap_)
+    SetAOMStatus(status_,om_geo);
 
   log_trace("size of I3DOMStatus Map = %zu",status_->domStatus.size());
   log_trace("size of AOMStatus Map = %zu",status_->aomStatus.size());
