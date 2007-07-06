@@ -14,12 +14,16 @@
 
 #include "sim-services/time-generator/I3MCTimeGeneratorService.h"
 #include "dataclasses/I3Units.h"
+#include "dataclasses/physics/I3EventHeader.h"
 #include "icetray/I3Frame.h"
 #include "icetray/I3Tray.h"
 
-I3MCTimeGeneratorService::I3MCTimeGeneratorService(int year, int64_t daqTime):
+I3MCTimeGeneratorService::I3MCTimeGeneratorService(int year, 
+						   int64_t daqTime,
+						   unsigned runNumber):
   year_(year),
-  daqTime_(daqTime)
+  daqTime_(daqTime),
+  runNumber_(runNumber)
 {
 }
 
@@ -34,5 +38,20 @@ bool I3MCTimeGeneratorService::MoreEvents()
 I3Time I3MCTimeGeneratorService::PopEvent(I3Frame& frame)
 {
   log_debug("Entering PopEvent()");
-  return I3Time(year_, daqTime_);
+  I3Time evtTime(year_, daqTime_);
+
+  // Someone has specified a run number
+  if(runNumber_ > 0 ) 
+    {
+      //Lets make a frame header that can be used for testing
+      I3EventHeaderPtr eventHeader_(new I3EventHeader);
+      eventHeader_->SetStartTime(evtTime);
+      eventHeader_->SetRunID(runNumber_);
+      eventHeader_->SetSubRunID(0);
+      eventHeader_->SetEventID(0);
+      //Lets put it in the frame
+      frame.Put<I3EventHeader>(eventHeader_);
+    }
+
+  return evtTime;
 } 

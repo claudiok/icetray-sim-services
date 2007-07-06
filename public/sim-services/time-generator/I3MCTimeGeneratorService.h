@@ -33,7 +33,7 @@ class I3MCTimeGeneratorService : public I3EventService
 
   SET_LOGGER("I3MCTimeGeneratorService");
 
-  I3MCTimeGeneratorService(int, int64_t);
+  I3MCTimeGeneratorService(int, int64_t, unsigned);
   virtual bool MoreEvents();
   virtual I3Time PopEvent(I3Frame&);
   virtual ~I3MCTimeGeneratorService() { };
@@ -43,6 +43,7 @@ class I3MCTimeGeneratorService : public I3EventService
   int year_;
   int64_t daqTime_;
   int mjd_;
+  unsigned runNumber_;
 };
 
 #endif

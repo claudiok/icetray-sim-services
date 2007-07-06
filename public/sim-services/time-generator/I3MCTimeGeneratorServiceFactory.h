@@ -43,6 +43,7 @@ class I3MCTimeGeneratorServiceFactory : public I3ServiceFactory
   int mjd_;
   int mjd_s_;
   double mjd_ns_;
+  unsigned runNumber_;
 
   shared_ptr<I3MCTimeGeneratorService> eventService_;
 };
