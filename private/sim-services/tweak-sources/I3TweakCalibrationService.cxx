@@ -25,7 +25,8 @@ I3TweakCalibrationService::I3TweakCalibrationService(const I3Context& context) :
   hvGainFit_slope_(NAN),
   hvGainFit_intercept_(NAN),
   atwdBinCalibFit_slope_(NAN),
-  atwdBinCalibFit_intercept_(NAN)
+  atwdBinCalibFit_intercept_(NAN),
+  atwd_response_width_(NAN)
 {
   AddParameter("OldServiceName","Name of service to tweak",oldServiceName_);
   AddParameter("TweakedServiceName","Name of tweaked service",tweakedServiceName_);
@@ -46,6 +47,7 @@ I3TweakCalibrationService::I3TweakCalibrationService(const I3Context& context) :
   AddParameter("HVGainFit_intercept","",hvGainFit_intercept_);
   AddParameter("ATWDBinCalibFit_slope","",atwdBinCalibFit_slope_);
   AddParameter("ATWDBinCalibFit_intercept","",atwdBinCalibFit_intercept_);
+  AddParameter("ATWDResponseWidth","",atwd_response_width_);
 }
 
 
@@ -70,6 +72,7 @@ void I3TweakCalibrationService::Configure()
   GetParameter("HVGainFit_intercept",hvGainFit_intercept_);
   GetParameter("ATWDBinCalibFit_slope",atwdBinCalibFit_slope_);
   GetParameter("ATWDBinCalibFit_intercept",atwdBinCalibFit_intercept_);
+  GetParameter("ATWDResponseWidth",atwd_response_width_);
 }
 
 bool I3TweakCalibrationService::InstallService(I3Context& services)
@@ -115,6 +118,8 @@ bool I3TweakCalibrationService::InstallService(I3Context& services)
       cal_service_->SetATWDBinCalibSlope(atwdBinCalibFit_slope_);
     if(!isnan(atwdBinCalibFit_intercept_))
       cal_service_->SetATWDBinCalibIntercept(atwdBinCalibFit_intercept_);
+    if(!isnan(atwd_response_width_))
+      cal_service_->SetATWDResponseWidth(atwd_response_width_);
   }
 
   bool good_calib = services.Put<I3CalibrationService>(tweakedServiceName_,cal_service_);

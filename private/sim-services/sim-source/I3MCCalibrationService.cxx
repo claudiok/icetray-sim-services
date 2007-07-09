@@ -28,7 +28,8 @@ I3MCCalibrationService::I3MCCalibrationService(I3GeometryServicePtr g,
   hvGainFit_slope_(I3CalibDefaults::HV_GAIN_FIT_SLOPE),
   hvGainFit_intercept_(I3CalibDefaults::HV_GAIN_FIT_INTERCEPT),
   atwdBinCalibFit_slope_(I3CalibDefaults::ATWD_BINCALIB_FIT_SLOPE),
-  atwdBinCalibFit_intercept_(I3CalibDefaults::ATWD_BINCALIB_FIT_INTERCEPT)
+  atwdBinCalibFit_intercept_(I3CalibDefaults::ATWD_BINCALIB_FIT_INTERCEPT),
+  atwd_response_width_(I3CalibDefaults::ATWD_RESPONSE_WIDTH)
 {
   geo_service_ = g;
   cal_service_ = c;
@@ -99,6 +100,8 @@ I3MCCalibrationService::GetCalibration(I3Time time){
   LinearFit binfit;
   binfit.slope = atwdBinCalibFit_slope_;
   binfit.intercept = atwdBinCalibFit_intercept_;
+
+  domCalib.SetATWDResponseWidth(atwd_response_width_);
 
   for( unsigned int channel = 0; channel < 3; ++channel )
       for( unsigned int id = 0; id <= 1; ++id )

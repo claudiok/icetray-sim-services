@@ -50,6 +50,7 @@ public:
   void SetHVGainIntercept(double x){hvGainFit_intercept_=x;};
   void SetATWDBinCalibSlope(double x){atwdBinCalibFit_slope_=x;};
   void SetATWDBinCalibIntercept(double x){atwdBinCalibFit_intercept_=x;};
+  void SetATWDResponseWidth(double x){atwd_response_width_=x;};
 
   SET_LOGGER("I3TweakCalibration");
 
@@ -81,6 +82,7 @@ public:
   double atwdBinCalibFit_slope_;
   double atwdBinCalibFit_intercept_;
 
+  double atwd_response_width_;
 };
 
 I3_POINTER_TYPEDEFS(I3TweakCalibration);

@@ -21,7 +21,8 @@ I3TweakCalibration::I3TweakCalibration(I3CalibrationServicePtr c) :
   hvGainFit_slope_(NAN),
   hvGainFit_intercept_(NAN),
   atwdBinCalibFit_slope_(NAN),
-  atwdBinCalibFit_intercept_(NAN)
+  atwdBinCalibFit_intercept_(NAN),
+  atwd_response_width_(NAN)
 {
   cal_service_ = c;
 }
@@ -111,6 +112,9 @@ I3TweakCalibration::GetCalibration(I3Time time){
 	hvgainfit.intercept = hvGainFit_intercept_;
       iter->second.SetHVGainFit(hvgainfit);    
     }
+
+    if(!isnan(atwd_response_width_))
+      iter->second.SetATWDResponseWidth(atwd_response_width_);
    
     if(!isnan(atwdBinCalibFit_slope_) || 
        !isnan(atwdBinCalibFit_intercept_)){

@@ -74,6 +74,8 @@ public:
   double atwdBinCalibFit_slope_;
   double atwdBinCalibFit_intercept_;
 
+  double atwd_response_width_;
+
 };
 I3_POINTER_TYPEDEFS(I3TweakCalibrationService);
 I3_DEFAULT_NAME(I3TweakCalibrationService);

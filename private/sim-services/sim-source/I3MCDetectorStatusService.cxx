@@ -207,8 +207,6 @@ void I3MCDetectorStatusService::SetDOMStatus(I3DetectorStatusPtr& status, const 
   log_debug("nSkipped: %d nCreated: %d ",nSkipped,nCreated);
   log_debug("status->domStatus.size() = %zu",status->domStatus.size());
   log_debug("nAMANDA: %d", nAMANDA);
-  if(nSkipped + nCreated  != status->domStatus.size())
-    log_fatal("missing status records!!!");
 }
 
 void I3MCDetectorStatusService::SetAOMStatus(I3DetectorStatusPtr status, 

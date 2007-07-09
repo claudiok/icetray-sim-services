@@ -69,6 +69,8 @@ namespace I3CalibDefaults{
   const double ATWD_BINCALIB_FIT_SLOPE = -0.002*I3Units::V; //NO CHANGE
   const double ATWD_BINCALIB_FIT_INTERCEPT = 2.88*I3Units::V; //OLD: 2.9*I3Units::V
 
+  const double ATWD_RESPONSE_WIDTH = 0.41; //god-given units
+
 }
 
 #endif

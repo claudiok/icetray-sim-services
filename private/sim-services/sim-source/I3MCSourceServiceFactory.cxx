@@ -311,4 +311,5 @@ void I3MCSourceServiceFactory::Configure(I3MCCalibrationServicePtr c){
   c->SetHVGainIntercept(I3CalibDefaults::HV_GAIN_FIT_INTERCEPT);
   c->SetATWDBinCalibSlope(I3CalibDefaults::ATWD_BINCALIB_FIT_SLOPE);
   c->SetATWDBinCalibIntercept(I3CalibDefaults::ATWD_BINCALIB_FIT_INTERCEPT);
+  c->SetATWDResponseWidth(I3CalibDefaults::ATWD_RESPONSE_WIDTH);
 }

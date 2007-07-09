@@ -99,6 +99,7 @@ I3SimSourceTestModule::I3SimSourceTestModule(const I3Context& ctx) :
   AddParameter("Calib_hvGainFit_intercept","",cal_hvGainFit_intercept_);
   AddParameter("Calib_atwdBinCalibFit_slope","",cal_atwdBinCalibFit_slope_);
   AddParameter("Calib_atwdBinCalibFit_intercept","",cal_atwdBinCalibFit_intercept_);
+  AddParameter("Calib_ATWDResponseWidth","",cal_atwd_response_width_);
 
   AddOutBox("OutBox");
 }
@@ -177,6 +178,7 @@ void I3SimSourceTestModule::Configure()
   GetParameter("Calib_hvGainFit_intercept",cal_hvGainFit_intercept_);
   GetParameter("Calib_atwdBinCalibFit_slope",cal_atwdBinCalibFit_slope_);
   GetParameter("Calib_atwdBinCalibFit_intercept",cal_atwdBinCalibFit_intercept_);
+  GetParameter("Calib_ATWDResponseWidth",cal_atwd_response_width_);
 }
 
 void I3SimSourceTestModule::Physics(I3FramePtr frame)
@@ -240,6 +242,10 @@ void I3SimSourceTestModule::Physics(I3FramePtr frame)
 
     ENSURE_DISTANCE(cal_iter->second.GetHVGainFit().slope, cal_hvGainFit_slope_, DISTANCE);
     ENSURE_DISTANCE(cal_iter->second.GetHVGainFit().intercept, cal_hvGainFit_intercept_, DISTANCE);
+
+    cerr<<" cal_iter->second.GetATWDResponseWidth() = "<<cal_iter->second.GetATWDResponseWidth()<<endl;
+    cerr<<"     cal_atwd_response_width_ = "<<cal_atwd_response_width_<<endl;
+    ENSURE_DISTANCE(cal_iter->second.GetATWDResponseWidth(), cal_atwd_response_width_, DISTANCE);
 
     for( unsigned int bin = 0; bin < 128; ++bin ){
       ENSURE_DISTANCE(cal_iter->second.GetATWDBinCalibFit(0,0,bin).slope, cal_atwdBinCalibFit_slope_, DISTANCE);

@@ -63,6 +63,8 @@ public:
   void SetSkipStrings(vector<int>& v){ skipStrings_ = v;};
   void SetSkipStations(vector<int>& v){ skipStations_ = v;};
 
+  void SetATWDResponseWidth(double w){ atwd_response_width_ = w; };
+
   SET_LOGGER("I3MCCalibrationService");
 
  private:
@@ -106,6 +108,7 @@ public:
   double atwdBinCalibFit_slope_;
   double atwdBinCalibFit_intercept_;
 
+  double atwd_response_width_;
   /**
    * Don't modify these strings/stations
    */

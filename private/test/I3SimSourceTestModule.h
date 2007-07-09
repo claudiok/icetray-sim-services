@@ -166,6 +166,8 @@ class I3SimSourceTestModule : public I3Module
   double cal_atwdBinCalibFit_slope_;
   double cal_atwdBinCalibFit_intercept_;
 
+  double cal_atwd_response_width_;
+
 };
 
 #endif //I3SIMSOURCETESTMODULE_H
