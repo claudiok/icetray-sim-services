@@ -90,6 +90,8 @@ public:
   void SetSkipStrings(vector<int>& v){ skipStrings_ = v;};
   void SetSkipStations(vector<int>& v){ skipStations_ = v;};
 
+  void SetDeltaCompression(I3DOMStatus::OnOff f){ deltaCompression_ = f; };
+
  private:
   I3MCDetectorStatusService();
   I3GeometryServicePtr geo_service_;
@@ -178,6 +180,8 @@ public:
 
   double twrBinSize_;
   unsigned twrBaseline_;
+
+  I3DOMStatus::OnOff deltaCompression_;
 
   /**
    * Don't modify these strings/stations

@@ -50,7 +50,7 @@ namespace I3DetStatDefaults{
   /**
    * Number of neighbors required to satisfy local coincidence
    */
-  const int LCSPAN = 1;
+  const int LCSPAN = 2; //CHANGED...used to be 1 in 2006
 
   /**
    * InIce PMT voltage
@@ -75,17 +75,19 @@ namespace I3DetStatDefaults{
   const int DAC_FADC_REF = 800; //NO CHANGE
 
   /**
-   *Number of FADC bins
+   *Number of bins
    */
-  const unsigned NBINS_ATWD0_INICE = 128; //NO CHANGE
-  const unsigned NBINS_ATWD1_INICE = 32; //OLD: 128
-  const unsigned NBINS_ATWD2_INICE = 32; //OLD: 128
-  const unsigned NBINS_FADC_INICE = 50;  //OLD: 256
+  const unsigned NBINS_ATWD0_INICE = 0; //NO CHANGE
+  const unsigned NBINS_ATWD1_INICE = 0; //OLD: 128
+  const unsigned NBINS_ATWD2_INICE = 0; //OLD: 128
+  const unsigned NBINS_FADC_INICE = 0;  //OLD: 256
 
-  const unsigned NBINS_ATWD0_ICETOP = 128; //NO CHANGE
-  const unsigned NBINS_ATWD1_ICETOP = 128; //OLD: 128
-  const unsigned NBINS_ATWD2_ICETOP = 128; //OLD: 128
+  const unsigned NBINS_ATWD0_ICETOP = 0; //NO CHANGE
+  const unsigned NBINS_ATWD1_ICETOP = 0; //OLD: 128
+  const unsigned NBINS_ATWD2_ICETOP = 0; //OLD: 128
   const unsigned NBINS_FADC_ICETOP = 0;  //OLD: 256
+
+  const I3DOMStatus::OnOff DELTA_COMPRESSION = I3DOMStatus::On;
 
 }
 

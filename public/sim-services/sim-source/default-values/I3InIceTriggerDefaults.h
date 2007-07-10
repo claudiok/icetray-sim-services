@@ -22,8 +22,8 @@ namespace I3InIceTriggerDefaults{
    */
   const TriggerKey::SourceID SOURCE_ID = TriggerKey::IN_ICE;
   const TriggerKey::TypeID TYPE_ID = TriggerKey::SIMPLE_MULTIPLICITY;
-  const int CONFIG_ID = 18;
-  const int THRESHOLD = 8;
+  const int CONFIG_ID = 0;
+  const int THRESHOLD = 20;
   const double TIME_WINDOW = 5.*I3Units::microsecond;
 }
 

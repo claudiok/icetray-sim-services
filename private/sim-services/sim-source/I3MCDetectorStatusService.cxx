@@ -52,7 +52,8 @@ I3MCDetectorStatusService::I3MCDetectorStatusService(I3GeometryServicePtr g,
   nBinsATWD2_IceTop_(I3DetStatDefaults::NBINS_ATWD2_ICETOP),
   nBinsFADC_IceTop_(I3DetStatDefaults::NBINS_FADC_ICETOP),
   twrBinSize_(I3TWRDefaults::BIN_SIZE),
-  twrBaseline_(I3TWRDefaults::BASELINE)
+  twrBaseline_(I3TWRDefaults::BASELINE),
+  deltaCompression_(I3DetStatDefaults::DELTA_COMPRESSION)
 {
   geo_service_ = g;
   old_status_service_ = s;
@@ -120,6 +121,8 @@ void I3MCDetectorStatusService::SetDOMStatus(I3DetectorStatusPtr& status, const 
   domStatus.dacTriggerBias1 = dacTriggerBias1_;
   
   domStatus.dacFADCRef = dacFADCRef_;
+
+  domStatus.deltaCompress = deltaCompression_;
   
   I3OMGeoMap::const_iterator iter;
   //changed all inice to omgeo

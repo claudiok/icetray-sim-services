@@ -286,6 +286,7 @@ void I3MCSourceServiceFactory::Configure(I3MCDetectorStatusServicePtr s){
   s->SetNBinsATWD1IceTop(I3DetStatDefaults::NBINS_ATWD1_ICETOP);
   s->SetNBinsATWD2IceTop(I3DetStatDefaults::NBINS_ATWD2_ICETOP);
   s->SetNBinsFADCIceTop(I3DetStatDefaults::NBINS_FADC_ICETOP);
+  s->SetDeltaCompression(I3DetStatDefaults::DELTA_COMPRESSION);
 }
 
 void I3MCSourceServiceFactory::Configure(I3MCCalibrationServicePtr c){
