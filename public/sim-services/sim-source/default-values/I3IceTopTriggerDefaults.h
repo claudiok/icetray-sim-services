@@ -23,8 +23,8 @@ namespace I3IceTopTriggerDefaults{
   const TriggerKey::SourceID SOURCE_ID = TriggerKey::ICE_TOP;
   const TriggerKey::TypeID TYPE_ID = TriggerKey::SIMPLE_MULTIPLICITY;
   const int CONFIG_ID = 0;
-  const int THRESHOLD = 20;
-  const double TIME_WINDOW = 5.*I3Units::microsecond;
+  const int THRESHOLD = 6;
+  const double TIME_WINDOW = 2.*I3Units::microsecond;
 
 }
 
