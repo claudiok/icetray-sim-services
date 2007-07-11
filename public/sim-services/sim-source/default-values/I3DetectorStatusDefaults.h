@@ -65,7 +65,7 @@ namespace I3DetStatDefaults{
 
   const I3DOMStatus::LCMode LCMODE_INICE_BULK = I3DOMStatus::UpOrDown;
   const I3DOMStatus::LCMode LCMODE_INICE_FIRST = I3DOMStatus::Down;
-  const I3DOMStatus::LCMode LCMODE_INICE_LAST = I3DOMStatus::Down; //Down?  Really? 
+  const I3DOMStatus::LCMode LCMODE_INICE_LAST = I3DOMStatus::Up; 
   const I3DOMStatus::LCMode LCMODE_ICETOP = I3DOMStatus::Down;
 
   const double SPE_THRESHOLD = 1.422*I3Units::mV; //OLD: 4.0*I3Units::mV
