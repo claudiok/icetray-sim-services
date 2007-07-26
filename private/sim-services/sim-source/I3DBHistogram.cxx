@@ -16,6 +16,7 @@
 #include <phys-services/I3EventService.h>
 #include <dataclasses/I3Time.h>
 #include <dataclasses/I3Units.h>
+#include <dataclasses/I3DOMFunctions.h>
 #include "icetray/I3TrayHeaders.h"
 #include "icetray/I3Module.h"
 #include "icetray/I3Tray.h"
@@ -25,14 +26,18 @@
 
 #include <TFile.h>
 #include <TH1D.h>
+#include <TF1.h>
 #include <TCanvas.h>
 #include <TPaveText.h>
 #include <TStyle.h>
+
+#include <boost/foreach.hpp>
 
 I3_MODULE(I3DBHistogram);
 
 void BookDOMCalibHistograms(I3CalibrationConstPtr , std::string );
 void BookDOMStatusHistograms(I3DetectorStatusConstPtr , std::string );
+void MakeDOMFunctionsPlots(I3CalibrationConstPtr ,I3DetectorStatusConstPtr);
 
 void SetTemperature(TH1D*);
 void SetFADCBaselineSlope(TH1D*);
@@ -121,6 +126,8 @@ void I3DBHistogram::Physics(I3FramePtr frame)
     frame->Get<I3DetectorStatusConstPtr>();
 
   BookDOMStatusHistograms(status,"DBDomStatus.root");
+
+  MakeDOMFunctionsPlots(calib,status);
 
   PushFrame(frame,"OutBox");
 }//Physics()
@@ -326,14 +333,14 @@ void BookDOMStatusHistograms(I3DetectorStatusConstPtr status,
 		    200,0, 2000.0*I3Units::ns);
   TH1D* pmtHV_inice_h = new TH1D("pmtHV_inice","PMT High Voltage - InIce",60,1000., 1600.);
   TH1D* pmtHV_icetopHG_h = new TH1D("pmtHV_icetopHG","PMT High Voltage - IceTop High Gain",60,1000., 1600.);
-  TH1D* pmtHV_icetopLG_h = new TH1D("pmtHV_icetopLG","PMT High Voltage - IceTop Low Gain",50,400,900.);
+  TH1D* pmtHV_icetopLG_h = new TH1D("pmtHV_icetopLG","PMT High Voltage - IceTop Low Gain",50,700,1300.);
   TH1D* trigMode_h = new TH1D("trigMode","Trigger Mode",6,-1.5,4.5);
   TH1D* lcMode_h = new TH1D("lcMode","Local Coincidence Mode",6,-1.5,4.5);
   TH1D* statusATWDa_h = new TH1D("statusATWDa","Status ATWDa",3,-1.5,1.5);
   TH1D* statusATWDb_h = new TH1D("statusATWDb","Status ATWDb",3,-1.5,1.5);
   TH1D* statusFADC_h = new TH1D("statusFADC","Status FADC",3,-1.5,1.5);
 
-  TH1D* speThreshold_h = new TH1D("speThreshold","SPE Threshold",100,1.,2.);//I3Units::mV
+  TH1D* speThreshold_h = new TH1D("speThreshold","SPE Threshold",100,1.,3.);//I3Units::mV
   TH1D* fePedestal_h = new TH1D("fePedestal","FE Pedestal",100,2.5,2.7);//I3Units::V
 
   TH1D* dacTriggerBias0_h = new TH1D("dacTriggerBias0","DAC Trigger Bias 0",100,0,1000);
@@ -431,6 +438,76 @@ void BookDOMStatusHistograms(I3DetectorStatusConstPtr status,
 
 }
 
+void MakeDOMFunctionsPlots(I3CalibrationConstPtr calib, 
+		     I3DetectorStatusConstPtr status){
+
+  TH1D* pmtgain_h = new TH1D("pmtgain","PMT Gain",100,5.5,7.5);
+  TH1D* atwda_sampling_rate_h = new TH1D("atwda_sampling_rate",
+					 "ATWDa Sampling Rate",100,250,350);
+  TH1D* atwdb_sampling_rate_h = new TH1D("atwdb_sampling_rate",
+					 "ATWDb Sampling Rate",100,250,350);
+  TH1D* spemean_h = new TH1D("spemean","SPE Mean",100,5.5,7.5);
+  TH1D* fadcbaseline_h = new TH1D("fadcbaseline","FADC Baseline",50,110,160);
+  TH1D* ttime_h = new TH1D("ttime","Transit Time",60,130,160);
+
+
+  map<OMKey, I3DOMCalibration>::const_iterator cal_iter;
+
+  for(cal_iter = calib->domCal.begin();
+      cal_iter != calib->domCal.end(); 
+      cal_iter++){
+
+    if(status->domStatus.find(cal_iter->first) != 
+       status->domStatus.end()){
+      const I3DOMStatus& domstat = status->domStatus.find(cal_iter->first)->second;
+      const I3DOMCalibration& domcal = cal_iter->second;
+
+      double gain = PMTGain(domstat,domcal);
+      double atwda_sr = ATWDSamplingRate(0,domstat,domcal);
+      double atwdb_sr = ATWDSamplingRate(1,domstat,domcal);
+      double spemean = SPEMean(domstat,domcal);
+      double fadcbaseline = FADCBaseline(domstat,domcal);
+      double ttime = TransitTime(domstat,domcal);
+
+      pmtgain_h->Fill(log10(gain));
+      atwda_sampling_rate_h->Fill(atwda_sr/I3Units::megahertz);
+      atwdb_sampling_rate_h->Fill(atwdb_sr/I3Units::megahertz);
+      spemean_h->Fill(log10(spemean/(I3Units::eSI*I3Units::C)));
+      fadcbaseline_h->Fill(fadcbaseline);
+      ttime_h->Fill(ttime/I3Units::ns);
+    }
+  }
+
+  const string I3_WORK(getenv("I3_WORK"));
+  string plot_path(I3_WORK + "/sim-services/resources/plots/");
+
+  TCanvas c;
+  c.SetLogy(true);
+  pmtgain_h->Draw();
+  c.SaveAs((plot_path + "PMTGain.gif").c_str());
+
+  c.SetLogy(true);
+  atwda_sampling_rate_h->Draw();
+  c.SaveAs((plot_path + "ATWDaSamplingRate.gif").c_str());
+
+  c.SetLogy(true);
+  atwdb_sampling_rate_h->Draw();
+  c.SaveAs((plot_path + "ATWDbSamplingRate.gif").c_str());
+
+  c.SetLogy(true);
+  spemean_h->Draw();
+  c.SaveAs((plot_path + "SPEMean.gif").c_str());
+
+  c.SetLogy(true);
+  fadcbaseline_h->Draw();
+  c.SaveAs((plot_path + "FADCBasline.gif").c_str());
+
+  c.SetLogy(true);
+  ttime_h->Draw();
+  c.SaveAs((plot_path + "TransitTime.gif").c_str());
+
+} 
+
 void FitAndFormatHisto(TH1D* h, 
 		       string filename, 
 		       string defVal, 
@@ -490,30 +567,57 @@ void SetFADCBaselineIntercept(TH1D* h){
 };
 
 void SetFADCGain(TH1D* h){
-  std::stringstream defVal;
-  defVal<<"Default = "
-       <<I3CalibDefaults::FADC_GAIN/I3Units::V
-       <<" V/tick";
-  h->SetXTitle("FADC Gain(V/tick)");
-  FitAndFormatHisto(h,"FADCGain.gif",defVal.str(),true);
+
+  TCanvas c;
+
+  TF1* dg = new TF1("dg","gaus(0) + gaus(3)",0,0.02);
+  dg->SetParameter(0,90);
+  dg->SetParameter(1,0.077e-3);
+  dg->SetParameter(2,0.001e-3);
+  dg->SetParameter(3,80);
+  dg->SetParameter(4,0.09e-3);
+  dg->SetParameter(5,0.0025e-3);
+  h->Fit("dg"); 
+
+  const string I3_WORK(getenv("I3_WORK"));
+  string plot_path(I3_WORK + "/sim-services/resources/plots/");
+  c.SaveAs((plot_path+"FADCGain.gif").c_str());
 };
 
 void SetATWD0Gain(TH1D* h){
-  std::stringstream defVal;
-  defVal<<"Default = "
-       <<I3CalibDefaults::ATWD0_GAIN
-       <<" ";
-  //h->SetXTitle("Units ???");
-  FitAndFormatHisto(h,"ATWD0Gain.gif",defVal.str(),true);
+
+  TCanvas c;
+
+  TF1* dg = new TF1("dg","gaus(0) + gaus(3)",-20,-10);
+  dg->SetParameter(0,120);
+  dg->SetParameter(1,-16);
+  dg->SetParameter(2,0.5);
+  dg->SetParameter(3,60);
+  dg->SetParameter(4,-18.2);
+  dg->SetParameter(5,0.5);
+  h->Fit("dg"); 
+
+  const string I3_WORK(getenv("I3_WORK"));
+  string plot_path(I3_WORK + "/sim-services/resources/plots/");
+  c.SaveAs((plot_path+"ATWD0Gain.gif").c_str());
+
 };
 
 void SetATWD1Gain(TH1D* h){
-  std::stringstream defVal;
-  defVal<<"Default = "
-       <<I3CalibDefaults::ATWD1_GAIN
-       <<" ";
-  //h->SetXTitle("Units???");
-  FitAndFormatHisto(h,"ATWD1Gain.gif",defVal.str(),true);
+  TCanvas c;
+
+  TF1* dg = new TF1("dg","gaus(0) + gaus(3)",-2.4,-1);
+  dg->SetParameter(0,60);
+  dg->SetParameter(1,-2);
+  dg->SetParameter(2,0.1);
+  dg->SetParameter(3,100);
+  dg->SetParameter(4,-1.7);
+  dg->SetParameter(5,0.1);
+  h->Fit("dg"); 
+
+  const string I3_WORK(getenv("I3_WORK"));
+  string plot_path(I3_WORK + "/sim-services/resources/plots/");
+  c.SaveAs((plot_path+"ATWD1Gain.gif").c_str());
 };
 
 void SetATWD2Gain(TH1D* h){

@@ -13,14 +13,13 @@ load("libdataclasses")
 load("libphys-services")
 load("libdataio")
 load("libsim-services")
-load("libI3Db")
 
 tray = I3Tray()
 
 nevents = 4
 
 tray.AddService("I3ReaderServiceFactory","i3reader")
-tray.SetParameter("i3reader","filename","database.i3")
+tray.SetParameter("i3reader","filename",expandvars("$I3_PORTS/test-data/sim/GCD.i3.gz"))
 
 tray.AddModule("I3Muxer","muxer")
 tray.AddModule("I3DBHistogram","histo")
