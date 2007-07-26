@@ -37,8 +37,8 @@ namespace I3DetStatDefaults{
   /**
    * IceTop PMT voltages for high and low gain
    */
-  const double ICETOP_HIGHGAIN_VOLTAGE = 1172*I3Units::volt;
-  const double ICETOP_LOWGAIN_VOLTAGE = 698*I3Units::volt;
+  const double ICETOP_HIGHGAIN_VOLTAGE = 1278*I3Units::volt;
+  const double ICETOP_LOWGAIN_VOLTAGE = 945*I3Units::volt;
 
   /**
    * InIce local coincidence trigger windows
@@ -55,7 +55,7 @@ namespace I3DetStatDefaults{
   /**
    * InIce PMT voltage
    */
-  const double INICE_VOLTAGE = 1350*I3Units::volt; //NO CHANGE
+  const double INICE_VOLTAGE = 1276*I3Units::volt; //NO CHANGE
 
   const I3DOMStatus::TrigMode TRIGGER_MODE = I3DOMStatus::SPE; //NO CHANGE
   const I3DOMStatus::OnOff STATUS_ATWDa = I3DOMStatus::On; //NO CHANGE
