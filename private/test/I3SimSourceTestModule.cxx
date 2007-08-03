@@ -52,7 +52,8 @@ I3SimSourceTestModule::I3SimSourceTestModule(const I3Context& ctx) :
   AddParameter("DetStat_IceTopLowGainVoltage","",ds_icetopLowGainVoltage_);
   AddParameter("DetStat_InIceLCWindowPre","",ds_iniceLCWindowPre_);
   AddParameter("DetStat_InIceLCWindowPost","",ds_iniceLCWindowPost_);
-  AddParameter("DetStat_LCSpan","",ds_lcSpan_);
+  AddParameter("DetStat_InIceLCSpan","",ds_iniceLCSpan_);
+  AddParameter("DetStat_IceTopLCSpan","",ds_icetopLCSpan_);
   AddParameter("DetStat_InIceVoltage","",ds_iniceVoltage_);
   AddParameter("DetStat_TriggerMode","",ds_triggerMode_);
   AddParameter("DetStat_LCModeInIceFirstDOM","",ds_lcMode_inice_first_);
@@ -131,7 +132,8 @@ void I3SimSourceTestModule::Configure()
   GetParameter("DetStat_IceTopLowGainVoltage",ds_icetopLowGainVoltage_);
   GetParameter("DetStat_InIceLCWindowPre",ds_iniceLCWindowPre_);
   GetParameter("DetStat_InIceLCWindowPost",ds_iniceLCWindowPost_);
-  GetParameter("DetStat_LCSpan",ds_lcSpan_);
+  GetParameter("DetStat_InIceLCSpan",ds_iniceLCSpan_);
+  GetParameter("DetStat_IceTopLCSpan",ds_icetopLCSpan_);
   GetParameter("DetStat_InIceVoltage",ds_iniceVoltage_);
   GetParameter("DetStat_TriggerMode",ds_triggerMode_);
   GetParameter("DetStat_LCModeInIceFirstDOM",ds_lcMode_inice_first_);
@@ -215,13 +217,7 @@ void I3SimSourceTestModule::Physics(I3FramePtr frame)
 	  (cal_iter->first.GetOM() > 60))))
       continue;
 
-    cerr<<"calibration: testing DOM "<<cal_iter->first.str()<<endl;
-
     ENSURE(cal_iter->first.GetString()>0,"There should be no AMANDA OMs.");
-
-    if(fabs(cal_iter->second.GetTemperature() - cal_temperature_) > DISTANCE)
-      cerr<<"cal_iter->second.GetTemperature() = "<<cal_iter->second.GetTemperature()<<endl
-	  <<"cal_temperature_ = "<<cal_temperature_<<endl;
 
     ENSURE_DISTANCE(cal_iter->second.GetTemperature(), cal_temperature_, DISTANCE);
 
@@ -243,8 +239,6 @@ void I3SimSourceTestModule::Physics(I3FramePtr frame)
     ENSURE_DISTANCE(cal_iter->second.GetHVGainFit().slope, cal_hvGainFit_slope_, DISTANCE);
     ENSURE_DISTANCE(cal_iter->second.GetHVGainFit().intercept, cal_hvGainFit_intercept_, DISTANCE);
 
-    cerr<<" cal_iter->second.GetATWDResponseWidth() = "<<cal_iter->second.GetATWDResponseWidth()<<endl;
-    cerr<<"     cal_atwd_response_width_ = "<<cal_atwd_response_width_<<endl;
     ENSURE_DISTANCE(cal_iter->second.GetATWDResponseWidth(), cal_atwd_response_width_, DISTANCE);
 
     for( unsigned int bin = 0; bin < 128; ++bin ){
@@ -270,8 +264,6 @@ void I3SimSourceTestModule::Physics(I3FramePtr frame)
   I3DetectorStatusConstPtr status = 
     frame->Get<I3DetectorStatusConstPtr>();
 
-  cerr<<"status->domStatus.size(): "<<status->domStatus.size()<<endl;
-
   map<OMKey, I3DOMStatus>::const_iterator stat_iter;
   for(stat_iter = status->domStatus.begin();
       stat_iter != status->domStatus.end(); 
@@ -283,11 +275,10 @@ void I3SimSourceTestModule::Physics(I3FramePtr frame)
 	  (stat_iter->first.GetOM() > 60))))
       continue;
 
-    cerr<<"DOM status: testing DOM "<<stat_iter->first.str()<<endl;
-
     ENSURE(stat_iter->first.GetString()>0,"There should be no AMANDA OMs.");
 
       if ( stat_iter->first.GetOM() > 60 ){
+	ENSURE(static_cast<int>(stat_iter->second.lcSpan) == ds_icetopLCSpan_);
 	ENSURE_DISTANCE(stat_iter->second.lcWindowPre, ds_icetopLCWindowPre_, DISTANCE);
 	ENSURE_DISTANCE(stat_iter->second.lcWindowPost, ds_icetopLCWindowPost_, DISTANCE);
 	ENSURE(static_cast<int>(stat_iter->second.statusFADC) == ds_statusFADC_IceTop_);
@@ -298,8 +289,6 @@ void I3SimSourceTestModule::Physics(I3FramePtr frame)
 	ENSURE(stat_iter->second.nBinsATWD1 == ds_nBinsATWD1_IceTop_);
 	ENSURE(stat_iter->second.nBinsATWD2 == ds_nBinsATWD2_IceTop_);
 	ENSURE(stat_iter->second.nBinsFADC == ds_nBinsFADC_IceTop_);
-	cerr<<"Does "<<stat_iter->second.nBinsFADC<< " == "
-	    <<ds_nBinsFADC_IceTop_<<" ???"<<endl;
 
 	if ( stat_iter->first.GetOM() == 61 || stat_iter->first.GetOM() == 63 ){	
 	      ENSURE_DISTANCE(stat_iter->second.pmtHV, ds_icetopHighGainVoltage_, DISTANCE);
@@ -307,10 +296,7 @@ void I3SimSourceTestModule::Physics(I3FramePtr frame)
 	  ENSURE_DISTANCE(stat_iter->second.pmtHV, ds_icetopLowGainVoltage_, DISTANCE);
 	}
       }	else {
-	if(static_cast<int>(stat_iter->second.lcSpan) != ds_lcSpan_)
-	  cerr<<"static_cast<int>(stat_iter->second.lcSpan) = "<<static_cast<int>(stat_iter->second.lcSpan)<<endl
-	      <<"ds_lcSpan_ = "<<ds_lcSpan_<<endl;
-	ENSURE(static_cast<int>(stat_iter->second.lcSpan) == ds_lcSpan_);
+	ENSURE(static_cast<int>(stat_iter->second.lcSpan) == ds_iniceLCSpan_);
 	ENSURE_DISTANCE(stat_iter->second.lcWindowPre, ds_iniceLCWindowPre_, DISTANCE);
 	ENSURE_DISTANCE(stat_iter->second.lcWindowPost, ds_iniceLCWindowPost_, DISTANCE);
 	ENSURE_DISTANCE(stat_iter->second.pmtHV, ds_iniceVoltage_, DISTANCE);

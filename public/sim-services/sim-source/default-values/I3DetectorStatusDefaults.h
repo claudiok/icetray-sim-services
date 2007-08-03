@@ -31,8 +31,8 @@ namespace I3DetStatDefaults{
   /**
    * Icetop local coincidence trigger windows
    */
-  const double ICETOP_LCWINDOW_PRE = 125.0*I3Units::ns;
-  const double ICETOP_LCWINDOW_POST = 125.0*I3Units::ns;
+  const double ICETOP_LCWINDOW_PRE = 1000.0*I3Units::ns;//changed to match season III 
+  const double ICETOP_LCWINDOW_POST = 1000.0*I3Units::ns;//changed to match season III 
 
   /**
    * IceTop PMT voltages for high and low gain
@@ -50,7 +50,8 @@ namespace I3DetStatDefaults{
   /**
    * Number of neighbors required to satisfy local coincidence
    */
-  const int LCSPAN = 2; //CHANGED...used to be 1 in 2006
+  const int INICE_LCSPAN = 2; //CHANGED...used to be 1 in 2006
+  const int ICETOP_LCSPAN = 1; 
 
   /**
    * InIce PMT voltage
@@ -60,13 +61,13 @@ namespace I3DetStatDefaults{
   const I3DOMStatus::TrigMode TRIGGER_MODE = I3DOMStatus::SPE; 
   const I3DOMStatus::OnOff STATUS_ATWDa = I3DOMStatus::On; 
   const I3DOMStatus::OnOff STATUS_ATWDb = I3DOMStatus::On; 
-  const I3DOMStatus::OnOff STATUS_FADC_INICE = I3DOMStatus::On; 
+  const I3DOMStatus::OnOff STATUS_FADC_INICE = I3DOMStatus::Off;//changed to match season III 
   const I3DOMStatus::OnOff STATUS_FADC_ICETOP = I3DOMStatus::Off; 
 
   const I3DOMStatus::LCMode LCMODE_INICE_BULK = I3DOMStatus::UpOrDown;
   const I3DOMStatus::LCMode LCMODE_INICE_FIRST = I3DOMStatus::Down;
   const I3DOMStatus::LCMode LCMODE_INICE_LAST = I3DOMStatus::Up; 
-  const I3DOMStatus::LCMode LCMODE_ICETOP = I3DOMStatus::Down;
+  const I3DOMStatus::LCMode LCMODE_ICETOP = I3DOMStatus::UpOrDown;//changed to match season III 
 
   const double SPE_THRESHOLD = 1.852*I3Units::mV;
   const double FE_PEDESTAL = 2.6*I3Units::volt;

@@ -15,7 +15,8 @@ I3TweakDOMStatus::I3TweakDOMStatus(I3DetectorStatusServicePtr s) :
   icetopLowGainVoltage_(NAN),
   iniceLCWindowPre_(NAN),
   iniceLCWindowPost_(NAN),
-  lcSpan_(INT_MIN),
+  inice_LCSpan_(INT_MIN),
+  icetop_LCSpan_(INT_MIN),
   iniceVoltage_(NAN),
   triggerMode_(I3DOMStatus::UnknownTrigMode),
   lcMode_inice_first_(I3DOMStatus::UnknownLCMode),
@@ -87,6 +88,9 @@ I3TweakDOMStatus::GetDetectorStatus(I3Time time)
     if ( iter->first.GetOM()>60 )
       {
 
+	if( icetop_LCSpan_ != INT_MIN)
+	  iter->second.lcSpan = icetop_LCSpan_;
+
 	if(lcMode_icetop_ != I3DOMStatus::UnknownLCMode)
 	  iter->second.lcMode = lcMode_icetop_;
 
@@ -141,8 +145,8 @@ I3TweakDOMStatus::GetDetectorStatus(I3Time time)
 	  iter->second.nBinsATWD2 = nBinsATWD2_InIce_;
 	if( nBinsFADC_InIce_ != INT_MIN)
 	      iter->second.nBinsFADC = nBinsFADC_InIce_;
-	if( lcSpan_ != INT_MIN)
-	  iter->second.lcSpan = lcSpan_;
+	if( inice_LCSpan_ != INT_MIN)
+	  iter->second.lcSpan = inice_LCSpan_;
 	
 	if(!isnan(iniceLCWindowPre_))
 	  iter->second.lcWindowPre = iniceLCWindowPre_;

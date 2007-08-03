@@ -260,7 +260,8 @@ void I3MCSourceServiceFactory::Configure(I3MCDetectorStatusServicePtr s){
   s->SetIceTopLowGainVoltage(I3DetStatDefaults::ICETOP_LOWGAIN_VOLTAGE);
   s->SetInIceLCWindowPre(I3DetStatDefaults::INICE_LCWINDOW_PRE);
   s->SetInIceLCWindowPost(I3DetStatDefaults::INICE_LCWINDOW_POST);
-  s->SetLCSpan(I3DetStatDefaults::LCSPAN);
+  s->SetInIceLCSpan(I3DetStatDefaults::INICE_LCSPAN);
+  s->SetIceTopLCSpan(I3DetStatDefaults::ICETOP_LCSPAN);
   s->SetInIceVoltage(I3DetStatDefaults::INICE_VOLTAGE);
   s->SetTriggerMode(I3DetStatDefaults::TRIGGER_MODE);
 

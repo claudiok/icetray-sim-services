@@ -818,9 +818,11 @@ void SetATWD2bBinCalibIntercept(TH1D* h){
 
 void SetLCSpan(TH1D* h){
   std::stringstream defVal;
-  defVal<<"Default = "
-       <<I3DetStatDefaults::LCSPAN
-       <<" ";
+  defVal<<"InIce Default = "
+	<<I3DetStatDefaults::INICE_LCSPAN<<" "	
+	<<"IceTop Default = "
+	<<I3DetStatDefaults::ICETOP_LCSPAN
+	<<" ";
   h->SetXTitle("Span");
   FitAndFormatHisto(h,"detstat/LCSpan.png",defVal.str());
 }

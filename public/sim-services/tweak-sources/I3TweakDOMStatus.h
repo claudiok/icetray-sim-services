@@ -41,7 +41,8 @@ public:
   void SetIceTopLowGainVoltage(double v){icetopLowGainVoltage_= v;};
   void SetInIceLCWindowPre(double p){iniceLCWindowPre_= p;};
   void SetInIceLCWindowPost(double p){iniceLCWindowPost_= p;};
-  void SetLCSpan(int s){lcSpan_= s;};
+  void SetInIceLCSpan(int s){inice_LCSpan_= s;};
+  void SetIceTopLCSpan(int s){icetop_LCSpan_= s;};
   void SetInIceVoltage(double v){iniceVoltage_= v;};
   void SetTriggerMode(int m){triggerMode_= static_cast<I3DOMStatus::TrigMode>(m);};
 
@@ -103,7 +104,8 @@ public:
   /**
    * Number of neighbors required to satisfy local coincidence
    */
-  int lcSpan_;
+  int inice_LCSpan_;
+  int icetop_LCSpan_;
 
   /**
    * InIce PMT voltage

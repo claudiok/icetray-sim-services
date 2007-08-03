@@ -15,7 +15,8 @@ I3TweakDOMStatusService::I3TweakDOMStatusService(const I3Context& context) :
   icetopLowGainVoltage_(NAN),
   iniceLCWindowPre_(NAN),
   iniceLCWindowPost_(NAN),
-  lcSpan_(INT_MIN),
+  inice_LCSpan_(INT_MIN),
+  icetop_LCSpan_(INT_MIN),
   iniceVoltage_(NAN),
   triggerMode_(INT_MIN),
   lcMode_inice_first_(INT_MIN),
@@ -48,7 +49,8 @@ I3TweakDOMStatusService::I3TweakDOMStatusService(const I3Context& context) :
   AddParameter("IceTopLowGainVoltage","",icetopLowGainVoltage_);
   AddParameter("InIceLCWindowPre","",iniceLCWindowPre_);
   AddParameter("InIceLCWindowPost","",iniceLCWindowPost_);
-  AddParameter("LCSpan","",lcSpan_);
+  AddParameter("InIceLCSpan","",inice_LCSpan_);
+  AddParameter("IceTopLCSpan","",icetop_LCSpan_);
   AddParameter("InIceVoltage","",iniceVoltage_);
   AddParameter("TriggerMode","",triggerMode_);
   AddParameter("LCModeInIceFirstDOM","",lcMode_inice_first_);
@@ -85,7 +87,8 @@ void I3TweakDOMStatusService::Configure()
   GetParameter("IceTopLowGainVoltage",icetopLowGainVoltage_);
   GetParameter("InIceLCWindowPre",iniceLCWindowPre_);
   GetParameter("InIceLCWindowPost",iniceLCWindowPost_);
-  GetParameter("LCSpan",lcSpan_);
+  GetParameter("InIceLCSpan",inice_LCSpan_);
+  GetParameter("IceTopLCSpan",icetop_LCSpan_);
   GetParameter("InIceVoltage",iniceVoltage_);
   GetParameter("TriggerMode",triggerMode_);
   GetParameter("LCModeInIceFirstDOM",lcMode_inice_first_);
@@ -132,8 +135,10 @@ bool I3TweakDOMStatusService::InstallService(I3Context& services)
       status_service_->SetInIceLCWindowPre(iniceLCWindowPre_);
     if(!isnan(iniceLCWindowPost_))
       status_service_->SetInIceLCWindowPost(iniceLCWindowPost_);
-    if(lcSpan_ > INT_MIN)
-      status_service_->SetLCSpan(lcSpan_);
+    if(inice_LCSpan_ > INT_MIN)
+      status_service_->SetInIceLCSpan(inice_LCSpan_);
+    if(icetop_LCSpan_ > INT_MIN)
+      status_service_->SetIceTopLCSpan(icetop_LCSpan_);
     if(!isnan(iniceVoltage_))
       status_service_->SetInIceVoltage(iniceVoltage_);
     if(triggerMode_ > INT_MIN)

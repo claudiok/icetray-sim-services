@@ -71,7 +71,8 @@ public:
   /**
    * Number of neighbors required to satisfy local coincidence
    */
-  int lcSpan_;
+  int inice_LCSpan_;
+  int icetop_LCSpan_;
 
   /**
    * InIce PMT voltage

@@ -27,7 +27,8 @@ I3MCDetectorStatusService::I3MCDetectorStatusService(I3GeometryServicePtr g,
   icetopLowGainVoltage_(I3DetStatDefaults::ICETOP_LOWGAIN_VOLTAGE),
   iniceLCWindowPre_(I3DetStatDefaults::INICE_LCWINDOW_PRE),
   iniceLCWindowPost_(I3DetStatDefaults::INICE_LCWINDOW_POST),
-  lcSpan_(I3DetStatDefaults::LCSPAN),
+  inice_LCSpan_(I3DetStatDefaults::INICE_LCSPAN),
+  icetop_LCSpan_(I3DetStatDefaults::ICETOP_LCSPAN),
   iniceVoltage_(I3DetStatDefaults::INICE_VOLTAGE),
   triggerMode_(I3DetStatDefaults::TRIGGER_MODE),
   lcMode_inice_first_(I3DetStatDefaults::LCMODE_INICE_FIRST),
@@ -156,6 +157,8 @@ void I3MCDetectorStatusService::SetDOMStatus(I3DetectorStatusPtr& status, const 
 	  
 	  domStatus.lcWindowPre = icetopLCWindowPre_;
 	  domStatus.lcWindowPost = icetopLCWindowPost_;
+
+	  domStatus.lcSpan = icetop_LCSpan_;
 	  
 	  if ( thiskey.GetOM() == 61 ||
 	       thiskey.GetOM() == 63 )
@@ -187,12 +190,12 @@ void I3MCDetectorStatusService::SetDOMStatus(I3DetectorStatusPtr& status, const 
 	  }
 	  else domStatus.lcMode = lcMode_inice_bulk_;
 
+	  domStatus.lcSpan = inice_LCSpan_;
 	  domStatus.statusFADC = statusFADC_InIce_;
 	  domStatus.nBinsATWD0 = nBinsATWD0_InIce_;
 	  domStatus.nBinsATWD1 = nBinsATWD1_InIce_;
 	  domStatus.nBinsATWD2 = nBinsATWD2_InIce_;
 	  domStatus.nBinsFADC = nBinsFADC_InIce_;
-	  domStatus.lcSpan = lcSpan_;
 	  
 	  domStatus.lcWindowPre = iniceLCWindowPre_;
 	  domStatus.lcWindowPost = iniceLCWindowPost_;

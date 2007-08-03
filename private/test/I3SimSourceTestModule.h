@@ -89,7 +89,8 @@ class I3SimSourceTestModule : public I3Module
   /**
    * Number of neighbors required to satisfy local coincidence
    */
-  int ds_lcSpan_;
+  int ds_iniceLCSpan_;
+  int ds_icetopLCSpan_;
 
   /**
    * InIce PMT voltage

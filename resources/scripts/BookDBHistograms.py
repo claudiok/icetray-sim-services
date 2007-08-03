@@ -19,7 +19,8 @@ tray = I3Tray()
 nevents = 4
 
 tray.AddService("I3ReaderServiceFactory","i3reader")
-tray.SetParameter("i3reader","filename",expandvars("$I3_PORTS/test-data/sim/GCD.i3.gz"))
+#tray.SetParameter("i3reader","filename",expandvars("$I3_PORTS/test-data/sim/GCD.i3.gz"))
+tray.SetParameter("i3reader","filename","database.i3")
 
 tray.AddModule("I3Muxer","muxer")
 tray.AddModule("I3DBHistogram","histo")
