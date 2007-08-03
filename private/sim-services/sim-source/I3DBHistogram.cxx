@@ -70,6 +70,7 @@ void SetATWD2bBinCalibIntercept(TH1D*);
 void SetLCSpan(TH1D*);
 void SetLCWindowPre(TH1D*);
 void SetLCWindowPost(TH1D*);
+void SetDeltaCompress(TH1D*);
 void SetPMTHVInIce(TH1D*);
 void SetPMTHVIceTopHG(TH1D*);
 void SetPMTHVIceTopLG(TH1D*);
@@ -352,6 +353,8 @@ void BookDOMStatusHistograms(I3DetectorStatusConstPtr status,
   TH1D* nBinsATWD2_h = new TH1D("nBinsATWD2","Number of bins ATWD2",257,0,256);
   TH1D* nBinsFADC_h = new TH1D("nBinsFADC","Number of bins FADC",257,0,256);
 
+  TH1D* deltaCompress_h = new TH1D("deltaCompress","Delta Compression",3,-1.5,1.5);
+
   map<OMKey, I3DOMStatus>::const_iterator stat_iter;
 
   for(stat_iter = status->domStatus.begin();
@@ -361,6 +364,7 @@ void BookDOMStatusHistograms(I3DetectorStatusConstPtr status,
     lcspan_h->Fill(stat_iter->second.lcSpan);
     lcWindowPre_h->Fill(stat_iter->second.lcWindowPre);
     lcWindowPost_h->Fill(stat_iter->second.lcWindowPost);
+    deltaCompress_h->Fill(stat_iter->second.deltaCompress);
 
     if(stat_iter->first.GetOM() <=60){
       pmtHV_inice_h->Fill(stat_iter->second.pmtHV/I3Units::volt);
@@ -395,6 +399,7 @@ void BookDOMStatusHistograms(I3DetectorStatusConstPtr status,
   lcspan_h->Write();
   lcWindowPre_h->Write();
   lcWindowPost_h->Write();
+  deltaCompress_h->Write();
   pmtHV_inice_h->Write();
   pmtHV_icetopHG_h->Write();
   pmtHV_icetopLG_h->Write();
@@ -418,6 +423,7 @@ void BookDOMStatusHistograms(I3DetectorStatusConstPtr status,
   SetLCSpan(lcspan_h);
   SetLCWindowPre(lcWindowPre_h);
   SetLCWindowPost(lcWindowPost_h);
+  SetDeltaCompress(deltaCompress_h);
   SetPMTHVInIce(pmtHV_inice_h);
   SetPMTHVIceTopHG(pmtHV_icetopHG_h);
   SetPMTHVIceTopLG(pmtHV_icetopLG_h);
@@ -484,27 +490,27 @@ void MakeDOMFunctionsPlots(I3CalibrationConstPtr calib,
   TCanvas c;
   c.SetLogy(true);
   pmtgain_h->Draw();
-  c.SaveAs((plot_path + "PMTGain.gif").c_str());
+  c.SaveAs((plot_path + "dom/PMTGain.png").c_str());
 
   c.SetLogy(true);
   atwda_sampling_rate_h->Draw();
-  c.SaveAs((plot_path + "ATWDaSamplingRate.gif").c_str());
+  c.SaveAs((plot_path + "dom/ATWDaSamplingRate.png").c_str());
 
   c.SetLogy(true);
   atwdb_sampling_rate_h->Draw();
-  c.SaveAs((plot_path + "ATWDbSamplingRate.gif").c_str());
+  c.SaveAs((plot_path + "dom/ATWDbSamplingRate.png").c_str());
 
   c.SetLogy(true);
   spemean_h->Draw();
-  c.SaveAs((plot_path + "SPEMean.gif").c_str());
+  c.SaveAs((plot_path + "dom/SPEMean.png").c_str());
 
   c.SetLogy(true);
   fadcbaseline_h->Draw();
-  c.SaveAs((plot_path + "FADCBasline.gif").c_str());
+  c.SaveAs((plot_path + "dom/FADCBasline.png").c_str());
 
   c.SetLogy(true);
   ttime_h->Draw();
-  c.SaveAs((plot_path + "TransitTime.gif").c_str());
+  c.SaveAs((plot_path + "dom/TransitTime.png").c_str());
 
 } 
 
@@ -545,7 +551,7 @@ void SetTemperature(TH1D* h){
        <<I3CalibDefaults::TEMPERATURE
        <<" K";
   h->SetXTitle("T(K)");
-  FitAndFormatHisto(h,"DOMTemperature.gif",defVal.str());
+  FitAndFormatHisto(h,"calibration/DOMTemperature.png",defVal.str());
 };
 
 void SetFADCBaselineSlope(TH1D* h){
@@ -554,7 +560,7 @@ void SetFADCBaselineSlope(TH1D* h){
        <<I3CalibDefaults::FADC_BASELINE_FIT_SLOPE
        <<" ADC ticks/DAC-10-Units";
   h->SetXTitle("ADC ticks/DAC-10-Units");
-  FitAndFormatHisto(h,"SetFADCBaselineSlope.gif",defVal.str(),true);
+  FitAndFormatHisto(h,"calibration/SetFADCBaselineSlope.png",defVal.str(),true);
 };
 
 void SetFADCBaselineIntercept(TH1D* h){
@@ -563,7 +569,7 @@ void SetFADCBaselineIntercept(TH1D* h){
        <<I3CalibDefaults::FADC_BASSLINE_FIT_INTERCEPT
        <<" ADC ticks";
   h->SetXTitle("ADC ticks");
-  FitAndFormatHisto(h,"SetFADCBaselineIntercept.gif",defVal.str(),true);
+  FitAndFormatHisto(h,"calibration/SetFADCBaselineIntercept.png",defVal.str(),true);
 };
 
 void SetFADCGain(TH1D* h){
@@ -581,7 +587,7 @@ void SetFADCGain(TH1D* h){
 
   const string I3_WORK(getenv("I3_WORK"));
   string plot_path(I3_WORK + "/sim-services/resources/plots/");
-  c.SaveAs((plot_path+"FADCGain.gif").c_str());
+  c.SaveAs((plot_path+"calibration/FADCGain.png").c_str());
 };
 
 void SetATWD0Gain(TH1D* h){
@@ -599,7 +605,7 @@ void SetATWD0Gain(TH1D* h){
 
   const string I3_WORK(getenv("I3_WORK"));
   string plot_path(I3_WORK + "/sim-services/resources/plots/");
-  c.SaveAs((plot_path+"ATWD0Gain.gif").c_str());
+  c.SaveAs((plot_path+"calibration/ATWD0Gain.png").c_str());
 
 };
 
@@ -617,7 +623,7 @@ void SetATWD1Gain(TH1D* h){
 
   const string I3_WORK(getenv("I3_WORK"));
   string plot_path(I3_WORK + "/sim-services/resources/plots/");
-  c.SaveAs((plot_path+"ATWD1Gain.gif").c_str());
+  c.SaveAs((plot_path+"calibration/ATWD1Gain.png").c_str());
 };
 
 void SetATWD2Gain(TH1D* h){
@@ -626,7 +632,7 @@ void SetATWD2Gain(TH1D* h){
        <<I3CalibDefaults::ATWD2_GAIN
        <<" ";
   //h->SetXTitle("Units");
-  FitAndFormatHisto(h,"ATWD2Gain.gif",defVal.str(),true);
+  FitAndFormatHisto(h,"calibration/ATWD2Gain.png",defVal.str(),true);
 };
 
 void SetATWDaFreqFit_A(TH1D* h){
@@ -635,7 +641,7 @@ void SetATWDaFreqFit_A(TH1D* h){
        <<I3CalibDefaults::ATWD_A_FREQFIT_A
        <<" MHz";
   h->SetXTitle("MHz");
-  FitAndFormatHisto(h,"ATWDaFreqFit_A.gif",defVal.str(),true);
+  FitAndFormatHisto(h,"calibration/ATWDaFreqFit_A.png",defVal.str(),true);
 };
 
 void SetATWDaFreqFit_B(TH1D* h){
@@ -644,7 +650,7 @@ void SetATWDaFreqFit_B(TH1D* h){
        <<I3CalibDefaults::ATWD_A_FREQFIT_B
        <<" ";
   //h->SetXTitle("");
-  FitAndFormatHisto(h,"ATWDaFreqFit_B.gif",defVal.str(),true);
+  FitAndFormatHisto(h,"calibration/ATWDaFreqFit_B.png",defVal.str(),true);
 };
 
 void SetATWDaFreqFit_C(TH1D* h){
@@ -653,7 +659,7 @@ void SetATWDaFreqFit_C(TH1D* h){
        <<I3CalibDefaults::ATWD_A_FREQFIT_C
        <<"";
   //h->SetXTitle("");
-  FitAndFormatHisto(h,"ATWDaFreqFit_C.gif",defVal.str(),true);
+  FitAndFormatHisto(h,"calibration/ATWDaFreqFit_C.png",defVal.str(),true);
 };
 
 void SetATWDbFreqFit_A(TH1D* h){
@@ -662,7 +668,7 @@ void SetATWDbFreqFit_A(TH1D* h){
        <<I3CalibDefaults::ATWD_B_FREQFIT_A
        <<" MHz";
   h->SetXTitle("MHz");
-  FitAndFormatHisto(h,"ATWDbFreqFit_A.gif",defVal.str(),true);
+  FitAndFormatHisto(h,"calibration/ATWDbFreqFit_A.png",defVal.str(),true);
 };
 
 void SetATWDbFreqFit_B(TH1D* h){
@@ -671,7 +677,7 @@ void SetATWDbFreqFit_B(TH1D* h){
        <<I3CalibDefaults::ATWD_B_FREQFIT_B
        <<"";
   //h->SetXTitle("");
-  FitAndFormatHisto(h,"ATWDbFreqFit_B.gif",defVal.str(),true);
+  FitAndFormatHisto(h,"calibration/ATWDbFreqFit_B.png",defVal.str(),true);
 };
 
 void SetATWDbFreqFit_C(TH1D* h){
@@ -680,7 +686,7 @@ void SetATWDbFreqFit_C(TH1D* h){
        <<I3CalibDefaults::ATWD_B_FREQFIT_C
        <<"";
   //h->SetXTitle("");
-  FitAndFormatHisto(h,"ATWDbFreqFit_C.gif",defVal.str(),true);
+  FitAndFormatHisto(h,"calibration/ATWDbFreqFit_C.png",defVal.str(),true);
 };
 
 void SetHVGainSlope(TH1D* h){
@@ -689,7 +695,7 @@ void SetHVGainSlope(TH1D* h){
        <<I3CalibDefaults::HV_GAIN_FIT_SLOPE
        <<" ";
   h->SetXTitle("Slope");
-  FitAndFormatHisto(h,"HVGainFitSlope.gif",defVal.str(),true);
+  FitAndFormatHisto(h,"calibration/HVGainFitSlope.png",defVal.str(),true);
 };
 
 void SetHVGainIntercept(TH1D* h){
@@ -698,7 +704,7 @@ void SetHVGainIntercept(TH1D* h){
 	<<I3CalibDefaults::HV_GAIN_FIT_INTERCEPT
        <<" ";
   h->SetXTitle("Intercept");
-  FitAndFormatHisto(h,"HVGainFitIntercept.gif",defVal.str(),true);
+  FitAndFormatHisto(h,"calibration/HVGainFitIntercept.png",defVal.str(),true);
 };
 
 void SetATWD0aBinCalibSlope(TH1D* h){
@@ -707,7 +713,7 @@ void SetATWD0aBinCalibSlope(TH1D* h){
        <<I3CalibDefaults::ATWD_BINCALIB_FIT_SLOPE/I3Units::V
        <<" V";
   h->SetXTitle("Slope(V)");
- FitAndFormatHisto(h,"ATWD0aBinCalibSlope.gif",defVal.str(),true);
+ FitAndFormatHisto(h,"calibration/ATWD0aBinCalibSlope.png",defVal.str(),true);
 };
 
 void SetATWD0aBinCalibIntercept(TH1D* h){
@@ -716,7 +722,7 @@ void SetATWD0aBinCalibIntercept(TH1D* h){
        <<I3CalibDefaults::ATWD_BINCALIB_FIT_INTERCEPT/I3Units::V
        <<" V";
   h->SetXTitle("Intercept(V)");
-  FitAndFormatHisto(h,"ATWD0aBinCalibIntercept.gif",defVal.str(),true);
+  FitAndFormatHisto(h,"calibration/ATWD0aBinCalibIntercept.png",defVal.str(),true);
 };
 
 void SetATWD1aBinCalibSlope(TH1D* h){
@@ -725,7 +731,7 @@ void SetATWD1aBinCalibSlope(TH1D* h){
        <<I3CalibDefaults::ATWD_BINCALIB_FIT_SLOPE/I3Units::V
        <<" V";
   h->SetXTitle("Slope(V)");
-  FitAndFormatHisto(h,"ATWD1aBinCalibSlope.gif",defVal.str(),true);
+  FitAndFormatHisto(h,"calibration/ATWD1aBinCalibSlope.png",defVal.str(),true);
 };
 
 void SetATWD1aBinCalibIntercept(TH1D* h){
@@ -734,7 +740,7 @@ void SetATWD1aBinCalibIntercept(TH1D* h){
        <<I3CalibDefaults::ATWD_BINCALIB_FIT_INTERCEPT/I3Units::V
        <<" V";
   h->SetXTitle("Intercept(V)");
-  FitAndFormatHisto(h,"ATWD1aBinCalibIntercept.gif",defVal.str(),true);
+  FitAndFormatHisto(h,"calibration/ATWD1aBinCalibIntercept.png",defVal.str(),true);
 };
 
 void SetATWD2aBinCalibSlope(TH1D* h){
@@ -743,7 +749,7 @@ void SetATWD2aBinCalibSlope(TH1D* h){
        <<I3CalibDefaults::ATWD_BINCALIB_FIT_SLOPE/I3Units::V
        <<" V";
   h->SetXTitle("Slope(V)");
-  FitAndFormatHisto(h,"ATWD2aBinCalibSlope.gif",defVal.str(),true);
+  FitAndFormatHisto(h,"calibration/ATWD2aBinCalibSlope.png",defVal.str(),true);
 };
 
 void SetATWD2aBinCalibIntercept(TH1D* h){
@@ -752,7 +758,7 @@ void SetATWD2aBinCalibIntercept(TH1D* h){
        <<I3CalibDefaults::ATWD_BINCALIB_FIT_INTERCEPT/I3Units::V
        <<" V";
   h->SetXTitle("Intercept(V)");
-  FitAndFormatHisto(h,"ATWD2aBinCalibIntercept.gif",defVal.str(),true);
+  FitAndFormatHisto(h,"calibration/ATWD2aBinCalibIntercept.png",defVal.str(),true);
 };
 
 
@@ -762,7 +768,7 @@ void SetATWD0bBinCalibSlope(TH1D* h){
        <<I3CalibDefaults::ATWD_BINCALIB_FIT_SLOPE/I3Units::V
        <<" V";
   h->SetXTitle("Slope(V)");
-  FitAndFormatHisto(h,"ATWD0bBinCalibSlope.gif",defVal.str(),true);
+  FitAndFormatHisto(h,"calibration/ATWD0bBinCalibSlope.png",defVal.str(),true);
 };
 
 void SetATWD0bBinCalibIntercept(TH1D* h){
@@ -771,7 +777,7 @@ void SetATWD0bBinCalibIntercept(TH1D* h){
        <<I3CalibDefaults::ATWD_BINCALIB_FIT_INTERCEPT/I3Units::V
        <<" V";
   h->SetXTitle("Intercept(V)");
-  FitAndFormatHisto(h,"ATWD0bBinCalibIntercept.gif",defVal.str(),true);
+  FitAndFormatHisto(h,"calibration/ATWD0bBinCalibIntercept.png",defVal.str(),true);
 };
 
 void SetATWD1bBinCalibSlope(TH1D* h){
@@ -780,7 +786,7 @@ void SetATWD1bBinCalibSlope(TH1D* h){
        <<I3CalibDefaults::ATWD_BINCALIB_FIT_SLOPE/I3Units::V
        <<" V";
   h->SetXTitle("Slope(V)");
-  FitAndFormatHisto(h,"ATWD1bBinCalibSlope.gif",defVal.str(),true);
+  FitAndFormatHisto(h,"calibration/ATWD1bBinCalibSlope.png",defVal.str(),true);
 };
 
 void SetATWD1bBinCalibIntercept(TH1D* h){
@@ -789,7 +795,7 @@ void SetATWD1bBinCalibIntercept(TH1D* h){
        <<I3CalibDefaults::ATWD_BINCALIB_FIT_INTERCEPT/I3Units::V
        <<" V";
   h->SetXTitle("Intercept(V)");
-  FitAndFormatHisto(h,"ATWD1bBinCalibIntercept.gif",defVal.str(),true);
+  FitAndFormatHisto(h,"calibration/ATWD1bBinCalibIntercept.png",defVal.str(),true);
 };
 
 void SetATWD2bBinCalibSlope(TH1D* h){
@@ -798,7 +804,7 @@ void SetATWD2bBinCalibSlope(TH1D* h){
        <<I3CalibDefaults::ATWD_BINCALIB_FIT_SLOPE/I3Units::V
        <<" V";
   h->SetXTitle("Slope(V)");
-  FitAndFormatHisto(h,"ATWD2bBinCalibSlope.gif",defVal.str(),true);
+  FitAndFormatHisto(h,"calibration/ATWD2bBinCalibSlope.png",defVal.str(),true);
 };
 
 void SetATWD2bBinCalibIntercept(TH1D* h){
@@ -807,7 +813,7 @@ void SetATWD2bBinCalibIntercept(TH1D* h){
        <<I3CalibDefaults::ATWD_BINCALIB_FIT_INTERCEPT/I3Units::V
        <<" V";
   h->SetXTitle("Intercept(V)");
-  FitAndFormatHisto(h,"ATWD2bBinCalibIntercept.gif",defVal.str(),true);
+  FitAndFormatHisto(h,"calibration/ATWD2bBinCalibIntercept.png",defVal.str(),true);
 };
 
 void SetLCSpan(TH1D* h){
@@ -816,7 +822,7 @@ void SetLCSpan(TH1D* h){
        <<I3DetStatDefaults::LCSPAN
        <<" ";
   h->SetXTitle("Span");
-  FitAndFormatHisto(h,"LCSpan.gif",defVal.str());
+  FitAndFormatHisto(h,"detstat/LCSpan.png",defVal.str());
 }
 void SetLCWindowPre(TH1D* h){
   std::stringstream defVal;
@@ -827,7 +833,7 @@ void SetLCWindowPre(TH1D* h){
 	<<I3DetStatDefaults::INICE_LCWINDOW_PRE
 	<<"ns ";
   h->SetXTitle("Window(ns)");
-  FitAndFormatHisto(h,"LCWindowPre.gif",defVal.str());
+  FitAndFormatHisto(h,"detstat/LCWindowPre.png",defVal.str());
 
 }
 
@@ -840,7 +846,16 @@ void SetLCWindowPost(TH1D* h){
 	<<I3DetStatDefaults::INICE_LCWINDOW_POST
 	<<"ns ";
   h->SetXTitle("Window(ns)");
-  FitAndFormatHisto(h,"LCWindowPost.gif",defVal.str());
+  FitAndFormatHisto(h,"detstat/LCWindowPost.png",defVal.str());
+
+}
+
+void SetDeltaCompress(TH1D* h){
+  std::stringstream defVal;
+  defVal<<"Default = "
+	<<I3DetStatDefaults::DELTA_COMPRESSION;
+  h->SetXTitle("OnOff");
+  FitAndFormatHisto(h,"detstat/DeltaCompression.png",defVal.str());
 
 }
 
@@ -850,7 +865,7 @@ void SetPMTHVInIce(TH1D* h){
 	<<I3DetStatDefaults::INICE_VOLTAGE/I3Units::volt
 	<<"V ";
   h->SetXTitle("PMT Voltage(V)");
-  FitAndFormatHisto(h,"PMTVoltageInIce.gif",defVal.str(),true);
+  FitAndFormatHisto(h,"detstat/PMTVoltageInIce.png",defVal.str(),true);
 
 }
 
@@ -860,7 +875,7 @@ void SetPMTHVIceTopHG(TH1D* h){
 	<<I3DetStatDefaults::ICETOP_HIGHGAIN_VOLTAGE/I3Units::volt
 	<<"V ";
   h->SetXTitle("PMT Voltage(V)");
-  FitAndFormatHisto(h,"PMTVoltageIceTopHG.gif",defVal.str(),true);
+  FitAndFormatHisto(h,"detstat/PMTVoltageIceTopHG.png",defVal.str(),true);
 
 }
 
@@ -870,7 +885,7 @@ void SetPMTHVIceTopLG(TH1D* h){
 	<<I3DetStatDefaults::ICETOP_LOWGAIN_VOLTAGE/I3Units::volt
 	<<"V ";
   h->SetXTitle("PMT Voltage(V)");
-  FitAndFormatHisto(h,"PMTVoltageIceTopLG.gif",defVal.str(),true);
+  FitAndFormatHisto(h,"detstat/PMTVoltageIceTopLG.png",defVal.str(),true);
 
 }
 
@@ -880,7 +895,7 @@ void SetTriggerMode(TH1D* h){
 	<<static_cast<int>(I3DetStatDefaults::TRIGGER_MODE)
        <<" ";
   h->SetXTitle("Mode");
-  FitAndFormatHisto(h,"TriggerMode.gif",defVal.str());
+  FitAndFormatHisto(h,"detstat/TriggerMode.png",defVal.str());
 
 }
 void SetLCMode(TH1D* h){
@@ -894,7 +909,7 @@ void SetLCMode(TH1D* h){
 	<<" IceTop InIce Default = "
 	<<static_cast<int>(I3DetStatDefaults::LCMODE_ICETOP)<<" ";       
   h->SetXTitle("LC Mode");
-  FitAndFormatHisto(h,"LCMode.gif",defVal.str());
+  FitAndFormatHisto(h,"detstat/LCMode.png",defVal.str());
 
 }
 void SetStatusATWDa(TH1D* h){
@@ -903,7 +918,7 @@ void SetStatusATWDa(TH1D* h){
 	<<static_cast<int>(I3DetStatDefaults::STATUS_ATWDa)
 	<<" ";
   h->SetXTitle("ATWDa Status");
-  FitAndFormatHisto(h,"ATWDaStatus.gif",defVal.str());
+  FitAndFormatHisto(h,"detstat/ATWDaStatus.png",defVal.str());
 
 }
 void SetStatusATWDb(TH1D* h){
@@ -912,7 +927,7 @@ void SetStatusATWDb(TH1D* h){
 	<<static_cast<int>(I3DetStatDefaults::STATUS_ATWDb)
 	<<" ";
   h->SetXTitle("ATWDb Status ");
-  FitAndFormatHisto(h,"ATWDbStatus.gif",defVal.str());
+  FitAndFormatHisto(h,"detstat/ATWDbStatus.png",defVal.str());
 
 }
 void SetStatusFADC(TH1D* h){
@@ -924,7 +939,7 @@ void SetStatusFADC(TH1D* h){
 	<<static_cast<int>(I3DetStatDefaults::STATUS_FADC_ICETOP)
 	<<" ";
   h->SetXTitle("FADC Status");
-  FitAndFormatHisto(h,"FADCStatus.gif",defVal.str());
+  FitAndFormatHisto(h,"detstat/FADCStatus.png",defVal.str());
 
 }
 
@@ -934,7 +949,7 @@ void SetSPEThreshold(TH1D* h){
        <<I3DetStatDefaults::SPE_THRESHOLD/I3Units::mV
        <<" mV";
   h->SetXTitle("threshold(mV)");
-  FitAndFormatHisto(h,"SPEThreshold.gif",defVal.str());
+  FitAndFormatHisto(h,"detstat/SPEThreshold.png",defVal.str(),true);
 
 }
 void SetFEPedestal(TH1D* h){
@@ -943,7 +958,7 @@ void SetFEPedestal(TH1D* h){
        <<I3DetStatDefaults::FE_PEDESTAL/I3Units::V
        <<"V ";
   h->SetXTitle("pedestal(V)");
-  FitAndFormatHisto(h,"fePedestal.gif",defVal.str());
+  FitAndFormatHisto(h,"detstat/fePedestal.png",defVal.str());
 
 }
 void SetDACTriggerBias0(TH1D* h){
@@ -952,7 +967,7 @@ void SetDACTriggerBias0(TH1D* h){
        <<I3DetStatDefaults::DAC_TRIGGER_BIAS0
        <<" ";
   h->SetXTitle(" ");
-  FitAndFormatHisto(h,"DACTriggBias0.gif",defVal.str());
+  FitAndFormatHisto(h,"detstat/DACTriggBias0.png",defVal.str());
 
 }
 void SetDACTriggerBias1(TH1D* h){
@@ -961,7 +976,7 @@ void SetDACTriggerBias1(TH1D* h){
        <<I3DetStatDefaults::DAC_TRIGGER_BIAS1
        <<" ";
   h->SetXTitle(" ");
-  FitAndFormatHisto(h,"DACTriggBias1.gif",defVal.str());
+  FitAndFormatHisto(h,"detstat/DACTriggBias1.png",defVal.str());
 
 }
 void SetFADCRef(TH1D* h){
@@ -970,7 +985,7 @@ void SetFADCRef(TH1D* h){
        <<I3DetStatDefaults::DAC_FADC_REF
        <<" ";
   h->SetXTitle(" ");
-  FitAndFormatHisto(h,"FADCRef.gif",defVal.str());
+  FitAndFormatHisto(h,"detstat/FADCRef.png",defVal.str());
 
 }
 void SetNBinsATWD0(TH1D* h){
@@ -983,7 +998,7 @@ void SetNBinsATWD0(TH1D* h){
 	<<I3DetStatDefaults::NBINS_ATWD0_ICETOP
 	<<" bins";
   h->SetXTitle("N Bins");
-  FitAndFormatHisto(h,"NBinsATWD0.gif",defVal.str());
+  FitAndFormatHisto(h,"detstat/NBinsATWD0.png",defVal.str());
 
 }
 void SetNBinsATWD1(TH1D* h){
@@ -996,7 +1011,7 @@ void SetNBinsATWD1(TH1D* h){
 	<<I3DetStatDefaults::NBINS_ATWD1_ICETOP
 	<<" bins";
   h->SetXTitle("N Bins");
-  FitAndFormatHisto(h,"NBinsATWD1.gif",defVal.str());
+  FitAndFormatHisto(h,"detstat/NBinsATWD1.png",defVal.str());
 
 }
 void SetNBinsATWD2(TH1D* h){
@@ -1009,7 +1024,7 @@ void SetNBinsATWD2(TH1D* h){
 	<<I3DetStatDefaults::NBINS_ATWD2_ICETOP
 	<<" bins";
   h->SetXTitle("N Bins");
-  FitAndFormatHisto(h,"NBinsATWD2.gif",defVal.str());
+  FitAndFormatHisto(h,"detstat/NBinsATWD2.png",defVal.str());
 
 }
 void SetNBinsFADC(TH1D* h){
@@ -1022,7 +1037,7 @@ void SetNBinsFADC(TH1D* h){
 	<<I3DetStatDefaults::NBINS_FADC_ICETOP
 	<<" bins";
   h->SetXTitle("N Bins");
-  FitAndFormatHisto(h,"NBinsFADC.gif",defVal.str());
+  FitAndFormatHisto(h,"detstat/NBinsFADC.png",defVal.str());
 
 }
 

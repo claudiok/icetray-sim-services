@@ -43,9 +43,9 @@ namespace I3DetStatDefaults{
   /**
    * InIce local coincidence trigger windows
    */
-  const double INICE_LCWINDOW_PRE = 1000.0*I3Units::ns;  //OLD: -800.0*I3Units::mV
-  const double INICE_LCWINDOW_POST = 1000.0*I3Units::ns; //OLD: 800.0*I3Units::mV
-                                                         // Yes, it was mV...Jesus.
+  const double INICE_LCWINDOW_PRE = 1000.0*I3Units::ns;  
+  const double INICE_LCWINDOW_POST = 1000.0*I3Units::ns; 
+                                                         
 
   /**
    * Number of neighbors required to satisfy local coincidence
@@ -55,37 +55,37 @@ namespace I3DetStatDefaults{
   /**
    * InIce PMT voltage
    */
-  const double INICE_VOLTAGE = 1276*I3Units::volt; //NO CHANGE
+  const double INICE_VOLTAGE = 1276*I3Units::volt; 
 
-  const I3DOMStatus::TrigMode TRIGGER_MODE = I3DOMStatus::SPE; //NO CHANGE
-  const I3DOMStatus::OnOff STATUS_ATWDa = I3DOMStatus::On; //NO CHANGE
-  const I3DOMStatus::OnOff STATUS_ATWDb = I3DOMStatus::On; //NO CHANGE
-  const I3DOMStatus::OnOff STATUS_FADC_INICE = I3DOMStatus::On; //NO CHANGE
-  const I3DOMStatus::OnOff STATUS_FADC_ICETOP = I3DOMStatus::Off; //NO CHANGE
+  const I3DOMStatus::TrigMode TRIGGER_MODE = I3DOMStatus::SPE; 
+  const I3DOMStatus::OnOff STATUS_ATWDa = I3DOMStatus::On; 
+  const I3DOMStatus::OnOff STATUS_ATWDb = I3DOMStatus::On; 
+  const I3DOMStatus::OnOff STATUS_FADC_INICE = I3DOMStatus::On; 
+  const I3DOMStatus::OnOff STATUS_FADC_ICETOP = I3DOMStatus::Off; 
 
   const I3DOMStatus::LCMode LCMODE_INICE_BULK = I3DOMStatus::UpOrDown;
   const I3DOMStatus::LCMode LCMODE_INICE_FIRST = I3DOMStatus::Down;
   const I3DOMStatus::LCMode LCMODE_INICE_LAST = I3DOMStatus::Up; 
   const I3DOMStatus::LCMode LCMODE_ICETOP = I3DOMStatus::Down;
 
-  const double SPE_THRESHOLD = 1.422*I3Units::mV; //OLD: 4.0*I3Units::mV
-  const double FE_PEDESTAL = 2.6*I3Units::volt;   //NO CHANGE
-  const int DAC_TRIGGER_BIAS0 = 850; //NO CHANGE
-  const int DAC_TRIGGER_BIAS1 = 850; //NO CHANGE
-  const int DAC_FADC_REF = 800; //NO CHANGE
+  const double SPE_THRESHOLD = 1.852*I3Units::mV;
+  const double FE_PEDESTAL = 2.6*I3Units::volt;
+  const int DAC_TRIGGER_BIAS0 = 850; 
+  const int DAC_TRIGGER_BIAS1 = 850; 
+  const int DAC_FADC_REF = 800; 
 
   /**
    *Number of bins
    */
-  const unsigned NBINS_ATWD0_INICE = 0; //NO CHANGE
-  const unsigned NBINS_ATWD1_INICE = 0; //OLD: 128
-  const unsigned NBINS_ATWD2_INICE = 0; //OLD: 128
-  const unsigned NBINS_FADC_INICE = 0;  //OLD: 256
+  const unsigned NBINS_ATWD0_INICE = 0; 
+  const unsigned NBINS_ATWD1_INICE = 0; 
+  const unsigned NBINS_ATWD2_INICE = 0; 
+  const unsigned NBINS_FADC_INICE = 0;  
 
-  const unsigned NBINS_ATWD0_ICETOP = 0; //NO CHANGE
-  const unsigned NBINS_ATWD1_ICETOP = 0; //OLD: 128
-  const unsigned NBINS_ATWD2_ICETOP = 0; //OLD: 128
-  const unsigned NBINS_FADC_ICETOP = 0;  //OLD: 256
+  const unsigned NBINS_ATWD0_ICETOP = 0; 
+  const unsigned NBINS_ATWD1_ICETOP = 0; 
+  const unsigned NBINS_ATWD2_ICETOP = 0; 
+  const unsigned NBINS_FADC_ICETOP = 0;  
 
   const I3DOMStatus::OnOff DELTA_COMPRESSION = I3DOMStatus::On;
 
