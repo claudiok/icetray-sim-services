@@ -36,7 +36,9 @@ I3MCTimeGeneratorServiceFactory::I3MCTimeGeneratorServiceFactory(const I3Context
   mjd_(INT_MIN),
   mjd_s_(DEFAULT_MJD_SECONDS),
   mjd_ns_(DEFAULT_MJD_NANOSECONDS),
-  runNumber_(0)
+  runNumber_(0),
+  eventID_(0),
+  incEventID_(false)
 {
   AddParameter("Year", "Year of the run", year_);
   AddParameter("DAQTime", "DAQTime of the run in 1/10 of ns", daqTime_);
@@ -45,6 +47,8 @@ I3MCTimeGeneratorServiceFactory::I3MCTimeGeneratorServiceFactory(const I3Context
   AddParameter("MJDNanoSeconds","Number of nanoseconds after the start of the MJD.",mjd_ns_);
   AddParameter("InstallEventServiceAs", "Name to install event service under", eventServiceName_);
   AddParameter("RunNumber", "Run Number", runNumber_);
+  AddParameter("EventID", "Event ID", eventID_);
+  AddParameter("IncrementEventID", "Increment Event ID (default =  false)", incEventID_);
 }
 
 /**
@@ -68,6 +72,8 @@ void I3MCTimeGeneratorServiceFactory::Configure()
   GetParameter("MJDNanoSeconds",mjd_ns_);
   GetParameter("InstallEventServiceAs", eventServiceName_);
   GetParameter("RunNumber", runNumber_);
+  GetParameter("EventID", eventID_);
+  GetParameter("IncrementEventID", incEventID_);
 
   if(mjd_ != INT_MIN && 
      (year_ != DEFAULT_YEAR || daqTime_ != DEFAULT_DAQTIME ))
@@ -87,7 +93,8 @@ bool I3MCTimeGeneratorServiceFactory::InstallService(I3Context& services)
   if(!eventService_){
     eventService_ = 
       shared_ptr<I3MCTimeGeneratorService>
-      (new I3MCTimeGeneratorService(year_,daqTime_, runNumber_));
+      (new I3MCTimeGeneratorService(year_,daqTime_, runNumber_, eventID_));
+    eventService_->IncrementEventID(incEventID_);
     log_debug("Made new I3MCRawDOMStatusService.");
   }
   return services.Put<I3EventService>(eventService_,eventServiceName_);

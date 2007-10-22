@@ -36,7 +36,7 @@ class I3MCTimeGeneratorServiceFactory : public I3ServiceFactory
 
  private:
   
-  ///Start time of run period
+  //Start time of run period
   int year_;
   int64_t daqTime_;
   string eventServiceName_;
@@ -44,6 +44,14 @@ class I3MCTimeGeneratorServiceFactory : public I3ServiceFactory
   int mjd_s_;
   double mjd_ns_;
   unsigned runNumber_;
+  unsigned eventID_;
+
+  /**
+   * If true this service will increment the eventID after adding
+   * one to the frame.  This is useful for looking at untriggered events
+   * where you still want unique event IDs.
+   */
+  bool incEventID_;
 
   shared_ptr<I3MCTimeGeneratorService> eventService_;
 };

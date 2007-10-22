@@ -17,13 +17,17 @@
 #include "dataclasses/physics/I3EventHeader.h"
 #include "icetray/I3Frame.h"
 #include "icetray/I3Tray.h"
+#include "dataclasses/I3Bool.h"
 
 I3MCTimeGeneratorService::I3MCTimeGeneratorService(int year, 
 						   int64_t daqTime,
-						   unsigned runNumber):
+						   unsigned runNumber,
+						   unsigned eventID):
   year_(year),
   daqTime_(daqTime),
-  runNumber_(runNumber)
+  runNumber_(runNumber),
+  eventID_(eventID),
+  incEventID_(false)
 {
 }
 
@@ -48,9 +52,16 @@ I3Time I3MCTimeGeneratorService::PopEvent(I3Frame& frame)
       eventHeader_->SetStartTime(evtTime);
       eventHeader_->SetRunID(runNumber_);
       eventHeader_->SetSubRunID(0);
-      eventHeader_->SetEventID(0);
+      eventHeader_->SetEventID(eventID_);
       //Lets put it in the frame
       frame.Put<I3EventHeader>(eventHeader_);
+
+      if(incEventID_) eventID_++;
+
+      //Need to tell the conglomerator to back off
+      //and not bother incrementing the eventID
+      I3BoolPtr incID(new I3Bool(incEventID_));
+      frame.Put("MCTimeIncEventID",incID);
     }
 
   return evtTime;

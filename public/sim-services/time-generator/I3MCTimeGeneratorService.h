@@ -33,10 +33,13 @@ class I3MCTimeGeneratorService : public I3EventService
 
   SET_LOGGER("I3MCTimeGeneratorService");
 
-  I3MCTimeGeneratorService(int, int64_t, unsigned);
+  I3MCTimeGeneratorService(int, int64_t, unsigned, unsigned);
   virtual bool MoreEvents();
   virtual I3Time PopEvent(I3Frame&);
   virtual ~I3MCTimeGeneratorService() { };
+
+  void IncrementEventID(bool b){ incEventID_ = b; }
+
  private:
   
   ///Start time of run period
@@ -44,6 +47,15 @@ class I3MCTimeGeneratorService : public I3EventService
   int64_t daqTime_;
   int mjd_;
   unsigned runNumber_;
+  unsigned eventID_;
+
+  /**
+   * If true this service will increment the eventID after adding
+   * one to the frame.  This is useful for looking at untriggered events
+   * where you still want unique event IDs.
+   */
+  bool incEventID_;
+
 };
 
 #endif
