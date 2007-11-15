@@ -37,7 +37,9 @@ class I3MCTWRParamsService : public I3ServiceFactory
   std::string cableDelayFileName_;
   std::string relSensFileName_;
   std::string serviceName_;
+  bool useTunedRelsens_;
   shared_ptr<I3MCTWRParamsMap> twrParams_;
+
 
   I3MCTWRParamsService
     (const I3MCTWRParamsService& rhs); // stop default
