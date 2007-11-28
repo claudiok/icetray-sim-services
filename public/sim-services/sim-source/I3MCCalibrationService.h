@@ -15,11 +15,13 @@
 #ifndef I3MCCALIBRATIONSERVICE_H
 #define I3MCCALIBRATIONSERVICE_H
 
-#include "phys-services/I3CalibrationService.h"
-#include "phys-services/I3GeometryService.h"
+#include "interfaces/I3CalibrationService.h"
+//#include "interfaces/I3GeometryService.h"
+#include <vector>
+#include <icetray/I3Logging.h>
 
-class I3Geometry;
-I3_POINTER_TYPEDEFS(I3Geometry);
+class I3GeometryService;
+I3_POINTER_TYPEDEFS(I3GeometryService);
 /**
  *
  * @brief This module allow you to fill the RawDOMStatus data 
@@ -60,8 +62,8 @@ public:
   void SetATWDBinCalibSlope(double x){atwdBinCalibFit_slope_=x;};
   void SetATWDBinCalibIntercept(double x){atwdBinCalibFit_intercept_=x;};
 
-  void SetSkipStrings(vector<int>& v){ skipStrings_ = v;};
-  void SetSkipStations(vector<int>& v){ skipStations_ = v;};
+  void SetSkipStrings(std::vector<int>& v){ skipStrings_ = v;};
+  void SetSkipStations(std::vector<int>& v){ skipStations_ = v;};
 
   void SetATWDResponseWidth(double w){ atwd_response_width_ = w; };
 
@@ -112,8 +114,8 @@ public:
   /**
    * Don't modify these strings/stations
    */
-  vector<int> skipStrings_;
-  vector<int> skipStations_;
+  std::vector<int> skipStrings_;
+  std::vector<int> skipStations_;
 };
 I3_POINTER_TYPEDEFS(I3MCCalibrationService);
 #endif

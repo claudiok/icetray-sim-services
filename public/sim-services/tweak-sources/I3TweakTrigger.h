@@ -14,8 +14,10 @@
 #ifndef I3TWEAKTRIGGER_H
 #define I3TWEAKTRIGGER_H
 
-#include "phys-services/I3DetectorStatusService.h"
-#include "phys-services/I3GeometryService.h"
+#include "interfaces/I3DetectorStatusService.h"
+#include "interfaces/I3GeometryService.h"
+#include <icetray/I3Logging.h>
+#include <dataclasses/TriggerKey.h>
 
 class I3TweakTrigger : public I3DetectorStatusService
 {

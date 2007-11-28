@@ -11,8 +11,8 @@
  */
 #include <I3Test.h>
 #include "I3DBTestModule.h"
-#include <phys-services/I3CalibrationService.h>
-#include <phys-services/I3DetectorStatusService.h>
+#include <interfaces/I3CalibrationService.h>
+#include <interfaces/I3DetectorStatusService.h>
 #include <phys-services/I3EventService.h>
 #include <dataclasses/I3Time.h>
 #include <dataclasses/I3Units.h>

@@ -14,14 +14,15 @@
 #ifndef I3MCDETECTORSTATUSSERVICE_H
 #define I3MCDETECTORSTATUSSERVICE_H
 
-#include "phys-services/I3DetectorStatusService.h"
-#include "phys-services/I3GeometryService.h"
+#include "interfaces/I3DetectorStatusService.h"
+#include "interfaces/I3GeometryService.h"
 #include "simclasses/I3MCTWRParams.h"
 #include "dataclasses/physics/I3Trigger.h"
 #include "dataclasses/status/I3TriggerStatus.h"
+#include <dataclasses/status/I3DOMStatus.h>
+#include <dataclasses/status/I3DetectorStatus.h>
+#include <dataclasses/geometry/I3Geometry.h>
 
-class I3Geometry;
-I3_POINTER_TYPEDEFS(I3Geometry);
 /**
  *
  * @brief This service allows you to fill the detector status data 

@@ -4,7 +4,7 @@
 #include "dataclasses/status/I3DetectorStatus.h"
 #include "dataclasses/I3Units.h"
 #include "icetray/I3TrayHeaders.h"
-#include "phys-services/I3GeometryService.h"
+#include "interfaces/I3GeometryService.h"
 #include "dataclasses/physics/I3Trigger.h"
 #include "dataclasses/status/I3TriggerStatus.h"
 

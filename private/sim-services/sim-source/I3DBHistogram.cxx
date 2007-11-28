@@ -11,15 +11,19 @@
  */
 
 #include "sim-services/sim-source/I3DBHistogram.h"
-#include <phys-services/I3CalibrationService.h>
-#include <phys-services/I3DetectorStatusService.h>
-#include <phys-services/I3EventService.h>
+#include <interfaces/I3CalibrationService.h>
+#include <interfaces/I3DetectorStatusService.h>
+#include <interfaces/I3EventService.h>
+
+#include <dataclasses/calibration/I3Calibration.h>
+#include <dataclasses/status/I3DetectorStatus.h>
 #include <dataclasses/I3Time.h>
 #include <dataclasses/I3Units.h>
 #include <dataclasses/I3DOMFunctions.h>
 #include "icetray/I3TrayHeaders.h"
 #include "icetray/I3Module.h"
 #include "icetray/I3Tray.h"
+#include "icetray/OMKey.h"
 
 #include "sim-services/sim-source/default-values/I3CalibrationDefaults.h"
 #include "sim-services/sim-source/default-values/I3DetectorStatusDefaults.h"
@@ -30,6 +34,7 @@
 #include <TCanvas.h>
 #include <TPaveText.h>
 #include <TStyle.h>
+#include <TROOT.h>
 
 #include <boost/foreach.hpp>
 

@@ -14,7 +14,7 @@
  * (c) 2005 IceCube Collaboration
  */
 
-#include "phys-services/I3EventService.h"
+#include "interfaces/I3EventService.h"
 #include "icetray/I3Tray.h"
 
 class I3Context;

@@ -17,6 +17,7 @@
 #include "dataclasses/I3Units.h"
 #include "icetray/I3Frame.h"
 #include "icetray/I3Tray.h"
+#include <dataclasses/I3Time.h>
 
 using namespace std;
 

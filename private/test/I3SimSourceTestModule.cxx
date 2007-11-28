@@ -17,8 +17,8 @@
 #include "icetray/I3Module.h"
 #include "icetray/I3Tray.h"
 
-#include <phys-services/I3CalibrationService.h>
-#include <phys-services/I3DetectorStatusService.h>
+#include <interfaces/I3CalibrationService.h>
+#include <interfaces/I3DetectorStatusService.h>
 #include <phys-services/geo-selector/GeoSelUtils.h>
 
 #include "sim-services/sim-source/default-values/I3CalibrationDefaults.h"

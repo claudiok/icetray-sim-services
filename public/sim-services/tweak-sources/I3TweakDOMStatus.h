@@ -12,10 +12,10 @@
 #ifndef I3TWEAKDOMSTATUS_H
 #define I3TWEAKDOMSTATUS_H
 
-#include "phys-services/I3DetectorStatusService.h"
+#include "interfaces/I3DetectorStatusService.h"
 #include "dataclasses/physics/I3Trigger.h"
 #include "dataclasses/status/I3TriggerStatus.h"
-
+#include <dataclasses/status/I3DOMStatus.h>
 /**
  *
  * @brief This service allows you to fill the detector status data 
