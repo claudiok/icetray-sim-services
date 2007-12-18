@@ -33,8 +33,8 @@ namespace I3TWRDefaults{
   const int DMADD_PRETRIG_MULT = 13;
   const int DMADD_MULT = 18;
   const int DMADD_WINDOW = 2500;
-  const int TWR_SOFT_N1HIT = 4;
-  const int TWR_SOFT_NPAIRS = 8;
+  const int TWR_SOFT_N1HIT = 9;
+  const int TWR_SOFT_NPAIRS = 35;
   const int TWR_SOFT_FRAGMULT = 20;
   const int TWR_SOFT_WINDOW = 2500;
   const int TWR_SOFT_VOL_STARTMULT = 9;
