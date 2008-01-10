@@ -9,7 +9,12 @@ i3_add_library(sim-services
 	
 	USE_TOOLS log4cplus boost root
 
-	USE_PROJECTS icetray phys-services dataclasses amanda-core simclasses interfaces
+	USE_PROJECTS icetray 
+	phys-services 
+	dataclasses 
+	amanda-core 
+	simclasses 
+	interfaces
 )
 
 i3_test_executable(test private/test/*.cxx)

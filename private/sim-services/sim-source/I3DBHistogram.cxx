@@ -489,8 +489,8 @@ void MakeDOMFunctionsPlots(I3CalibrationConstPtr calib,
     }
   }
 
-  const string I3_WORK(getenv("I3_WORK"));
-  string plot_path(I3_WORK + "/sim-services/resources/plots/");
+  const string I3_BUILD(getenv("I3_BUILD"));
+  string plot_path(I3_BUILD + "/sim-services/resources/plots/");
 
   TCanvas c;
   c.SetLogy(true);
@@ -543,8 +543,8 @@ void FitAndFormatHisto(TH1D* h,
   h->Draw();
   t->Draw();
 
-  const string I3_WORK(getenv("I3_WORK"));
-  string plot_path(I3_WORK + "/sim-services/resources/plots/");
+  const string I3_BUILD(getenv("I3_BUILD"));
+  string plot_path(I3_BUILD + "/sim-services/resources/plots/");
   c.SaveAs((plot_path+filename).c_str());
 }
 
@@ -590,8 +590,8 @@ void SetFADCGain(TH1D* h){
   dg->SetParameter(5,0.0025e-3);
   h->Fit("dg"); 
 
-  const string I3_WORK(getenv("I3_WORK"));
-  string plot_path(I3_WORK + "/sim-services/resources/plots/");
+  const string I3_BUILD(getenv("I3_BUILD"));
+  string plot_path(I3_BUILD + "/sim-services/resources/plots/");
   c.SaveAs((plot_path+"calibration/FADCGain.png").c_str());
 };
 
@@ -608,8 +608,8 @@ void SetATWD0Gain(TH1D* h){
   dg->SetParameter(5,0.5);
   h->Fit("dg"); 
 
-  const string I3_WORK(getenv("I3_WORK"));
-  string plot_path(I3_WORK + "/sim-services/resources/plots/");
+  const string I3_BUILD(getenv("I3_BUILD"));
+  string plot_path(I3_BUILD + "/sim-services/resources/plots/");
   c.SaveAs((plot_path+"calibration/ATWD0Gain.png").c_str());
 
 };
@@ -626,8 +626,8 @@ void SetATWD1Gain(TH1D* h){
   dg->SetParameter(5,0.1);
   h->Fit("dg"); 
 
-  const string I3_WORK(getenv("I3_WORK"));
-  string plot_path(I3_WORK + "/sim-services/resources/plots/");
+  const string I3_BUILD(getenv("I3_BUILD"));
+  string plot_path(I3_BUILD + "/sim-services/resources/plots/");
   c.SaveAs((plot_path+"calibration/ATWD1Gain.png").c_str());
 };
 

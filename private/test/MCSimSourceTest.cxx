@@ -37,9 +37,9 @@ TEST(default_config)
 {
   I3Tray tray;
 
-  std::string I3_WORK = getenv("I3_WORK");
-  std::string amageofile = I3_WORK + "/phys-services/resources/amanda.geo";
-  std::string icecubegeofile = I3_WORK + "/phys-services/resources/icecube.geo";
+  std::string I3_BUILD = getenv("I3_BUILD");
+  std::string amageofile = I3_BUILD + "/phys-services/resources/amanda.geo";
+  std::string icecubegeofile = I3_BUILD + "/phys-services/resources/icecube.geo";
 
   tray.AddService("I3MCTimeGeneratorServiceFactory","time-gen")    
     ("Year",2007)
@@ -184,9 +184,9 @@ TEST(tweaked_config)
 
   I3Tray tray;
 
-  std::string I3_WORK = getenv("I3_WORK");
-  std::string amageofile = I3_WORK + "/phys-services/resources/amanda.geo";
-  std::string icecubegeofile = I3_WORK + "/phys-services/resources/icecube.geo";
+  std::string I3_BUILD = getenv("I3_BUILD");
+  std::string amageofile = I3_BUILD + "/phys-services/resources/amanda.geo";
+  std::string icecubegeofile = I3_BUILD + "/phys-services/resources/icecube.geo";
 
   tray.AddService("I3MCTimeGeneratorServiceFactory","time-gen")    
     ("Year",2007)
@@ -378,9 +378,9 @@ TEST(tweaked_extended_config)
 
   I3Tray tray;
 
-  std::string I3_WORK = getenv("I3_WORK");
-  std::string amageofile = I3_WORK + "/phys-services/resources/amanda.geo";
-  std::string icecubegeofile = I3_WORK + "/phys-services/resources/icecube.geo";
+  std::string I3_BUILD = getenv("I3_BUILD");
+  std::string amageofile = I3_BUILD + "/phys-services/resources/amanda.geo";
+  std::string icecubegeofile = I3_BUILD + "/phys-services/resources/icecube.geo";
   
   tray.AddService("I3MCTimeGeneratorServiceFactory","time-gen")    
     ("Year",2007)
@@ -596,9 +596,9 @@ TEST(do_no_harm)
 {
   I3Tray tray;
 
-  std::string I3_WORK = getenv("I3_WORK");
-  std::string amageofile = I3_WORK + "/phys-services/resources/amanda.geo";
-  std::string icecubegeofile = I3_WORK + "/phys-services/resources/icecube.geo";
+  std::string I3_BUILD = getenv("I3_BUILD");
+  std::string amageofile = I3_BUILD + "/phys-services/resources/amanda.geo";
+  std::string icecubegeofile = I3_BUILD + "/phys-services/resources/icecube.geo";
 
   tray.AddService("I3MCTimeGeneratorServiceFactory","time-gen")    
     ("Year",2007)
@@ -689,9 +689,9 @@ TEST(do_no_harm_MJD)
 {
   I3Tray tray;
 
-  std::string I3_WORK = getenv("I3_WORK");
-  std::string amageofile = I3_WORK + "/phys-services/resources/amanda.geo";
-  std::string icecubegeofile = I3_WORK + "/phys-services/resources/icecube.geo";
+  std::string I3_BUILD = getenv("I3_BUILD");
+  std::string amageofile = I3_BUILD + "/phys-services/resources/amanda.geo";
+  std::string icecubegeofile = I3_BUILD + "/phys-services/resources/icecube.geo";
 
   tray.AddService("I3MCTimeGeneratorServiceFactory","time-gen")    
     ("MJD",54269);

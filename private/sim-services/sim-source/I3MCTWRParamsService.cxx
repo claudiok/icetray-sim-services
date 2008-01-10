@@ -9,13 +9,13 @@ I3MCTWRParamsService(const I3Context& context) :
   I3ServiceFactory(context),
   serviceName_("I3MCTWRParamsMap")
 {
-  const string I3_WORK(getenv("I3_WORK"));
-  elecFileName_ = I3_WORK + "/sim-services/resources/tables/ama.elec.mc2005";
-  cidFileName_ = I3_WORK + "/amanda-core/resources/channel_ids.txt";
-  stopDelayFileName_ = I3_WORK + "/sim-services/resources/tables/stop_delay_mc.dat";
-  dmaddThrFileName_ = I3_WORK + "/sim-services/resources/tables/DMADD_thresh2005.dat";
-  cableDelayFileName_ = I3_WORK + "/sim-services/resources/tables/cable_delay.dat";
-  relSensFileName_ = I3_WORK + "/sim-services/resources/tables/omeff.dat";
+  const string I3_BUILD(getenv("I3_BUILD"));
+  elecFileName_ = I3_BUILD + "/sim-services/resources/tables/ama.elec.mc2005";
+  cidFileName_ = I3_BUILD + "/amanda-core/resources/channel_ids.txt";
+  stopDelayFileName_ = I3_BUILD + "/sim-services/resources/tables/stop_delay_mc.dat";
+  dmaddThrFileName_ = I3_BUILD + "/sim-services/resources/tables/DMADD_thresh2005.dat";
+  cableDelayFileName_ = I3_BUILD + "/sim-services/resources/tables/cable_delay.dat";
+  relSensFileName_ = I3_BUILD + "/sim-services/resources/tables/omeff.dat";
   useTunedRelsens_ = false;
 
   AddParameter("ElecFileName","Name of elec file",elecFileName_);

@@ -30,7 +30,7 @@ tray.AddService("I3MCTimeGeneratorServiceFactory","time-gen")(
         )
 
 tray.AddService("I3FileOMKey2MBIDFactory","omkey2mbid")
-tray.SetParameter("omkey2mbid","Infile",expandvars("$I3_WORK/phys-services/resources/doms.txt"))
+tray.SetParameter("omkey2mbid","Infile",expandvars("$I3_BUILD/phys-services/resources/doms.txt"))
 
 #db_host = "icedb.umh.ac.be"
 #db_host = "ppemons.umh.ac.be"
@@ -43,8 +43,8 @@ db_host = "dbs2.icecube.wisc.edu"
 #tray.SetParameter("geometry","YShift",0.0)
 #tray.SetParameter("geometry","Host",db_host)
 
-amageofile = expandvars("$I3_WORK/phys-services/resources/amanda.geo")
-icecubegeofile = expandvars("$I3_WORK/phys-services/resources/icecube.geo")
+amageofile = expandvars("$I3_BUILD/phys-services/resources/amanda.geo")
+icecubegeofile = expandvars("$I3_BUILD/phys-services/resources/icecube.geo")
 tray.AddService("I3TextFileGeometryServiceFactory","geometry")(
               ("AmandaGeoFile",amageofile),
               ("IceCubeGeoFile",icecubegeofile))
