@@ -17,5 +17,8 @@ i3_add_library(sim-services
 	interfaces
 )
 
-i3_test_executable(test private/test/*.cxx)
+i3_test_executable(test 
+	private/test/*.cxx
+	USE_PROJECTS dataclasses phys-services sim-services
+)
 
