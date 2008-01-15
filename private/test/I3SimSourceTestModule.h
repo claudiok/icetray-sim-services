@@ -12,7 +12,6 @@
 
 #include "icetray/I3Module.h"
 #include "dataclasses/I3Position.h"
-#include "phys-services/I3RandomService.h"
 
 /** 
  *@class I3SimSourceTestModule I3SimSourceTestModule.h 

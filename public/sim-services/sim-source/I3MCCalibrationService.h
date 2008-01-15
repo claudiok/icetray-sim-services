@@ -16,7 +16,6 @@
 #define I3MCCALIBRATIONSERVICE_H
 
 #include "interfaces/I3CalibrationService.h"
-//#include "interfaces/I3GeometryService.h"
 #include <vector>
 #include <icetray/I3Logging.h>
 

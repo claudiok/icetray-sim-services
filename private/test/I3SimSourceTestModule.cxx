@@ -19,6 +19,10 @@
 
 #include <interfaces/I3CalibrationService.h>
 #include <interfaces/I3DetectorStatusService.h>
+#include <dataclasses/calibration/I3DOMCalibration.h>
+#include <dataclasses/calibration/I3Calibration.h>
+#include <dataclasses/status/I3DOMStatus.h>
+#include <dataclasses/status/I3DetectorStatus.h>
 #include <phys-services/geo-selector/GeoSelUtils.h>
 
 #include "sim-services/sim-source/default-values/I3CalibrationDefaults.h"

@@ -15,7 +15,6 @@
 #define I3TWEAKTRIGGER_H
 
 #include "interfaces/I3DetectorStatusService.h"
-#include "interfaces/I3GeometryService.h"
 #include <icetray/I3Logging.h>
 #include <dataclasses/TriggerKey.h>
 

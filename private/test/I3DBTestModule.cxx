@@ -13,9 +13,13 @@
 #include "I3DBTestModule.h"
 #include <interfaces/I3CalibrationService.h>
 #include <interfaces/I3DetectorStatusService.h>
-#include <phys-services/I3EventService.h>
+#include <interfaces/I3EventService.h>
 #include <dataclasses/I3Time.h>
 #include <dataclasses/I3Units.h>
+#include <dataclasses/calibration/I3DOMCalibration.h>
+#include <dataclasses/calibration/I3Calibration.h>
+#include <dataclasses/status/I3DOMStatus.h>
+#include <dataclasses/status/I3DetectorStatus.h>
 #include "icetray/I3TrayHeaders.h"
 #include "icetray/I3Module.h"
 #include "icetray/I3Tray.h"

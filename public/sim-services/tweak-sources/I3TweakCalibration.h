@@ -15,7 +15,6 @@
 #define I3TWEAKCALIBRATION_H
 
 #include "interfaces/I3CalibrationService.h"
-#include "interfaces/I3GeometryService.h"
 #include <icetray/I3Logging.h>
 
 /**
