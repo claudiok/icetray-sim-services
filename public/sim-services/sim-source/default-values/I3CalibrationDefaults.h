@@ -70,6 +70,15 @@ namespace I3CalibDefaults{
   const double ATWD_BINCALIB_FIT_INTERCEPT = 2.88*I3Units::V; 
 
   const double ATWD_RESPONSE_WIDTH = 0.41; //god-given units
+  const double FADC_RESPONSE_WIDTH = 0.49; //god-given units
+
+  const double TAU_P0_POST_2006 = 10960;
+  const double TAU_P1_POST_2006 = 56665;
+  const double TAU_P2_POST_2006 = 6.5;
+  const double TAU_P3_POST_2006 = 500;
+  const double TAU_P4_POST_2006 = 0;
+  const double TAU_P5_POST_2006 = 1;
+  const double TAU_FRACTION_POST_2006 = -0.5;
 
 }
 

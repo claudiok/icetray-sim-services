@@ -110,6 +110,15 @@ public:
   double atwdBinCalibFit_intercept_;
 
   double atwd_response_width_;
+  double fadc_response_width_;
+
+  double tauparam_P0_;
+  double tauparam_P1_;
+  double tauparam_P2_;
+  double tauparam_P3_;
+  double tauparam_P4_;
+  double tauparam_P5_;
+  double tauparam_TauFrac_;
   /**
    * Don't modify these strings/stations
    */

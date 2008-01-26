@@ -30,7 +30,15 @@ I3MCCalibrationService::I3MCCalibrationService(I3GeometryServicePtr g,
   hvGainFit_intercept_(I3CalibDefaults::HV_GAIN_FIT_INTERCEPT),
   atwdBinCalibFit_slope_(I3CalibDefaults::ATWD_BINCALIB_FIT_SLOPE),
   atwdBinCalibFit_intercept_(I3CalibDefaults::ATWD_BINCALIB_FIT_INTERCEPT),
-  atwd_response_width_(I3CalibDefaults::ATWD_RESPONSE_WIDTH)
+  atwd_response_width_(I3CalibDefaults::ATWD_RESPONSE_WIDTH),
+  fadc_response_width_(I3CalibDefaults::FADC_RESPONSE_WIDTH),
+  tauparam_P0_(I3CalibDefaults::TAU_P0_POST_2006),
+  tauparam_P1_(I3CalibDefaults::TAU_P1_POST_2006),
+  tauparam_P2_(I3CalibDefaults::TAU_P2_POST_2006),
+  tauparam_P3_(I3CalibDefaults::TAU_P3_POST_2006),
+  tauparam_P4_(I3CalibDefaults::TAU_P4_POST_2006),
+  tauparam_P5_(I3CalibDefaults::TAU_P5_POST_2006),
+  tauparam_TauFrac_(I3CalibDefaults::TAU_FRACTION_POST_2006)
 {
   geo_service_ = g;
   cal_service_ = c;
@@ -103,6 +111,16 @@ I3MCCalibrationService::GetCalibration(I3Time time){
   binfit.intercept = atwdBinCalibFit_intercept_;
 
   domCalib.SetATWDResponseWidth(atwd_response_width_);
+  domCalib.SetFADCResponseWidth(fadc_response_width_);
+
+  TauParam tauparam;
+  tauparam.P0 = tauparam_P0_;
+  tauparam.P1 = tauparam_P1_;
+  tauparam.P2 = tauparam_P2_;
+  tauparam.P3 = tauparam_P3_;
+  tauparam.P4 = tauparam_P4_;
+  tauparam.P5 = tauparam_P5_;
+  tauparam.TauFrac = tauparam_TauFrac_;
 
   for( unsigned int channel = 0; channel < 3; ++channel )
       for( unsigned int id = 0; id <= 1; ++id )
