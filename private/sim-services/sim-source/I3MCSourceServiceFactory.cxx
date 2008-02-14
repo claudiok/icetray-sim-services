@@ -131,17 +131,32 @@ bool I3MCSourceServiceFactory::InstallService(I3Context& services)
 void I3MCSourceServiceFactory::FillTriggers(I3MCDetectorStatusServicePtr s){
 
   if(installInIceTriggers_){
-    I3Trigger t;
-    t.GetTriggerKey() = TriggerKey(I3InIceTriggerDefaults::SOURCE_ID, 
-				   I3InIceTriggerDefaults::TYPE_ID, 
-				   I3InIceTriggerDefaults::CONFIG_ID);
-    I3TriggerStatus ts;
-    ts.GetTriggerName().append("simple_multiplicity");
-    ts.GetTriggerSettings().insert(make_pair("threshold", 
-					     I3InIceTriggerDefaults::THRESHOLD));
-    ts.GetTriggerSettings().insert(make_pair("timeWindow", 
-					     static_cast<int>(I3InIceTriggerDefaults::TIME_WINDOW)));
-    s->InsertTriggerStatus(t, ts);
+    I3Trigger t_smt;
+    t_smt.GetTriggerKey() = TriggerKey(I3InIceTriggerDefaults::SOURCE_ID, 
+				       I3InIceTriggerDefaults::TYPE_ID, 
+				       I3InIceTriggerDefaults::CONFIG_ID);
+
+    I3TriggerStatus ts_smt;
+    ts_smt.GetTriggerName().append("simple_multiplicity");
+    ts_smt.GetTriggerSettings().insert(make_pair("threshold", 
+						 I3InIceTriggerDefaults::THRESHOLD));
+    ts_smt.GetTriggerSettings().insert(make_pair("timeWindow", 
+						 static_cast<int>(I3InIceTriggerDefaults::TIME_WINDOW)));
+
+    I3Trigger t_str;
+    t_str.GetTriggerKey() = TriggerKey(TriggerKey::IN_ICE, 
+				       TriggerKey::STRING, 
+				       666);
+
+    I3TriggerStatus ts_str;
+    ts_str.GetTriggerName().append("simple_multiplicity");
+    ts_str.GetTriggerSettings().insert(make_pair("threshold", 5));
+    ts_str.GetTriggerSettings().insert(make_pair("triggerWindow", 1000));
+    ts_str.GetTriggerSettings().insert(make_pair("max_span", 7));
+    ts_str.GetTriggerSettings().insert(make_pair("veto_depth", 3));
+
+    s->InsertTriggerStatus(t_smt, ts_smt);
+    s->InsertTriggerStatus(t_str, ts_str);
 
   }    
 
