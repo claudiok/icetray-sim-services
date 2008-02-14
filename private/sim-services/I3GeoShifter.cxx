@@ -1,20 +1,21 @@
 /**
  * copyright  (C) 2004
  * the icecube collaboration
- * $Id: I3GeometrySelector.cxx 2598 2005-02-04 17:18:56Z olivas $
+ * $Id: I3GeoShifter.cxx 2598 2005-02-04 17:18:56Z olivas $
  *
- * @file I3GeometrySelector.cxx
+ * @file I3GeoShifter.cxx
  * @version $Revision: 1.8 $
  * @date $Date: 2005-02-04 18:18:56 +0100 (Fri, 04 Feb 2005) $
  * @author olivas
  *
- * This class shows how to add a Selection to the event.
+ * This namespace contains a collection of utilities useful
+ * for shifting particles to the detector center.
 */
 
 // headers for this selection
 #include "sim-services/I3GeoShifter.h"
 #include "icetray/I3Frame.h"
-#include <numeric>
+#include <numeric> //for accumulate
 
 using namespace std;
 
