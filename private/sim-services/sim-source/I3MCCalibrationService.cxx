@@ -38,7 +38,18 @@ I3MCCalibrationService::I3MCCalibrationService(I3GeometryServicePtr g,
   tauparam_P3_(I3CalibDefaults::TAU_P3_POST_2006),
   tauparam_P4_(I3CalibDefaults::TAU_P4_POST_2006),
   tauparam_P5_(I3CalibDefaults::TAU_P5_POST_2006),
-  tauparam_TauFrac_(I3CalibDefaults::TAU_FRACTION_POST_2006)
+  tauparam_TauFrac_(I3CalibDefaults::TAU_FRACTION_POST_2006),
+  fadcDeltaT_(I3CalibDefaults::FADC_DELTA_T),
+  frontendImpedance_(I3CalibDefaults::FRONT_END_IMPEDANCE),
+  pmtTransitTimeSlope_(I3CalibDefaults::PMT_TRANSIT_TIME_SLOPE),
+  pmtTransitTimeIntercept_(I3CalibDefaults::PMT_TRANSIT_TIME_INTERCEPT),
+  domcalVersion_(I3CalibDefaults::DOMCAL_VERSION),
+  atwda0_baseline_(I3CalibDefaults::ATWDA0_BASELINE),
+  atwda1_baseline_(I3CalibDefaults::ATWDA1_BASELINE),
+  atwda2_baseline_(I3CalibDefaults::ATWDA2_BASELINE),
+  atwdb0_baseline_(I3CalibDefaults::ATWDB0_BASELINE),
+  atwdb1_baseline_(I3CalibDefaults::ATWDB1_BASELINE),
+  atwdb2_baseline_(I3CalibDefaults::ATWDB2_BASELINE)
 {
   geo_service_ = g;
   cal_service_ = c;
@@ -122,10 +133,28 @@ I3MCCalibrationService::GetCalibration(I3Time time){
   tauparam.P5 = tauparam_P5_;
   tauparam.TauFrac = tauparam_TauFrac_;
 
+  domCalib.SetFADCDeltaT(fadcDeltaT_);
+  domCalib.SetFrontEndImpedance(frontendImpedance_);
+  
+  LinearFit pmttransit;
+  pmttransit.slope = pmtTransitTimeSlope_;
+  pmttransit.intercept = pmtTransitTimeIntercept_;
+
+  domCalib.SetDOMCalVersion(domcalVersion_);
+
+  for( unsigned int bin = 0; bin < 128; ++bin ){
+    domCalib.SetATWDBaseline(0,0,bin,atwda0_baseline_);
+    domCalib.SetATWDBaseline(1,0,bin,atwda1_baseline_);
+    domCalib.SetATWDBaseline(2,0,bin,atwda2_baseline_);
+    domCalib.SetATWDBaseline(0,1,bin,atwdb0_baseline_);
+    domCalib.SetATWDBaseline(1,1,bin,atwdb1_baseline_);
+    domCalib.SetATWDBaseline(2,1,bin,atwdb2_baseline_);
+  }
+
   for( unsigned int channel = 0; channel < 3; ++channel )
-      for( unsigned int id = 0; id <= 1; ++id )
-	  for( unsigned int bin = 0; bin < 128; ++bin )	      
-	      domCalib.SetATWDBinCalibFit(id,channel,bin,binfit);
+    for( unsigned int id = 0; id <= 1; ++id )
+      for( unsigned int bin = 0; bin < 128; ++bin )
+	domCalib.SetATWDBinCalibFit(id,channel,bin,binfit);      
 
   for( iter  = om_geo.begin(); iter != om_geo.end(); iter++ )
   {

@@ -17,6 +17,7 @@
 
 #include "interfaces/I3CalibrationService.h"
 #include <vector>
+#include <string>
 #include <icetray/I3Logging.h>
 
 class I3GeometryService;
@@ -38,33 +39,8 @@ public:
   virtual I3CalibrationConstPtr GetCalibration(I3Time time);
   virtual ~I3MCCalibrationService() { };
 
-  void SetStartYear(int32_t t){startYear_= t;};
-  void SetStartDAQTime(int64_t t){startDAQTime_= t;};
-  void SetEndYear(int32_t t){endYear_= t;};
-  void SetEndDAQTime(int64_t t){endDAQTime_= t;};
-
-  void SetTemperature(double x){ temperature_ = x; };
-  void SetFADCBaselineSlope(double x){fadcBaselineFit_slope_=x; };
-  void SetFADCBaselineIntercept(double x){fadcBaselineFit_intercept_=x;};
-  void SetFADCGain(double x){fadcGain_=x;};
-  void SetATWD0(double x){atwd0Gain_=x;};
-  void SetATWD1(double x){atwd1Gain_=x;};
-  void SetATWD2(double x){atwd2Gain_=x;};
-  void SetATWDaFreqFitA(double x){atwd_a_FreqFit_A_=x;};
-  void SetATWDaFreqFitB(double x){atwd_a_FreqFit_B_=x;};
-  void SetATWDaFreqFitC(double x){atwd_a_FreqFit_C_=x;};
-  void SetATWDbFreqFitA(double x){atwd_b_FreqFit_A_=x;};
-  void SetATWDbFreqFitB(double x){atwd_b_FreqFit_B_=x;};
-  void SetATWDbFreqFitC(double x){atwd_b_FreqFit_C_=x;};
-  void SetHVGainSlope(double x){hvGainFit_slope_=x;};
-  void SetHVGainIntercept(double x){hvGainFit_intercept_=x;};
-  void SetATWDBinCalibSlope(double x){atwdBinCalibFit_slope_=x;};
-  void SetATWDBinCalibIntercept(double x){atwdBinCalibFit_intercept_=x;};
-
   void SetSkipStrings(std::vector<int>& v){ skipStrings_ = v;};
   void SetSkipStations(std::vector<int>& v){ skipStations_ = v;};
-
-  void SetATWDResponseWidth(double w){ atwd_response_width_ = w; };
 
   SET_LOGGER("I3MCCalibrationService");
 
@@ -119,6 +95,19 @@ public:
   double tauparam_P4_;
   double tauparam_P5_;
   double tauparam_TauFrac_;
+
+  double fadcDeltaT_;
+  double frontendImpedance_;
+  double pmtTransitTimeSlope_;
+  double pmtTransitTimeIntercept_;
+  std::string domcalVersion_;
+  double atwda0_baseline_;
+  double atwda1_baseline_;
+  double atwda2_baseline_;
+  double atwdb0_baseline_;
+  double atwdb1_baseline_;
+  double atwdb2_baseline_;
+
   /**
    * Don't modify these strings/stations
    */

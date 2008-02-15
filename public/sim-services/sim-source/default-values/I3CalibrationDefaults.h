@@ -80,6 +80,22 @@ namespace I3CalibDefaults{
   const double TAU_P5_POST_2006 = 1;
   const double TAU_FRACTION_POST_2006 = -0.5;
 
+  const double FADC_DELTA_T = -77 * I3Units::ns;
+  const double FRONT_END_IMPEDANCE = 43 * I3Units::ohm;
+
+  const double PMT_TRANSIT_TIME_SLOPE = 1983; //units are ns/sqrt(V)
+  const double PMT_TRANSIT_TIME_INTERCEPT = 85.8 * I3Units::ns;
+
+  const string DOMCAL_VERSION("7.1.0");
+
+  const double ATWDA0_BASELINE = 1.944 * I3Units::mV;
+  const double ATWDA1_BASELINE = -0.572 * I3Units::mV;
+  const double ATWDA2_BASELINE = 0.6698 * I3Units::mV;
+
+  const double ATWDB0_BASELINE = -3.505 * I3Units::mV;
+  const double ATWDB1_BASELINE = -16.37 * I3Units::mV;
+  const double ATWDB2_BASELINE = -16.47 * I3Units::mV;
+  
 }
 
 #endif
