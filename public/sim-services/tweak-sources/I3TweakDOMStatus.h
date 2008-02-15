@@ -141,6 +141,10 @@ public:
   int nBinsATWD1_IceTop_;
   int nBinsATWD2_IceTop_;
   int nBinsFADC_IceTop_;
+
+  I3DOMStatus::OnOff deltaCompression_;
+  I3DOMStatus::DOMGain domGainType_;
+  bool slcActive_;
 };
 
 I3_POINTER_TYPEDEFS(I3TweakDOMStatus);
