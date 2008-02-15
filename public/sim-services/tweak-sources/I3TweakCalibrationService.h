@@ -75,6 +75,27 @@ public:
   double atwdBinCalibFit_intercept_;
 
   double atwd_response_width_;
+  double fadc_response_width_;
+
+  double tauparam_P0_;
+  double tauparam_P1_;
+  double tauparam_P2_;
+  double tauparam_P3_;
+  double tauparam_P4_;
+  double tauparam_P5_;
+  double tauparam_TauFrac_;
+
+  double fadcDeltaT_;
+  double frontendImpedance_;
+  double pmtTransitTimeSlope_;
+  double pmtTransitTimeIntercept_;
+  std::string domcalVersion_;
+  double atwda0_baseline_;
+  double atwda1_baseline_;
+  double atwda2_baseline_;
+  double atwdb0_baseline_;
+  double atwdb1_baseline_;
+  double atwdb2_baseline_;
 
 };
 I3_POINTER_TYPEDEFS(I3TweakCalibrationService);

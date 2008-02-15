@@ -23,7 +23,25 @@ I3TweakCalibration::I3TweakCalibration(I3CalibrationServicePtr c) :
   atwdBinCalibFit_slope_(NAN),
   atwdBinCalibFit_intercept_(NAN),
   atwd_response_width_(NAN),
-  fadc_response_width_(NAN)
+  fadc_response_width_(NAN),
+  tauparam_P0_(NAN),
+  tauparam_P1_(NAN),
+  tauparam_P2_(NAN),
+  tauparam_P3_(NAN),
+  tauparam_P4_(NAN),
+  tauparam_P5_(NAN),
+  tauparam_TauFrac_(NAN),
+  fadcDeltaT_(NAN),
+  frontendImpedance_(NAN),
+  pmtTransitTimeSlope_(NAN),
+  pmtTransitTimeIntercept_(NAN),
+  domcalVersion_(""),
+  atwda0_baseline_(NAN),
+  atwda1_baseline_(NAN),
+  atwda2_baseline_(NAN),
+  atwdb0_baseline_(NAN),
+  atwdb1_baseline_(NAN),
+  atwdb2_baseline_(NAN)
 {
   cal_service_ = c;
 }
@@ -106,7 +124,7 @@ I3TweakCalibration::GetCalibration(I3Time time){
     
     if(!isnan(hvGainFit_slope_) ||
        !isnan(hvGainFit_intercept_)){
-      LinearFit hvgainfit;	
+      LinearFit hvgainfit(iter->second.GetHVGainFit());	
       if(!isnan(hvGainFit_slope_))
 	hvgainfit.slope = hvGainFit_slope_;
       if(!isnan(hvGainFit_intercept_))
@@ -133,6 +151,73 @@ I3TweakCalibration::GetCalibration(I3Time time){
 	    iter->second.SetATWDBinCalibFit(id,channel,bin,binfit);
 	  }
     }
+
+
+    if(!isnan(tauparam_P0_) ||
+       !isnan(tauparam_P1_) ||
+       !isnan(tauparam_P2_) ||
+       !isnan(tauparam_P3_) ||
+       !isnan(tauparam_P4_) ||
+       !isnan(tauparam_P5_) ||
+       !isnan(tauparam_TauFrac_)){
+      
+      TauParam p(iter->second.GetTauParameters());
+      if(!isnan(tauparam_P0_))
+	p.P0 = tauparam_P0_;
+      if(!isnan(tauparam_P1_))
+	p.P1 = tauparam_P1_;	    
+      if(!isnan(tauparam_P2_))
+	p.P2 = tauparam_P2_;	
+      if(!isnan(tauparam_P3_))
+	p.P3 = tauparam_P3_;	
+      if(!isnan(tauparam_P4_))
+	p.P4 = tauparam_P4_;	
+      if(!isnan(tauparam_P5_))
+	p.P5 = tauparam_P5_;	 
+      if(!isnan(tauparam_TauFrac_))
+	p.TauFrac = tauparam_TauFrac_;	
+
+      iter->second.SetTauParameters(p);
+    }
+
+
+    if(!isnan(fadcDeltaT_))
+      iter->second.SetFADCDeltaT(fadcDeltaT_);
+    if(!isnan(frontendImpedance_))
+      iter->second.SetFrontEndImpedance(frontendImpedance_);
+
+    if(!isnan(pmtTransitTimeSlope_) ||
+       !isnan(pmtTransitTimeIntercept_)){
+      LinearFit pmtTransitTime = iter->second.GetTransitTime();	
+      if(!isnan(pmtTransitTimeSlope_))
+	pmtTransitTime.slope = pmtTransitTimeSlope_;
+      if(!isnan(pmtTransitTimeIntercept_))
+	pmtTransitTime.intercept = pmtTransitTimeIntercept_;
+      iter->second.SetTransitTime(pmtTransitTime);    
+    }
+
+    if(domcalVersion_.size())
+      iter->second.SetDOMCalVersion(domcalVersion_);
+
+    if(!isnan(atwda0_baseline_))
+      for( unsigned int bin = 0; bin < 128; ++bin )
+	iter->second.SetATWDBaseline(0,0,bin,atwda0_baseline_);
+    if(!isnan(atwda1_baseline_))
+      for( unsigned int bin = 0; bin < 128; ++bin )
+	iter->second.SetATWDBaseline(0,0,bin,atwda1_baseline_);
+    if(!isnan(atwda2_baseline_))
+      for( unsigned int bin = 0; bin < 128; ++bin )
+	iter->second.SetATWDBaseline(0,0,bin,atwda2_baseline_);
+    if(!isnan(atwdb0_baseline_))
+      for( unsigned int bin = 0; bin < 128; ++bin )
+	iter->second.SetATWDBaseline(0,0,bin,atwdb0_baseline_);
+    if(!isnan(atwdb1_baseline_))
+      for( unsigned int bin = 0; bin < 128; ++bin )
+	iter->second.SetATWDBaseline(0,0,bin,atwdb1_baseline_);
+    if(!isnan(atwdb2_baseline_))
+      for( unsigned int bin = 0; bin < 128; ++bin )
+	iter->second.SetATWDBaseline(0,0,bin,atwdb2_baseline_);
+
   }
   
   return calibration;

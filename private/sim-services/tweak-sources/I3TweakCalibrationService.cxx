@@ -26,7 +26,26 @@ I3TweakCalibrationService::I3TweakCalibrationService(const I3Context& context) :
   hvGainFit_intercept_(NAN),
   atwdBinCalibFit_slope_(NAN),
   atwdBinCalibFit_intercept_(NAN),
-  atwd_response_width_(NAN)
+  atwd_response_width_(NAN),
+  fadc_response_width_(NAN),
+  tauparam_P0_(NAN),
+  tauparam_P1_(NAN),
+  tauparam_P2_(NAN),
+  tauparam_P3_(NAN),
+  tauparam_P4_(NAN),
+  tauparam_P5_(NAN),
+  tauparam_TauFrac_(NAN),
+  fadcDeltaT_(NAN),
+  frontendImpedance_(NAN),
+  pmtTransitTimeSlope_(NAN),
+  pmtTransitTimeIntercept_(NAN),
+  domcalVersion_(""),
+  atwda0_baseline_(NAN),
+  atwda1_baseline_(NAN),
+  atwda2_baseline_(NAN),
+  atwdb0_baseline_(NAN),
+  atwdb1_baseline_(NAN),
+  atwdb2_baseline_(NAN)
 {
   AddParameter("OldServiceName","Name of service to tweak",oldServiceName_);
   AddParameter("TweakedServiceName","Name of tweaked service",tweakedServiceName_);
@@ -47,7 +66,27 @@ I3TweakCalibrationService::I3TweakCalibrationService(const I3Context& context) :
   AddParameter("HVGainFit_intercept","",hvGainFit_intercept_);
   AddParameter("ATWDBinCalibFit_slope","",atwdBinCalibFit_slope_);
   AddParameter("ATWDBinCalibFit_intercept","",atwdBinCalibFit_intercept_);
+
   AddParameter("ATWDResponseWidth","",atwd_response_width_);
+  AddParameter("FADCResponseWidth","",fadc_response_width_);
+  AddParameter("TauParamP0","",tauparam_P0_);
+  AddParameter("TauParamP1","",tauparam_P1_);
+  AddParameter("TauParamP2","",tauparam_P2_);
+  AddParameter("TauParamP3","",tauparam_P3_);
+  AddParameter("TauParamP4","",tauparam_P4_);
+  AddParameter("TauParamP5","",tauparam_P5_);
+  AddParameter("TauParamTauFrac","",tauparam_TauFrac_);
+  AddParameter("FADCDeltaT","",fadcDeltaT_);
+  AddParameter("FrontEndImpedence","",frontendImpedance_);
+  AddParameter("PMTTransitTimeSlope","",pmtTransitTimeSlope_);
+  AddParameter("PMTTransitTimeIntercept","",pmtTransitTimeIntercept_);
+  AddParameter("DOMCalVersion","",domcalVersion_);
+  AddParameter("ATWDa0Baseline","",atwda0_baseline_);
+  AddParameter("ATWDa1Baseline","",atwda1_baseline_);
+  AddParameter("ATWDa2Baseline","",atwda2_baseline_);
+  AddParameter("ATWDb0Baseline","",atwdb0_baseline_);
+  AddParameter("ATWDb1Baseline","",atwdb1_baseline_);
+  AddParameter("ATWDb2Baseline","",atwdb2_baseline_);
 }
 
 
@@ -73,6 +112,27 @@ void I3TweakCalibrationService::Configure()
   GetParameter("ATWDBinCalibFit_slope",atwdBinCalibFit_slope_);
   GetParameter("ATWDBinCalibFit_intercept",atwdBinCalibFit_intercept_);
   GetParameter("ATWDResponseWidth",atwd_response_width_);
+
+  GetParameter("ATWDResponseWidth",atwd_response_width_);
+  GetParameter("FADCResponseWidth",fadc_response_width_);
+  GetParameter("TauParamP0",tauparam_P0_);
+  GetParameter("TauParamP1",tauparam_P1_);
+  GetParameter("TauParamP2",tauparam_P2_);
+  GetParameter("TauParamP3",tauparam_P3_);
+  GetParameter("TauParamP4",tauparam_P4_);
+  GetParameter("TauParamP5",tauparam_P5_);
+  GetParameter("TauParamTauFrac",tauparam_TauFrac_);
+  GetParameter("FADCDeltaT",fadcDeltaT_);
+  GetParameter("FrontEndImpedence",frontendImpedance_);
+  GetParameter("PMTTransitTimeSlope",pmtTransitTimeSlope_);
+  GetParameter("PMTTransitTimeIntercept",pmtTransitTimeIntercept_);
+  GetParameter("DOMCalVersion",domcalVersion_);
+  GetParameter("ATWDa0Baseline",atwda0_baseline_);
+  GetParameter("ATWDa1Baseline",atwda1_baseline_);
+  GetParameter("ATWDa2Baseline",atwda2_baseline_);
+  GetParameter("ATWDb0Baseline",atwdb0_baseline_);
+  GetParameter("ATWDb1Baseline",atwdb1_baseline_);
+  GetParameter("ATWDb2Baseline",atwdb2_baseline_);
 }
 
 bool I3TweakCalibrationService::InstallService(I3Context& services)
@@ -120,6 +180,49 @@ bool I3TweakCalibrationService::InstallService(I3Context& services)
       cal_service_->SetATWDBinCalibIntercept(atwdBinCalibFit_intercept_);
     if(!isnan(atwd_response_width_))
       cal_service_->SetATWDResponseWidth(atwd_response_width_);
+
+    if(!isnan(fadc_response_width_))
+      cal_service_->SetFADCResponseWidth(fadc_response_width_);
+
+    if(!isnan(tauparam_P0_))
+      cal_service_->SetTauParamP0(tauparam_P0_);
+    if(!isnan(tauparam_P1_))
+      cal_service_->SetTauParamP1(tauparam_P1_);
+    if(!isnan(tauparam_P2_))
+      cal_service_->SetTauParamP2(tauparam_P2_);
+    if(!isnan(tauparam_P3_))
+      cal_service_->SetTauParamP3(tauparam_P3_);
+    if(!isnan(tauparam_P4_))
+      cal_service_->SetTauParamP4(tauparam_P4_);
+    if(!isnan(tauparam_P5_))
+      cal_service_->SetTauParamP5(tauparam_P5_);
+    if(!isnan(tauparam_TauFrac_))
+      cal_service_->SetTauParamTauFrac(tauparam_TauFrac_);
+
+
+    if(!isnan(fadcDeltaT_))
+      cal_service_->SetFADCDeltaT(fadcDeltaT_);
+    if(!isnan(frontendImpedance_))
+      cal_service_->SetFrontEndImpedance(frontendImpedance_);
+    if(!isnan(pmtTransitTimeSlope_))
+      cal_service_->SetPMTTransitTimeSlope(pmtTransitTimeSlope_);
+    if(!isnan(pmtTransitTimeIntercept_))
+      cal_service_->SetPMTTransitTimeIntercept(pmtTransitTimeIntercept_);
+    if(domcalVersion_.size())
+      cal_service_->SetDOMCalVersion(domcalVersion_);
+
+    if(!isnan(atwda0_baseline_))
+      cal_service_->SetATWDa0Baseline(atwda0_baseline_);
+    if(!isnan(atwda1_baseline_))
+      cal_service_->SetATWDa1Baseline(atwda1_baseline_);
+    if(!isnan(atwda2_baseline_))
+      cal_service_->SetATWDa2Baseline(atwda2_baseline_);
+    if(!isnan(atwdb0_baseline_))
+      cal_service_->SetATWDb0Baseline(atwdb0_baseline_);
+    if(!isnan(atwdb1_baseline_))
+      cal_service_->SetATWDb1Baseline(atwdb1_baseline_);
+    if(!isnan(atwdb2_baseline_))
+      cal_service_->SetATWDb2Baseline(atwdb2_baseline_);
   }
 
   bool good_calib = services.Put<I3CalibrationService>(tweakedServiceName_,cal_service_);

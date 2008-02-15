@@ -53,6 +53,26 @@ public:
   void SetATWDResponseWidth(double x){atwd_response_width_=x;};
   void SetFADCResponseWidth(double x){fadc_response_width_=x;};
 
+  void SetFADCDeltaT(double x){fadcDeltaT_=x;};
+  void SetFrontEndImpedance(double x){frontendImpedance_=x;};
+  void SetPMTTransitTimeSlope(double x){pmtTransitTimeSlope_=x;};
+  void SetPMTTransitTimeIntercept(double x){pmtTransitTimeIntercept_=x;};
+  void SetDOMCalVersion(std::string x){domcalVersion_=x;};
+  void SetATWDa0Baseline(double x){atwda0_baseline_=x;};
+  void SetATWDa1Baseline(double x){atwda1_baseline_=x;};
+  void SetATWDa2Baseline(double x){atwda2_baseline_=x;};
+  void SetATWDb0Baseline(double x){atwdb0_baseline_=x;};
+  void SetATWDb1Baseline(double x){atwdb1_baseline_=x;};
+  void SetATWDb2Baseline(double x){atwdb2_baseline_=x;};
+
+  void SetTauParamP0(double x){tauparam_P0_=x;};
+  void SetTauParamP1(double x){tauparam_P1_=x;};
+  void SetTauParamP2(double x){tauparam_P2_=x;};
+  void SetTauParamP3(double x){tauparam_P3_=x;};
+  void SetTauParamP4(double x){tauparam_P4_=x;};
+  void SetTauParamP5(double x){tauparam_P5_=x;};
+  void SetTauParamTauFrac(double x){tauparam_TauFrac_=x;};
+
   SET_LOGGER("I3TweakCalibration");
 
  private:
@@ -85,6 +105,26 @@ public:
 
   double atwd_response_width_;
   double fadc_response_width_;
+
+  double tauparam_P0_;
+  double tauparam_P1_;
+  double tauparam_P2_;
+  double tauparam_P3_;
+  double tauparam_P4_;
+  double tauparam_P5_;
+  double tauparam_TauFrac_;
+
+  double fadcDeltaT_;
+  double frontendImpedance_;
+  double pmtTransitTimeSlope_;
+  double pmtTransitTimeIntercept_;
+  std::string domcalVersion_;
+  double atwda0_baseline_;
+  double atwda1_baseline_;
+  double atwda2_baseline_;
+  double atwdb0_baseline_;
+  double atwdb1_baseline_;
+  double atwdb2_baseline_;
 };
 
 I3_POINTER_TYPEDEFS(I3TweakCalibration);
