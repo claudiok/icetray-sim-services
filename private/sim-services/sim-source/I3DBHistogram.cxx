@@ -94,6 +94,18 @@ void SetNBinsATWD1(TH1D*);
 void SetNBinsATWD2(TH1D*);
 void SetNBinsFADC(TH1D*);
 
+void SetFADCDeltaT(TH1D*);
+void SetFrontEndImpedance(TH1D*);
+void SetPMTTransitTimeSlope(TH1D*);
+void SetPMTTransitTimeIntercept(TH1D*);
+void SetATWD0aBaseline(TH1D*);
+void SetATWD1aBaseline(TH1D*);
+void SetATWD2aBaseline(TH1D*);
+void SetATWD0bBaseline(TH1D*);
+void SetATWD1bBaseline(TH1D*);
+void SetATWD2bBaseline(TH1D*);
+
+
 void FitAndFormatHisto(TH1D* h, 
 		       string, 
 		       string, 
@@ -211,10 +223,53 @@ void BookDOMCalibHistograms(I3CalibrationConstPtr calib,
   TH1D* atwd2_b_bc_slope_h = new TH1D("atwd2_B_bc_slope",
 			  "ATWD_B Channel 2 BinCalib Fit Slope",
 			  100,slope_min,slope_max);
+
   TH1D* atwd2_b_bc_int_h = new TH1D("atwd2_B_bc_int",
 			"ATWD_B Channel 2 BinCalib Fit Intercept",
 			100,int_min,int_max);
 
+  TH1D* fadc_delta_t_h = new TH1D("fadc_delta_t_h",
+			"FADC #Delta T",
+			100,-82*I3Units::ns,-70*I3Units::ns);
+
+  TH1D* frontend_impedance_h = new TH1D("frontend_impedance_h",
+			"Front End Impededance",
+			100,40.,50.);
+
+  TH1D* pmt_transit_time_slope_h = new TH1D("pmt_transit_time_slope_h",
+			"PMT Transit Time - slope",
+			100,1500,2500);
+
+  TH1D* pmt_transit_time_int_h = new TH1D("pmt_transit_time_intercept_h",
+			"PMT Transit Time - intercept",
+			100,75,100);
+
+  double bl_min(-30.);
+  double bl_max(30.);
+
+  TH1D* atwd0_a_bl_h = new TH1D("atwd0_A_baseline",
+			  "ATWD_A Channel 0 Baseline",
+			  100,bl_min,bl_max);
+
+  TH1D* atwd1_a_bl_h = new TH1D("atwd1_A_baseline",
+			  "ATWD_A Channel 1 Baseline",
+			  100,bl_min,bl_max);
+
+  TH1D* atwd2_a_bl_h = new TH1D("atwd2_A_baseline",
+			  "ATWD_A Channel 2 Baseline",
+			  100,bl_min,bl_max);
+
+  TH1D* atwd0_b_bl_h = new TH1D("atwd0_B_baseline",
+			  "ATWD_B Channel 0 Baseline",
+			  100,bl_min,bl_max);
+
+  TH1D* atwd1_b_bl_h = new TH1D("atwd1_B_baseline",
+			  "ATWD_B Channel 1 Baseline",
+			  100,bl_min,bl_max);
+
+  TH1D* atwd2_b_bl_h = new TH1D("atwd2_B_baseline",
+			  "ATWD_B Channel 2 Baseline",
+			  100,bl_min,bl_max);
 
   map<OMKey, I3DOMCalibration>::const_iterator cal_iter;
 
@@ -242,6 +297,12 @@ void BookDOMCalibHistograms(I3CalibrationConstPtr calib,
     hvgain_slope_h->Fill(cal_iter->second.GetHVGainFit().slope);
     hvgain_int_h->Fill(cal_iter->second.GetHVGainFit().intercept);
 
+    fadc_delta_t_h->Fill(cal_iter->second.GetFADCDeltaT()/I3Units::ns);
+    frontend_impedance_h->Fill(cal_iter->second.GetFrontEndImpedance()/I3Units::ohm);
+
+    pmt_transit_time_slope_h->Fill(cal_iter->second.GetTransitTime().slope);
+    pmt_transit_time_int_h->Fill(cal_iter->second.GetTransitTime().intercept);
+    
     for( unsigned int bin = 0; bin < 128; ++bin ){
       atwd0_a_bc_slope_h->Fill(cal_iter->second.GetATWDBinCalibFit(0,0,bin).slope/I3Units::V);
       atwd1_a_bc_slope_h->Fill(cal_iter->second.GetATWDBinCalibFit(0,1,bin).slope/I3Units::V);
@@ -258,6 +319,14 @@ void BookDOMCalibHistograms(I3CalibrationConstPtr calib,
       atwd0_b_bc_int_h->Fill(cal_iter->second.GetATWDBinCalibFit(1,0,bin).intercept/I3Units::V);
       atwd1_b_bc_int_h->Fill(cal_iter->second.GetATWDBinCalibFit(1,1,bin).intercept/I3Units::V);
       atwd2_b_bc_int_h->Fill(cal_iter->second.GetATWDBinCalibFit(1,2,bin).intercept/I3Units::V);
+
+      atwd0_a_bl_h->Fill(cal_iter->second.GetATWDBaseline(0,0,bin)/I3Units::mV);
+      atwd1_a_bl_h->Fill(cal_iter->second.GetATWDBaseline(0,1,bin)/I3Units::mV);
+      atwd2_a_bl_h->Fill(cal_iter->second.GetATWDBaseline(0,2,bin)/I3Units::mV);
+
+      atwd0_b_bl_h->Fill(cal_iter->second.GetATWDBaseline(1,0,bin)/I3Units::mV);
+      atwd1_b_bl_h->Fill(cal_iter->second.GetATWDBaseline(1,1,bin)/I3Units::mV);
+      atwd2_b_bl_h->Fill(cal_iter->second.GetATWDBaseline(1,2,bin)/I3Units::mV);
     }
   }
 
@@ -327,6 +396,16 @@ void BookDOMCalibHistograms(I3CalibrationConstPtr calib,
   SetATWD2bBinCalibSlope(atwd2_b_bc_slope_h);
   SetATWD2bBinCalibIntercept(atwd2_b_bc_int_h);
 
+  SetFADCDeltaT(fadc_delta_t_h);
+  SetFrontEndImpedance(frontend_impedance_h);
+  SetPMTTransitTimeSlope(pmt_transit_time_slope_h);
+  SetPMTTransitTimeIntercept(pmt_transit_time_int_h);
+  SetATWD0aBaseline(atwd0_a_bl_h);
+  SetATWD1aBaseline(atwd1_a_bl_h);
+  SetATWD2aBaseline(atwd2_a_bl_h);
+  SetATWD0bBaseline(atwd0_b_bl_h);
+  SetATWD1bBaseline(atwd1_b_bl_h);
+  SetATWD2bBaseline(atwd2_b_bl_h);
 } 
 
 void BookDOMStatusHistograms(I3DetectorStatusConstPtr status, 
@@ -654,7 +733,7 @@ void SetATWDaFreqFit_B(TH1D* h){
   defVal<<"Default = "
        <<I3CalibDefaults::ATWD_A_FREQFIT_B
        <<" ";
-  //h->SetXTitle("");
+  //h->SetXTitle("g");
   FitAndFormatHisto(h,"calibration/ATWDaFreqFit_B.png",defVal.str(),true);
 };
 
@@ -1046,5 +1125,157 @@ void SetNBinsFADC(TH1D* h){
   h->SetXTitle("N Bins");
   FitAndFormatHisto(h,"detstat/NBinsFADC.png",defVal.str());
 
+}
+
+void SetFADCDeltaT(TH1D* h){
+  std::stringstream defVal;
+  defVal<<"Default = "
+	<<I3CalibDefaults::FADC_DELTA_T/I3Units::ns
+	<<" ";
+  h->SetXTitle("t(ns)");
+  FitAndFormatHisto(h,"calibration/FADCDeltaT.png",defVal.str(),true);
+}
+
+void SetFrontEndImpedance(TH1D* h){
+  std::stringstream defVal;
+  defVal<<"Default = "
+	<<I3CalibDefaults::FRONT_END_IMPEDANCE/I3Units::ohm
+	<<" ";
+  h->SetXTitle("");
+  FitAndFormatHisto(h,"calibration/FrontEndImpedance.png",defVal.str());
+}
+
+void SetPMTTransitTimeSlope(TH1D* h){
+  std::stringstream defVal;
+  defVal<<"Default = "
+    <<I3CalibDefaults::PMT_TRANSIT_TIME_SLOPE
+	<<" ";
+  h->SetXTitle("slope(ns/sqrt(V))");
+  FitAndFormatHisto(h,"calibration/PMTTransitTimeSlope.png",defVal.str(),true);
+}
+
+void SetPMTTransitTimeIntercept(TH1D* h){
+  std::stringstream defVal;
+  defVal<<"Default = "
+	<<I3CalibDefaults::PMT_TRANSIT_TIME_INTERCEPT/I3Units::ns
+	<<" ";
+  h->SetXTitle("intercept(ns)");
+  FitAndFormatHisto(h,"calibration/PMTTransitTimeIntercept.png",defVal.str(),true);
+}
+
+void SetATWD0aBaseline(TH1D* h){
+
+  TCanvas c;
+
+  TF1* dg = new TF1("dg","gaus(0) + gaus(3)",-30,30);
+  dg->SetParameter(0,30000);
+  dg->SetParameter(1,2);
+  dg->SetParameter(2,1);
+  dg->SetParameter(3,5000);
+  dg->SetParameter(4,-0.5);
+  dg->SetParameter(5,3);
+  h->Fit("dg"); 
+  //h->Draw();
+  //dg->Draw("same");
+
+  const string I3_BUILD(getenv("I3_BUILD"));
+  string plot_path(I3_BUILD + "/sim-services/resources/plots/");
+  c.SaveAs((plot_path+"calibration/ATWD0aBaseline.png").c_str());
+
+}
+
+void SetATWD1aBaseline(TH1D* h){
+  TCanvas c;
+
+  TF1* dg = new TF1("dg","gaus(0) + gaus(3)",-30,30);
+  dg->SetParameter(0,30000);
+  dg->SetParameter(1,0);
+  dg->SetParameter(2,1);
+  dg->SetParameter(3,2000);
+  dg->SetParameter(4,-12);
+  dg->SetParameter(5,5);
+  h->Fit("dg"); 
+  //h->Draw();
+  //dg->Draw("same");
+
+  const string I3_BUILD(getenv("I3_BUILD"));
+  string plot_path(I3_BUILD + "/sim-services/resources/plots/");
+  c.SaveAs((plot_path+"calibration/ATWD1aBaseline.png").c_str());
+}
+
+void SetATWD2aBaseline(TH1D* h){
+  TCanvas c;
+
+  TF1* dg = new TF1("dg","gaus(0) + gaus(3)",-30,30);
+  dg->SetParameter(0,16000);
+  dg->SetParameter(1,-17);
+  dg->SetParameter(2,3);
+  dg->SetParameter(3,4000);
+  dg->SetParameter(4,2);
+  dg->SetParameter(5,1);
+  h->Fit("dg"); 
+  //h->Draw();
+  //dg->Draw("same");
+
+  const string I3_BUILD(getenv("I3_BUILD"));
+  string plot_path(I3_BUILD + "/sim-services/resources/plots/");
+  c.SaveAs((plot_path+"calibration/ATWD2aBaseline.png").c_str());
+}
+
+void SetATWD0bBaseline(TH1D* h){
+  TCanvas c;
+
+  TF1* dg = new TF1("dg","gaus(0) + gaus(3)",-30,30);
+  dg->SetParameter(0,30000);
+  dg->SetParameter(1,-4);
+  dg->SetParameter(2,1);
+  dg->SetParameter(3,5000);
+  dg->SetParameter(4,2);
+  dg->SetParameter(5,3);
+  h->Fit("dg"); 
+  //h->Draw();
+  //dg->Draw("same");
+
+  const string I3_BUILD(getenv("I3_BUILD"));
+  string plot_path(I3_BUILD + "/sim-services/resources/plots/");
+  c.SaveAs((plot_path+"calibration/ATWD0bBaseline.png").c_str());
+}
+
+void SetATWD1bBaseline(TH1D* h){
+  TCanvas c;
+
+  TF1* dg = new TF1("dg","gaus(0) + gaus(3)",-30,30);
+  dg->SetParameter(0,12000);
+  dg->SetParameter(1,-17);
+  dg->SetParameter(2,3);
+  dg->SetParameter(3,2000);
+  dg->SetParameter(4,2);
+  dg->SetParameter(5,1);
+  h->Fit("dg"); 
+  //h->Draw();
+  //dg->Draw("same");
+
+  const string I3_BUILD(getenv("I3_BUILD"));
+  string plot_path(I3_BUILD + "/sim-services/resources/plots/");
+  c.SaveAs((plot_path+"calibration/ATWD1bBaseline.png").c_str());
+}
+
+void SetATWD2bBaseline(TH1D* h){
+  TCanvas c;
+
+  TF1* dg = new TF1("dg","gaus(0) + gaus(3)",-30,30);
+  dg->SetParameter(0,16000);
+  dg->SetParameter(1,-17);
+  dg->SetParameter(2,3);
+  dg->SetParameter(3,4000);
+  dg->SetParameter(4,2);
+  dg->SetParameter(5,1);
+  h->Fit("dg"); 
+  //h->Draw();
+  //dg->Draw("same");
+
+  const string I3_BUILD(getenv("I3_BUILD"));
+  string plot_path(I3_BUILD + "/sim-services/resources/plots/");
+  c.SaveAs((plot_path+"calibration/ATWD2bBaseline.png").c_str());
 }
 
