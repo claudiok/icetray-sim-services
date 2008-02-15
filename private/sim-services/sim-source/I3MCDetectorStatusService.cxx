@@ -53,7 +53,9 @@ I3MCDetectorStatusService::I3MCDetectorStatusService(I3GeometryServicePtr g,
   nBinsFADC_IceTop_(I3DetStatDefaults::NBINS_FADC_ICETOP),
   twrBinSize_(I3TWRDefaults::BIN_SIZE),
   twrBaseline_(I3TWRDefaults::BASELINE),
-  deltaCompression_(I3DetStatDefaults::DELTA_COMPRESSION)
+  deltaCompression_(I3DetStatDefaults::DELTA_COMPRESSION),
+  domGainType_(I3DetStatDefaults::DOM_GAIN_TYPE),
+  slcActive_(I3DetStatDefaults::SLC_ACTIVE)
 {
   geo_service_ = g;
   old_status_service_ = s;
@@ -123,7 +125,7 @@ void I3MCDetectorStatusService::SetDOMStatus(I3DetectorStatusPtr& status, const 
   domStatus.dacFADCRef = dacFADCRef_;
 
   domStatus.deltaCompress = deltaCompression_;
-  
+
   I3OMGeoMap::const_iterator iter;
   //changed all inice to omgeo
   unsigned nSkipped(0);
@@ -158,17 +160,20 @@ void I3MCDetectorStatusService::SetDOMStatus(I3DetectorStatusPtr& status, const 
 	  domStatus.lcWindowPost = icetopLCWindowPost_;
 
 	  domStatus.lcSpan = icetop_LCSpan_;
+	  domStatus.SLCActive = false;
 	  
 	  if ( thiskey.GetOM() == 61 ||
 	       thiskey.GetOM() == 63 )
 	    {	
 	      domStatus.pmtHV = icetopHighGainVoltage_;
+	      domStatus.domGainType = I3DOMStatus::High;  
 	    }
 	  
 	  else if ( thiskey.GetOM() == 62 ||
 		    thiskey.GetOM() == 64 )
 	    {
 	      domStatus.pmtHV = icetopLowGainVoltage_;
+	      domStatus.domGainType = I3DOMStatus::Low;  
 	    }
 	}else{
 	  /**
@@ -200,6 +205,8 @@ void I3MCDetectorStatusService::SetDOMStatus(I3DetectorStatusPtr& status, const 
 	  domStatus.lcWindowPost = iniceLCWindowPost_;
 	  
 	  domStatus.pmtHV = iniceVoltage_;
+	  domStatus.domGainType = domGainType_;  
+	  domStatus.SLCActive = slcActive_;
 	}
 	status->domStatus[thiskey] = domStatus;
 	log_trace("creating record for DOM %s",thiskey.str().c_str());

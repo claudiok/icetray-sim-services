@@ -46,53 +46,10 @@ public:
 
   SET_LOGGER("I3MCDetectorStatusService");
 
-  void SetStartYear(int32_t t){startYear_= t;};
-  void SetStartDAQTime(int64_t t){startDAQTime_= t;};
-  void SetEndYear(int32_t t){endYear_= t;};
-  void SetEndDAQTime(int64_t t){endDAQTime_= t;};
-
-  void SetIceTopLCWindowPre(double p){icetopLCWindowPre_= p;};
-  void SetIceTopLCWindowPost(double p){icetopLCWindowPost_= p;};
-  void SetIceTopHighGainVoltage(double v){icetopHighGainVoltage_= v;};
-  void SetIceTopLowGainVoltage(double v){icetopLowGainVoltage_= v;};
-  void SetInIceLCWindowPre(double p){iniceLCWindowPre_= p;};
-  void SetInIceLCWindowPost(double p){iniceLCWindowPost_= p;};
-  void SetInIceLCSpan(int s){inice_LCSpan_= s;};
-  void SetIceTopLCSpan(int s){icetop_LCSpan_= s;};
-  void SetInIceVoltage(double v){iniceVoltage_= v;};
-  void SetTriggerMode(int m){triggerMode_= static_cast<I3DOMStatus::TrigMode>(m);};
-
-  void SetLCModeInIceFirstDOM(int m){lcMode_inice_first_= static_cast<I3DOMStatus::LCMode>(m);};
-  void SetLCModeInIceBulkDOMs(int m){lcMode_inice_bulk_= static_cast<I3DOMStatus::LCMode>(m);};
-  void SetLCModeInIceLastDOM(int m){lcMode_inice_last_= static_cast<I3DOMStatus::LCMode>(m);};
-  void SetLCModeIceTopDOMs(int m){lcMode_icetop_= static_cast<I3DOMStatus::LCMode>(m);};
-
-  void SetStatusATWDa(int o){statusATWDa_= static_cast<I3DOMStatus::OnOff>(o);};
-  void SetStatusATWDb(int o){statusATWDb_= static_cast<I3DOMStatus::OnOff>(o);};
-  void SetStatusFADCInIce(int o){statusFADC_InIce_= static_cast<I3DOMStatus::OnOff>(o);};
-  void SetStatusFADCIceTop(int o){statusFADC_IceTop_= static_cast<I3DOMStatus::OnOff>(o);};
-  void SetSPEThreshold(double t){speThreshold_= t;};
-  void SetFEPedestal(double t){fePedestal_= t;};
-  void SetDACTriggerBias0(int b){dacTriggerBias0_= b;};
-  void SetDACTriggerBias1(int b){dacTriggerBias1_= b;};
-  void SetDACFADCRef(int r){ dacFADCRef_ = r; };
-  void SetNBinsATWD0InIce(int n){ nBinsATWD0_InIce_ = n; };
-  void SetNBinsATWD1InIce(int n){ nBinsATWD1_InIce_ = n; };
-  void SetNBinsATWD2InIce(int n){ nBinsATWD2_InIce_ = n; };
-  void SetNBinsFADCInIce(int n){ nBinsFADC_InIce_ = n; };
-  void SetNBinsATWD0IceTop(int n){ nBinsATWD0_IceTop_ = n; };
-  void SetNBinsATWD1IceTop(int n){ nBinsATWD1_IceTop_ = n; };
-  void SetNBinsATWD2IceTop(int n){ nBinsATWD2_IceTop_ = n; };
-  void SetNBinsFADCIceTop(int n){ nBinsFADC_IceTop_ = n; };
 
   void SetMCTWRParamsMap(I3MCTWRParamsMapPtr p){ twrParamsMap_ = p;};
-  void SetTWRBinSize(double b){twrBinSize_ = b; };
-  void SetTWRBaseline(unsigned b){twrBaseline_ = b; };
-
   void SetSkipStrings(vector<int>& v){ skipStrings_ = v;};
   void SetSkipStations(vector<int>& v){ skipStations_ = v;};
-
-  void SetDeltaCompression(I3DOMStatus::OnOff f){ deltaCompression_ = f; };
 
  private:
   I3MCDetectorStatusService();
@@ -185,7 +142,8 @@ public:
   unsigned twrBaseline_;
 
   I3DOMStatus::OnOff deltaCompression_;
-
+  I3DOMStatus::DOMGain domGainType_;
+  bool slcActive_;
   /**
    * Don't modify these strings/stations
    */

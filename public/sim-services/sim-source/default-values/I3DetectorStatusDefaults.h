@@ -90,6 +90,10 @@ namespace I3DetStatDefaults{
 
   const I3DOMStatus::OnOff DELTA_COMPRESSION = I3DOMStatus::On;
 
+  const I3DOMStatus::DOMGain DOM_GAIN_TYPE = I3DOMStatus::High;
+  const bool SLC_ACTIVE = true;
+
+
 }
 
 #endif
