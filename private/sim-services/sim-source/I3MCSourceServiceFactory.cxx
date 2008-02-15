@@ -82,7 +82,7 @@ bool I3MCSourceServiceFactory::InstallService(I3Context& services)
     log_trace("number of triggers after insertion = %zu",statusService_->GetTriggerStatusSize());
 
     //Configure with default parameters
-    Configure(statusService_);    
+    //Configure(statusService_);    
 
     statusService_->SetSkipStrings(skipStrings_);
     statusService_->SetSkipStations(skipStations_);
@@ -261,72 +261,4 @@ void I3MCSourceServiceFactory::FillTriggers(I3MCDetectorStatusServicePtr s){
     s->InsertTriggerStatus(vol_trig, vol_stat);
 
   }
-}
-
-void I3MCSourceServiceFactory::Configure(I3MCDetectorStatusServicePtr s){
-  s->SetStartYear(I3DetStatDefaults::START_YEAR);
-  s->SetStartDAQTime(I3DetStatDefaults::START_DAQTIME);
-  s->SetEndYear(I3DetStatDefaults::END_YEAR);
-  s->SetEndDAQTime(I3DetStatDefaults::END_DAQTIME);
-  
-  s->SetIceTopLCWindowPre(I3DetStatDefaults::ICETOP_LCWINDOW_PRE);
-  s->SetIceTopLCWindowPost(I3DetStatDefaults::ICETOP_LCWINDOW_POST);
-  s->SetIceTopHighGainVoltage(I3DetStatDefaults::ICETOP_HIGHGAIN_VOLTAGE);
-  s->SetIceTopLowGainVoltage(I3DetStatDefaults::ICETOP_LOWGAIN_VOLTAGE);
-  s->SetInIceLCWindowPre(I3DetStatDefaults::INICE_LCWINDOW_PRE);
-  s->SetInIceLCWindowPost(I3DetStatDefaults::INICE_LCWINDOW_POST);
-  s->SetInIceLCSpan(I3DetStatDefaults::INICE_LCSPAN);
-  s->SetIceTopLCSpan(I3DetStatDefaults::ICETOP_LCSPAN);
-  s->SetInIceVoltage(I3DetStatDefaults::INICE_VOLTAGE);
-  s->SetTriggerMode(I3DetStatDefaults::TRIGGER_MODE);
-
-  s->SetLCModeInIceFirstDOM(I3DetStatDefaults::LCMODE_INICE_FIRST);
-  s->SetLCModeInIceBulkDOMs(I3DetStatDefaults::LCMODE_INICE_BULK);
-  s->SetLCModeInIceLastDOM(I3DetStatDefaults::LCMODE_INICE_LAST);
-  s->SetLCModeIceTopDOMs(I3DetStatDefaults::LCMODE_ICETOP);
-
-  s->SetStatusATWDa(I3DetStatDefaults::STATUS_ATWDa);
-  s->SetStatusATWDb(I3DetStatDefaults::STATUS_ATWDb);
-  s->SetStatusFADCInIce(I3DetStatDefaults::STATUS_FADC_INICE);
-  s->SetStatusFADCIceTop(I3DetStatDefaults::STATUS_FADC_ICETOP);
-  s->SetSPEThreshold(I3DetStatDefaults::SPE_THRESHOLD);
-  s->SetFEPedestal(I3DetStatDefaults::FE_PEDESTAL);
-  s->SetDACTriggerBias0(I3DetStatDefaults::DAC_TRIGGER_BIAS0);
-  s->SetDACTriggerBias1(I3DetStatDefaults::DAC_TRIGGER_BIAS1);
-  s->SetDACFADCRef(I3DetStatDefaults::DAC_FADC_REF);
-  s->SetNBinsATWD0InIce(I3DetStatDefaults::NBINS_ATWD0_INICE);
-  s->SetNBinsATWD1InIce(I3DetStatDefaults::NBINS_ATWD1_INICE);
-  s->SetNBinsATWD2InIce(I3DetStatDefaults::NBINS_ATWD2_INICE);
-  s->SetNBinsFADCInIce(I3DetStatDefaults::NBINS_FADC_INICE);
-  s->SetNBinsATWD0IceTop(I3DetStatDefaults::NBINS_ATWD0_ICETOP);
-  s->SetNBinsATWD1IceTop(I3DetStatDefaults::NBINS_ATWD1_ICETOP);
-  s->SetNBinsATWD2IceTop(I3DetStatDefaults::NBINS_ATWD2_ICETOP);
-  s->SetNBinsFADCIceTop(I3DetStatDefaults::NBINS_FADC_ICETOP);
-  s->SetDeltaCompression(I3DetStatDefaults::DELTA_COMPRESSION);
-}
-
-void I3MCSourceServiceFactory::Configure(I3MCCalibrationServicePtr c){
-  c->SetStartYear(I3CalibDefaults::START_YEAR);
-  c->SetStartDAQTime(I3CalibDefaults::START_DAQTIME);
-  c->SetEndYear(I3CalibDefaults::END_YEAR);
-  c->SetEndDAQTime(I3CalibDefaults::END_DAQTIME);
-  
-  c->SetTemperature(I3CalibDefaults::TEMPERATURE);
-  c->SetFADCBaselineSlope(I3CalibDefaults::FADC_BASELINE_FIT_SLOPE);
-  c->SetFADCBaselineIntercept(I3CalibDefaults::FADC_BASSLINE_FIT_INTERCEPT);
-  c->SetFADCGain(I3CalibDefaults::FADC_GAIN);
-  c->SetATWD0(I3CalibDefaults::ATWD0_GAIN);
-  c->SetATWD1(I3CalibDefaults::ATWD1_GAIN);
-  c->SetATWD2(I3CalibDefaults::ATWD2_GAIN);
-  c->SetATWDaFreqFitA(I3CalibDefaults::ATWD_A_FREQFIT_A);
-  c->SetATWDaFreqFitB(I3CalibDefaults::ATWD_A_FREQFIT_B);
-  c->SetATWDaFreqFitC(I3CalibDefaults::ATWD_A_FREQFIT_C);
-  c->SetATWDbFreqFitA(I3CalibDefaults::ATWD_B_FREQFIT_A);
-  c->SetATWDbFreqFitB(I3CalibDefaults::ATWD_B_FREQFIT_B);
-  c->SetATWDbFreqFitC(I3CalibDefaults::ATWD_B_FREQFIT_C);
-  c->SetHVGainSlope(I3CalibDefaults::HV_GAIN_FIT_SLOPE);
-  c->SetHVGainIntercept(I3CalibDefaults::HV_GAIN_FIT_INTERCEPT);
-  c->SetATWDBinCalibSlope(I3CalibDefaults::ATWD_BINCALIB_FIT_SLOPE);
-  c->SetATWDBinCalibIntercept(I3CalibDefaults::ATWD_BINCALIB_FIT_INTERCEPT);
-  c->SetATWDResponseWidth(I3CalibDefaults::ATWD_RESPONSE_WIDTH);
 }

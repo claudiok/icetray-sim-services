@@ -33,8 +33,6 @@ class I3MCSourceServiceFactory : public I3ServiceFactory
  private:
 
   void FillTriggers(shared_ptr<I3MCDetectorStatusService>);
-  void Configure(shared_ptr<I3MCDetectorStatusService>);
-  void Configure(shared_ptr<I3MCCalibrationService>);
 
   std::string oldCalServiceName_;
   std::string oldStatusServiceName_;
