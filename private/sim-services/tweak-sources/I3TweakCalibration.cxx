@@ -204,19 +204,19 @@ I3TweakCalibration::GetCalibration(I3Time time){
 	iter->second.SetATWDBaseline(0,0,bin,atwda0_baseline_);
     if(!isnan(atwda1_baseline_))
       for( unsigned int bin = 0; bin < 128; ++bin )
-	iter->second.SetATWDBaseline(0,0,bin,atwda1_baseline_);
+	iter->second.SetATWDBaseline(0,1,bin,atwda1_baseline_);
     if(!isnan(atwda2_baseline_))
       for( unsigned int bin = 0; bin < 128; ++bin )
-	iter->second.SetATWDBaseline(0,0,bin,atwda2_baseline_);
+	iter->second.SetATWDBaseline(0,2,bin,atwda2_baseline_);
     if(!isnan(atwdb0_baseline_))
       for( unsigned int bin = 0; bin < 128; ++bin )
-	iter->second.SetATWDBaseline(0,0,bin,atwdb0_baseline_);
+	iter->second.SetATWDBaseline(1,0,bin,atwdb0_baseline_);
     if(!isnan(atwdb1_baseline_))
       for( unsigned int bin = 0; bin < 128; ++bin )
-	iter->second.SetATWDBaseline(0,0,bin,atwdb1_baseline_);
+	iter->second.SetATWDBaseline(1,1,bin,atwdb1_baseline_);
     if(!isnan(atwdb2_baseline_))
       for( unsigned int bin = 0; bin < 128; ++bin )
-	iter->second.SetATWDBaseline(0,0,bin,atwdb2_baseline_);
+	iter->second.SetATWDBaseline(1,2,bin,atwdb2_baseline_);
 
   }
   

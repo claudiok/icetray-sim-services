@@ -144,11 +144,11 @@ I3MCCalibrationService::GetCalibration(I3Time time){
 
   for( unsigned int bin = 0; bin < 128; ++bin ){
     domCalib.SetATWDBaseline(0,0,bin,atwda0_baseline_);
-    domCalib.SetATWDBaseline(1,0,bin,atwda1_baseline_);
-    domCalib.SetATWDBaseline(2,0,bin,atwda2_baseline_);
-    domCalib.SetATWDBaseline(0,1,bin,atwdb0_baseline_);
+    domCalib.SetATWDBaseline(0,1,bin,atwda1_baseline_);
+    domCalib.SetATWDBaseline(0,2,bin,atwda2_baseline_);
+    domCalib.SetATWDBaseline(1,0,bin,atwdb0_baseline_);
     domCalib.SetATWDBaseline(1,1,bin,atwdb1_baseline_);
-    domCalib.SetATWDBaseline(2,1,bin,atwdb2_baseline_);
+    domCalib.SetATWDBaseline(1,2,bin,atwdb2_baseline_);
   }
 
   for( unsigned int channel = 0; channel < 3; ++channel )
