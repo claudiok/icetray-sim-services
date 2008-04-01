@@ -132,6 +132,7 @@ I3MCCalibrationService::GetCalibration(I3Time time){
   tauparam.P4 = tauparam_P4_;
   tauparam.P5 = tauparam_P5_;
   tauparam.TauFrac = tauparam_TauFrac_;
+  domCalib.SetTauParameters(tauparam);
 
   domCalib.SetFADCDeltaT(fadcDeltaT_);
   domCalib.SetFrontEndImpedance(frontendImpedance_);
@@ -139,7 +140,8 @@ I3MCCalibrationService::GetCalibration(I3Time time){
   LinearFit pmttransit;
   pmttransit.slope = pmtTransitTimeSlope_;
   pmttransit.intercept = pmtTransitTimeIntercept_;
-
+  domCalib.SetTransitTime(pmttransit);
+  
   domCalib.SetDOMCalVersion(domcalVersion_);
 
   for( unsigned int bin = 0; bin < 128; ++bin ){
