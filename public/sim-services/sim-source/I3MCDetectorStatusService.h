@@ -138,7 +138,8 @@ public:
   int nBinsATWD2_IceTop_;
   int nBinsFADC_IceTop_;
 
-  double twrBinSize_;
+  double twrOpBinSize_;
+  double twrElBinSize_;
   unsigned twrBaseline_;
 
   I3DOMStatus::OnOff deltaCompression_;

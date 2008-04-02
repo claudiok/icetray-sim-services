@@ -27,6 +27,8 @@ I3MCSourceServiceFactory(const I3Context& context) :
   calServiceName_ = I3DefaultName<I3CalibrationService>::value();
   statusServiceName_ = I3DefaultName<I3DetectorStatusService>::value();
   geoServiceName_ = I3DefaultName<I3GeometryService>::value();
+  string workspace(getenv("I3_BUILD"));
+  twrChargeFile_ = workspace+"/sim-services/resources/tables/charge_calib_2007.dat";
 
   AddParameter("CalServiceName","Name of calibration service to install",calServiceName_);
   AddParameter("StatusServiceName","Name of detector status service to install",statusServiceName_);
@@ -38,6 +40,7 @@ I3MCSourceServiceFactory(const I3Context& context) :
   AddParameter("InstallInIceTriggers","Install InIce Triggers",installInIceTriggers_);
   AddParameter("InstallIceTopTriggers","Install IceTop Triggers",installIceTopTriggers_);
   AddParameter("InstallTWRTriggers","Install TWR Triggers",installTWRTriggers_);
+  AddParameter("TWRChargeFile","Path to TWR charge file",twrChargeFile_);
   AddParameter("DoNotModifyStrings","Do not modify these strings",skipStrings_);
   AddParameter("DoNotModifyStations","Do not modify these stations",skipStations_);
 }
@@ -57,6 +60,7 @@ void I3MCSourceServiceFactory::Configure()
   GetParameter("InstallInIceTriggers",installInIceTriggers_);
   GetParameter("InstallIceTopTriggers",installIceTopTriggers_);
   GetParameter("InstallTWRTriggers",installTWRTriggers_);
+  GetParameter("TWRChargeFile",twrChargeFile_);
   GetParameter("DoNotModifyStrings",skipStrings_);
   GetParameter("DoNotModifyStations",skipStations_);
 }
@@ -105,6 +109,10 @@ bool I3MCSourceServiceFactory::InstallService(I3Context& services)
 
     calibrationService_->SetSkipStrings(skipStrings_);
     calibrationService_->SetSkipStations(skipStations_);
+
+    if(installTWRTriggers_){
+      calibrationService_->SetTWRChargeFile(twrChargeFile_);
+    }
   }
 
   bool good_calib(true);
@@ -224,6 +232,10 @@ void I3MCSourceServiceFactory::FillTriggers(I3MCDetectorStatusServicePtr s){
 						   I3TWRDefaults::STRING_5_19_NMOD));
     str_stat.GetTriggerSettings().insert(make_pair("string_5_19_mult",
 						   I3TWRDefaults::STRING_5_19_MULT));
+    str_stat.GetTriggerSettings().insert(make_pair("string_mult_coin",
+						   I3TWRDefaults::STRING_MULT_COIN));
+    str_stat.GetTriggerSettings().insert(make_pair("string_prescale",
+						   I3TWRDefaults::STRING_PRESCALE));
     s->InsertTriggerStatus(str_trig,str_stat );
     
     /**

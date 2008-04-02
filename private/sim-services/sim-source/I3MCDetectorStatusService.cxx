@@ -51,7 +51,8 @@ I3MCDetectorStatusService::I3MCDetectorStatusService(I3GeometryServicePtr g,
   nBinsATWD1_IceTop_(I3DetStatDefaults::NBINS_ATWD1_ICETOP),
   nBinsATWD2_IceTop_(I3DetStatDefaults::NBINS_ATWD2_ICETOP),
   nBinsFADC_IceTop_(I3DetStatDefaults::NBINS_FADC_ICETOP),
-  twrBinSize_(I3TWRDefaults::BIN_SIZE),
+  twrOpBinSize_(I3TWRDefaults::BIN_SIZE_OP),
+  twrElBinSize_(I3TWRDefaults::BIN_SIZE_EL),
   twrBaseline_(I3TWRDefaults::BASELINE),
   deltaCompression_(I3DetStatDefaults::DELTA_COMPRESSION),
   domGainType_(I3DetStatDefaults::DOM_GAIN_TYPE),
@@ -227,32 +228,37 @@ void I3MCDetectorStatusService::SetAOMStatus(I3DetectorStatusPtr status,
 
   TWRAOMStatus aomStatus;
 
-  aomStatus.SetBinSize(twrBinSize_);
   aomStatus.SetBaseline(twrBaseline_);
 
   I3OMGeoMap::const_iterator iter;
   for( iter  = omgeo.begin(); iter != omgeo.end(); iter++ ){
-      OMKey omKey = iter->first;
-      I3OMGeo::OMType type = iter->second.omtype;
-      
-      if (type != I3OMGeo :: AMANDA){
-	continue;//Only do AMANDA OMs
-      }else{
-	I3MCTWRParamsMap::iterator iter = twrParamsMap_->find(omKey);
-	if(iter != twrParamsMap_->end()){
-	  aomStatus.SetStopDelay(iter->second.stop_delay);
-	  aomStatus.SetThreshold(iter->second.TWR_thresh);
+    OMKey omKey = iter->first;
+    I3OMGeo::OMType type = iter->second.omtype;
+    
+    if (type != I3OMGeo :: AMANDA){
+      continue;//Only do AMANDA OMs
+    }
+    else{
+      I3MCTWRParamsMap::iterator iter = twrParamsMap_->find(omKey);
+      if(iter != twrParamsMap_->end()){
+	aomStatus.SetStopDelay(iter->second.stop_delay);
+	aomStatus.SetThreshold(iter->second.TWR_thresh);
+	
+	TWRAOMStatus::CableType t = (iter->second.optical 
+				     ? TWRAOMStatus::OPTICAL :
+				     TWRAOMStatus::ELECTRICAL);
+	aomStatus.SetCableType(t);
 
-	  TWRAOMStatus::CableType t = (iter->second.optical 
-				       ? TWRAOMStatus::OPTICAL :
-				       TWRAOMStatus::ELECTRICAL);
-	  aomStatus.SetCableType(t);
-	  status->aomStatus[omKey] = aomStatus;
-	  log_trace("Added AOMStatus for %s",omKey.str().c_str());
-	}else{
-
-	}
+	if(t==TWRAOMStatus::OPTICAL) aomStatus.SetBinSize(twrOpBinSize_); 
+	else aomStatus.SetBinSize(twrElBinSize_);
+ 
+	status->aomStatus[omKey] = aomStatus;
+	log_trace("Added AOMStatus for %s",omKey.str().c_str());
       }
+      else{
+	
+      }
+    }
   }
-
+  
 }

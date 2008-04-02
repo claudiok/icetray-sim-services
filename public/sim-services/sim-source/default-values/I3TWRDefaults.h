@@ -17,7 +17,8 @@
 namespace I3TWRDefaults{
 
   //need to verify this
-  const double BIN_SIZE = 10.*I3Units::ns;
+  const double BIN_SIZE_OP = 10.*I3Units::ns;
+  const double BIN_SIZE_EL = 20.*I3Units::ns;
 
   //eyeballed it from the DB
   //need to fit to a gaussian
@@ -26,19 +27,21 @@ namespace I3TWRDefaults{
   /**
    *TWR trigger settings
    */
-  const int STRING_1_4_NMOD = 9;
-  const int STRING_1_4_MULT = 6;
-  const int STRING_5_19_NMOD = 11;
-  const int STRING_5_19_MULT = 7;
-  const int DMADD_PRETRIG_MULT = 13;
+  const int STRING_1_4_NMOD = 5;
+  const int STRING_1_4_MULT = 3;
+  const int STRING_5_19_NMOD = 3;
+  const int STRING_5_19_MULT = 3;
+  const int STRING_MULT_COIN = 1;
+  const int STRING_PRESCALE = 1;
+  const int DMADD_PRETRIG_MULT = 8;
   const int DMADD_MULT = 18;
   const int DMADD_WINDOW = 2500;
-  const int TWR_SOFT_N1HIT = 9;
-  const int TWR_SOFT_NPAIRS = 35;
-  const int TWR_SOFT_FRAGMULT = 20;
-  const int TWR_SOFT_WINDOW = 2500;
-  const int TWR_SOFT_VOL_STARTMULT = 9;
-  const int TWR_SOFT_VOL_STOPMULT = 8;
+  const int TWR_SOFT_N1HIT = 0;
+  const int TWR_SOFT_NPAIRS = 0;
+  const int TWR_SOFT_FRAGMULT = 0;
+  const int TWR_SOFT_WINDOW = 0;
+  const int TWR_SOFT_VOL_STARTMULT = 0;
+  const int TWR_SOFT_VOL_STOPMULT = 0;
   const int TWR_OP_BINS_BEFORE = 3;
   const int TWR_OP_BINS_AFTER = 4;
   const int TWR_OP_THRESH_END = 4;

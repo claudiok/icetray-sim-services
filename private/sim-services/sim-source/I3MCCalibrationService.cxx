@@ -6,6 +6,7 @@
 #include "icetray/I3TrayHeaders.h"
 #include "sim-services/sim-source/default-values/I3CalibrationDefaults.h"
 #include "phys-services/geo-selector/GeoSelUtils.h"
+#include <fstream>
 
 I3MCCalibrationService::I3MCCalibrationService(I3GeometryServicePtr g,
 					       I3CalibrationServicePtr c) :
@@ -49,7 +50,8 @@ I3MCCalibrationService::I3MCCalibrationService(I3GeometryServicePtr g,
   atwda2_baseline_(I3CalibDefaults::ATWDA2_BASELINE),
   atwdb0_baseline_(I3CalibDefaults::ATWDB0_BASELINE),
   atwdb1_baseline_(I3CalibDefaults::ATWDB1_BASELINE),
-  atwdb2_baseline_(I3CalibDefaults::ATWDB2_BASELINE)
+  atwdb2_baseline_(I3CalibDefaults::ATWDB2_BASELINE),
+  twrChargeFile_("")
 {
   geo_service_ = g;
   cal_service_ = c;
@@ -176,6 +178,34 @@ I3MCCalibrationService::GetCalibration(I3Time time){
     log_trace("creating record for DOM %s",iter->first.str().c_str());
 		
   }
+
+  //Read TWR charge from file and put in amandaCal
+  if(!twrChargeFile_.empty()){
+    
+    ifstream ifs;
+    int str,om;
+    double charge;
+    ifs.open(twrChargeFile_.c_str(),ifstream::in);
+    if(!ifs.good()) log_fatal("couldn't open file %s",twrChargeFile_.c_str());
+    
+    string str_in;
+    while(!ifs.eof()){
+      getline(ifs, str_in);
+      istringstream line_in(str_in.c_str());
+      line_in >> str;
+      line_in >> om;
+      line_in >> charge;
+      
+      OMKey omk(str,om);
+      
+      TWRCalibration twrCalib;
+      
+      twrCalib.peArea = charge;    
+      calibration->twrCal[omk] = twrCalib;
+    }
+    
+  }
+
   
   return calibration;
 

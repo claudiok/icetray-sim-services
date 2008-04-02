@@ -41,6 +41,7 @@ public:
 
   void SetSkipStrings(std::vector<int>& v){ skipStrings_ = v;};
   void SetSkipStations(std::vector<int>& v){ skipStations_ = v;};
+  void SetTWRChargeFile(std::string s){ twrChargeFile_ = s;};
 
   SET_LOGGER("I3MCCalibrationService");
 
@@ -107,12 +108,14 @@ public:
   double atwdb0_baseline_;
   double atwdb1_baseline_;
   double atwdb2_baseline_;
+  std::string twrChargeFile_;
 
   /**
    * Don't modify these strings/stations
    */
   std::vector<int> skipStrings_;
   std::vector<int> skipStations_;
+
 };
 I3_POINTER_TYPEDEFS(I3MCCalibrationService);
 #endif
