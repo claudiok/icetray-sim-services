@@ -110,6 +110,14 @@ public:
   double atwdb2_baseline_;
   std::string twrChargeFile_;
 
+  double atwda_deltat_;
+  double atwdb_deltat_;
+
+  double spe_disc_thresh_slope_;
+  double spe_disc_thresh_intercept_;
+  double mpe_disc_thresh_slope_;
+  double mpe_disc_thresh_intercept_;
+
   /**
    * Don't modify these strings/stations
    */

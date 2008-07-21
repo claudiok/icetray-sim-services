@@ -36,6 +36,8 @@ class I3SimSourceTestModule : public I3Module
 
   string stringsToUse_;
   string stationsToUse_;
+  string stringsToExclude_;
+  string stationsToExclude_;
 
   /**
    *Detector Status parameters
@@ -168,6 +170,12 @@ class I3SimSourceTestModule : public I3Module
 
   double cal_atwd_response_width_;
 
+  double cal_atwda_deltat_;
+  double cal_atwdb_deltat_;
+  double cal_spe_disc_thresh_int_;
+  double cal_spe_disc_thresh_slope_;
+  double cal_mpe_disc_thresh_int_;
+  double cal_mpe_disc_thresh_slope_;
 };
 
 #endif //I3SIMSOURCETESTMODULE_H

@@ -18,6 +18,13 @@
 
 #include "icetray/test/ConstructorTest.h"
 
+#include <boost/algorithm/string/split.hpp>
+#include <boost/algorithm/string/classification.hpp>
+#include <boost/foreach.hpp>
+
+using boost::algorithm::split;
+using boost::algorithm::is_any_of;
+
 using namespace std;
 
 // Test some of Calibrate Module functionality
@@ -110,8 +117,13 @@ TEST(default_config)
     ("Calib_hvGainFit_intercept",I3CalibDefaults::HV_GAIN_FIT_INTERCEPT)
     ("Calib_atwdBinCalibFit_slope",I3CalibDefaults::ATWD_BINCALIB_FIT_SLOPE)
     ("Calib_atwdBinCalibFit_intercept",I3CalibDefaults::ATWD_BINCALIB_FIT_INTERCEPT)
-    ("Calib_ATWDResponseWidth",I3CalibDefaults::ATWD_RESPONSE_WIDTH);
-
+    ("Calib_ATWDResponseWidth",I3CalibDefaults::ATWD_RESPONSE_WIDTH)
+    ("Calib_ATWDADeltaT",I3CalibDefaults::ATWDA_DELTAT)
+    ("Calib_ATWDBDeltaT",I3CalibDefaults::ATWDB_DELTAT)
+    ("Calib_SPEDiscThreshIntercept",I3CalibDefaults::SPE_DISCRIMINATOR_INTERCEPT)
+    ("Calib_SPEDiscThreshSlope",I3CalibDefaults::SPE_DISCRIMINATOR_SLOPE)
+    ("Calib_MPEDiscThreshIntercept",I3CalibDefaults::MPE_DISCRIMINATOR_INTERCEPT)
+    ("Calib_MPEDiscThreshSlope",I3CalibDefaults::MPE_DISCRIMINATOR_SLOPE);
   tray.AddModule("TrashCan","trash");
   
   tray.Execute(4);
@@ -182,6 +194,14 @@ TEST(tweaked_config)
 
   double atwd_response_width(0.33333);
 
+  double atwda_deltat(0.298897);
+  double atwdb_deltat(0.9879823);
+
+  double spe_disc_thresh_slope(198.987823);
+  double spe_disc_thresh_int(19084.30);
+  double mpe_disc_thresh_slope(121.2222);
+  double mpe_disc_thresh_int(1290.000001);
+
   I3Tray tray;
 
   std::string I3_BUILD = getenv("I3_BUILD");
@@ -249,7 +269,13 @@ TEST(tweaked_config)
     ("HVGainFit_intercept",hvGainFit_intercept)
     ("ATWDBinCalibFit_slope",atwdBinCalibFit_slope)
     ("ATWDBinCalibFit_intercept",atwdBinCalibFit_intercept)
-    ("ATWDResponseWidth",atwd_response_width);
+    ("ATWDResponseWidth",atwd_response_width)
+    ("ATWDADeltaT",atwda_deltat)
+    ("ATWDBDeltaT",atwdb_deltat)
+    ("SPEDiscThreshIntercept",spe_disc_thresh_int)
+    ("SPEDiscThreshSlope",spe_disc_thresh_slope)
+    ("MPEDiscThreshIntercept",mpe_disc_thresh_int)
+    ("MPEDiscThreshSlope",mpe_disc_thresh_slope);
 
   tray.AddModule("I3Muxer","muxer")
     ("CalibrationService","I3TweakCalibrationService")
@@ -304,7 +330,13 @@ TEST(tweaked_config)
     ("Calib_hvGainFit_intercept",hvGainFit_intercept)
     ("Calib_atwdBinCalibFit_slope",atwdBinCalibFit_slope)
     ("Calib_atwdBinCalibFit_intercept",atwdBinCalibFit_intercept)
-    ("Calib_ATWDResponseWidth",atwd_response_width);
+    ("Calib_ATWDResponseWidth",atwd_response_width)
+    ("Calib_ATWDADeltaT",atwda_deltat)
+    ("Calib_ATWDBDeltaT",atwdb_deltat)
+    ("Calib_SPEDiscThreshIntercept",spe_disc_thresh_int)
+    ("Calib_SPEDiscThreshSlope",spe_disc_thresh_slope)
+    ("Calib_MPEDiscThreshIntercept",mpe_disc_thresh_int)
+    ("Calib_MPEDiscThreshSlope",mpe_disc_thresh_slope);
 
   tray.AddModule("TrashCan","trash");
   
@@ -376,6 +408,14 @@ TEST(tweaked_extended_config)
 
   double atwd_response_width(0.33333);
 
+  double atwda_deltat(0.298897);
+  double atwdb_deltat(0.9879823);
+
+  double spe_disc_thresh_slope(198.987823);
+  double spe_disc_thresh_int(19084.30);
+  double mpe_disc_thresh_slope(121.2222);
+  double mpe_disc_thresh_int(1290.000001);
+
   I3Tray tray;
 
   std::string I3_BUILD = getenv("I3_BUILD");
@@ -390,22 +430,22 @@ TEST(tweaked_extended_config)
     ("AmandaGeoFile",amageofile)
     ("IceCubeGeoFile",icecubegeofile);
 
-  string stringsToUse("21,29,30,38,39,40,49,50,59");
-  string stationsToUse("21,29,30,38,39,40,47,48,49,50,57,58,59,66,67,74");
+  string stringsToUse("21,29,30,38,39,40,49,50,59,58,67,66,74,73,65,72,78,48,57,47,46,56,63,64,55,71,70,76,77,75,69,60,68,61,62,52,44,53,54,45");
+  string stationsToUse(stringsToUse);
     
   tray.AddService("I3GeometrySelectorServiceFactory","geo-selector")
     ("StringsToUse",stringsToUse)
     ("StationsToUse",stationsToUse)
-    ("GeoSelectorName","I3GeometrySelectorService");
+    ("GeoSelectorName","IC40-Geo");
 
-  //this should install default values for 9 strings
-  tray.AddService("I3MCSourceServiceFactory","ice9")
-    ("GeoServiceName","I3GeometrySelectorService")
-    ("CalServiceName","IC9-CalService")
-    ("StatusServiceName","IC9-StatService");
+  //this should install default values for 40 strings
+  tray.AddService("I3MCSourceServiceFactory","ic40")
+    ("GeoServiceName","IC40-Geo")
+    ("CalServiceName","IC40-CalService")
+    ("StatusServiceName","IC40-StatService");
     
   tray.AddService("I3TweakDOMStatusService","tweak-status")
-    ("OldServiceName","IC9-StatService")
+    ("OldServiceName","IC40-StatService")
     ("IceTopLCWindowPre",icetopLCWindowPre)
     ("IceTopLCWindowPost",icetopLCWindowPost)
     ("IceTopHighGainVoltage",icetopHighGainVoltage)
@@ -439,7 +479,7 @@ TEST(tweaked_extended_config)
     ("NBinsFADCIceTop",nBinsFADCIceTop);
 
   tray.AddService("I3TweakCalibrationService","tweak-cal")
-    ("OldServiceName","IC9-CalService")
+    ("OldServiceName","IC40-CalService")
     ("Temperature",temperature)
     ("FADCBaselineFit_slope",fadcBaselineFit_slope)
     ("FADCBaselineFit_intercept",fadcBaselineFit_intercept)
@@ -457,24 +497,46 @@ TEST(tweaked_extended_config)
     ("HVGainFit_intercept",hvGainFit_intercept)
     ("ATWDBinCalibFit_slope",atwdBinCalibFit_slope)
     ("ATWDBinCalibFit_intercept",atwdBinCalibFit_intercept)
-    ("ATWDResponseWidth",atwd_response_width);
+    ("ATWDResponseWidth",atwd_response_width)
+    ("ATWDADeltaT",atwda_deltat)
+    ("ATWDBDeltaT",atwdb_deltat)
+    ("SPEDiscThreshIntercept",spe_disc_thresh_slope)
+    ("SPEDiscThreshSlope",spe_disc_thresh_int)
+    ("MPEDiscThreshIntercept",mpe_disc_thresh_slope)
+    ("MPEDiscThreshSlope",mpe_disc_thresh_int);
 
-
-  string stringsToUse_23("21,29,30,38,39,40,49,50,59,58,67,66,74,73,65,72,78,48,57,47,46,56,64");
-  string stationsToUse_23("21,29,30,38,39,40,47,48,49,50,57,58,59,66,67,74,46,56,65,73,72,78,77,71,64,55");
+  string stringsToUse_80("1:80");
+  string stationsToUse_80("1:80");
     
-  tray.AddService("I3GeometrySelectorServiceFactory","23-string")
-    ("StringsToUse",stringsToUse_23)
-    ("StationsToUse",stationsToUse_23)
-    ("GeoSelectorName","23string");
+  tray.AddService("I3GeometrySelectorServiceFactory","ic80")
+    ("StringsToUse",stringsToUse_80)
+    ("StationsToUse",stationsToUse_80)
+    ("GeoSelectorName","IC80-Geo");
+
+
+  vector<string> doNotModifyStrings;
+  split(doNotModifyStrings,stringsToUse,is_any_of(","));
+
+  vector<int> doNotModifyStrings_Int;
+  for_each(string& s,doNotModifyStrings)
+    doNotModifyStrings_Int.push_back(atoi(s.c_str()));
+
+  vector<string> doNotModifyStations;
+  split(doNotModifyStations,stationsToUse,is_any_of(","));
+
+  vector<int> doNotModifyStations_Int;
+  for_each(string& s,doNotModifyStations)
+    doNotModifyStations_Int.push_back(atoi(s.c_str()));
 
   tray.AddService("I3MCSourceServiceFactory","mcsource")
-    ("GeoServiceName","23string")
+    ("GeoServiceName","IC80-Geo")
     ("OldCalServiceName","I3TweakCalibrationService")
-    ("OldStatusServiceName","I3TweakDOMStatusService");
+    ("OldStatusServiceName","I3TweakDOMStatusService")
+    ("DoNotModifyStrings",doNotModifyStrings_Int)
+    ("DoNotModifyStations",doNotModifyStations_Int);
   
   tray.AddModule("I3Muxer","muxer")
-    ("GeometryService","23string");
+    ("GeometryService","IC80-Geo");
   
   tray.AddModule("I3SimSourceTestModule","test_module_tweaks")
     ("StringsToUse",stringsToUse)
@@ -529,12 +591,18 @@ TEST(tweaked_extended_config)
     ("Calib_hvGainFit_intercept",hvGainFit_intercept)
     ("Calib_atwdBinCalibFit_slope",atwdBinCalibFit_slope)
     ("Calib_atwdBinCalibFit_intercept",atwdBinCalibFit_intercept)
-    ("Calib_ATWDResponseWidth",atwd_response_width);
+    ("Calib_ATWDResponseWidth",atwd_response_width)
+    ("Calib_ATWDADeltaT",atwda_deltat)
+    ("Calib_ATWDBDeltaT",atwdb_deltat)
+    ("Calib_SPEDiscThreshIntercept",spe_disc_thresh_slope)
+    ("Calib_SPEDiscThreshSlope",spe_disc_thresh_int)
+    ("Calib_MPEDiscThreshIntercept",mpe_disc_thresh_slope)
+    ("Calib_MPEDiscThreshSlope",mpe_disc_thresh_int);
   
   //tests the rest
   tray.AddModule("I3SimSourceTestModule","test_module_defaults")
-    ("StringsToUse","58,67,66,74,73,65,72,78,48,57,47,46,56,64")
-    ("StationsToUse","46,56,65,73,72,78,77,71,64,55")
+    ("StringsToExclude",stringsToUse) //exclude the original 40 strings from this test and test the rest
+    ("StationsToExclude",stationsToUse)//exclude the original 40 stations from this test and test the rest
     ("DetStat_IceTopLCWindowPre",I3DetStatDefaults::ICETOP_LCWINDOW_PRE)
     ("DetStat_IceTopLCWindowPost",I3DetStatDefaults::ICETOP_LCWINDOW_POST)
     ("DetStat_IceTopHighGainVoltage",I3DetStatDefaults::ICETOP_HIGHGAIN_VOLTAGE)
@@ -583,7 +651,13 @@ TEST(tweaked_extended_config)
     ("Calib_hvGainFit_intercept",I3CalibDefaults::HV_GAIN_FIT_INTERCEPT)
     ("Calib_atwdBinCalibFit_slope",I3CalibDefaults::ATWD_BINCALIB_FIT_SLOPE)
     ("Calib_atwdBinCalibFit_intercept",I3CalibDefaults::ATWD_BINCALIB_FIT_INTERCEPT)
-    ("Calib_ATWDResponseWidth",I3CalibDefaults::ATWD_RESPONSE_WIDTH);
+    ("Calib_ATWDResponseWidth",I3CalibDefaults::ATWD_RESPONSE_WIDTH)
+    ("Calib_ATWDADeltaT",I3CalibDefaults::ATWDA_DELTAT)
+    ("Calib_ATWDBDeltaT",I3CalibDefaults::ATWDB_DELTAT)
+    ("Calib_SPEDiscThreshIntercept",I3CalibDefaults::SPE_DISCRIMINATOR_INTERCEPT)
+    ("Calib_SPEDiscThreshSlope",I3CalibDefaults::SPE_DISCRIMINATOR_SLOPE)
+    ("Calib_MPEDiscThreshIntercept",I3CalibDefaults::MPE_DISCRIMINATOR_INTERCEPT)
+    ("Calib_MPEDiscThreshSlope",I3CalibDefaults::MPE_DISCRIMINATOR_SLOPE);
   
   tray.AddModule("TrashCan","trash");
   
@@ -676,7 +750,14 @@ TEST(do_no_harm)
     ("Calib_hvGainFit_intercept",I3CalibDefaults::HV_GAIN_FIT_INTERCEPT)
     ("Calib_atwdBinCalibFit_slope",I3CalibDefaults::ATWD_BINCALIB_FIT_SLOPE)
     ("Calib_atwdBinCalibFit_intercept",I3CalibDefaults::ATWD_BINCALIB_FIT_INTERCEPT)
-    ("Calib_ATWDResponseWidth",I3CalibDefaults::ATWD_RESPONSE_WIDTH);
+    ("Calib_ATWDResponseWidth",I3CalibDefaults::ATWD_RESPONSE_WIDTH)
+    ("Calib_ATWDADeltaT",I3CalibDefaults::ATWDA_DELTAT)
+    ("Calib_ATWDBDeltaT",I3CalibDefaults::ATWDB_DELTAT)
+    ("Calib_SPEDiscThreshIntercept",I3CalibDefaults::SPE_DISCRIMINATOR_INTERCEPT)
+    ("Calib_SPEDiscThreshSlope",I3CalibDefaults::SPE_DISCRIMINATOR_SLOPE)
+    ("Calib_MPEDiscThreshIntercept",I3CalibDefaults::MPE_DISCRIMINATOR_INTERCEPT)
+    ("Calib_MPEDiscThreshSlope",I3CalibDefaults::MPE_DISCRIMINATOR_SLOPE);
+
 
   tray.AddModule("TrashCan","trash");
   
@@ -768,7 +849,13 @@ TEST(do_no_harm_MJD)
     ("Calib_hvGainFit_intercept",I3CalibDefaults::HV_GAIN_FIT_INTERCEPT)
     ("Calib_atwdBinCalibFit_slope",I3CalibDefaults::ATWD_BINCALIB_FIT_SLOPE)
     ("Calib_atwdBinCalibFit_intercept",I3CalibDefaults::ATWD_BINCALIB_FIT_INTERCEPT)
-    ("Calib_ATWDResponseWidth",I3CalibDefaults::ATWD_RESPONSE_WIDTH);
+    ("Calib_ATWDResponseWidth",I3CalibDefaults::ATWD_RESPONSE_WIDTH)
+    ("Calib_ATWDADeltaT",I3CalibDefaults::ATWDA_DELTAT)
+    ("Calib_ATWDBDeltaT",I3CalibDefaults::ATWDB_DELTAT)
+    ("Calib_SPEDiscThreshIntercept",I3CalibDefaults::SPE_DISCRIMINATOR_INTERCEPT)
+    ("Calib_SPEDiscThreshSlope",I3CalibDefaults::SPE_DISCRIMINATOR_SLOPE)
+    ("Calib_MPEDiscThreshIntercept",I3CalibDefaults::MPE_DISCRIMINATOR_INTERCEPT)
+    ("Calib_MPEDiscThreshSlope",I3CalibDefaults::MPE_DISCRIMINATOR_SLOPE);
 
 
   tray.AddModule("TrashCan","trash");

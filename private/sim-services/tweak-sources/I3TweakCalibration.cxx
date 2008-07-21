@@ -41,7 +41,13 @@ I3TweakCalibration::I3TweakCalibration(I3CalibrationServicePtr c) :
   atwda2_baseline_(NAN),
   atwdb0_baseline_(NAN),
   atwdb1_baseline_(NAN),
-  atwdb2_baseline_(NAN)
+  atwdb2_baseline_(NAN),
+  atwda_deltat_(NAN),
+  atwdb_deltat_(NAN),
+  spe_disc_thresh_slope_(NAN),
+  spe_disc_thresh_int_(NAN),
+  mpe_disc_thresh_slope_(NAN),
+  mpe_disc_thresh_int_(NAN)
 {
   cal_service_ = c;
 }
@@ -217,6 +223,31 @@ I3TweakCalibration::GetCalibration(I3Time time){
     if(!isnan(atwdb2_baseline_))
       for( unsigned int bin = 0; bin < 128; ++bin )
 	iter->second.SetATWDBaseline(1,2,bin,atwdb2_baseline_);
+
+    if(!isnan(atwda_deltat_))
+      iter->second.SetATWDDeltaT(0,atwda_deltat_);
+    if(!isnan(atwdb_deltat_))
+      iter->second.SetATWDDeltaT(1,atwdb_deltat_);
+
+    if(!isnan(spe_disc_thresh_slope_) ||
+       !isnan(spe_disc_thresh_int_)){
+      LinearFit spe_disc_thresh = iter->second.GetSPEDiscCalib();
+      if(!isnan(spe_disc_thresh_slope_))
+	spe_disc_thresh.slope = spe_disc_thresh_slope_;
+      if(!isnan(spe_disc_thresh_int_))
+	spe_disc_thresh.intercept = spe_disc_thresh_int_;
+      iter->second.SetSPEDiscCalib(spe_disc_thresh);    
+    }
+
+    if(!isnan(mpe_disc_thresh_slope_) ||
+       !isnan(mpe_disc_thresh_int_)){
+      LinearFit mpe_disc_thresh = iter->second.GetMPEDiscCalib();
+      if(!isnan(mpe_disc_thresh_slope_))
+	mpe_disc_thresh.slope = mpe_disc_thresh_slope_;
+      if(!isnan(mpe_disc_thresh_int_))
+	mpe_disc_thresh.intercept = mpe_disc_thresh_int_;
+      iter->second.SetMPEDiscCalib(mpe_disc_thresh);    
+    }
 
   }
   

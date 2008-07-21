@@ -45,7 +45,13 @@ I3TweakCalibrationService::I3TweakCalibrationService(const I3Context& context) :
   atwda2_baseline_(NAN),
   atwdb0_baseline_(NAN),
   atwdb1_baseline_(NAN),
-  atwdb2_baseline_(NAN)
+  atwdb2_baseline_(NAN),
+  atwda_deltat_(NAN),
+  atwdb_deltat_(NAN),
+  spe_disc_thresh_slope_(NAN),
+  spe_disc_thresh_int_(NAN),
+  mpe_disc_thresh_slope_(NAN),
+  mpe_disc_thresh_int_(NAN)
 {
   AddParameter("OldServiceName","Name of service to tweak",oldServiceName_);
   AddParameter("TweakedServiceName","Name of tweaked service",tweakedServiceName_);
@@ -87,6 +93,13 @@ I3TweakCalibrationService::I3TweakCalibrationService(const I3Context& context) :
   AddParameter("ATWDb0Baseline","",atwdb0_baseline_);
   AddParameter("ATWDb1Baseline","",atwdb1_baseline_);
   AddParameter("ATWDb2Baseline","",atwdb2_baseline_);
+
+  AddParameter("ATWDADeltaT","",atwda_deltat_);
+  AddParameter("ATWDBDeltaT","",atwdb_deltat_);
+  AddParameter("SPEDiscThreshIntercept","",spe_disc_thresh_int_);
+  AddParameter("SPEDiscThreshSlope","",spe_disc_thresh_slope_);
+  AddParameter("MPEDiscThreshIntercept","",mpe_disc_thresh_int_);
+  AddParameter("MPEDiscThreshSlope","",mpe_disc_thresh_slope_);
 }
 
 
@@ -133,6 +146,13 @@ void I3TweakCalibrationService::Configure()
   GetParameter("ATWDb0Baseline",atwdb0_baseline_);
   GetParameter("ATWDb1Baseline",atwdb1_baseline_);
   GetParameter("ATWDb2Baseline",atwdb2_baseline_);
+
+  GetParameter("ATWDADeltaT",atwda_deltat_);
+  GetParameter("ATWDBDeltaT",atwdb_deltat_);
+  GetParameter("SPEDiscThreshIntercept",spe_disc_thresh_int_);
+  GetParameter("SPEDiscThreshSlope",spe_disc_thresh_slope_);
+  GetParameter("MPEDiscThreshIntercept",mpe_disc_thresh_int_);
+  GetParameter("MPEDiscThreshSlope",mpe_disc_thresh_slope_);
 }
 
 bool I3TweakCalibrationService::InstallService(I3Context& services)
@@ -223,6 +243,21 @@ bool I3TweakCalibrationService::InstallService(I3Context& services)
       cal_service_->SetATWDb1Baseline(atwdb1_baseline_);
     if(!isnan(atwdb2_baseline_))
       cal_service_->SetATWDb2Baseline(atwdb2_baseline_);
+
+    if(!isnan(atwda_deltat_))
+      cal_service_->SetATWDADeltaT(atwda_deltat_);
+    if(!isnan(atwdb_deltat_))
+      cal_service_->SetATWDBDeltaT(atwdb_deltat_);
+    if(!isnan(spe_disc_thresh_slope_))
+      cal_service_->SetSPEDiscThreshSlope(spe_disc_thresh_slope_);
+    if(!isnan(spe_disc_thresh_int_))
+      cal_service_->SetSPEDiscThreshIntercept(spe_disc_thresh_int_);
+    if(!isnan(mpe_disc_thresh_slope_))
+      cal_service_->SetMPEDiscThreshSlope(mpe_disc_thresh_slope_);
+    if(!isnan(mpe_disc_thresh_int_))
+      cal_service_->SetMPEDiscThreshIntercept(mpe_disc_thresh_int_);
+    
+
   }
 
   bool good_calib = services.Put<I3CalibrationService>(tweakedServiceName_,cal_service_);

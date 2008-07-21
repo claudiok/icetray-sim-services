@@ -32,12 +32,16 @@ I3_MODULE(I3SimSourceTestModule);
 I3SimSourceTestModule::I3SimSourceTestModule(const I3Context& ctx) : 
   I3Module(ctx),
   stringsToUse_("1:80"),
-  stationsToUse_("1:80")
+  stationsToUse_("1:80"),
+  stringsToExclude_(""),
+  stationsToExclude_("")
 { 
   log_debug("Constructor I3SimSourceTestModule");  
 
   AddParameter("StringsToUse","List of string in original geometry",stringsToUse_);
   AddParameter("StationsToUse","List of stations in original geometry",stationsToUse_);
+  AddParameter("StringsToExclude","List of strings to exclude from test",stringsToExclude_);
+  AddParameter("StationsToExclude","List of stations to exclude from test",stationsToExclude_);
 
   AddParameter("Threshold","InIce Multiplicity Trigger Threshold",ic_threshold_);
   AddParameter("TimeWindow","InIce Multiplicity Trigger Time Window",ic_timeWindow_);
@@ -105,6 +109,12 @@ I3SimSourceTestModule::I3SimSourceTestModule(const I3Context& ctx) :
   AddParameter("Calib_atwdBinCalibFit_slope","",cal_atwdBinCalibFit_slope_);
   AddParameter("Calib_atwdBinCalibFit_intercept","",cal_atwdBinCalibFit_intercept_);
   AddParameter("Calib_ATWDResponseWidth","",cal_atwd_response_width_);
+  AddParameter("Calib_ATWDADeltaT","",cal_atwda_deltat_);
+  AddParameter("Calib_ATWDBDeltaT","",cal_atwdb_deltat_);
+  AddParameter("Calib_SPEDiscThreshIntercept","",cal_spe_disc_thresh_int_);
+  AddParameter("Calib_SPEDiscThreshSlope","",cal_spe_disc_thresh_slope_);
+  AddParameter("Calib_MPEDiscThreshIntercept","",cal_mpe_disc_thresh_int_);
+  AddParameter("Calib_MPEDiscThreshSlope","",cal_mpe_disc_thresh_slope_);
 
   AddOutBox("OutBox");
 }
@@ -117,6 +127,8 @@ void I3SimSourceTestModule::Configure()
 
   GetParameter("StringsToUse",stringsToUse_);
   GetParameter("StationsToUse",stationsToUse_);
+  GetParameter("StringsToExclude",stringsToExclude_);
+  GetParameter("StationsToExclude",stationsToExclude_);
 
   GetParameter("Threshold",ic_threshold_);
   GetParameter("TimeWindow",ic_timeWindow_);
@@ -185,14 +197,20 @@ void I3SimSourceTestModule::Configure()
   GetParameter("Calib_atwdBinCalibFit_slope",cal_atwdBinCalibFit_slope_);
   GetParameter("Calib_atwdBinCalibFit_intercept",cal_atwdBinCalibFit_intercept_);
   GetParameter("Calib_ATWDResponseWidth",cal_atwd_response_width_);
+  GetParameter("Calib_ATWDADeltaT",cal_atwda_deltat_);
+  GetParameter("Calib_ATWDBDeltaT",cal_atwdb_deltat_);
+  GetParameter("Calib_SPEDiscThreshIntercept",cal_spe_disc_thresh_int_);
+  GetParameter("Calib_SPEDiscThreshSlope",cal_spe_disc_thresh_slope_);
+  GetParameter("Calib_MPEDiscThreshIntercept",cal_mpe_disc_thresh_int_);
+  GetParameter("Calib_MPEDiscThreshSlope",cal_mpe_disc_thresh_slope_);
 }
 
 void I3SimSourceTestModule::Physics(I3FramePtr frame)
 {
   log_debug("Physics");
 
-  vector<int> goodStrings = geo_sel_utils::make_good_strings(stringsToUse_, "");
-  vector<int> goodStations = geo_sel_utils::make_good_strings(stationsToUse_, "");
+  vector<int> goodStrings = geo_sel_utils::make_good_strings(stringsToUse_, stringsToExclude_);
+  vector<int> goodStations = geo_sel_utils::make_good_strings(stationsToUse_, stationsToExclude_);
 
   const double DISTANCE = 0.000001;
 
@@ -220,6 +238,15 @@ void I3SimSourceTestModule::Physics(I3FramePtr frame)
 	 (geo_sel_utils::exists(cal_iter->first.GetString(),goodStations) &&
 	  (cal_iter->first.GetOM() > 60))))
       continue;
+
+    ENSURE_DISTANCE(cal_iter->second.GetATWDDeltaT(0),cal_atwda_deltat_, DISTANCE);
+    ENSURE_DISTANCE(cal_iter->second.GetATWDDeltaT(1),cal_atwdb_deltat_, DISTANCE);
+
+    ENSURE_DISTANCE(cal_iter->second.GetSPEDiscCalib().slope,cal_spe_disc_thresh_slope_, DISTANCE);
+    ENSURE_DISTANCE(cal_iter->second.GetSPEDiscCalib().intercept,cal_spe_disc_thresh_int_, DISTANCE);
+    ENSURE_DISTANCE(cal_iter->second.GetMPEDiscCalib().slope,cal_mpe_disc_thresh_slope_, DISTANCE);
+    ENSURE_DISTANCE(cal_iter->second.GetMPEDiscCalib().intercept,cal_mpe_disc_thresh_int_, DISTANCE);
+
 
     ENSURE(cal_iter->first.GetString()>0,"There should be no AMANDA OMs.");
 

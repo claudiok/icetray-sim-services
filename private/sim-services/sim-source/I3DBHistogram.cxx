@@ -1369,7 +1369,7 @@ void SetSPEDiscCalibSlope(TH1D* h){
   defVal<<"Default = "
 	<<I3CalibDefaults::SPE_DISCRIMINATOR_SLOPE
 	<<" ??";
-  h->SetXTitle("Slope(??)");
+  h->SetXTitle("Slope()");
   FitAndFormatHisto(h,"calibration/SPEDiscCalibSlope.png",defVal.str(),true);
 };
 
@@ -1378,7 +1378,7 @@ void SetSPEDiscCalibIntercept(TH1D* h){
   defVal<<"Default = "
 	<<I3CalibDefaults::SPE_DISCRIMINATOR_INTERCEPT
 	<<" ??";
-  h->SetXTitle("Intercept(??)");
+  h->SetXTitle("Intercept()");
   FitAndFormatHisto(h,"calibration/SPEDiscCalibIntercept.png",defVal.str(),true);
 };
 
@@ -1387,7 +1387,7 @@ void SetMPEDiscCalibSlope(TH1D* h){
   defVal<<"Default = "
 	<<I3CalibDefaults::MPE_DISCRIMINATOR_SLOPE
 	<<" ??";
-  h->SetXTitle("Slope(??)");
+  h->SetXTitle("Slope()");
   FitAndFormatHisto(h,"calibration/MPEDiscCalibSlope.png",defVal.str(),true);
 };
 
@@ -1396,6 +1396,6 @@ void SetMPEDiscCalibIntercept(TH1D* h){
   defVal<<"Default = "
 	<<I3CalibDefaults::MPE_DISCRIMINATOR_INTERCEPT
 	<<" ??";
-  h->SetXTitle("Intercept(??)");
+  h->SetXTitle("Intercept()");
   FitAndFormatHisto(h,"calibration/MPEDiscCalibIntercept.png",defVal.str(),true);
 };

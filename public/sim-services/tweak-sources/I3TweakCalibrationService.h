@@ -97,6 +97,13 @@ public:
   double atwdb1_baseline_;
   double atwdb2_baseline_;
 
+  double atwda_deltat_;
+  double atwdb_deltat_;
+
+  double spe_disc_thresh_slope_;
+  double spe_disc_thresh_int_;
+  double mpe_disc_thresh_slope_;
+  double mpe_disc_thresh_int_;
 };
 I3_POINTER_TYPEDEFS(I3TweakCalibrationService);
 I3_DEFAULT_NAME(I3TweakCalibrationService);

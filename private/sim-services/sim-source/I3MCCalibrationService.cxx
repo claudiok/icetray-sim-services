@@ -51,7 +51,13 @@ I3MCCalibrationService::I3MCCalibrationService(I3GeometryServicePtr g,
   atwdb0_baseline_(I3CalibDefaults::ATWDB0_BASELINE),
   atwdb1_baseline_(I3CalibDefaults::ATWDB1_BASELINE),
   atwdb2_baseline_(I3CalibDefaults::ATWDB2_BASELINE),
-  twrChargeFile_("")
+  twrChargeFile_(""),
+  atwda_deltat_(I3CalibDefaults::ATWDA_DELTAT),
+  atwdb_deltat_(I3CalibDefaults::ATWDB_DELTAT),
+  spe_disc_thresh_slope_(I3CalibDefaults::SPE_DISCRIMINATOR_SLOPE),
+  spe_disc_thresh_intercept_(I3CalibDefaults::SPE_DISCRIMINATOR_INTERCEPT),
+  mpe_disc_thresh_slope_(I3CalibDefaults::MPE_DISCRIMINATOR_SLOPE),
+  mpe_disc_thresh_intercept_(I3CalibDefaults::MPE_DISCRIMINATOR_INTERCEPT)
 {
   geo_service_ = g;
   cal_service_ = c;
@@ -159,6 +165,19 @@ I3MCCalibrationService::GetCalibration(I3Time time){
     for( unsigned int id = 0; id <= 1; ++id )
       for( unsigned int bin = 0; bin < 128; ++bin )
 	domCalib.SetATWDBinCalibFit(id,channel,bin,binfit);      
+
+  domCalib.SetATWDDeltaT(0,atwda_deltat_);
+  domCalib.SetATWDDeltaT(1,atwdb_deltat_);
+
+  LinearFit spe_disc_thresh;
+  spe_disc_thresh.slope = spe_disc_thresh_slope_;
+  spe_disc_thresh.intercept = spe_disc_thresh_intercept_;
+  domCalib.SetSPEDiscCalib(spe_disc_thresh);
+
+  LinearFit mpe_disc_thresh;
+  mpe_disc_thresh.slope = mpe_disc_thresh_slope_;
+  mpe_disc_thresh.intercept = mpe_disc_thresh_intercept_;
+  domCalib.SetMPEDiscCalib(mpe_disc_thresh);
 
   for( iter  = om_geo.begin(); iter != om_geo.end(); iter++ )
   {

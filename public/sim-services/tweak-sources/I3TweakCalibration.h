@@ -73,6 +73,13 @@ public:
   void SetTauParamP5(double x){tauparam_P5_=x;};
   void SetTauParamTauFrac(double x){tauparam_TauFrac_=x;};
 
+  void SetATWDADeltaT(double x){atwda_deltat_ = x;};
+  void SetATWDBDeltaT(double x){atwdb_deltat_ = x;};
+  void SetSPEDiscThreshIntercept(double x){spe_disc_thresh_int_ = x;};
+  void SetSPEDiscThreshSlope(double x){spe_disc_thresh_slope_ = x;};
+  void SetMPEDiscThreshIntercept(double x){mpe_disc_thresh_int_ = x;};
+  void SetMPEDiscThreshSlope(double x){mpe_disc_thresh_slope_ = x;};
+
   SET_LOGGER("I3TweakCalibration");
 
  private:
@@ -125,6 +132,15 @@ public:
   double atwdb0_baseline_;
   double atwdb1_baseline_;
   double atwdb2_baseline_;
+
+  double atwda_deltat_;
+  double atwdb_deltat_;
+
+  double spe_disc_thresh_slope_;
+  double spe_disc_thresh_int_;
+  double mpe_disc_thresh_slope_;
+  double mpe_disc_thresh_int_;
+
 };
 
 I3_POINTER_TYPEDEFS(I3TweakCalibration);
