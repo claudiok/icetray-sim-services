@@ -95,7 +95,15 @@ namespace I3CalibDefaults{
   const double ATWDB0_BASELINE = -3.505 * I3Units::mV;
   const double ATWDB1_BASELINE = -16.37 * I3Units::mV;
   const double ATWDB2_BASELINE = -16.47 * I3Units::mV;
-  
+
+  const double SPE_DISCRIMINATOR_INTERCEPT = -7.209 ;
+  const double SPE_DISCRIMINATOR_SLOPE = 0.01339 ;
+  const double MPE_DISCRIMINATOR_INTERCEPT = -71.9 ;
+  const double MPE_DISCRIMINATOR_SLOPE = 0.1347 ;
+
+  const double ATWDA_DELTAT = 0. * I3Units::ns;
+  const double ATWDB_DELTAT = -0.3571 * I3Units::ns;
+
 }
 
 #endif

@@ -105,6 +105,13 @@ void SetATWD0bBaseline(TH1D*);
 void SetATWD1bBaseline(TH1D*);
 void SetATWD2bBaseline(TH1D*);
 
+void SetATWDaDeltaT(TH1D*);
+void SetATWDbDeltaT(TH1D*);
+void SetSPEDiscCalibSlope(TH1D*);
+void SetSPEDiscCalibIntercept(TH1D*);
+void SetMPEDiscCalibSlope(TH1D*);
+void SetMPEDiscCalibIntercept(TH1D*);
+
 
 void FitAndFormatHisto(TH1D* h, 
 		       string, 
@@ -131,6 +138,30 @@ void I3DBHistogram::Configure()
   gStyle->SetOptFit(1);
 }
 
+void I3DBHistogram::Calibration(I3FramePtr frame)
+{
+  log_debug("Calibration");
+
+  I3CalibrationConstPtr calib = 
+    frame->Get<I3CalibrationConstPtr>();
+  
+  BookDOMCalibHistograms(calib,"DBDomCalib.root");
+
+  PushFrame(frame,"OutBox");
+}
+
+void I3DBHistogram::DetectorStatus(I3FramePtr frame)
+{
+  log_debug("DetectorStatus");
+
+  I3DetectorStatusConstPtr status = 
+    frame->Get<I3DetectorStatusConstPtr>();
+
+  BookDOMStatusHistograms(status,"DBDomStatus.root");
+
+  PushFrame(frame,"OutBox");
+}//Physics()
+
 void I3DBHistogram::Physics(I3FramePtr frame)
 {
   log_debug("Physics");
@@ -138,12 +169,8 @@ void I3DBHistogram::Physics(I3FramePtr frame)
   I3CalibrationConstPtr calib = 
     frame->Get<I3CalibrationConstPtr>();
   
-  BookDOMCalibHistograms(calib,"DBDomCalib.root");
-
   I3DetectorStatusConstPtr status = 
     frame->Get<I3DetectorStatusConstPtr>();
-
-  BookDOMStatusHistograms(status,"DBDomStatus.root");
 
   MakeDOMFunctionsPlots(calib,status);
 
@@ -271,11 +298,37 @@ void BookDOMCalibHistograms(I3CalibrationConstPtr calib,
 			  "ATWD_B Channel 2 Baseline",
 			  100,bl_min,bl_max);
 
+  TH1D* atwda_deltat_h = new TH1D("atwda_deltat","ATWD A #Delta t",10,-0.1,0.1);
+  TH1D* atwdb_deltat_h = new TH1D("atwdb_deltat","ATWD B #Delta t",20,-2.5,2.5);
+
+  TH1D* spe_disc_calib_slope_h = new TH1D("spe_disc_calib_slope",
+					  "SPE Discriminator Slope",
+					  20,0.01,0.02);
+
+  TH1D* spe_disc_calib_int_h = new TH1D("spe_disc_calib_int",
+					"SPE Discriminator Intercept",
+					20,-9,-4);
+
+  TH1D* mpe_disc_calib_slope_h = new TH1D("mpe_disc_calib_slope",
+					  "MPE Discriminator Slope",
+					  20,0.1,0.18);
+  TH1D* mpe_disc_calib_int_h = new TH1D("mpe_disc_calib_int",
+					"MPE Discriminator Intercept",
+					20,-90,-60);
+
+
   map<OMKey, I3DOMCalibration>::const_iterator cal_iter;
 
   for(cal_iter = calib->domCal.begin();
       cal_iter != calib->domCal.end(); 
       cal_iter++){
+
+    atwda_deltat_h->Fill(cal_iter->second.GetATWDDeltaT(0));
+    atwdb_deltat_h->Fill(cal_iter->second.GetATWDDeltaT(1));
+    spe_disc_calib_slope_h->Fill(cal_iter->second.GetSPEDiscCalib().slope);
+    spe_disc_calib_int_h->Fill(cal_iter->second.GetSPEDiscCalib().intercept);
+    mpe_disc_calib_slope_h->Fill(cal_iter->second.GetMPEDiscCalib().slope);
+    mpe_disc_calib_int_h->Fill(cal_iter->second.GetMPEDiscCalib().intercept);
 
     temp_h->Fill(cal_iter->second.GetTemperature());
 
@@ -365,6 +418,13 @@ void BookDOMCalibHistograms(I3CalibrationConstPtr calib,
   atwd0_b_bc_int_h->Write();
   atwd1_b_bc_int_h->Write();
   atwd2_b_bc_int_h->Write();
+
+  atwda_deltat_h->Write();
+  atwdb_deltat_h->Write();
+  spe_disc_calib_slope_h->Write();
+  spe_disc_calib_int_h->Write();
+  mpe_disc_calib_slope_h->Write();
+  mpe_disc_calib_int_h->Write();
   
   f.Close();
 
@@ -406,6 +466,13 @@ void BookDOMCalibHistograms(I3CalibrationConstPtr calib,
   SetATWD0bBaseline(atwd0_b_bl_h);
   SetATWD1bBaseline(atwd1_b_bl_h);
   SetATWD2bBaseline(atwd2_b_bl_h);
+
+  SetATWDaDeltaT(atwda_deltat_h);
+  SetATWDbDeltaT(atwdb_deltat_h);
+  SetSPEDiscCalibSlope(spe_disc_calib_slope_h);
+  SetSPEDiscCalibIntercept(spe_disc_calib_int_h);
+  SetMPEDiscCalibSlope(mpe_disc_calib_slope_h);
+  SetMPEDiscCalibIntercept(mpe_disc_calib_int_h);
 } 
 
 void BookDOMStatusHistograms(I3DetectorStatusConstPtr status, 
@@ -1279,3 +1346,56 @@ void SetATWD2bBaseline(TH1D* h){
   c.SaveAs((plot_path+"calibration/ATWD2bBaseline.png").c_str());
 }
 
+void SetATWDaDeltaT(TH1D* h){
+  std::stringstream defVal;
+  defVal<<"Default = "
+	<<I3CalibDefaults::ATWDA_DELTAT/I3Units::ns
+       <<" ns";
+  h->SetXTitle("#Delta t(ns)");
+  FitAndFormatHisto(h,"calibration/ATWDaDeltaT.png",defVal.str(),true);
+};
+
+void SetATWDbDeltaT(TH1D* h){
+  std::stringstream defVal;
+  defVal<<"Default = "
+	<<I3CalibDefaults::ATWDB_DELTAT/I3Units::ns
+	<<" ns";
+  h->SetXTitle("#Delta t(ns)");
+  FitAndFormatHisto(h,"calibration/ATWDbDeltaT.png",defVal.str(),true);
+};
+
+void SetSPEDiscCalibSlope(TH1D* h){
+  std::stringstream defVal;
+  defVal<<"Default = "
+	<<I3CalibDefaults::SPE_DISCRIMINATOR_SLOPE
+	<<" ??";
+  h->SetXTitle("Slope(??)");
+  FitAndFormatHisto(h,"calibration/SPEDiscCalibSlope.png",defVal.str(),true);
+};
+
+void SetSPEDiscCalibIntercept(TH1D* h){
+  std::stringstream defVal;
+  defVal<<"Default = "
+	<<I3CalibDefaults::SPE_DISCRIMINATOR_INTERCEPT
+	<<" ??";
+  h->SetXTitle("Intercept(??)");
+  FitAndFormatHisto(h,"calibration/SPEDiscCalibIntercept.png",defVal.str(),true);
+};
+
+void SetMPEDiscCalibSlope(TH1D* h){
+  std::stringstream defVal;
+  defVal<<"Default = "
+	<<I3CalibDefaults::MPE_DISCRIMINATOR_SLOPE
+	<<" ??";
+  h->SetXTitle("Slope(??)");
+  FitAndFormatHisto(h,"calibration/MPEDiscCalibSlope.png",defVal.str(),true);
+};
+
+void SetMPEDiscCalibIntercept(TH1D* h){
+  std::stringstream defVal;
+  defVal<<"Default = "
+	<<I3CalibDefaults::MPE_DISCRIMINATOR_INTERCEPT
+	<<" ??";
+  h->SetXTitle("Intercept(??)");
+  FitAndFormatHisto(h,"calibration/MPEDiscCalibIntercept.png",defVal.str(),true);
+};
