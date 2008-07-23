@@ -25,12 +25,13 @@ nevents = 4
 # The following DAQTime of 236184998900773063
 # corresponds to the first event time of run 00089742
 #MJD = 54301
+MJD = 54571
 
 tray.AddService("I3MCTimeGeneratorServiceFactory","time-gen")(
-    #("Mjd",MJD),
-    ("Year",2007),
-    ("DAQTime",173357040000000000),
-    ("RunNumber",108923)
+    ("Mjd",MJD)
+#    ("Year",2007),
+#    ("DAQTime",173357040000000000),
+#    ("RunNumber",108923)
     )
 
 tray.AddService("I3FileOMKey2MBIDFactory","omkey2mbid")
