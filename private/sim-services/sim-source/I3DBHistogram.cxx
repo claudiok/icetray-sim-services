@@ -85,6 +85,7 @@ void SetStatusATWDa(TH1D*);
 void SetStatusATWDb(TH1D*);
 void SetStatusFADC(TH1D*);
 void SetSPEThreshold(TH1D*);
+void SetMPEThreshold(TH1D*);
 void SetFEPedestal(TH1D*);
 void SetDACTriggerBias0(TH1D*);
 void SetDACTriggerBias1(TH1D*);
@@ -492,7 +493,8 @@ void BookDOMStatusHistograms(I3DetectorStatusConstPtr status,
   TH1D* statusATWDb_h = new TH1D("statusATWDb","Status ATWDb",3,-1.5,1.5);
   TH1D* statusFADC_h = new TH1D("statusFADC","Status FADC",3,-1.5,1.5);
 
-  TH1D* speThreshold_h = new TH1D("speThreshold","SPE Threshold",100,1.,3.);//I3Units::mV
+  TH1D* speThreshold_h = new TH1D("speThreshold","SPE Threshold",100,500.,800);//I3Units::mV changed to DAC units
+  TH1D* mpeThreshold_h = new TH1D("mpeThreshold","MPE Threshold",100,500.,800);//I3Units::mV changed to DAC units
   TH1D* fePedestal_h = new TH1D("fePedestal","FE Pedestal",100,2.5,2.7);//I3Units::V
 
   TH1D* dacTriggerBias0_h = new TH1D("dacTriggerBias0","DAC Trigger Bias 0",100,0,1000);
@@ -533,7 +535,8 @@ void BookDOMStatusHistograms(I3DetectorStatusConstPtr status,
     statusATWDa_h->Fill(stat_iter->second.statusATWDa);
     statusATWDb_h->Fill(stat_iter->second.statusATWDb);
     statusFADC_h->Fill(stat_iter->second.statusFADC);
-    speThreshold_h->Fill(stat_iter->second.speThreshold/I3Units::mV);
+    speThreshold_h->Fill(stat_iter->second.speThreshold);
+    mpeThreshold_h->Fill(stat_iter->second.mpeThreshold);
     fePedestal_h->Fill(stat_iter->second.fePedestal/I3Units::V);
     dacTriggerBias0_h->Fill(stat_iter->second.dacTriggerBias0);
     dacTriggerBias1_h->Fill(stat_iter->second.dacTriggerBias1);
@@ -560,6 +563,7 @@ void BookDOMStatusHistograms(I3DetectorStatusConstPtr status,
   statusATWDb_h->Write();
   statusFADC_h->Write();
   speThreshold_h->Write();
+  mpeThreshold_h->Write();
   fePedestal_h->Write();
   dacTriggerBias0_h->Write();
   dacTriggerBias1_h->Write();
@@ -584,6 +588,7 @@ void BookDOMStatusHistograms(I3DetectorStatusConstPtr status,
   SetStatusATWDb(statusATWDb_h);
   SetStatusFADC(statusFADC_h);
   SetSPEThreshold(speThreshold_h);
+  SetMPEThreshold(mpeThreshold_h);
   SetFEPedestal(fePedestal_h);
   SetDACTriggerBias0(dacTriggerBias0_h);
   SetDACTriggerBias1(dacTriggerBias1_h);
@@ -607,6 +612,15 @@ void MakeDOMFunctionsPlots(I3CalibrationConstPtr calib,
   TH1D* fadcbaseline_h = new TH1D("fadcbaseline","FADC Baseline",50,110,160);
   TH1D* ttime_h = new TH1D("ttime","Transit Time",60,130,160);
 
+  TH1D* ic_spethresh_h = new TH1D("ic_spethresh","InIce SPE Discriminator Threshold",60,0,20);
+  TH1D* ic_mpethresh_h = new TH1D("ic_mpethresh","InIce MPE Discriminator Threshold",60,20,150);
+
+  TH1D* lg_it_spethresh_h = new TH1D("lg_it_spethresh","Low Gain IceTop SPE Discriminator Threshold",60,0,20);
+  TH1D* lg_it_mpethresh_h = new TH1D("lg_it_mpethresh","Low Gain IceTop MPE Discriminator Threshold",60,20,150);
+
+  TH1D* hg_it_spethresh_h = new TH1D("hg_it_spethresh","High Gain IceTop SPE Discriminator Threshold",60,0,20);
+  TH1D* hg_it_mpethresh_h = new TH1D("hg_it_mpethresh","High Gain IceTop MPE Discriminator Threshold",60,20,150);
+
 
   map<OMKey, I3DOMCalibration>::const_iterator cal_iter;
 
@@ -626,12 +640,28 @@ void MakeDOMFunctionsPlots(I3CalibrationConstPtr calib,
       double fadcbaseline = FADCBaseline(domstat,domcal);
       double ttime = TransitTime(domstat,domcal);
 
+      double spethresh = SPEDiscriminatorThreshold(domstat,domcal);
+      double mpethresh = MPEDiscriminatorThreshold(domstat,domcal);
+
       pmtgain_h->Fill(log10(gain));
       atwda_sampling_rate_h->Fill(atwda_sr/I3Units::megahertz);
       atwdb_sampling_rate_h->Fill(atwdb_sr/I3Units::megahertz);
       spemean_h->Fill(log10(spemean/(I3Units::eSI*I3Units::C)));
       fadcbaseline_h->Fill(fadcbaseline);
       ttime_h->Fill(ttime/I3Units::ns);
+      if(cal_iter->first.GetOM() <= 60){
+	ic_spethresh_h->Fill(spethresh/I3Units::mV);
+	ic_mpethresh_h->Fill(mpethresh/I3Units::mV);
+      }else{
+	if(domstat.domGainType == I3DOMStatus::High){
+	  hg_it_spethresh_h->Fill(spethresh/I3Units::mV);
+	  hg_it_mpethresh_h->Fill(mpethresh/I3Units::mV);
+	}
+	if(domstat.domGainType == I3DOMStatus::Low){
+	  lg_it_spethresh_h->Fill(spethresh/I3Units::mV);
+	  lg_it_mpethresh_h->Fill(mpethresh/I3Units::mV);
+	}
+      }
     }
   }
 
@@ -662,6 +692,30 @@ void MakeDOMFunctionsPlots(I3CalibrationConstPtr calib,
   c.SetLogy(true);
   ttime_h->Draw();
   c.SaveAs((plot_path + "dom/TransitTime.png").c_str());
+
+  c.SetLogy(true);
+  ic_spethresh_h->Draw();
+  c.SaveAs((plot_path + "dom/InIceSPEDiscThresh.png").c_str());
+
+  c.SetLogy(true);
+  ic_mpethresh_h->Draw();
+  c.SaveAs((plot_path + "dom/InIceMPEDiscThresh.png").c_str());
+
+  c.SetLogy(true);
+  hg_it_spethresh_h->Draw();
+  c.SaveAs((plot_path + "dom/HighGainIceTopSPEDiscThresh.png").c_str());
+
+  c.SetLogy(true);
+  hg_it_mpethresh_h->Draw();
+  c.SaveAs((plot_path + "dom/HighGainIceTopMPEDiscThresh.png").c_str());
+
+  c.SetLogy(true);
+  lg_it_spethresh_h->Draw();
+  c.SaveAs((plot_path + "dom/LowGainIceTopSPEDiscThresh.png").c_str());
+
+  c.SetLogy(true);
+  lg_it_mpethresh_h->Draw();
+  c.SaveAs((plot_path + "dom/LowGainIceTopMPEDiscThresh.png").c_str());
 
 } 
 
@@ -1099,10 +1153,18 @@ void SetStatusFADC(TH1D* h){
 void SetSPEThreshold(TH1D* h){
   std::stringstream defVal;
   defVal<<"Default = "
-       <<I3DetStatDefaults::SPE_THRESHOLD/I3Units::mV
-       <<" mV";
-  h->SetXTitle("threshold(mV)");
+	<<I3DetStatDefaults::SPE_THRESHOLD;
+  h->SetXTitle("threshold(DAC)");
   FitAndFormatHisto(h,"detstat/SPEThreshold.png",defVal.str(),true);
+
+}
+
+void SetMPEThreshold(TH1D* h){
+  std::stringstream defVal;
+  //defVal<<"Default = "
+  //<<I3DetStatDefaults::MPE_THRESHOLD;
+  h->SetXTitle("threshold(DAC)");
+  FitAndFormatHisto(h,"detstat/MPEThreshold.png",defVal.str(),true);
 
 }
 void SetFEPedestal(TH1D* h){

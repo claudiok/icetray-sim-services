@@ -80,7 +80,8 @@ namespace I3CalibDefaults{
   const double TAU_P5_POST_2006 = 1;
   const double TAU_FRACTION_POST_2006 = -0.5;
 
-  const double FADC_DELTA_T = -77 * I3Units::ns;
+  //const double FADC_DELTA_T = -77 * I3Units::ns;
+  const double FADC_DELTA_T = -100 * I3Units::ns;
   const double FRONT_END_IMPEDANCE = 43 * I3Units::ohm;
 
   const double PMT_TRANSIT_TIME_SLOPE = 1983; //units are ns/sqrt(V)
