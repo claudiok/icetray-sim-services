@@ -108,7 +108,10 @@ public:
    */
   double iniceVoltage_;
 
-  I3DOMStatus::TrigMode triggerMode_;
+  I3DOMStatus::TrigMode iniceTriggerMode_;
+  I3DOMStatus::TrigMode icetopHGTriggerMode_;
+  I3DOMStatus::TrigMode icetopLGTriggerMode_;
+
   I3DOMStatus::LCMode lcMode_inice_first_;
   I3DOMStatus::LCMode lcMode_inice_bulk_;
   I3DOMStatus::LCMode lcMode_inice_last_;
@@ -119,7 +122,10 @@ public:
   I3DOMStatus::OnOff statusFADC_InIce_;
   I3DOMStatus::OnOff statusFADC_IceTop_;
 
-  double speThreshold_;
+  double iniceSPEThreshold_;
+  double iniceMPEThreshold_;
+  double icetopSPEThreshold_;
+  double icetopMPEThreshold_;
   double fePedestal_;
   int dacTriggerBias0_;
   int dacTriggerBias1_;

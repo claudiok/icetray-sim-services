@@ -29,7 +29,9 @@ I3MCDetectorStatusService::I3MCDetectorStatusService(I3GeometryServicePtr g,
   inice_LCSpan_(I3DetStatDefaults::INICE_LCSPAN),
   icetop_LCSpan_(I3DetStatDefaults::ICETOP_LCSPAN),
   iniceVoltage_(I3DetStatDefaults::INICE_VOLTAGE),
-  triggerMode_(I3DetStatDefaults::TRIGGER_MODE),
+  iniceTriggerMode_(I3DetStatDefaults::INICE_TRIGGER_MODE),
+  icetopHGTriggerMode_(I3DetStatDefaults::ICETOP_HG_TRIGGER_MODE),
+  icetopLGTriggerMode_(I3DetStatDefaults::ICETOP_LG_TRIGGER_MODE),
   lcMode_inice_first_(I3DetStatDefaults::LCMODE_INICE_FIRST),
   lcMode_inice_bulk_(I3DetStatDefaults::LCMODE_INICE_BULK),
   lcMode_inice_last_(I3DetStatDefaults::LCMODE_INICE_LAST),
@@ -38,7 +40,10 @@ I3MCDetectorStatusService::I3MCDetectorStatusService(I3GeometryServicePtr g,
   statusATWDb_(I3DetStatDefaults::STATUS_ATWDb),
   statusFADC_InIce_(I3DetStatDefaults::STATUS_FADC_INICE),
   statusFADC_IceTop_(I3DetStatDefaults::STATUS_FADC_ICETOP),
-  speThreshold_(I3DetStatDefaults::SPE_THRESHOLD),
+  iniceSPEThreshold_(I3DetStatDefaults::INICE_SPE_THRESHOLD),
+  iniceMPEThreshold_(I3DetStatDefaults::INICE_SPE_THRESHOLD),
+  icetopSPEThreshold_(I3DetStatDefaults::ICETOP_SPE_THRESHOLD),
+  icetopMPEThreshold_(I3DetStatDefaults::ICETOP_MPE_THRESHOLD),
   fePedestal_(I3DetStatDefaults::FE_PEDESTAL),
   dacTriggerBias0_(I3DetStatDefaults::DAC_TRIGGER_BIAS0),
   dacTriggerBias1_(I3DetStatDefaults::DAC_TRIGGER_BIAS1),
@@ -112,12 +117,9 @@ void I3MCDetectorStatusService::SetDOMStatus(I3DetectorStatusPtr& status, const 
 
   I3DOMStatus domStatus;
 
-  domStatus.trigMode = triggerMode_;
-  
   domStatus.statusATWDa = statusATWDa_;
   domStatus.statusATWDb = statusATWDb_;
   
-  domStatus.speThreshold = speThreshold_;
   domStatus.fePedestal = fePedestal_;
   
   domStatus.dacTriggerBias0 = dacTriggerBias0_;
@@ -162,12 +164,16 @@ void I3MCDetectorStatusService::SetDOMStatus(I3DetectorStatusPtr& status, const 
 
 	  domStatus.lcSpan = icetop_LCSpan_;
 	  domStatus.SLCActive = false;
+
+	  domStatus.speThreshold = icetopSPEThreshold_;
+	  domStatus.mpeThreshold = icetopMPEThreshold_;
 	  
 	  if ( thiskey.GetOM() == 61 ||
 	       thiskey.GetOM() == 63 )
 	    {	
 	      domStatus.pmtHV = icetopHighGainVoltage_;
 	      domStatus.domGainType = I3DOMStatus::High;  
+	      domStatus.trigMode = icetopHGTriggerMode_;
 	    }
 	  
 	  else if ( thiskey.GetOM() == 62 ||
@@ -175,6 +181,7 @@ void I3MCDetectorStatusService::SetDOMStatus(I3DetectorStatusPtr& status, const 
 	    {
 	      domStatus.pmtHV = icetopLowGainVoltage_;
 	      domStatus.domGainType = I3DOMStatus::Low;  
+	      domStatus.trigMode = icetopLGTriggerMode_;
 	    }
 	}else{
 	  /**
@@ -208,6 +215,11 @@ void I3MCDetectorStatusService::SetDOMStatus(I3DetectorStatusPtr& status, const 
 	  domStatus.pmtHV = iniceVoltage_;
 	  domStatus.domGainType = domGainType_;  
 	  domStatus.SLCActive = slcActive_;
+
+	  domStatus.speThreshold = iniceSPEThreshold_;
+	  domStatus.mpeThreshold = iniceMPEThreshold_;
+
+	  domStatus.trigMode = iniceTriggerMode_;
 	}
 	status->domStatus[thiskey] = domStatus;
 	log_trace("creating record for DOM %s",thiskey.str().c_str());
