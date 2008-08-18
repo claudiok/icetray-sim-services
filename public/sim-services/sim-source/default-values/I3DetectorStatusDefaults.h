@@ -38,7 +38,8 @@ namespace I3DetStatDefaults{
    * IceTop PMT voltages for high and low gain
    */
   const double ICETOP_HIGHGAIN_VOLTAGE = 1278*I3Units::volt;
-  const double ICETOP_LOWGAIN_VOLTAGE = 945*I3Units::volt;
+  //const double ICETOP_LOWGAIN_VOLTAGE = 945*I3Units::volt;
+  const double ICETOP_LOWGAIN_VOLTAGE = 748*I3Units::volt;
 
   /**
    * InIce local coincidence trigger windows
@@ -58,7 +59,9 @@ namespace I3DetStatDefaults{
    */
   const double INICE_VOLTAGE = 1276*I3Units::volt; 
 
-  const I3DOMStatus::TrigMode TRIGGER_MODE = I3DOMStatus::SPE; 
+  const I3DOMStatus::TrigMode INICE_TRIGGER_MODE = I3DOMStatus::SPE; 
+  const I3DOMStatus::TrigMode ICETOP_HG_TRIGGER_MODE = I3DOMStatus::MPE; 
+  const I3DOMStatus::TrigMode ICETOP_LG_TRIGGER_MODE = I3DOMStatus::SPE; 
 
   const I3DOMStatus::OnOff STATUS_ATWDa = I3DOMStatus::On; 
   const I3DOMStatus::OnOff STATUS_ATWDb = I3DOMStatus::On; 
@@ -71,8 +74,12 @@ namespace I3DetStatDefaults{
   const I3DOMStatus::LCMode LCMODE_ICETOP = I3DOMStatus::UpOrDown;//changed to match season III 
 
   //const double SPE_THRESHOLD = 1.852*I3Units::mV;
-  const double SPE_THRESHOLD = 569;
-  const double FE_PEDESTAL = 2.6*I3Units::volt;
+  //const double FE_PEDESTAL = 2.6*I3Units::volt;
+  const double INICE_SPE_THRESHOLD = 569;//now in DAC units
+  const double INICE_MPE_THRESHOLD = 655;//now in DAC units
+  const double ICETOP_SPE_THRESHOLD = 569;//now in DAC units
+  const double ICETOP_MPE_THRESHOLD = 569;//now in DAC units
+  const double FE_PEDESTAL = 2130; //now in DAC units
   const int DAC_TRIGGER_BIAS0 = 850; 
   const int DAC_TRIGGER_BIAS1 = 850; 
   const int DAC_FADC_REF = 800; 
