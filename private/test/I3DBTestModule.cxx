@@ -230,8 +230,11 @@ void TestDOMStatus(I3DetectorStatusConstPtr status){
   TH1D* pmtHV_inice_h = new TH1D("pmtHV_inice","PMT High Voltage - InIce",60,1000., 1600.);
   TH1D* pmtHV_icetopHG_h = new TH1D("pmtHV_icetopHG","PMT High Voltage - IceTop High Gain",60,1000., 1600.);
   TH1D* pmtHV_icetopLG_h = new TH1D("pmtHV_icetopLG","PMT High Voltage - IceTop Low Gain",50,400,900.);
-  TH1D* speThreshold_h = new TH1D("speThreshold","SPE Threshold",100,1.,2.);//I3Units::mV
-  TH1D* fePedestal_h = new TH1D("fePedestal","FE Pedestal",100,2.5,2.7);//I3Units::V
+  TH1D* iniceSPEThreshold_h = new TH1D("iniceSPEThreshold","InIce SPE Threshold",100,500,700);
+  TH1D* iniceMPEThreshold_h = new TH1D("iniceMPEThreshold","InIce MPE Threshold",100,500,700);
+  TH1D* icetopSPEThreshold_h = new TH1D("icetopSPEThreshold","IceTop SPE Threshold",100,500,700);
+  TH1D* icetopMPEThreshold_h = new TH1D("icetopMPEThreshold","IceTop MPE Threshold",100,500,700);
+  TH1D* fePedestal_h = new TH1D("fePedestal","FE Pedestal",100,2000,2200);
 
   map<OMKey, I3DOMStatus>::const_iterator stat_iter;
 
@@ -250,6 +253,10 @@ void TestDOMStatus(I3DetectorStatusConstPtr status){
       ENSURE(stat_iter->second.nBinsATWD1 == I3DetStatDefaults::NBINS_ATWD1_INICE);
       ENSURE(stat_iter->second.nBinsATWD2 == I3DetStatDefaults::NBINS_ATWD2_INICE);
       ENSURE(stat_iter->second.nBinsFADC == I3DetStatDefaults::NBINS_FADC_INICE);
+      ENSURE(stat_iter->second.trigMode == I3DetStatDefaults::INICE_TRIGGER_MODE);
+
+      iniceSPEThreshold_h->Fill(stat_iter->second.speThreshold);
+      iniceMPEThreshold_h->Fill(stat_iter->second.mpeThreshold);
 
       if(stat_iter->first.GetOM() == 1) 
 	ENSURE(stat_iter->second.lcMode == I3DetStatDefaults::LCMODE_INICE_FIRST);
@@ -269,15 +276,17 @@ void TestDOMStatus(I3DetectorStatusConstPtr status){
       ENSURE(stat_iter->second.nBinsATWD2 == I3DetStatDefaults::NBINS_ATWD2_ICETOP);
       ENSURE(stat_iter->second.nBinsFADC == I3DetStatDefaults::NBINS_FADC_ICETOP);
 
-      if((stat_iter->first.GetOM() == 61) || 
-	 (stat_iter->first.GetOM() == 63))
+      if(stat_iter->second.domGainType == I3DOMStatus::High){
 	pmtHV_icetopHG_h->Fill(stat_iter->second.pmtHV/I3Units::volt);
-      if((stat_iter->first.GetOM() == 62) || 
-	 (stat_iter->first.GetOM() == 64))
-      pmtHV_icetopLG_h->Fill(stat_iter->second.pmtHV/I3Units::volt);
+	icetopMPEThreshold_h->Fill(stat_iter->second.mpeThreshold);
+	ENSURE(stat_iter->second.trigMode == I3DetStatDefaults::ICETOP_HG_TRIGGER_MODE);
+      }
+      if(stat_iter->second.domGainType == I3DOMStatus::High){
+	pmtHV_icetopLG_h->Fill(stat_iter->second.pmtHV/I3Units::volt);
+	icetopSPEThreshold_h->Fill(stat_iter->second.speThreshold);
+	ENSURE(stat_iter->second.trigMode == I3DetStatDefaults::ICETOP_LG_TRIGGER_MODE);
+      }
     }
-
-    ENSURE(stat_iter->second.trigMode == I3DetStatDefaults::TRIGGER_MODE);
 
     ENSURE(stat_iter->second.statusATWDa == I3DetStatDefaults::STATUS_ATWDa);
     ENSURE(stat_iter->second.statusATWDb == I3DetStatDefaults::STATUS_ATWDb);
@@ -286,15 +295,17 @@ void TestDOMStatus(I3DetectorStatusConstPtr status){
     ENSURE(stat_iter->second.dacTriggerBias1 == I3DetStatDefaults::DAC_TRIGGER_BIAS1);
     ENSURE(stat_iter->second.dacFADCRef == I3DetStatDefaults::DAC_FADC_REF);
 
-    speThreshold_h->Fill(stat_iter->second.speThreshold/I3Units::mV);
-    fePedestal_h->Fill(stat_iter->second.fePedestal/I3Units::V);
+    fePedestal_h->Fill(stat_iter->second.fePedestal);
   }
 
   TestGaussian(pmtHV_inice_h,I3DetStatDefaults::INICE_VOLTAGE);
   TestGaussian(pmtHV_icetopHG_h,I3DetStatDefaults::ICETOP_HIGHGAIN_VOLTAGE);
   TestGaussian(pmtHV_icetopLG_h,I3DetStatDefaults::ICETOP_LOWGAIN_VOLTAGE);
 
-  TestGaussian(speThreshold_h,I3DetStatDefaults::SPE_THRESHOLD);
+  TestGaussian(iniceSPEThreshold_h,I3DetStatDefaults::INICE_SPE_THRESHOLD);
+  TestGaussian(iniceMPEThreshold_h,I3DetStatDefaults::INICE_MPE_THRESHOLD);
+  TestGaussian(icetopSPEThreshold_h,I3DetStatDefaults::ICETOP_SPE_THRESHOLD);
+  TestGaussian(icetopMPEThreshold_h,I3DetStatDefaults::ICETOP_MPE_THRESHOLD);
   TestGaussian(fePedestal_h,I3DetStatDefaults::FE_PEDESTAL);
 
 }
