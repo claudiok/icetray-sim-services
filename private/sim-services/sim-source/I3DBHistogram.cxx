@@ -495,11 +495,11 @@ void BookDOMStatusHistograms(I3DetectorStatusConstPtr status,
 
   TH1D* speThreshold_h = new TH1D("speThreshold","SPE Threshold",100,500.,800);//I3Units::mV changed to DAC units
   TH1D* mpeThreshold_h = new TH1D("mpeThreshold","MPE Threshold",100,500.,800);//I3Units::mV changed to DAC units
-  TH1D* fePedestal_h = new TH1D("fePedestal","FE Pedestal",100,2.5,2.7);//I3Units::V
+  TH1D* fePedestal_h = new TH1D("fePedestal","FE Pedestal",100,2100,2200);
 
-  TH1D* dacTriggerBias0_h = new TH1D("dacTriggerBias0","DAC Trigger Bias 0",100,0,1000);
-  TH1D* dacTriggerBias1_h = new TH1D("dacTriggerBias1","DAC Trigger Bias 1",100,0,1000);
-  TH1D* dacFADCRef_h = new TH1D("dacFADCRef","DAC FADC Ref",100,0,1000);
+  TH1D* dacTriggerBias0_h = new TH1D("dacTriggerBias0","DAC Trigger Bias 0",100,800,900);
+  TH1D* dacTriggerBias1_h = new TH1D("dacTriggerBias1","DAC Trigger Bias 1",100,800,900);
+  TH1D* dacFADCRef_h = new TH1D("dacFADCRef","DAC FADC Ref",100,700,900);
 
   TH1D* nBinsATWD0_h = new TH1D("nBinsATWD0","Number of bins ATWD0",257,0,256);
   TH1D* nBinsATWD1_h = new TH1D("nBinsATWD1","Number of bins ATWD1",257,0,256);
@@ -1099,7 +1099,7 @@ void SetPMTHVIceTopLG(TH1D* h){
 void SetTriggerMode(TH1D* h){
   std::stringstream defVal;
   defVal<<"Default = "
-	<<static_cast<int>(I3DetStatDefaults::TRIGGER_MODE)
+	<<static_cast<int>(I3DetStatDefaults::INICE_TRIGGER_MODE)
        <<" ";
   h->SetXTitle("Mode");
   FitAndFormatHisto(h,"detstat/TriggerMode.png",defVal.str());
@@ -1153,7 +1153,7 @@ void SetStatusFADC(TH1D* h){
 void SetSPEThreshold(TH1D* h){
   std::stringstream defVal;
   defVal<<"Default = "
-	<<I3DetStatDefaults::SPE_THRESHOLD;
+	<<I3DetStatDefaults::INICE_SPE_THRESHOLD;
   h->SetXTitle("threshold(DAC)");
   FitAndFormatHisto(h,"detstat/SPEThreshold.png",defVal.str(),true);
 
