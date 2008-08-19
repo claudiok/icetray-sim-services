@@ -258,7 +258,7 @@ void BookDOMCalibHistograms(I3CalibrationConstPtr calib,
 
   TH1D* fadc_delta_t_h = new TH1D("fadc_delta_t_h",
 			"FADC #Delta T",
-			100,-82*I3Units::ns,-70*I3Units::ns);
+			100,-120*I3Units::ns,-80*I3Units::ns);
 
   TH1D* frontend_impedance_h = new TH1D("frontend_impedance_h",
 			"Front End Impededance",
@@ -272,8 +272,8 @@ void BookDOMCalibHistograms(I3CalibrationConstPtr calib,
 			"PMT Transit Time - intercept",
 			100,75,100);
 
-  double bl_min(-30.);
-  double bl_max(30.);
+  double bl_min(-5.);
+  double bl_max(5.);
 
   TH1D* atwd0_a_bl_h = new TH1D("atwd0_A_baseline",
 			  "ATWD_A Channel 0 Baseline",
@@ -352,6 +352,7 @@ void BookDOMCalibHistograms(I3CalibrationConstPtr calib,
     hvgain_int_h->Fill(cal_iter->second.GetHVGainFit().intercept);
 
     fadc_delta_t_h->Fill(cal_iter->second.GetFADCDeltaT()/I3Units::ns);
+    cerr<<"FADC DeltaT = "<<cal_iter->second.GetFADCDeltaT()/I3Units::ns<<" ns"<<endl;
     frontend_impedance_h->Fill(cal_iter->second.GetFrontEndImpedance()/I3Units::ohm);
 
     pmt_transit_time_slope_h->Fill(cal_iter->second.GetTransitTime().slope);
@@ -486,7 +487,7 @@ void BookDOMStatusHistograms(I3DetectorStatusConstPtr status,
 		    200,0, 2000.0*I3Units::ns);
   TH1D* pmtHV_inice_h = new TH1D("pmtHV_inice","PMT High Voltage - InIce",60,1000., 1600.);
   TH1D* pmtHV_icetopHG_h = new TH1D("pmtHV_icetopHG","PMT High Voltage - IceTop High Gain",60,1000., 1600.);
-  TH1D* pmtHV_icetopLG_h = new TH1D("pmtHV_icetopLG","PMT High Voltage - IceTop Low Gain",50,700,1300.);
+  TH1D* pmtHV_icetopLG_h = new TH1D("pmtHV_icetopLG","PMT High Voltage - IceTop Low Gain",50,600,900.);
   TH1D* trigMode_h = new TH1D("trigMode","Trigger Mode",6,-1.5,4.5);
   TH1D* lcMode_h = new TH1D("lcMode","Local Coincidence Mode",6,-1.5,4.5);
   TH1D* statusATWDa_h = new TH1D("statusATWDa","Status ATWDa",3,-1.5,1.5);
@@ -497,8 +498,8 @@ void BookDOMStatusHistograms(I3DetectorStatusConstPtr status,
   TH1D* mpeThreshold_h = new TH1D("mpeThreshold","MPE Threshold",100,500.,800);//I3Units::mV changed to DAC units
   TH1D* fePedestal_h = new TH1D("fePedestal","FE Pedestal",100,2100,2200);
 
-  TH1D* dacTriggerBias0_h = new TH1D("dacTriggerBias0","DAC Trigger Bias 0",100,800,900);
-  TH1D* dacTriggerBias1_h = new TH1D("dacTriggerBias1","DAC Trigger Bias 1",100,800,900);
+  TH1D* dacTriggerBias0_h = new TH1D("dacTriggerBias0","DAC Trigger Bias 0",100,700,1000);
+  TH1D* dacTriggerBias1_h = new TH1D("dacTriggerBias1","DAC Trigger Bias 1",100,700,1000);
   TH1D* dacFADCRef_h = new TH1D("dacFADCRef","DAC FADC Ref",100,700,900);
 
   TH1D* nBinsATWD0_h = new TH1D("nBinsATWD0","Number of bins ATWD0",257,0,256);
@@ -537,7 +538,7 @@ void BookDOMStatusHistograms(I3DetectorStatusConstPtr status,
     statusFADC_h->Fill(stat_iter->second.statusFADC);
     speThreshold_h->Fill(stat_iter->second.speThreshold);
     mpeThreshold_h->Fill(stat_iter->second.mpeThreshold);
-    fePedestal_h->Fill(stat_iter->second.fePedestal/I3Units::V);
+    fePedestal_h->Fill(stat_iter->second.fePedestal);
     dacTriggerBias0_h->Fill(stat_iter->second.dacTriggerBias0);
     dacTriggerBias1_h->Fill(stat_iter->second.dacTriggerBias1);
     dacFADCRef_h->Fill(stat_iter->second.dacFADCRef);
@@ -605,22 +606,36 @@ void MakeDOMFunctionsPlots(I3CalibrationConstPtr calib,
 
   TH1D* pmtgain_h = new TH1D("pmtgain","PMT Gain",100,5.5,7.5);
   TH1D* atwda_sampling_rate_h = new TH1D("atwda_sampling_rate",
-					 "ATWDa Sampling Rate",100,250,350);
+					 "ATWDa Sampling Rate",100,270,310);
   TH1D* atwdb_sampling_rate_h = new TH1D("atwdb_sampling_rate",
-					 "ATWDb Sampling Rate",100,250,350);
-  TH1D* spemean_h = new TH1D("spemean","SPE Mean",100,5.5,7.5);
-  TH1D* fadcbaseline_h = new TH1D("fadcbaseline","FADC Baseline",50,110,160);
-  TH1D* ttime_h = new TH1D("ttime","Transit Time",60,130,160);
+					 "ATWDb Sampling Rate",100,270,310);
 
-  TH1D* ic_spethresh_h = new TH1D("ic_spethresh","InIce SPE Discriminator Threshold",60,0,20);
-  TH1D* ic_mpethresh_h = new TH1D("ic_mpethresh","InIce MPE Discriminator Threshold",60,20,150);
+  atwda_sampling_rate_h->SetXTitle("rate(MHz)");
+  atwdb_sampling_rate_h->SetXTitle("rate(MHz)");
+
+  TH1D* spemean_h = new TH1D("spemean","SPE Mean",100,5.5,7.5);
+
+  TH1D* fadcbaseline_h = new TH1D("fadcbaseline","FADC Baseline",50,110,160);
+  fadcbaseline_h->SetXTitle("Baseline(mV)");
+
+  TH1D* ttime_h = new TH1D("ttime","Transit Time",60,130,180);
+  ttime_h->SetXTitle("t(ns)");
+
+  TH1D* ic_spethresh_h = new TH1D("ic_spethresh","InIce SPE Discriminator Threshold",60,0,5);
+  TH1D* ic_mpethresh_h = new TH1D("ic_mpethresh","InIce MPE Discriminator Threshold",60,120,140);
 
   TH1D* lg_it_spethresh_h = new TH1D("lg_it_spethresh","Low Gain IceTop SPE Discriminator Threshold",60,0,20);
   TH1D* lg_it_mpethresh_h = new TH1D("lg_it_mpethresh","Low Gain IceTop MPE Discriminator Threshold",60,20,150);
 
-  TH1D* hg_it_spethresh_h = new TH1D("hg_it_spethresh","High Gain IceTop SPE Discriminator Threshold",60,0,20);
+  TH1D* hg_it_spethresh_h = new TH1D("hg_it_spethresh","High Gain IceTop SPE Discriminator Threshold",100,0,70);
   TH1D* hg_it_mpethresh_h = new TH1D("hg_it_mpethresh","High Gain IceTop MPE Discriminator Threshold",60,20,150);
 
+  ic_spethresh_h->SetXTitle("thrs(mV)");
+  ic_mpethresh_h->SetXTitle("thrs(mV)");
+  lg_it_spethresh_h->SetXTitle("thrs(mV)");
+  lg_it_mpethresh_h->SetXTitle("thrs(mV)");
+  hg_it_spethresh_h->SetXTitle("thrs(mV)");
+  hg_it_mpethresh_h->SetXTitle("thrs(mV)");
 
   map<OMKey, I3DOMCalibration>::const_iterator cal_iter;
 
@@ -837,7 +852,21 @@ void SetATWD2Gain(TH1D* h){
        <<I3CalibDefaults::ATWD2_GAIN
        <<" ";
   //h->SetXTitle("Units");
-  FitAndFormatHisto(h,"calibration/ATWD2Gain.png",defVal.str(),true);
+  //FitAndFormatHisto(h,"calibration/ATWD2Gain.png",defVal.str(),true);
+  TCanvas c;
+
+  TF1* dg = new TF1("dg","gaus(0) + gaus(3)",-0.3,-0.15);
+  dg->SetParameter(0,250);
+  dg->SetParameter(1,-0.24);
+  dg->SetParameter(2,0.01);
+  dg->SetParameter(3,150);
+  dg->SetParameter(4,-0.2);
+  dg->SetParameter(5,0.005);
+  h->Fit("dg"); 
+
+  const string I3_BUILD(getenv("I3_BUILD"));
+  string plot_path(I3_BUILD + "/sim-services/resources/plots/");
+  c.SaveAs((plot_path+"calibration/ATWD2Gain.png").c_str());
 };
 
 void SetATWDaFreqFit_A(TH1D* h){
@@ -1161,8 +1190,8 @@ void SetSPEThreshold(TH1D* h){
 
 void SetMPEThreshold(TH1D* h){
   std::stringstream defVal;
-  //defVal<<"Default = "
-  //<<I3DetStatDefaults::MPE_THRESHOLD;
+  defVal<<"Default = "
+	<<I3DetStatDefaults::INICE_MPE_THRESHOLD;
   h->SetXTitle("threshold(DAC)");
   FitAndFormatHisto(h,"detstat/MPEThreshold.png",defVal.str(),true);
 
@@ -1170,9 +1199,8 @@ void SetMPEThreshold(TH1D* h){
 void SetFEPedestal(TH1D* h){
   std::stringstream defVal;
   defVal<<"Default = "
-       <<I3DetStatDefaults::FE_PEDESTAL/I3Units::V
-       <<"V ";
-  h->SetXTitle("pedestal(V)");
+	<<I3DetStatDefaults::FE_PEDESTAL;
+  h->SetXTitle("pedestal(DAC)");
   FitAndFormatHisto(h,"detstat/fePedestal.png",defVal.str());
 
 }
@@ -1303,7 +1331,8 @@ void SetATWD0aBaseline(TH1D* h){
   dg->SetParameter(3,5000);
   dg->SetParameter(4,-0.5);
   dg->SetParameter(5,3);
-  h->Fit("dg"); 
+  //h->Fit("dg"); 
+  h->Fit("gaus"); 
   //h->Draw();
   //dg->Draw("same");
 
@@ -1323,7 +1352,8 @@ void SetATWD1aBaseline(TH1D* h){
   dg->SetParameter(3,2000);
   dg->SetParameter(4,-12);
   dg->SetParameter(5,5);
-  h->Fit("dg"); 
+  //h->Fit("dg"); 
+  h->Fit("gaus"); 
   //h->Draw();
   //dg->Draw("same");
 
@@ -1342,7 +1372,8 @@ void SetATWD2aBaseline(TH1D* h){
   dg->SetParameter(3,4000);
   dg->SetParameter(4,2);
   dg->SetParameter(5,1);
-  h->Fit("dg"); 
+  //h->Fit("dg"); 
+  h->Fit("gaus"); 
   //h->Draw();
   //dg->Draw("same");
 
@@ -1361,7 +1392,8 @@ void SetATWD0bBaseline(TH1D* h){
   dg->SetParameter(3,5000);
   dg->SetParameter(4,2);
   dg->SetParameter(5,3);
-  h->Fit("dg"); 
+  //h->Fit("dg"); 
+  h->Fit("gaus"); 
   //h->Draw();
   //dg->Draw("same");
 
@@ -1380,7 +1412,8 @@ void SetATWD1bBaseline(TH1D* h){
   dg->SetParameter(3,2000);
   dg->SetParameter(4,2);
   dg->SetParameter(5,1);
-  h->Fit("dg"); 
+  //h->Fit("dg"); 
+  h->Fit("gaus"); 
   //h->Draw();
   //dg->Draw("same");
 
@@ -1399,7 +1432,8 @@ void SetATWD2bBaseline(TH1D* h){
   dg->SetParameter(3,4000);
   dg->SetParameter(4,2);
   dg->SetParameter(5,1);
-  h->Fit("dg"); 
+  //h->Fit("dg"); 
+  h->Fit("gaus"); 
   //h->Draw();
   //dg->Draw("same");
 
@@ -1414,7 +1448,7 @@ void SetATWDaDeltaT(TH1D* h){
 	<<I3CalibDefaults::ATWDA_DELTAT/I3Units::ns
        <<" ns";
   h->SetXTitle("#Delta t(ns)");
-  FitAndFormatHisto(h,"calibration/ATWDaDeltaT.png",defVal.str(),true);
+  FitAndFormatHisto(h,"calibration/ATWDaDeltaT.png",defVal.str());
 };
 
 void SetATWDbDeltaT(TH1D* h){
