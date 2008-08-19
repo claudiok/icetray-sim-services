@@ -272,8 +272,8 @@ void BookDOMCalibHistograms(I3CalibrationConstPtr calib,
 			"PMT Transit Time - intercept",
 			100,75,100);
 
-  double bl_min(-5.);
-  double bl_max(5.);
+  double bl_min(-3.);
+  double bl_max(7.);
 
   TH1D* atwd0_a_bl_h = new TH1D("atwd0_A_baseline",
 			  "ATWD_A Channel 0 Baseline",
@@ -1321,125 +1321,63 @@ void SetPMTTransitTimeIntercept(TH1D* h){
 }
 
 void SetATWD0aBaseline(TH1D* h){
+  std::stringstream defVal;
+  defVal<<"Default = "
+	<<I3CalibDefaults::ATWDA0_BASELINE/I3Units::mV
+	<<" mV";
+  h->SetXTitle("Baseline(mV)");
 
-  TCanvas c;
-
-  TF1* dg = new TF1("dg","gaus(0) + gaus(3)",-30,30);
-  dg->SetParameter(0,30000);
-  dg->SetParameter(1,2);
-  dg->SetParameter(2,1);
-  dg->SetParameter(3,5000);
-  dg->SetParameter(4,-0.5);
-  dg->SetParameter(5,3);
-  //h->Fit("dg"); 
-  h->Fit("gaus"); 
-  //h->Draw();
-  //dg->Draw("same");
-
-  const string I3_BUILD(getenv("I3_BUILD"));
-  string plot_path(I3_BUILD + "/sim-services/resources/plots/");
-  c.SaveAs((plot_path+"calibration/ATWD0aBaseline.png").c_str());
-
+  FitAndFormatHisto(h,"calibration/ATWD0aBaseline.png",defVal.str(),true);
 }
 
 void SetATWD1aBaseline(TH1D* h){
-  TCanvas c;
+  std::stringstream defVal;
+  defVal<<"Default = "
+	<<I3CalibDefaults::ATWDA1_BASELINE/I3Units::mV
+	<<" mV";
+  h->SetXTitle("Baseline(mV)");
 
-  TF1* dg = new TF1("dg","gaus(0) + gaus(3)",-30,30);
-  dg->SetParameter(0,30000);
-  dg->SetParameter(1,0);
-  dg->SetParameter(2,1);
-  dg->SetParameter(3,2000);
-  dg->SetParameter(4,-12);
-  dg->SetParameter(5,5);
-  //h->Fit("dg"); 
-  h->Fit("gaus"); 
-  //h->Draw();
-  //dg->Draw("same");
-
-  const string I3_BUILD(getenv("I3_BUILD"));
-  string plot_path(I3_BUILD + "/sim-services/resources/plots/");
-  c.SaveAs((plot_path+"calibration/ATWD1aBaseline.png").c_str());
+  FitAndFormatHisto(h,"calibration/ATWD1aBaseline.png",defVal.str(),true);
 }
 
 void SetATWD2aBaseline(TH1D* h){
-  TCanvas c;
+  std::stringstream defVal;
+  defVal<<"Default = "
+	<<I3CalibDefaults::ATWDA2_BASELINE/I3Units::mV
+	<<" mV";
+  h->SetXTitle("Baseline(mV)");
 
-  TF1* dg = new TF1("dg","gaus(0) + gaus(3)",-30,30);
-  dg->SetParameter(0,16000);
-  dg->SetParameter(1,-17);
-  dg->SetParameter(2,3);
-  dg->SetParameter(3,4000);
-  dg->SetParameter(4,2);
-  dg->SetParameter(5,1);
-  //h->Fit("dg"); 
-  h->Fit("gaus"); 
-  //h->Draw();
-  //dg->Draw("same");
-
-  const string I3_BUILD(getenv("I3_BUILD"));
-  string plot_path(I3_BUILD + "/sim-services/resources/plots/");
-  c.SaveAs((plot_path+"calibration/ATWD2aBaseline.png").c_str());
+  FitAndFormatHisto(h,"calibration/ATWD2aBaseline.png",defVal.str(),true);
 }
 
 void SetATWD0bBaseline(TH1D* h){
-  TCanvas c;
+  std::stringstream defVal;
+  defVal<<"Default = "
+	<<I3CalibDefaults::ATWDB0_BASELINE/I3Units::mV
+	<<" mV";
+  h->SetXTitle("Baseline(mV)");
 
-  TF1* dg = new TF1("dg","gaus(0) + gaus(3)",-30,30);
-  dg->SetParameter(0,30000);
-  dg->SetParameter(1,-4);
-  dg->SetParameter(2,1);
-  dg->SetParameter(3,5000);
-  dg->SetParameter(4,2);
-  dg->SetParameter(5,3);
-  //h->Fit("dg"); 
-  h->Fit("gaus"); 
-  //h->Draw();
-  //dg->Draw("same");
-
-  const string I3_BUILD(getenv("I3_BUILD"));
-  string plot_path(I3_BUILD + "/sim-services/resources/plots/");
-  c.SaveAs((plot_path+"calibration/ATWD0bBaseline.png").c_str());
+  FitAndFormatHisto(h,"calibration/ATWD0bBaseline.png",defVal.str(),true);
 }
 
 void SetATWD1bBaseline(TH1D* h){
-  TCanvas c;
+  std::stringstream defVal;
+  defVal<<"Default = "
+	<<I3CalibDefaults::ATWDB1_BASELINE/I3Units::mV
+	<<" mV";
+  h->SetXTitle("Baseline(mV)");
 
-  TF1* dg = new TF1("dg","gaus(0) + gaus(3)",-30,30);
-  dg->SetParameter(0,12000);
-  dg->SetParameter(1,-17);
-  dg->SetParameter(2,3);
-  dg->SetParameter(3,2000);
-  dg->SetParameter(4,2);
-  dg->SetParameter(5,1);
-  //h->Fit("dg"); 
-  h->Fit("gaus"); 
-  //h->Draw();
-  //dg->Draw("same");
-
-  const string I3_BUILD(getenv("I3_BUILD"));
-  string plot_path(I3_BUILD + "/sim-services/resources/plots/");
-  c.SaveAs((plot_path+"calibration/ATWD1bBaseline.png").c_str());
+  FitAndFormatHisto(h,"calibration/ATWD1bBaseline.png",defVal.str(),true);
 }
 
 void SetATWD2bBaseline(TH1D* h){
-  TCanvas c;
+  std::stringstream defVal;
+  defVal<<"Default = "
+	<<I3CalibDefaults::ATWDB2_BASELINE/I3Units::mV
+	<<" mV";
+  h->SetXTitle("Baseline(mV)");
 
-  TF1* dg = new TF1("dg","gaus(0) + gaus(3)",-30,30);
-  dg->SetParameter(0,16000);
-  dg->SetParameter(1,-17);
-  dg->SetParameter(2,3);
-  dg->SetParameter(3,4000);
-  dg->SetParameter(4,2);
-  dg->SetParameter(5,1);
-  //h->Fit("dg"); 
-  h->Fit("gaus"); 
-  //h->Draw();
-  //dg->Draw("same");
-
-  const string I3_BUILD(getenv("I3_BUILD"));
-  string plot_path(I3_BUILD + "/sim-services/resources/plots/");
-  c.SaveAs((plot_path+"calibration/ATWD2bBaseline.png").c_str());
+  FitAndFormatHisto(h,"calibration/ATWD2bBaseline.png",defVal.str(),true);
 }
 
 void SetATWDaDeltaT(TH1D* h){

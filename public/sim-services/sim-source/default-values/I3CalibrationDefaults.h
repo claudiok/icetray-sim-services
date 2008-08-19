@@ -89,13 +89,21 @@ namespace I3CalibDefaults{
 
   const string DOMCAL_VERSION("7.1.0");
 
-  const double ATWDA0_BASELINE = 1.944 * I3Units::mV;
-  const double ATWDA1_BASELINE = -0.572 * I3Units::mV;
-  const double ATWDA2_BASELINE = 0.6698 * I3Units::mV;
+  const double ATWDA0_BASELINE = 2.778 * I3Units::mV;
+  const double ATWDA1_BASELINE = -0.4321 * I3Units::mV;
+  const double ATWDA2_BASELINE = 0.9336 * I3Units::mV;
 
-  const double ATWDB0_BASELINE = -3.505 * I3Units::mV;
-  const double ATWDB1_BASELINE = -16.37 * I3Units::mV;
-  const double ATWDB2_BASELINE = -16.47 * I3Units::mV;
+  const double ATWDB0_BASELINE = 1.821 * I3Units::mV;
+  const double ATWDB1_BASELINE = 0.8368 * I3Units::mV;
+  const double ATWDB2_BASELINE = 0.8206 * I3Units::mV;
+
+//  const double ATWDA0_BASELINE = 1.944 * I3Units::mV;
+//  const double ATWDA1_BASELINE = -0.572 * I3Units::mV;
+//  const double ATWDA2_BASELINE = 0.6698 * I3Units::mV;
+//
+//  const double ATWDB0_BASELINE = -3.505 * I3Units::mV;
+//  const double ATWDB1_BASELINE = -16.37 * I3Units::mV;
+//  const double ATWDB2_BASELINE = -16.47 * I3Units::mV;
 
   const double SPE_DISCRIMINATOR_INTERCEPT = -7.209 ;
   const double SPE_DISCRIMINATOR_SLOPE = 0.01339 ;
