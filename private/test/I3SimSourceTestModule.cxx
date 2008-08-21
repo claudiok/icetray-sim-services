@@ -63,7 +63,9 @@ I3SimSourceTestModule::I3SimSourceTestModule(const I3Context& ctx) :
   AddParameter("DetStat_InIceLCSpan","",ds_iniceLCSpan_);
   AddParameter("DetStat_IceTopLCSpan","",ds_icetopLCSpan_);
   AddParameter("DetStat_InIceVoltage","",ds_iniceVoltage_);
-  AddParameter("DetStat_TriggerMode","",ds_triggerMode_);
+  AddParameter("DetStat_InIceTriggerMode","",ds_iniceTriggerMode_);
+  AddParameter("DetStat_IceTopHGTriggerMode","",ds_icetopHGTriggerMode_);
+  AddParameter("DetStat_IceTopLGTriggerMode","",ds_icetopLGTriggerMode_);
   AddParameter("DetStat_LCModeInIceFirstDOM","",ds_lcMode_inice_first_);
   AddParameter("DetStat_LCModeInIceBulkDOMs","",ds_lcMode_inice_bulk_);
   AddParameter("DetStat_LCModeInIceLastDOM","",ds_lcMode_inice_last_);
@@ -151,7 +153,9 @@ void I3SimSourceTestModule::Configure()
   GetParameter("DetStat_InIceLCSpan",ds_iniceLCSpan_);
   GetParameter("DetStat_IceTopLCSpan",ds_icetopLCSpan_);
   GetParameter("DetStat_InIceVoltage",ds_iniceVoltage_);
-  GetParameter("DetStat_TriggerMode",ds_triggerMode_);
+  GetParameter("DetStat_InIceTriggerMode",ds_iniceTriggerMode_);
+  GetParameter("DetStat_IceTopHGTriggerMode",ds_icetopHGTriggerMode_);
+  GetParameter("DetStat_IceTopLGTriggerMode",ds_icetopLGTriggerMode_);
   GetParameter("DetStat_LCModeInIceFirstDOM",ds_lcMode_inice_first_);
   GetParameter("DetStat_LCModeInIceBulkDOMs",ds_lcMode_inice_bulk_);
   GetParameter("DetStat_LCModeInIceLastDOM",ds_lcMode_inice_last_);
@@ -321,10 +325,12 @@ void I3SimSourceTestModule::Physics(I3FramePtr frame)
 	ENSURE(stat_iter->second.nBinsATWD2 == ds_nBinsATWD2_IceTop_);
 	ENSURE(stat_iter->second.nBinsFADC == ds_nBinsFADC_IceTop_);
 
-	if ( stat_iter->first.GetOM() == 61 || stat_iter->first.GetOM() == 63 ){	
+	if ( stat_iter->second.domGainType == I3DOMStatus::High  ){	
 	      ENSURE_DISTANCE(stat_iter->second.pmtHV, ds_icetopHighGainVoltage_, DISTANCE);
-	}else if ( stat_iter->first.GetOM() == 62 || stat_iter->first.GetOM() == 64 ){
+	      ENSURE(static_cast<int>(stat_iter->second.trigMode) == ds_icetopHGTriggerMode_);
+	}else if ( stat_iter->second.domGainType == I3DOMStatus::Low  ){ 
 	  ENSURE_DISTANCE(stat_iter->second.pmtHV, ds_icetopLowGainVoltage_, DISTANCE);
+	  ENSURE(static_cast<int>(stat_iter->second.trigMode) == ds_icetopLGTriggerMode_);
 	}
       }	else {
 	ENSURE(static_cast<int>(stat_iter->second.lcSpan) == ds_iniceLCSpan_);
@@ -338,6 +344,8 @@ void I3SimSourceTestModule::Physics(I3FramePtr frame)
 	ENSURE(stat_iter->second.nBinsATWD2 == ds_nBinsATWD2_InIce_);
 	ENSURE(stat_iter->second.nBinsFADC == ds_nBinsFADC_InIce_);
 
+	ENSURE(static_cast<int>(stat_iter->second.trigMode) == ds_iniceTriggerMode_);
+
 	if(stat_iter->first.GetOM() == 1) 
 	  ENSURE(stat_iter->second.lcMode == ds_lcMode_inice_first_);
 	else if(stat_iter->first.GetOM() == 60) 
@@ -345,7 +353,6 @@ void I3SimSourceTestModule::Physics(I3FramePtr frame)
 	else ENSURE(stat_iter->second.lcMode == ds_lcMode_inice_bulk_);
       }
 
-    ENSURE(static_cast<int>(stat_iter->second.trigMode) == ds_triggerMode_);
     ENSURE(static_cast<int>(stat_iter->second.statusATWDa) == ds_statusATWDa_);
     ENSURE(static_cast<int>(stat_iter->second.statusATWDb) == ds_statusATWDb_);
     ENSURE_DISTANCE(stat_iter->second.speThreshold, ds_speThreshold_, DISTANCE);

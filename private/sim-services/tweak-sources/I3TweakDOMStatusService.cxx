@@ -18,7 +18,9 @@ I3TweakDOMStatusService::I3TweakDOMStatusService(const I3Context& context) :
   inice_LCSpan_(INT_MIN),
   icetop_LCSpan_(INT_MIN),
   iniceVoltage_(NAN),
-  triggerMode_(INT_MIN),
+  iniceTriggerMode_(INT_MIN),
+  icetopHGTriggerMode_(INT_MIN),
+  icetopLGTriggerMode_(INT_MIN),
   lcMode_inice_first_(INT_MIN),
   lcMode_inice_bulk_(INT_MIN),
   lcMode_inice_last_(INT_MIN),
@@ -52,7 +54,9 @@ I3TweakDOMStatusService::I3TweakDOMStatusService(const I3Context& context) :
   AddParameter("InIceLCSpan","",inice_LCSpan_);
   AddParameter("IceTopLCSpan","",icetop_LCSpan_);
   AddParameter("InIceVoltage","",iniceVoltage_);
-  AddParameter("TriggerMode","",triggerMode_);
+  AddParameter("InIceTriggerMode","",iniceTriggerMode_);
+  AddParameter("IcetopHGTriggerMode","",icetopHGTriggerMode_);
+  AddParameter("IcetopLGTriggerMode","",icetopLGTriggerMode_);
   AddParameter("LCModeInIceFirstDOM","",lcMode_inice_first_);
   AddParameter("LCModeInIceBulkDOMs","",lcMode_inice_bulk_);
   AddParameter("LCModeInIceLastDOM","",lcMode_inice_last_);
@@ -90,7 +94,9 @@ void I3TweakDOMStatusService::Configure()
   GetParameter("InIceLCSpan",inice_LCSpan_);
   GetParameter("IceTopLCSpan",icetop_LCSpan_);
   GetParameter("InIceVoltage",iniceVoltage_);
-  GetParameter("TriggerMode",triggerMode_);
+  GetParameter("InIceTriggerMode",iniceTriggerMode_);
+  GetParameter("IcetopHGTriggerMode",icetopHGTriggerMode_);
+  GetParameter("IcetopLGTriggerMode",icetopLGTriggerMode_);
   GetParameter("LCModeInIceFirstDOM",lcMode_inice_first_);
   GetParameter("LCModeInIceBulkDOMs",lcMode_inice_bulk_);
   GetParameter("LCModeInIceLastDOM",lcMode_inice_last_);
@@ -141,8 +147,12 @@ bool I3TweakDOMStatusService::InstallService(I3Context& services)
       status_service_->SetIceTopLCSpan(icetop_LCSpan_);
     if(!isnan(iniceVoltage_))
       status_service_->SetInIceVoltage(iniceVoltage_);
-    if(triggerMode_ > INT_MIN)
-      status_service_->SetTriggerMode(static_cast<I3DOMStatus::TrigMode>(triggerMode_));
+    if(iniceTriggerMode_ > INT_MIN)
+      status_service_->SetInIceTriggerMode(static_cast<I3DOMStatus::TrigMode>(iniceTriggerMode_));
+    if(icetopHGTriggerMode_ > INT_MIN)
+      status_service_->SetIceTopHGTriggerMode(static_cast<I3DOMStatus::TrigMode>(icetopHGTriggerMode_));
+    if(icetopLGTriggerMode_ > INT_MIN)
+      status_service_->SetIceTopLGTriggerMode(static_cast<I3DOMStatus::TrigMode>(icetopLGTriggerMode_));
 
     if(lcMode_inice_first_ > INT_MIN)
       status_service_->SetLCModeInIceFirstDOM(static_cast<I3DOMStatus::LCMode>(lcMode_inice_first_));

@@ -98,7 +98,9 @@ class I3SimSourceTestModule : public I3Module
    */
   double ds_iniceVoltage_;
 
-  int ds_triggerMode_;
+  int ds_iniceTriggerMode_;
+  int ds_icetopHGTriggerMode_;
+  int ds_icetopLGTriggerMode_;
   int ds_lcMode_inice_first_;
   int ds_lcMode_inice_bulk_;
   int ds_lcMode_inice_last_;

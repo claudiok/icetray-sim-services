@@ -18,7 +18,9 @@ I3TweakDOMStatus::I3TweakDOMStatus(I3DetectorStatusServicePtr s) :
   inice_LCSpan_(INT_MIN),
   icetop_LCSpan_(INT_MIN),
   iniceVoltage_(NAN),
-  triggerMode_(I3DOMStatus::UnknownTrigMode),
+  iniceTriggerMode_(I3DOMStatus::UnknownTrigMode),
+  icetopHGTriggerMode_(I3DOMStatus::UnknownTrigMode),
+  icetopLGTriggerMode_(I3DOMStatus::UnknownTrigMode),
   lcMode_inice_first_(I3DOMStatus::UnknownLCMode),
   lcMode_inice_bulk_(I3DOMStatus::UnknownLCMode),
   lcMode_inice_last_(I3DOMStatus::UnknownLCMode),
@@ -64,9 +66,6 @@ I3TweakDOMStatus::GetDetectorStatus(I3Time time)
     if (iter->first.GetString()<0 )//skip AMANDA
       continue;
 
-    if(triggerMode_ != I3DOMStatus::UnknownTrigMode)
-      iter->second.trigMode = triggerMode_;
-   
     if(statusATWDa_ != I3DOMStatus::Unknown)
       iter->second.statusATWDa = statusATWDa_;
     if(statusATWDb_ != I3DOMStatus::Unknown)
@@ -110,18 +109,20 @@ I3TweakDOMStatus::GetDetectorStatus(I3Time time)
 	if(!isnan(icetopLCWindowPost_))
 	  iter->second.lcWindowPost = icetopLCWindowPost_;
 	
-	if ( iter->first.GetOM() == 61 ||
-	     iter->first.GetOM() == 63 )
+	if ( iter->second.domGainType == I3DOMStatus::High)
 	  {	
 	    if(!isnan(icetopHighGainVoltage_))
 	      iter->second.pmtHV = icetopHighGainVoltage_;
+	    if(icetopHGTriggerMode_ != I3DOMStatus::UnknownTrigMode)
+	      iter->second.trigMode = icetopHGTriggerMode_;
 	  }
 	
-	else if ( iter->first.GetOM() == 62 ||
-		  iter->first.GetOM() == 64 )
+	else if ( iter->second.domGainType == I3DOMStatus::Low)
 	  {
 	    if(!isnan(icetopLowGainVoltage_))
 	      iter->second.pmtHV = icetopLowGainVoltage_;
+	    if(icetopLGTriggerMode_ != I3DOMStatus::UnknownTrigMode)
+	      iter->second.trigMode = icetopLGTriggerMode_;
 	  }
       }	
     else
@@ -155,6 +156,10 @@ I3TweakDOMStatus::GetDetectorStatus(I3Time time)
 	
 	if(!isnan(iniceVoltage_))
 	  iter->second.pmtHV = iniceVoltage_;
+
+	if(iniceTriggerMode_ != I3DOMStatus::UnknownTrigMode)
+	  iter->second.trigMode = iniceTriggerMode_;
+   
       }
   }
   return status_;

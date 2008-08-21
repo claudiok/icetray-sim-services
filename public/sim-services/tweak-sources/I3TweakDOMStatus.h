@@ -44,7 +44,9 @@ public:
   void SetInIceLCSpan(int s){inice_LCSpan_= s;};
   void SetIceTopLCSpan(int s){icetop_LCSpan_= s;};
   void SetInIceVoltage(double v){iniceVoltage_= v;};
-  void SetTriggerMode(int m){triggerMode_= static_cast<I3DOMStatus::TrigMode>(m);};
+  void SetInIceTriggerMode(int m){iniceTriggerMode_= static_cast<I3DOMStatus::TrigMode>(m);};
+  void SetIceTopHGTriggerMode(int m){icetopHGTriggerMode_= static_cast<I3DOMStatus::TrigMode>(m);};
+  void SetIceTopLGTriggerMode(int m){icetopLGTriggerMode_= static_cast<I3DOMStatus::TrigMode>(m);};
 
   void SetLCModeInIceFirstDOM(int m)
     {lcMode_inice_first_= static_cast<I3DOMStatus::LCMode>(m);};
@@ -112,7 +114,10 @@ public:
    */
   double iniceVoltage_;
 
-  I3DOMStatus::TrigMode triggerMode_;
+  I3DOMStatus::TrigMode iniceTriggerMode_;
+  I3DOMStatus::TrigMode icetopHGTriggerMode_;
+  I3DOMStatus::TrigMode icetopLGTriggerMode_;
+
   I3DOMStatus::LCMode lcMode_inice_first_;
   I3DOMStatus::LCMode lcMode_inice_bulk_;
   I3DOMStatus::LCMode lcMode_inice_last_;

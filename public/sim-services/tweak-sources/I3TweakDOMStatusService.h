@@ -79,7 +79,9 @@ public:
    */
   double iniceVoltage_;
 
-  int triggerMode_;
+  int iniceTriggerMode_;
+  int icetopHGTriggerMode_;
+  int icetopLGTriggerMode_;
   int lcMode_inice_first_;
   int lcMode_inice_bulk_;
   int lcMode_inice_last_;
