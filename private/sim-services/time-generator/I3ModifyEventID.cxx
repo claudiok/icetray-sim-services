@@ -93,7 +93,7 @@ void I3ModifyEventID::Physics(I3FramePtr frame)
           const I3EventHeader& oldHeader = frame->Get<I3EventHeader>();
           I3EventHeaderPtr ehPtr(new I3EventHeader(oldHeader));
 
-          if (modRunId_) {
+          if (modEventId_) {
               ehPtr->SetEventID(startEID_++);
           }
           if (modTime_) {
