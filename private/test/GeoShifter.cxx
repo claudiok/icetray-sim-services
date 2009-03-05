@@ -1,3 +1,4 @@
+#include <icetray/I3Tray.h>
 #include <I3Test.h>
 
 #include "sim-services/I3GeoShifter.cxx"

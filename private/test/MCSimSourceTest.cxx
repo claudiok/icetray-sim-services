@@ -530,14 +530,14 @@ TEST(tweaked_extended_config)
   split(doNotModifyStrings,stringsToUse,is_any_of(","));
 
   vector<int> doNotModifyStrings_Int;
-  for_each(string& s,doNotModifyStrings)
+  BOOST_FOREACH(string& s,doNotModifyStrings)
     doNotModifyStrings_Int.push_back(atoi(s.c_str()));
 
   vector<string> doNotModifyStations;
   split(doNotModifyStations,stationsToUse,is_any_of(","));
 
   vector<int> doNotModifyStations_Int;
-  for_each(string& s,doNotModifyStations)
+  BOOST_FOREACH(string& s,doNotModifyStations)
     doNotModifyStations_Int.push_back(atoi(s.c_str()));
 
   tray.AddService("I3MCSourceServiceFactory","mcsource")
