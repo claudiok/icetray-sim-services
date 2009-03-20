@@ -1,0 +1,46 @@
+
+-----------------------------------------------------------------------------------------------------------
+NOTE: (fox - 09/26/2008)
+
+The DMADD threshold files in this directory have one line per OM that is plugged into the DMADD.  This
+line contains the string number, the OM number, and the DMADD threshold in mV.  The minimium value for
+a DMADD threshold is 1.22 mV (or 1 digit).  As of this time, the files in the directory are:
+
+DMADD_Low_Thresh_for_Retrigger.dat - all active OMs with a fixed threshold of 1.22 mV (i.e., the minimium)
+DMADD_thresh2005.dat               - all active OMs with their 2005 DMADD threshold settings
+DMADD_thresh2008.dat               - all active OMs with their 2008 DMADD threshold settings
+
+where "active" means active in the DMADD, not just readout by the TWR.
+-----------------------------------------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------------------------------------
+NOTE: (fox/ch - 09/26/2008)
+
+In the first of these two files, there were two lines for OM 19/42 ... since the threshold was identical,
+we removed the extra lines from each file.
+-----------------------------------------------------------------------------------------------------------
+NOTE: (ch/duvoort -10/10/2008)
+
+DMADD_thresh2008_best.dat - the newest final DMADD threshold measured by M. Duvoort.
+-----------------------------------------------------------------------------------------------------------
+NOTE: (ch- 10/15/2008)
+
+DMADD_thresh2008_best_mV.dat - the newest final DMADD threshold measured by M. Duvoort in mV.
+
+-----------------------------------------------------------------------------------------------------------
+NOTE: (ch/andreas - 01/08/2009)
+Threshold Measured and Extracted from South Pole Special data(M1/Random).
+
+DMADD_thresh_final_2008.dat   -   measured DMADD threshold from pole.
+DMADD_thresh_final_2008_noMask.dat  - measured without masking
+
+-----------------------------------------------------------------------------------------------------------
+NOTE: (ch/andreas - 01/21/2009)
+
+Removed astrisks for measured thresholds.
+-----------------------------------------------------------------------------------------------------------
+NOTE: (Ty - 03/20/2009)
+
+the newest DMADD threshold file (no effect on MC but should be used for retriggering data)
+after resolving bad om, stretch factor, and, cable delay issues.
+-----------------------------------------------------------------------------------------------------------
