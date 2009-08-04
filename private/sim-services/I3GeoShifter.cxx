@@ -32,12 +32,14 @@ namespace I3GeoShifter{
     int current_str(INT_MIN);
     for(i=geo.omgeo.begin(); i!=geo.omgeo.end(); i++){
       if(i->first.GetString() != current_str){
-	current_str = i->first.GetString();
-	//all strings are weighted equally
-	//not based on the number of DOMs
-	//one vote per string
-	x.push_back(i->second.position.GetX());
-	y.push_back(i->second.position.GetY());
+	if(i->second.omtype == omType ) {
+	  current_str = i->first.GetString();
+	  //all strings are weighted equally
+	  //not based on the number of DOMs
+	  //one vote per string
+	  x.push_back(i->second.position.GetX());
+	  y.push_back(i->second.position.GetY());
+	}
       }
     }
 
