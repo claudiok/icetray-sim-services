@@ -22,3 +22,4 @@ i3_test_executable(test
 	USE_PROJECTS dataclasses phys-services sim-services
 )
 
+add_subdirectory(private/pybindings)
