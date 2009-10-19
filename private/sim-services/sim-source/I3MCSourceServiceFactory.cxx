@@ -7,9 +7,10 @@
 #include "dataclasses/I3Units.h"
 #include "sim-services/sim-source/default-values/I3CalibrationDefaults.h"
 #include "sim-services/sim-source/default-values/I3DetectorStatusDefaults.h"
-#include "sim-services/sim-source/default-values/I3InIceTriggerDefaults.h"
-#include "sim-services/sim-source/default-values/I3IceTopTriggerDefaults.h"
 #include "sim-services/sim-source/default-values/I3TWRDefaults.h"
+
+#include "trigger-sim/default-values/I3InIceTriggerDefaults.h"
+#include "trigger-sim/default-values/I3IceTopTriggerDefaults.h"
 
 I3_SERVICE_FACTORY(I3MCSourceServiceFactory);
 
