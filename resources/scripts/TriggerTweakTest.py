@@ -5,29 +5,29 @@ from icecube import icetray, dataclasses, dataio, sim_services
 
 from os.path import expandvars
 
-#class I3TweakTriggerTestModule(icetray.I3Module):
-#
-#    def __init__(self, context):
-#        icetray.I3Module.__init__(self, context)
-#        self.AddParameter('SourceID', '',-1)
-#        self.AddParameter('TypeID', '', -1)
-#        self.AddParameter('ConfigID', '', -1)
-#        self.AddParameter('TriggerName', '', '')
-#        self.AddParameter('ValueNameList', '', [])
-#        self.AddParameter('ValueList', '', [])
-#        self.AddParameter('I3TriggerStatus', '', dataclasses.I3TriggerStatus())
-#
-#    def Configure(self):
-#        self.sourceID = self.GetParameter('SourceID')
-#        self.typeID = self.GetParameter('TypeID')
-#        self.configID = self.GetParameter('ConfigID')
-#        self.triggerName = self.GetParameter('TriggerName')
-#        self.valueNameList = self.GetParameter('ValueNameList')
-#        self.valueList = self.GetParameter('ValueList')
-#        self.triggerStatus = self.GetParameter('I3TriggerStatus')
-#
-#    def Physics(self, frame):
-#        print "Physics!!!"
+class I3TweakTriggerTestModule(icetray.I3Module):
+
+    def __init__(self, context):
+        icetray.I3Module.__init__(self, context)
+        self.AddParameter('SourceID', '',-1)
+        self.AddParameter('TypeID', '', -1)
+        self.AddParameter('ConfigID', '', -1)
+        self.AddParameter('TriggerName', '', '')
+        self.AddParameter('ValueNameList', '', [])
+        self.AddParameter('ValueList', '', [])
+        self.AddParameter('I3TriggerStatus', '', dataclasses.I3TriggerStatus())
+
+    def Configure(self):
+        self.sourceID = self.GetParameter('SourceID')
+        self.typeID = self.GetParameter('TypeID')
+        self.configID = self.GetParameter('ConfigID')
+        self.triggerName = self.GetParameter('TriggerName')
+        self.valueNameList = self.GetParameter('ValueNameList')
+        self.valueList = self.GetParameter('ValueList')
+        self.triggerStatus = self.GetParameter('I3TriggerStatus')
+
+    def Physics(self, frame):
+        print "Physics!!!"
 
 tray = I3Tray()
 
@@ -67,17 +67,17 @@ tray.AddModule("I3Muxer","muxer")(
     ("DetectorStatusService","I3TweakTriggerService")
     )
 
-#tray.AddModule(I3TweakTriggerTestModule,"test_module",
-#    SourceID = 0,
-#    TypeID = 0, 
-#    ConfigID = 1006, 
-#    TriggerName = "inice_trig",
-#    ValueNameList = name_list,
-#    ValueList = value_list
-#    )
+tray.AddModule(I3TweakTriggerTestModule,"test_module",
+    SourceID = 0,
+    TypeID = 0, 
+    ConfigID = 1006, 
+    TriggerName = "inice_trig",
+    ValueNameList = ["threshold","timeWindow"],
+    ValueList = [10,5000]
+)
 
 tray.AddModule("TrashCan","trash")
   
-tray.Execute(4)
+tray.Execute(5)
 tray.Finish()
 
