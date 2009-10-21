@@ -8,8 +8,10 @@
 #include "dataclasses/I3Units.h"
 #include "sim-services/sim-source/default-values/I3CalibrationDefaults.h"
 #include "sim-services/sim-source/default-values/I3DetectorStatusDefaults.h"
-#include "sim-services/sim-source/default-values/I3InIceTriggerDefaults.h"
-#include "sim-services/sim-source/default-values/I3IceTopTriggerDefaults.h"
+
+#include "trigger-sim/default-values/I3InIceTriggerDefaults.h"
+#include "trigger-sim/default-values/I3IceTopTriggerDefaults.h"
+
 #include "sim-services/tweak-sources/I3TweakDOMStatusService.h"
 #include "sim-services/tweak-sources/I3TweakCalibrationService.h"
 #include "sim-services/tweak-sources/I3TweakTriggerService.h"

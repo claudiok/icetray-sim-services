@@ -97,14 +97,6 @@ namespace I3CalibDefaults{
   const double ATWDB1_BASELINE = 0.8368 * I3Units::mV;
   const double ATWDB2_BASELINE = 0.8206 * I3Units::mV;
 
-//  const double ATWDA0_BASELINE = 1.944 * I3Units::mV;
-//  const double ATWDA1_BASELINE = -0.572 * I3Units::mV;
-//  const double ATWDA2_BASELINE = 0.6698 * I3Units::mV;
-//
-//  const double ATWDB0_BASELINE = -3.505 * I3Units::mV;
-//  const double ATWDB1_BASELINE = -16.37 * I3Units::mV;
-//  const double ATWDB2_BASELINE = -16.47 * I3Units::mV;
-
   const double SPE_DISCRIMINATOR_INTERCEPT = -7.209 ;
   const double SPE_DISCRIMINATOR_SLOPE = 0.01339 ;
   const double MPE_DISCRIMINATOR_INTERCEPT = -71.9 ;
@@ -112,6 +104,18 @@ namespace I3CalibDefaults{
 
   const double ATWDA_DELTAT = 0. * I3Units::ns;
   const double ATWDB_DELTAT = -0.3571 * I3Units::ns;
+
+  /**
+   * New for IC59 and DeepCore support
+   */
+  const double PMT_DISCRIMINATOR_INTERCEPT = -7.209 ;
+  const double PMT_DISCRIMINATOR_SLOPE = 0.01339 ;
+
+  const double INICE_RELATIVE_EFFICIENCY = 1.0;
+  const double DEEPCORE_RELATIVE_EFFICIENCY = 1.25;
+
+  const double INICE_NOISE_RATE = 480*I3Units::hertz;
+  const double DEEPCORE_NOISE_RATE = 600*I3Units::hertz;
 
 }
 

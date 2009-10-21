@@ -57,7 +57,13 @@ I3MCCalibrationService::I3MCCalibrationService(I3GeometryServicePtr g,
   spe_disc_thresh_slope_(I3CalibDefaults::SPE_DISCRIMINATOR_SLOPE),
   spe_disc_thresh_intercept_(I3CalibDefaults::SPE_DISCRIMINATOR_INTERCEPT),
   mpe_disc_thresh_slope_(I3CalibDefaults::MPE_DISCRIMINATOR_SLOPE),
-  mpe_disc_thresh_intercept_(I3CalibDefaults::MPE_DISCRIMINATOR_INTERCEPT)
+  mpe_disc_thresh_intercept_(I3CalibDefaults::MPE_DISCRIMINATOR_INTERCEPT),
+  pmt_disc_thresh_slope_(I3CalibDefaults::PMT_DISCRIMINATOR_SLOPE),
+  pmt_disc_thresh_intercept_(I3CalibDefaults::PMT_DISCRIMINATOR_INTERCEPT),
+  inice_relative_efficiencies_(I3CalibDefaults::INICE_RELATIVE_EFFICIENCY),
+  deepcore_relative_efficiencies_(I3CalibDefaults::DEEPCORE_RELATIVE_EFFICIENCY),
+  inice_dom_noise_rates_(I3CalibDefaults::INICE_NOISE_RATE),
+  deepcore_dom_noise_rates_(I3CalibDefaults::DEEPCORE_NOISE_RATE)
 {
   geo_service_ = g;
   cal_service_ = c;
@@ -178,6 +184,22 @@ I3MCCalibrationService::GetCalibration(I3Time time){
   mpe_disc_thresh.slope = mpe_disc_thresh_slope_;
   mpe_disc_thresh.intercept = mpe_disc_thresh_intercept_;
   domCalib.SetMPEDiscCalib(mpe_disc_thresh);
+
+  LinearFit pmt_disc_thresh;
+  pmt_disc_thresh.slope = pmt_disc_thresh_slope_;
+  pmt_disc_thresh.intercept = pmt_disc_thresh_intercept_;
+  domCalib.SetPMTDiscCalib(pmt_disc_thresh);
+
+  //set the noise and relative efficiency
+  if (iter->first.GetString() > 80){
+    //this is a deepcore string
+    domCalib.SetRelativeDomEff(deepcore_relative_efficiencies_);
+    domCalib.SetDomNoiseRate(deepcore_dom_noise_rates_);
+  }else{
+    //this is an InIce/IceTop string
+    domCalib.SetRelativeDomEff(inice_relative_efficiencies_);
+    domCalib.SetDomNoiseRate(inice_dom_noise_rates_);
+  }
 
   for( iter  = om_geo.begin(); iter != om_geo.end(); iter++ )
   {

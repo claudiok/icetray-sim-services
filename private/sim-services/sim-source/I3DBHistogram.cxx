@@ -85,6 +85,7 @@ void SetStatusATWDa(TH1D*);
 void SetStatusATWDb(TH1D*);
 void SetStatusFADC(TH1D*);
 void SetSPEThreshold(TH1D*);
+void SetPMTThreshold(TH1D*);
 void SetMPEThreshold(TH1D*);
 void SetFEPedestal(TH1D*);
 void SetDACTriggerBias0(TH1D*);
@@ -112,6 +113,14 @@ void SetSPEDiscCalibSlope(TH1D*);
 void SetSPEDiscCalibIntercept(TH1D*);
 void SetMPEDiscCalibSlope(TH1D*);
 void SetMPEDiscCalibIntercept(TH1D*);
+
+void SetATWDRepsonseWidth(TH1D*);
+void SetFADCRepsonseWidth(TH1D*);
+void SetPMTDiscCalibSlope(TH1D*);
+void SetPMTDiscCalibIntercept(TH1D*);
+void SetRelativeDomEff(TH1D*);
+void SetDomNoiseRate(TH1D*);
+
 
 
 void FitAndFormatHisto(TH1D* h, 
@@ -181,6 +190,9 @@ void I3DBHistogram::Physics(I3FramePtr frame)
 
 void BookDOMCalibHistograms(I3CalibrationConstPtr calib, 
 			    std::string rootFileName){
+
+  TH1D* relative_eff_h = new TH1D("rel_eff","Relative DOM Efficiency",50,0.5,2.0);
+  TH1D* noise_rate_h = new TH1D("noise_rate","Noise Rates",50,300,1000);
 
   TH1D* temp_h = new TH1D("temp","DOM Temperature",50,233,283);
   TH1D* fadc_bl_slope_h = new TH1D("fadc_bl_slope","FADC Baseline Slope",50,1.2,1.3);
@@ -317,6 +329,13 @@ void BookDOMCalibHistograms(I3CalibrationConstPtr calib,
 					"MPE Discriminator Intercept",
 					20,-90,-60);
 
+  TH1D* pmt_disc_calib_slope_h = new TH1D("pmt_disc_calib_slope",
+					  "PMT Discriminator Slope",
+					  20,0.1,0.18);
+  TH1D* pmt_disc_calib_int_h = new TH1D("pmt_disc_calib_int",
+					"PMT Discriminator Intercept",
+					20,-90,-60);
+
 
   map<OMKey, I3DOMCalibration>::const_iterator cal_iter;
 
@@ -330,8 +349,13 @@ void BookDOMCalibHistograms(I3CalibrationConstPtr calib,
     spe_disc_calib_int_h->Fill(cal_iter->second.GetSPEDiscCalib().intercept);
     mpe_disc_calib_slope_h->Fill(cal_iter->second.GetMPEDiscCalib().slope);
     mpe_disc_calib_int_h->Fill(cal_iter->second.GetMPEDiscCalib().intercept);
+    pmt_disc_calib_slope_h->Fill(cal_iter->second.GetPMTDiscCalib().slope);
+    pmt_disc_calib_int_h->Fill(cal_iter->second.GetPMTDiscCalib().intercept);
 
     temp_h->Fill(cal_iter->second.GetTemperature());
+
+    relative_eff_h->Fill(cal_iter->second.GetRelativeDomEff());
+    noise_rate_h->Fill(cal_iter->second.GetDomNoiseRate());
 
     fadc_bl_slope_h->Fill(cal_iter->second.GetFADCBaselineFit().slope);
     fadc_bl_int_h->Fill(cal_iter->second.GetFADCBaselineFit().intercept);
@@ -352,7 +376,6 @@ void BookDOMCalibHistograms(I3CalibrationConstPtr calib,
     hvgain_int_h->Fill(cal_iter->second.GetHVGainFit().intercept);
 
     fadc_delta_t_h->Fill(cal_iter->second.GetFADCDeltaT()/I3Units::ns);
-    cerr<<"FADC DeltaT = "<<cal_iter->second.GetFADCDeltaT()/I3Units::ns<<" ns"<<endl;
     frontend_impedance_h->Fill(cal_iter->second.GetFrontEndImpedance()/I3Units::ohm);
 
     pmt_transit_time_slope_h->Fill(cal_iter->second.GetTransitTime().slope);
@@ -623,6 +646,7 @@ void MakeDOMFunctionsPlots(I3CalibrationConstPtr calib,
 
   TH1D* ic_spethresh_h = new TH1D("ic_spethresh","InIce SPE Discriminator Threshold",60,0,5);
   TH1D* ic_mpethresh_h = new TH1D("ic_mpethresh","InIce MPE Discriminator Threshold",60,120,140);
+  TH1D* ic_pmtthresh_h = new TH1D("ic_pmtthresh","InIce PMT Discriminator Threshold",60,0,5);
 
   TH1D* lg_it_spethresh_h = new TH1D("lg_it_spethresh","Low Gain IceTop SPE Discriminator Threshold",60,0,20);
   TH1D* lg_it_mpethresh_h = new TH1D("lg_it_mpethresh","Low Gain IceTop MPE Discriminator Threshold",60,20,150);
@@ -632,6 +656,7 @@ void MakeDOMFunctionsPlots(I3CalibrationConstPtr calib,
 
   ic_spethresh_h->SetXTitle("thrs(mV)");
   ic_mpethresh_h->SetXTitle("thrs(mV)");
+  ic_pmtthresh_h->SetXTitle("thrs(mV)");
   lg_it_spethresh_h->SetXTitle("thrs(mV)");
   lg_it_mpethresh_h->SetXTitle("thrs(mV)");
   hg_it_spethresh_h->SetXTitle("thrs(mV)");
@@ -657,6 +682,7 @@ void MakeDOMFunctionsPlots(I3CalibrationConstPtr calib,
 
       double spethresh = SPEDiscriminatorThreshold(domstat,domcal);
       double mpethresh = MPEDiscriminatorThreshold(domstat,domcal);
+      double pmtthresh = SPEPMTThreshold(domstat,domcal);
 
       pmtgain_h->Fill(log10(gain));
       atwda_sampling_rate_h->Fill(atwda_sr/I3Units::megahertz);
@@ -711,6 +737,10 @@ void MakeDOMFunctionsPlots(I3CalibrationConstPtr calib,
   c.SetLogy(true);
   ic_spethresh_h->Draw();
   c.SaveAs((plot_path + "dom/InIceSPEDiscThresh.png").c_str());
+
+  c.SetLogy(true);
+  ic_pmtthresh_h->Draw();
+  c.SaveAs((plot_path + "dom/InIceSPEPMTThresh.png").c_str());
 
   c.SetLogy(true);
   ic_mpethresh_h->Draw();
@@ -1188,6 +1218,15 @@ void SetSPEThreshold(TH1D* h){
 
 }
 
+void SetPMTThreshold(TH1D* h){
+  std::stringstream defVal;
+  defVal<<"Default = "
+	<<I3DetStatDefaults::INICE_SPE_THRESHOLD;
+  h->SetXTitle("threshold(DAC)");
+  FitAndFormatHisto(h,"detstat/PMTThreshold.png",defVal.str(),true);
+
+}
+
 void SetMPEThreshold(TH1D* h){
   std::stringstream defVal;
   defVal<<"Default = "
@@ -1433,3 +1472,70 @@ void SetMPEDiscCalibIntercept(TH1D* h){
   h->SetXTitle("Intercept()");
   FitAndFormatHisto(h,"calibration/MPEDiscCalibIntercept.png",defVal.str(),true);
 };
+
+void SetATWDRepsonseWidth(TH1D* h){
+  std::stringstream defVal;
+  defVal<<"Default = "
+    <<I3CalibDefaults::ATWD_RESPONSE_WIDTH
+	<<" ??";
+  h->SetXTitle("Intercept()");
+  FitAndFormatHisto(h,"calibration/MPEDiscCalibIntercept.png",defVal.str(),true);
+};
+
+
+void SetFADCRepsonseWidth(TH1D* h){
+  std::stringstream defVal;
+  defVal<<"Default = "
+    <<I3CalibDefaults::FADC_RESPONSE_WIDTH
+	<<" ??";
+  h->SetXTitle("Intercept()");
+  FitAndFormatHisto(h,"calibration/MPEDiscCalibIntercept.png",defVal.str(),true);
+};
+
+
+void SetPMTDiscCalibSlope(TH1D* h){
+  std::stringstream defVal;
+  defVal<<"Default = "
+    <<I3CalibDefaults::PMT_DISCRIMINATOR_SLOPE
+	<<" ??";
+  h->SetXTitle("Intercept()");
+  FitAndFormatHisto(h,"calibration/PMTDiscCalibIntercept.png",defVal.str(),true);
+};
+
+
+void SetPMTDiscCalibIntercept(TH1D* h){
+  std::stringstream defVal;
+  defVal<<"Default = "
+    <<I3CalibDefaults::PMT_DISCRIMINATOR_INTERCEPT
+	<<" ??";
+  h->SetXTitle("Intercept()");
+  FitAndFormatHisto(h,"calibration/PMTDiscCalibIntercept.png",defVal.str(),true);
+};
+
+
+void SetRelativeDomEff(TH1D* h){
+  std::stringstream defVal;
+  defVal<<"InIce Default = "
+	<<I3CalibDefaults::INICE_RELATIVE_EFFICIENCY
+	<<" ??"
+	<<" DeepCore Default = "
+	<<I3CalibDefaults::DEEPCORE_RELATIVE_EFFICIENCY
+	<<" ??";
+  h->SetXTitle("eff");
+  FitAndFormatHisto(h,"calibration/RelativeDOMEfficiency.png",defVal.str(),true);
+};
+
+
+void SetDomNoiseRate(TH1D* h){
+  std::stringstream defVal;
+  defVal<<"Default = "
+	<<I3CalibDefaults::INICE_NOISE_RATE
+	<<" ??"
+	<<" DeepCore Default = "
+	<<I3CalibDefaults::DEEPCORE_NOISE_RATE
+	<<" ??";
+
+  h->SetXTitle("rate(Hz)");
+  FitAndFormatHisto(h,"calibration/DOMNoiseRates.png",defVal.str(),true);
+};
+

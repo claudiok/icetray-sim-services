@@ -117,6 +117,12 @@ I3SimSourceTestModule::I3SimSourceTestModule(const I3Context& ctx) :
   AddParameter("Calib_SPEDiscThreshSlope","",cal_spe_disc_thresh_slope_);
   AddParameter("Calib_MPEDiscThreshIntercept","",cal_mpe_disc_thresh_int_);
   AddParameter("Calib_MPEDiscThreshSlope","",cal_mpe_disc_thresh_slope_);
+  AddParameter("Calib_PMTDiscThreshIntercept","",cal_pmt_disc_thresh_int_);
+  AddParameter("Calib_PMTDiscThreshSlope","",cal_pmt_disc_thresh_slope_);
+  AddParameter("Calib_InIceRelativeEfficiencies","",cal_inice_relative_efficiencies_);
+  AddParameter("Calib_DeepCoreRelativeEfficiencies","",cal_deepcore_relative_efficiencies_);
+  AddParameter("Calib_InIceDOMNoiseRate","",cal_inice_dom_noise_rates_);
+  AddParameter("Calib_DeepCoreDOMNoiseRate","",cal_deepcore_dom_noise_rates_);
 
   AddOutBox("OutBox");
 }
@@ -207,6 +213,12 @@ void I3SimSourceTestModule::Configure()
   GetParameter("Calib_SPEDiscThreshSlope",cal_spe_disc_thresh_slope_);
   GetParameter("Calib_MPEDiscThreshIntercept",cal_mpe_disc_thresh_int_);
   GetParameter("Calib_MPEDiscThreshSlope",cal_mpe_disc_thresh_slope_);
+  GetParameter("Calib_PMTDiscThreshIntercept",cal_pmt_disc_thresh_int_);
+  GetParameter("Calib_PMTDiscThreshSlope",cal_pmt_disc_thresh_slope_);
+  GetParameter("Calib_InIceRelativeEfficiencies",cal_inice_relative_efficiencies_);
+  GetParameter("Calib_DeepCoreRelativeEfficiencies",cal_deepcore_relative_efficiencies_);
+  GetParameter("Calib_InIceDOMNoiseRate",cal_inice_dom_noise_rates_);
+  GetParameter("Calib_DeepCoreDOMNoiseRate",cal_deepcore_dom_noise_rates_);
 }
 
 void I3SimSourceTestModule::Physics(I3FramePtr frame)
@@ -251,6 +263,8 @@ void I3SimSourceTestModule::Physics(I3FramePtr frame)
     ENSURE_DISTANCE(cal_iter->second.GetMPEDiscCalib().slope,cal_mpe_disc_thresh_slope_, DISTANCE);
     ENSURE_DISTANCE(cal_iter->second.GetMPEDiscCalib().intercept,cal_mpe_disc_thresh_int_, DISTANCE);
 
+    ENSURE_DISTANCE(cal_iter->second.GetPMTDiscCalib().slope,cal_pmt_disc_thresh_slope_, DISTANCE);
+    ENSURE_DISTANCE(cal_iter->second.GetPMTDiscCalib().intercept,cal_pmt_disc_thresh_int_, DISTANCE);
 
     ENSURE(cal_iter->first.GetString()>0,"There should be no AMANDA OMs.");
 

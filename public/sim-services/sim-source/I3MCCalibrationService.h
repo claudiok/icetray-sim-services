@@ -118,6 +118,15 @@ public:
   double mpe_disc_thresh_slope_;
   double mpe_disc_thresh_intercept_;
 
+  double pmt_disc_thresh_slope_;
+  double pmt_disc_thresh_intercept_;
+
+  double inice_relative_efficiencies_;
+  double deepcore_relative_efficiencies_;
+
+  double inice_dom_noise_rates_;
+  double deepcore_dom_noise_rates_;
+
   /**
    * Don't modify these strings/stations
    */

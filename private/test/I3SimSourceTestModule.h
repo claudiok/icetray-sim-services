@@ -178,6 +178,16 @@ class I3SimSourceTestModule : public I3Module
   double cal_spe_disc_thresh_slope_;
   double cal_mpe_disc_thresh_int_;
   double cal_mpe_disc_thresh_slope_;
+
+  double cal_pmt_disc_thresh_slope_;
+  double cal_pmt_disc_thresh_intercept_;
+
+  double cal_inice_relative_efficiencies_;
+  double cal_deepcore_relative_efficiencies_;
+
+  double cal_inice_dom_noise_rates_;
+  double cal_deepcore_dom_noise_rates_;
+
 };
 
 #endif //I3SIMSOURCETESTMODULE_H
