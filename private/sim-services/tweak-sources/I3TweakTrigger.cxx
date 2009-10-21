@@ -51,5 +51,22 @@ I3TweakTrigger::GetDetectorStatus(I3Time time)
     t_iter->second.GetTriggerSettings()[set_iter->first] = set_iter->second;
   }
 
+  map<I3TriggerStatus::Subdetector, I3TriggerReadoutConfig> ro_map;
+  map<int, vector<double> >::iterator ro_iter;
+  for(ro_iter = readout_config_map_.begin();
+      ro_iter != readout_config_map_.end();
+      ro_iter++){
+    I3TriggerReadoutConfig ro_config;
+    ro_config.readoutTimeMinus = ro_iter->second[0];
+    ro_config.readoutTimePlus = ro_iter->second[1];
+    ro_config.readoutTimeOffset = ro_iter->second[2];
+
+    I3TriggerStatus::Subdetector sd = 
+      static_cast<I3TriggerStatus::Subdetector>(ro_iter->first);
+
+    ro_map[sd] = ro_config;
+  }
+  t_iter->second.GetReadoutSettings() = ro_map;
+
   return detectorStatus_;
 }

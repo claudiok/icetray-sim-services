@@ -17,6 +17,7 @@
 #include "sim-services/tweak-sources/I3TweakTrigger.h"
 #include "icetray/I3ServiceFactory.h"
 #include <icetray/I3DefaultName.h>
+#include <dataclasses/status/I3TriggerStatus.h>
 /**
  *
  * @brief This module allow you to fill the RawDOMStatus data 
@@ -56,6 +57,9 @@ public:
   std::string trig_name_;
   std::vector<std::string> setting_name_list_;
   std::vector<int> setting_value_list_;
+  std::map<int,vector<double> > readout_config_map_;
+
+  I3TriggerStatus ts_;
 
 };
 I3_POINTER_TYPEDEFS(I3TweakTriggerService);

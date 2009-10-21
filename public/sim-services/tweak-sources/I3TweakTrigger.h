@@ -35,6 +35,10 @@ public:
   void SetTriggerName(std::string s){ trig_name_ = s;};
   void SetValues(std::vector<std::pair<std::string,int> > v){ setting_list_ = v;};
 
+  void SetReadoutWindowConfig(std::map<int, std::vector<double> > m){ 
+    readout_config_map_ = m;
+  };
+
  private:
   I3TweakTrigger();
   I3DetectorStatusPtr detectorStatus_;
@@ -45,6 +49,7 @@ public:
   int key_configID_;
   std::string trig_name_;
   std::vector<std::pair<std::string,int> > setting_list_;
+  std::map<int, std::vector<double> > readout_config_map_;
 
 };
 
