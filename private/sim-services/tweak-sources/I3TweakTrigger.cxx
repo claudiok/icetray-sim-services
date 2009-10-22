@@ -36,6 +36,8 @@ I3TweakTrigger::GetDetectorStatus(I3Time time)
   t_iter = t_map.find(key);
   if(t_iter == t_map.end()) log_fatal("trigger key not found in map");
 
+  t_iter->second.GetTriggerName() = trig_name_;
+
   vector<pair<string,int> >::iterator set_iter;
   for(set_iter = setting_list_.begin();
       set_iter != setting_list_.end();
