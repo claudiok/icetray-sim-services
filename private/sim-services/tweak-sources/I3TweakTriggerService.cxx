@@ -22,7 +22,7 @@ I3TweakTriggerService::I3TweakTriggerService(const I3Context& context) :
   AddParameter("TriggerName","Trigger name",trig_name_);
   AddParameter("ValueNameList","List of name of values",setting_name_list_);
   AddParameter("ValueList","List of values",setting_value_list_);
-  AddParameter("ReadoutConfigMap","Map of readout windows",readout_config_map_);
+  //AddParameter("ReadoutConfigMap","Map of readout windows",readout_config_map_);
   AddParameter("I3TriggerStatus","",ts_);
 }
 
@@ -42,7 +42,7 @@ void I3TweakTriggerService::Configure()
   GetParameter("TriggerName",trig_name_);
   GetParameter("ValueNameList",setting_name_list_);
   GetParameter("ValueList",setting_value_list_);
-  GetParameter("ReadoutConfigMap",readout_config_map_);
+  //GetParameter("ReadoutConfigMap",readout_config_map_);
   GetParameter("I3TriggerStatus",ts_);
 
   if(setting_name_list_.size() != setting_value_list_.size() )
@@ -78,7 +78,7 @@ bool I3TweakTriggerService::InstallService(I3Context& services)
       setting_list.push_back(p);      
     }
     status_service_->SetValues(setting_list);
-    status_service_->SetReadoutWindowConfig(readout_config_map_);
+    //status_service_->SetReadoutWindowConfig(readout_config_map_);
   }
 
   bool good_status = services.Put<I3DetectorStatusService>(tweakedServiceName_,status_service_);
