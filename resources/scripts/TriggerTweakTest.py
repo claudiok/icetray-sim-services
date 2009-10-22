@@ -4,6 +4,8 @@ from I3Tray import *
 from icecube import icetray, dataclasses, dataio, sim_services
 
 from os.path import expandvars
+import sys
+
 
 class I3TweakTriggerTestModule(icetray.I3Module):
 
@@ -28,6 +30,24 @@ class I3TweakTriggerTestModule(icetray.I3Module):
 
     def Physics(self, frame):
         print "Physics!!!"
+
+        det_stat = frame.Get("I3DetectorStatus")
+        trigger_status = det_stat.triggerStatus
+
+        tkey = dataclasses.TriggerKey()
+        tkey.SourceID = self.sourceID
+        tkey.TypeID = self.typeID
+        tkey.ConfigID = self.configID
+
+        if not tkey in trigger_status:
+            print "trigger not found in the detector status"
+            print "  Source ID = ",tkey.SourceID
+            print "  Type ID = ",tkey.TypeID
+            print "  Config ID = ",tkey.ConfigID
+
+            for k,v in trigger_status:
+                print "%d %d %d" % (k.SourceID,k.TypeID,k.ConfigID)
+            sys.exit(1)
 
 tray = I3Tray()
 
