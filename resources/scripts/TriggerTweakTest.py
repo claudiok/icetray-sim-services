@@ -49,6 +49,33 @@ class I3TweakTriggerTestModule(icetray.I3Module):
                 print "%d %d %d" % (k.Source,k.Type,k.ConfigID)
             sys.exit(1)
 
+        i3ts = trigger_status[tkey]
+
+        for p in i3ts.GetTriggerSettings():
+            print p
+
+        if i3ts.GetTriggerName() != self.triggerName :
+            print "FAILED : trigger name %s != %s" % (i3ts.GetTriggerName(),self.triggerName)
+            sys.exit(1)
+
+        if len(i3ts.GetTriggerSettings()) != len(self.valueNameList) :
+            print "FAILED : len settings"
+            sys.exit(1)
+
+        for name, value in zip(self.valueNameList, self.valueList):
+            found = False
+            valid = False
+            for test_name, test_value in i3ts.GetTriggerSettings():
+                if name == test_name :
+                    found = True
+                    if test_value != value :
+                        print "FAILED : value mismatch"
+                        sys.exit(1)
+        
+                    if not found :
+                        print "FAILED : value not found"
+                        sys.exit(1)
+
 tray = I3Tray()
 
 gcd_file = expandvars("$I3_PORTS/test-data/sim/GeoCalibDetectorStatus_IC59.55000_candidate.i3.gz")
@@ -75,9 +102,9 @@ ts = dataclasses.I3TriggerStatus()
 tray.AddService("I3TweakTriggerService","tweak-trigg")(
     ("TweakedServiceName","I3TweakTriggerService"),
     ("SourceID",dataclasses.I3Trigger.SourceID.IN_ICE), 
-    ("TypeID",dataclasses.I3Trigger.TypeID.SIMPLE_MULTIPLICITY), 
+    ("TypeID",dataclasses.I3Trigger.TypeID.SIMPLE_MULTIPLICITY),
     ("ConfigID",1006), ##config for 2009
-    ("TriggerName","inice_trig"),
+    ("TriggerName","SMT10"),
     ("ValueNameList",["threshold","timeWindow"]),
     ("ValueList",[10,5000]),
     ("I3TriggerStatus",ts),
@@ -91,9 +118,9 @@ tray.AddModule(I3TweakTriggerTestModule,"test_module",
     SourceID = dataclasses.I3Trigger.SourceID.IN_ICE,
     TypeID = dataclasses.I3Trigger.TypeID.SIMPLE_MULTIPLICITY, 
     ConfigID = 1006, 
-    TriggerName = "inice_trig",
+    TriggerName = "SMT10",
     ValueNameList = ["threshold","timeWindow"],
-    ValueList = [10,5000]
+    ValueList = [8,5000]
 )
 
 tray.AddModule("TrashCan","trash")
@@ -101,3 +128,4 @@ tray.AddModule("TrashCan","trash")
 tray.Execute(5)
 tray.Finish()
 
+print "PASSED"
