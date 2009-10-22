@@ -35,18 +35,18 @@ class I3TweakTriggerTestModule(icetray.I3Module):
         trigger_status = det_stat.triggerStatus
 
         tkey = dataclasses.TriggerKey()
-        tkey.SourceID = self.sourceID
-        tkey.TypeID = self.typeID
+        tkey.Source = self.sourceID
+        tkey.Type = self.typeID
         tkey.ConfigID = self.configID
 
         if not tkey in trigger_status:
             print "trigger not found in the detector status"
-            print "  Source ID = ",tkey.SourceID
-            print "  Type ID = ",tkey.TypeID
+            print "  Source ID = ",tkey.Source
+            print "  Type ID = ",tkey.Type
             print "  Config ID = ",tkey.ConfigID
 
             for k,v in trigger_status:
-                print "%d %d %d" % (k.SourceID,k.TypeID,k.ConfigID)
+                print "%d %d %d" % (k.Source,k.Type,k.ConfigID)
             sys.exit(1)
 
 tray = I3Tray()
@@ -74,8 +74,8 @@ ts = dataclasses.I3TriggerStatus()
 
 tray.AddService("I3TweakTriggerService","tweak-trigg")(
     ("TweakedServiceName","I3TweakTriggerService"),
-    ("SourceID",0), ## IN_ICE
-    ("TypeID",0), ##SIMPLE_MULTIPLICITY
+    ("SourceID",dataclasses.I3Trigger.SourceID.IN_ICE), 
+    ("TypeID",dataclasses.I3Trigger.TypeID.SIMPLE_MULTIPLICITY), 
     ("ConfigID",1006), ##config for 2009
     ("TriggerName","inice_trig"),
     ("ValueNameList",["threshold","timeWindow"]),
@@ -88,8 +88,8 @@ tray.AddModule("I3Muxer","muxer")(
     )
 
 tray.AddModule(I3TweakTriggerTestModule,"test_module",
-    SourceID = 0,
-    TypeID = 0, 
+    SourceID = dataclasses.I3Trigger.SourceID.IN_ICE,
+    TypeID = dataclasses.I3Trigger.TypeID.SIMPLE_MULTIPLICITY, 
     ConfigID = 1006, 
     TriggerName = "inice_trig",
     ValueNameList = ["threshold","timeWindow"],
