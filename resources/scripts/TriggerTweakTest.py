@@ -17,7 +17,7 @@ class I3TweakTriggerTestModule(icetray.I3Module):
         self.AddParameter('TriggerName', '', '')
         self.AddParameter('ValueNameList', '', [])
         self.AddParameter('ValueList', '', [])
-        self.AddParameter('I3TriggerStatus', '', dataclasses.I3TriggerStatus())
+        self.AddParameter('ReadoutWindowConfigs', '', {})
 
     def Configure(self):
         self.sourceID = self.GetParameter('SourceID')
@@ -26,7 +26,7 @@ class I3TweakTriggerTestModule(icetray.I3Module):
         self.triggerName = self.GetParameter('TriggerName')
         self.valueNameList = self.GetParameter('ValueNameList')
         self.valueList = self.GetParameter('ValueList')
-        self.triggerStatus = self.GetParameter('I3TriggerStatus')
+        self.readoutWindowConfigs = self.GetParameter('ReadoutWindowConfigs')
 
     def Physics(self, frame):
         print "Physics!!!"
@@ -45,23 +45,33 @@ class I3TweakTriggerTestModule(icetray.I3Module):
             print "  Type ID = ",tkey.Type
             print "  Config ID = ",tkey.ConfigID
 
-            for k,v in trigger_status:
+            for k,v in trigger_status.iteritems():
                 print "%d %d %d" % (k.Source,k.Type,k.ConfigID)
             sys.exit(1)
 
-        i3ts = trigger_status[tkey]
+        i3ts = trigger_status[tkey]        
 
         for p in i3ts.GetTriggerSettings():
             print p
 
+        ###
+        # test the trigger name
+        ###
         if i3ts.GetTriggerName() != self.triggerName :
             print "FAILED : trigger name %s != %s" % (i3ts.GetTriggerName(),self.triggerName)
             sys.exit(1)
 
+        ###
+        # test the trigger settings
+        ###
         if len(i3ts.GetTriggerSettings()) != len(self.valueNameList) :
-            print "FAILED : len settings"
+            print "FAILED : len settings %d %d " % \
+                  (len(i3ts.GetTriggerSettings()),len(self.valueNameList))
             sys.exit(1)
 
+        ###
+        # test that the names and values are set correctly
+        ###
         for name, value in zip(self.valueNameList, self.valueList):
             found = False
             valid = False
@@ -75,6 +85,14 @@ class I3TweakTriggerTestModule(icetray.I3Module):
                     if not found :
                         print "FAILED : value not found"
                         sys.exit(1)
+        ###
+        # test the readout windows
+        ###
+        readouts = i3ts.GetReadoutSettings()
+        if len(readouts) != len(self.readoutWindowConfigs) :
+            print "FAILED : ReadoutWindowConfigs len settings %d %d " % \
+                  (len(readouts),len(self.readoutWindowConfigs))
+            sys.exit(1)
 
 tray = I3Tray()
 
@@ -97,7 +115,15 @@ tray.AddService("I3ReaderServiceFactory","gcd")(
     ("OmitEvent",True)
     )
 
-ts = dataclasses.I3TriggerStatus()
+ro_config = dataclasses.I3TriggerStatus.I3TriggerReadoutConfig()
+ro_config.readoutTimeMinus = 10*I3Units.microsecond
+ro_config.readoutTimePlus = 10*I3Units.microsecond
+ro_config.readoutTimeOffset = 1*I3Units.microsecond
+
+key = dataclasses.I3TriggerStatus.Subdetector.ALL
+
+ro_config_map = dataclasses.I3TriggerStatus.map_Subdetector_I3TriggerReadoutConfig()
+ro_config_map[dataclasses.I3TriggerStatus.Subdetector.ALL] = ro_config
 
 tray.AddService("I3TweakTriggerService","tweak-trigg")(
     ("TweakedServiceName","I3TweakTriggerService"),
@@ -106,8 +132,9 @@ tray.AddService("I3TweakTriggerService","tweak-trigg")(
     ("ConfigID",1006), ##config for 2009
     ("TriggerName","SMT10"),
     ("ValueNameList",["threshold","timeWindow"]),
-    ("ValueList",[10,5000]),
-    ("I3TriggerStatus",ts),
+    ("ValueList",[10,4000]),
+    #("ReadoutConfigMap",{ dataclasses.I3TriggerStatus.Subdetector.ALL : ro_config})
+    ("ReadoutConfigMap",ro_config_map)
     )
 
 tray.AddModule("I3Muxer","muxer")(
@@ -120,7 +147,7 @@ tray.AddModule(I3TweakTriggerTestModule,"test_module",
     ConfigID = 1006, 
     TriggerName = "SMT10",
     ValueNameList = ["threshold","timeWindow"],
-    ValueList = [8,5000]
+    ValueList = [10,4000]
 )
 
 tray.AddModule("TrashCan","trash")
