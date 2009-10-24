@@ -89,10 +89,28 @@ class I3TweakTriggerTestModule(icetray.I3Module):
         # test the readout windows
         ###
         readouts = i3ts.GetReadoutSettings()
+        print "len(readouts) = ",len(readouts)
+        print "len(self.readoutWindowConfigs) = ",len(self.readoutWindowConfigs)
         if len(readouts) != len(self.readoutWindowConfigs) :
             print "FAILED : ReadoutWindowConfigs len settings %d %d " % \
                   (len(readouts),len(self.readoutWindowConfigs))
             sys.exit(1)
+
+        for e in readouts:
+            k = e.key()
+            v = e.data()
+            if not k in self.readoutWindowConfigs :
+                print "FAILED : key %d not found readout window config"
+                sys.exit(1)
+
+            test_ro_config = self.readoutWindowConfigs[k]
+            if v.readoutTimeMinus != test_ro_config.readoutTimeMinus and \
+               v.readoutTimePlus != test_ro_config.readoutTimePlus and \
+               v.readoutTimeOffset != test_ro_config.readoutTimeOffset :
+                print "FAILED : readout window values not set properly"
+                print v.readoutTimeMinus, v.readoutTimePlus, v.readoutTimeOffset
+                print test_ro_config.readoutTimeMinus, test_ro_config.readoutTimePlus, test_ro_config.readoutTimeOffset,
+                sys.exit(1)
 
 tray = I3Tray()
 
@@ -133,7 +151,6 @@ tray.AddService("I3TweakTriggerService","tweak-trigg")(
     ("TriggerName","SMT10"),
     ("ValueNameList",["threshold","timeWindow"]),
     ("ValueList",[10,4000]),
-    #("ReadoutConfigMap",{ dataclasses.I3TriggerStatus.Subdetector.ALL : ro_config})
     ("ReadoutConfigMap",ro_config_map)
     )
 
@@ -147,7 +164,8 @@ tray.AddModule(I3TweakTriggerTestModule,"test_module",
     ConfigID = 1006, 
     TriggerName = "SMT10",
     ValueNameList = ["threshold","timeWindow"],
-    ValueList = [10,4000]
+    ValueList = [10,4000],
+    ReadoutWindowConfigs = ro_config_map       
 )
 
 tray.AddModule("TrashCan","trash")

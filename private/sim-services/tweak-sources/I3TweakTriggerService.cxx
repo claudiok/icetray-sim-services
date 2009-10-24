@@ -76,7 +76,7 @@ bool I3TweakTriggerService::InstallService(I3Context& services)
       setting_list.push_back(p);      
     }
     status_service_->SetValues(setting_list);
-    //status_service_->SetReadoutWindowConfig(readout_config_map_);
+    status_service_->SetReadoutWindowConfig(readout_config_map_);
   }
 
   bool good_status = services.Put<I3DetectorStatusService>(tweakedServiceName_,status_service_);
