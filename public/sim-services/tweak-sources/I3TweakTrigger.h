@@ -17,6 +17,9 @@
 #include "interfaces/I3DetectorStatusService.h"
 #include <icetray/I3Logging.h>
 #include <dataclasses/TriggerKey.h>
+#include <dataclasses/status/I3TriggerStatus.h>
+
+typedef std::map<I3TriggerStatus::Subdetector, I3TriggerReadoutConfig> readout_config_t;
 
 class I3TweakTrigger : public I3DetectorStatusService
 {
@@ -35,7 +38,7 @@ public:
   void SetTriggerName(std::string s){ trig_name_ = s;};
   void SetValues(std::vector<std::pair<std::string,int> > v){ setting_list_ = v;};
 
-  void SetReadoutWindowConfig(std::map<int, std::vector<double> > m){ 
+  void SetReadoutWindowConfig(readout_config_t m){ 
     readout_config_map_ = m;
   };
 
@@ -49,7 +52,7 @@ public:
   int key_configID_;
   std::string trig_name_;
   std::vector<std::pair<std::string,int> > setting_list_;
-  std::map<int, std::vector<double> > readout_config_map_;
+  readout_config_t readout_config_map_;
 
 };
 
