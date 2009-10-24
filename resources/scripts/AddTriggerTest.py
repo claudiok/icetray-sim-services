@@ -30,9 +30,9 @@ tray.AddService("I3ReaderServiceFactory","gcd")(
     )
 
 ro_config = dataclasses.I3TriggerStatus.I3TriggerReadoutConfig()
-ro_config.readoutTimeMinus = 10*I3Units.microsecond
-ro_config.readoutTimePlus = 10*I3Units.microsecond
-ro_config.readoutTimeOffset = 1*I3Units.microsecond
+ro_config.readoutTimeMinus = 7*I3Units.microsecond
+ro_config.readoutTimePlus = 7*I3Units.microsecond
+ro_config.readoutTimeOffset = 3*I3Units.microsecond
 
 ro_config_map = dataclasses.I3TriggerStatus.map_Subdetector_I3TriggerReadoutConfig()
 ro_config_map[dataclasses.I3TriggerStatus.Subdetector.ALL] = ro_config
@@ -41,11 +41,12 @@ tray.AddService("I3TweakTriggerService","tweak-trigg")(
     ("TweakedServiceName","I3TweakTriggerService"),
     ("SourceID",dataclasses.I3Trigger.SourceID.IN_ICE), 
     ("TypeID",dataclasses.I3Trigger.TypeID.SIMPLE_MULTIPLICITY),
-    ("ConfigID",1006), ##config for 2009
+    ("ConfigID",9999), 
     ("TriggerName","SMT10"),
     ("ValueNameList",["threshold","timeWindow"]),
     ("ValueList",[10,4000]),
-    ("ReadoutConfigMap",ro_config_map)
+    ("ReadoutConfigMap",ro_config_map),
+    ("AddNewTrigger",True)
     )
 
 tray.AddModule("I3Muxer","muxer")(
@@ -55,7 +56,7 @@ tray.AddModule("I3Muxer","muxer")(
 tray.AddModule(I3TweakTriggerTestModule,"test_module",
     SourceID = dataclasses.I3Trigger.SourceID.IN_ICE,
     TypeID = dataclasses.I3Trigger.TypeID.SIMPLE_MULTIPLICITY, 
-    ConfigID = 1006, 
+    ConfigID = 9999, 
     TriggerName = "SMT10",
     ValueNameList = ["threshold","timeWindow"],
     ValueList = [10,4000],

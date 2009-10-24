@@ -58,6 +58,7 @@ public:
   std::vector<std::string> setting_name_list_;
   std::vector<int> setting_value_list_;
   readout_config_t readout_config_map_;
+  bool add_new_trigger_;
 
 };
 I3_POINTER_TYPEDEFS(I3TweakTriggerService);

@@ -42,6 +42,8 @@ public:
     readout_config_map_ = m;
   };
 
+  void AddNewTrigger(bool b){ add_new_trigger_ = b; };
+
  private:
   I3TweakTrigger();
   I3DetectorStatusPtr detectorStatus_;
@@ -53,6 +55,7 @@ public:
   std::string trig_name_;
   std::vector<std::pair<std::string,int> > setting_list_;
   readout_config_t readout_config_map_;
+  bool add_new_trigger_;
 
 };
 

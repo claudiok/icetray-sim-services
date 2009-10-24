@@ -10,7 +10,8 @@ I3TweakTriggerService::I3TweakTriggerService(const I3Context& context) :
   key_source_(INT_MIN),
   key_type_(INT_MIN),
   key_configID_(INT_MIN),
-  trig_name_("")
+  trig_name_(""),
+  add_new_trigger_(false)
 {
   oldServiceName_ = I3DefaultName<I3DetectorStatusService>::value();
   tweakedServiceName_ = I3DefaultName<I3TweakTriggerService>::value();
@@ -23,6 +24,7 @@ I3TweakTriggerService::I3TweakTriggerService(const I3Context& context) :
   AddParameter("ValueNameList","List of name of values",setting_name_list_);
   AddParameter("ValueList","List of values",setting_value_list_);
   AddParameter("ReadoutConfigMap","Map of readout windows",readout_config_map_);
+  AddParameter("AddNewTrigger","Adding a new trigger",add_new_trigger_);
 }
 
 
@@ -42,6 +44,7 @@ void I3TweakTriggerService::Configure()
   GetParameter("ValueNameList",setting_name_list_);
   GetParameter("ValueList",setting_value_list_);
   GetParameter("ReadoutConfigMap",readout_config_map_);
+  GetParameter("AddNewTrigger",add_new_trigger_);
 
   if(setting_name_list_.size() != setting_value_list_.size() )
     log_fatal("The name list and the value list must be the same size.");
@@ -77,6 +80,7 @@ bool I3TweakTriggerService::InstallService(I3Context& services)
     }
     status_service_->SetValues(setting_list);
     status_service_->SetReadoutWindowConfig(readout_config_map_);
+    status_service_->AddNewTrigger(add_new_trigger_);
   }
 
   bool good_status = services.Put<I3DetectorStatusService>(tweakedServiceName_,status_service_);

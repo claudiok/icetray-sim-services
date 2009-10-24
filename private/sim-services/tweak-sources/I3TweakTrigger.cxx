@@ -10,7 +10,8 @@ I3TweakTrigger::I3TweakTrigger(I3DetectorStatusServicePtr s):
   key_source_(TriggerKey::UNKNOWN_SOURCE),
   key_type_(TriggerKey::UNKNOWN_TYPE),
   key_configID_(INT_MIN),
-  trig_name_("")
+  trig_name_(""),
+  add_new_trigger_(false)
 {
   oldDSService_ = s;
 }
@@ -38,6 +39,9 @@ I3TweakTrigger::GetDetectorStatus(I3Time time)
    * Get the trigger status out of the detector status
    */
   map<TriggerKey,I3TriggerStatus>& t_map = detectorStatus_->triggerStatus;
+
+  if(add_new_trigger_) t_map[key] = I3TriggerStatus();
+
   map<TriggerKey,I3TriggerStatus>::iterator t_iter;
   t_iter = t_map.find(key);
   if(t_iter == t_map.end()) log_fatal("trigger key not found in map");
