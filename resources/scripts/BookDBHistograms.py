@@ -9,27 +9,38 @@ from os.path import expandvars
 import os
 import sys
 
-load("libdataclasses")
-load("libphys-services")
-load("libdataio")
-load("libsim-services")
+from icecube import icetray, dataclasses, phys_services, dataio, sim_services
 
 tray = I3Tray()
 
 nframes = 5
 
-tray.AddService("I3ReaderServiceFactory","i3reader")(
-    ("filename",expandvars("$I3_BUILD/GCD07082008.i3.gz")),
-    ("OmitEvent", True),
-    )
-#tray.SetParameter("i3reader","filename",expandvars("$I3_PORTS/test-data/sim/GCD.i3.gz"))
-#tray.SetParameter("i3reader","filenamelist",[expandvars("$I3_PORTS/test-data/sim/GCD_IC40_IT6_AM_20080306.i3.gz"), \
-#                                             "/data/icecube01/users/olivas/SUSY-staus/single_staus/single_stau.i3.gz", ] )
-#tray.SetParameter("i3reader","filename","database.i3")
+from optparse import OptionParser
+parser = OptionParser()
 
-tray.AddService("I3MCTimeGeneratorServiceFactory","time")(
-    ("Year",2008),
-    ("DAQTime",163163250000000000)
+parser.add_option("-g","--gcdfile",
+                  dest = "gcdfile",
+                  default = "/data/icecube01/users/olivas/GeoCalibDetectorStatus_IC59.55040.i3.gz",
+                  help = "Name of output i3file.")
+
+(options, args) = parser.parse_args()
+
+gcd_file = dataio.I3File(options.gcdfile)
+
+frame = gcd_file.pop_frame()
+while not frame.Has("I3DetectorStatus"):
+    frame = gcd_file.pop_frame()
+
+detstat = frame.Get("I3DetectorStatus")
+time = detstat.endTime
+tray.AddService("I3MCTimeGeneratorServiceFactory","time-gen")(
+        ("Year",time.GetUTCYear()),
+        ("DAQTime",time.GetUTCDaqTime())
+        )
+
+tray.AddService("I3ReaderServiceFactory","gcd")(
+    ("filename",options.gcdfile),
+    ("OmitEvent",True)
     )
 
 tray.AddModule("I3Muxer","muxer")
