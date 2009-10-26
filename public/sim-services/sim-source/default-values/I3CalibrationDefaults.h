@@ -115,7 +115,7 @@ namespace I3CalibDefaults{
   const double DEEPCORE_RELATIVE_EFFICIENCY = 1.25;
 
   const double INICE_NOISE_RATE = 480*I3Units::hertz;
-  const double DEEPCORE_NOISE_RATE = 600*I3Units::hertz;
+  const double DEEPCORE_NOISE_RATE = 650*I3Units::hertz;  
 
 }
 
