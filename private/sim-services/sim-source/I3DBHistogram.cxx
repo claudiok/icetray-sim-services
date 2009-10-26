@@ -355,7 +355,7 @@ void BookDOMCalibHistograms(I3CalibrationConstPtr calib,
     temp_h->Fill(cal_iter->second.GetTemperature());
 
     relative_eff_h->Fill(cal_iter->second.GetRelativeDomEff());
-    noise_rate_h->Fill(cal_iter->second.GetDomNoiseRate());
+    noise_rate_h->Fill(cal_iter->second.GetDomNoiseRate()/I3Units::hertz);
 
     fadc_bl_slope_h->Fill(cal_iter->second.GetFADCBaselineFit().slope);
     fadc_bl_int_h->Fill(cal_iter->second.GetFADCBaselineFit().intercept);
@@ -450,6 +450,9 @@ void BookDOMCalibHistograms(I3CalibrationConstPtr calib,
   spe_disc_calib_int_h->Write();
   mpe_disc_calib_slope_h->Write();
   mpe_disc_calib_int_h->Write();
+
+  relative_eff_h->Write();
+  noise_rate_h->Write();
   
   f.Close();
 
@@ -498,6 +501,11 @@ void BookDOMCalibHistograms(I3CalibrationConstPtr calib,
   SetSPEDiscCalibIntercept(spe_disc_calib_int_h);
   SetMPEDiscCalibSlope(mpe_disc_calib_slope_h);
   SetMPEDiscCalibIntercept(mpe_disc_calib_int_h);
+
+  SetPMTDiscCalibSlope(pmt_disc_calib_slope_h);
+  SetPMTDiscCalibIntercept(pmt_disc_calib_int_h);
+  SetRelativeDomEff(relative_eff_h);
+  SetDomNoiseRate(noise_rate_h);
 } 
 
 void BookDOMStatusHistograms(I3DetectorStatusConstPtr status, 
@@ -693,6 +701,7 @@ void MakeDOMFunctionsPlots(I3CalibrationConstPtr calib,
       if(cal_iter->first.GetOM() <= 60){
 	ic_spethresh_h->Fill(spethresh/I3Units::mV);
 	ic_mpethresh_h->Fill(mpethresh/I3Units::mV);
+	ic_pmtthresh_h->Fill(pmtthresh/I3Units::mV);
       }else{
 	if(domstat.domGainType == I3DOMStatus::High){
 	  hg_it_spethresh_h->Fill(spethresh/I3Units::mV);
@@ -1529,11 +1538,11 @@ void SetRelativeDomEff(TH1D* h){
 void SetDomNoiseRate(TH1D* h){
   std::stringstream defVal;
   defVal<<"Default = "
-	<<I3CalibDefaults::INICE_NOISE_RATE
-	<<" ??"
+	<<I3CalibDefaults::INICE_NOISE_RATE/I3Units::hertz
+	<<" Hz"
 	<<" DeepCore Default = "
-	<<I3CalibDefaults::DEEPCORE_NOISE_RATE
-	<<" ??";
+	<<I3CalibDefaults::DEEPCORE_NOISE_RATE/I3Units::hertz
+	<<" Hz";
 
   h->SetXTitle("rate(Hz)");
   FitAndFormatHisto(h,"calibration/DOMNoiseRates.png",defVal.str(),true);
