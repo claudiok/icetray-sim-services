@@ -79,6 +79,8 @@ public:
   void SetSPEDiscThreshSlope(double x){spe_disc_thresh_slope_ = x;};
   void SetMPEDiscThreshIntercept(double x){mpe_disc_thresh_int_ = x;};
   void SetMPEDiscThreshSlope(double x){mpe_disc_thresh_slope_ = x;};
+  void SetPMTDiscThreshIntercept(double x){pmt_disc_thresh_int_ = x;};
+  void SetPMTDiscThreshSlope(double x){pmt_disc_thresh_slope_ = x;};
 
   SET_LOGGER("I3TweakCalibration");
 
@@ -140,6 +142,8 @@ public:
   double spe_disc_thresh_int_;
   double mpe_disc_thresh_slope_;
   double mpe_disc_thresh_int_;
+  double pmt_disc_thresh_slope_;
+  double pmt_disc_thresh_int_;
 
 };
 
