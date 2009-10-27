@@ -104,6 +104,8 @@ public:
   double spe_disc_thresh_int_;
   double mpe_disc_thresh_slope_;
   double mpe_disc_thresh_int_;
+  double pmt_disc_thresh_slope_;
+  double pmt_disc_thresh_int_;
 };
 I3_POINTER_TYPEDEFS(I3TweakCalibrationService);
 I3_DEFAULT_NAME(I3TweakCalibrationService);

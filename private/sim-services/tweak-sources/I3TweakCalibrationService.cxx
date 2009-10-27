@@ -51,7 +51,9 @@ I3TweakCalibrationService::I3TweakCalibrationService(const I3Context& context) :
   spe_disc_thresh_slope_(NAN),
   spe_disc_thresh_int_(NAN),
   mpe_disc_thresh_slope_(NAN),
-  mpe_disc_thresh_int_(NAN)
+  mpe_disc_thresh_int_(NAN),
+  pmt_disc_thresh_slope_(NAN),
+  pmt_disc_thresh_int_(NAN)
 {
   AddParameter("OldServiceName","Name of service to tweak",oldServiceName_);
   AddParameter("TweakedServiceName","Name of tweaked service",tweakedServiceName_);
@@ -100,6 +102,8 @@ I3TweakCalibrationService::I3TweakCalibrationService(const I3Context& context) :
   AddParameter("SPEDiscThreshSlope","",spe_disc_thresh_slope_);
   AddParameter("MPEDiscThreshIntercept","",mpe_disc_thresh_int_);
   AddParameter("MPEDiscThreshSlope","",mpe_disc_thresh_slope_);
+  AddParameter("PMTDiscThreshIntercept","",pmt_disc_thresh_int_);
+  AddParameter("PMTDiscThreshSlope","",pmt_disc_thresh_slope_);
 }
 
 
@@ -153,6 +157,8 @@ void I3TweakCalibrationService::Configure()
   GetParameter("SPEDiscThreshSlope",spe_disc_thresh_slope_);
   GetParameter("MPEDiscThreshIntercept",mpe_disc_thresh_int_);
   GetParameter("MPEDiscThreshSlope",mpe_disc_thresh_slope_);
+  GetParameter("PMTDiscThreshIntercept",pmt_disc_thresh_int_);
+  GetParameter("PMTDiscThreshSlope",pmt_disc_thresh_slope_);
 }
 
 bool I3TweakCalibrationService::InstallService(I3Context& services)
@@ -256,6 +262,10 @@ bool I3TweakCalibrationService::InstallService(I3Context& services)
       cal_service_->SetMPEDiscThreshSlope(mpe_disc_thresh_slope_);
     if(!isnan(mpe_disc_thresh_int_))
       cal_service_->SetMPEDiscThreshIntercept(mpe_disc_thresh_int_);
+    if(!isnan(pmt_disc_thresh_slope_))
+      cal_service_->SetPMTDiscThreshSlope(pmt_disc_thresh_slope_);
+    if(!isnan(pmt_disc_thresh_int_))
+      cal_service_->SetPMTDiscThreshIntercept(pmt_disc_thresh_int_);
     
 
   }

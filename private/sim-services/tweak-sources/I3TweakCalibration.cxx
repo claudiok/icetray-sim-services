@@ -249,6 +249,16 @@ I3TweakCalibration::GetCalibration(I3Time time){
       iter->second.SetMPEDiscCalib(mpe_disc_thresh);    
     }
 
+    if(!isnan(pmt_disc_thresh_slope_) ||
+       !isnan(pmt_disc_thresh_int_)){
+      LinearFit pmt_disc_thresh = iter->second.GetPMTDiscCalib();
+      if(!isnan(pmt_disc_thresh_slope_))
+	pmt_disc_thresh.slope = pmt_disc_thresh_slope_;
+      if(!isnan(pmt_disc_thresh_int_))
+	pmt_disc_thresh.intercept = pmt_disc_thresh_int_;
+      iter->second.SetPMTDiscCalib(pmt_disc_thresh);    
+    }
+
   }
   
   return calibration;
