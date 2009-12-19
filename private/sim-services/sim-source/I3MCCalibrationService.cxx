@@ -75,11 +75,6 @@ I3MCCalibrationService::GetCalibration(I3Time time){
 
   log_debug("GetCalibration");
 
-  I3GeometryConstPtr geo = geo_service_->GetGeometry(time);
-  const I3OMGeoMap& om_geo = geo->omgeo;
-
-  I3OMGeoMap::const_iterator iter;
-
   I3CalibrationPtr calibration;
   if(cal_service_){
     calibration = 
@@ -190,21 +185,26 @@ I3MCCalibrationService::GetCalibration(I3Time time){
   pmt_disc_thresh.intercept = pmt_disc_thresh_intercept_;
   domCalib.SetPMTDiscCalib(pmt_disc_thresh);
 
-  //set the noise and relative efficiency
-  if (iter->first.GetString() > 80){
-    //this is a deepcore string
-    domCalib.SetRelativeDomEff(deepcore_relative_efficiencies_);
-    domCalib.SetDomNoiseRate(deepcore_dom_noise_rates_);
-  }else{
-    //this is an InIce/IceTop string
-    domCalib.SetRelativeDomEff(inice_relative_efficiencies_);
-    domCalib.SetDomNoiseRate(inice_dom_noise_rates_);
-  }
+  I3GeometryConstPtr geo = geo_service_->GetGeometry(time);
+  const I3OMGeoMap& om_geo = geo->omgeo;
+
+  I3OMGeoMap::const_iterator iter;
 
   for( iter  = om_geo.begin(); iter != om_geo.end(); iter++ )
   {
     if (iter->second.omtype == I3OMGeo :: AMANDA)
       continue;
+
+    //set the noise and relative efficiency
+    if (iter->first.GetString() > 80){
+      //this is a deepcore string
+      domCalib.SetRelativeDomEff(deepcore_relative_efficiencies_);
+      domCalib.SetDomNoiseRate(deepcore_dom_noise_rates_);
+    }else{
+      //this is an InIce/IceTop string
+      domCalib.SetRelativeDomEff(inice_relative_efficiencies_);
+      domCalib.SetDomNoiseRate(inice_dom_noise_rates_);
+    }
 
     //Only add a default if an object does not already exist
     if(calibration->domCal.find(iter->first) != calibration->domCal.end() ||
