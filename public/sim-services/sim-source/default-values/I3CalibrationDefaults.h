@@ -82,7 +82,7 @@ namespace I3CalibDefaults{
 
   //const double FADC_DELTA_T = -77 * I3Units::ns;
   const double FADC_DELTA_T = -100 * I3Units::ns;
-  const double FRONT_END_IMPEDANCE = 43 * I3Units::ohm;
+  const double FRONT_END_IMPEDANCE = 50 * I3Units::ohm;
 
   const double PMT_TRANSIT_TIME_SLOPE = 1983; //units are ns/sqrt(V)
   const double PMT_TRANSIT_TIME_INTERCEPT = 85.8 * I3Units::ns;
