@@ -41,8 +41,6 @@ class I3MCSourceServiceFactory : public I3ServiceFactory
   std::string statusServiceName_;
   std::string geoServiceName_;
 
-  std::string twrChargeFile_;
-
   bool installCalibration_;
   bool installDetectorStatus_;
 

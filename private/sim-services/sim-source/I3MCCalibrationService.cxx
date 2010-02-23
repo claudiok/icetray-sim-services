@@ -51,7 +51,6 @@ I3MCCalibrationService::I3MCCalibrationService(I3GeometryServicePtr g,
   atwdb0_baseline_(I3CalibDefaults::ATWDB0_BASELINE),
   atwdb1_baseline_(I3CalibDefaults::ATWDB1_BASELINE),
   atwdb2_baseline_(I3CalibDefaults::ATWDB2_BASELINE),
-  twrChargeFile_(""),
   atwda_deltat_(I3CalibDefaults::ATWDA_DELTAT),
   atwdb_deltat_(I3CalibDefaults::ATWDB_DELTAT),
   spe_disc_thresh_slope_(I3CalibDefaults::SPE_DISCRIMINATOR_SLOPE),
@@ -219,34 +218,6 @@ I3MCCalibrationService::GetCalibration(I3Time time){
     log_trace("creating record for DOM %s",iter->first.str().c_str());
 		
   }
-
-  //Read TWR charge from file and put in amandaCal
-  if(!twrChargeFile_.empty()){
-    
-    ifstream ifs;
-    int str,om;
-    double charge;
-    ifs.open(twrChargeFile_.c_str(),ifstream::in);
-    if(!ifs.good()) log_fatal("couldn't open file %s",twrChargeFile_.c_str());
-    
-    string str_in;
-    while(!ifs.eof()){
-      getline(ifs, str_in);
-      istringstream line_in(str_in.c_str());
-      line_in >> str;
-      line_in >> om;
-      line_in >> charge;
-      
-      OMKey omk(str,om);
-      
-      TWRCalibration twrCalib;
-      
-      twrCalib.peArea = charge;    
-      calibration->twrCal[omk] = twrCalib;
-    }
-    
-  }
-
   
   return calibration;
 

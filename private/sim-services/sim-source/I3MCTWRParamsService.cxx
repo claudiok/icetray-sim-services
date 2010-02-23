@@ -20,6 +20,8 @@ I3MCTWRParamsService(const I3Context& context) :
   relSensFileName_ = I3_BUILD + "/sim-services/resources/tables/omeff.dat";
   useTunedRelsens_ = false;
 
+  twrChargeFile_ = I3_BUILD + "/sim-services/resources/tables/charge_calib_2007.dat";
+
   AddParameter("ElecFileName","Name of elec file",elecFileName_);
   AddParameter("ChannelIDFileName","Name of channel ID file",cidFileName_);
   AddParameter("StopDelayFileName","Name of stop delay file",stopDelayFileName_);
@@ -28,6 +30,7 @@ I3MCTWRParamsService(const I3Context& context) :
   AddParameter("RelSensFileName","Name of relative sensitivity file",relSensFileName_);
   AddParameter("ServiceName","Name of service to install",serviceName_);
   AddParameter("UseTunedRelsens","To use sim-data tuned relative sensitivities",useTunedRelsens_);
+  AddParameter("TWRChargeFile","Path to TWR charge file",twrChargeFile_);
 }
 
 I3MCTWRParamsService::
@@ -43,6 +46,8 @@ void I3MCTWRParamsService::Configure()
   GetParameter("RelSensFileName",relSensFileName_);
   GetParameter("ServiceName",serviceName_);
   GetParameter("UseTunedRelsens",useTunedRelsens_);
+  GetParameter("TWRChargeFile",twrChargeFile_);
+
 }
 
 bool I3MCTWRParamsService::InstallService(I3Context& services)
@@ -57,6 +62,7 @@ bool I3MCTWRParamsService::InstallService(I3Context& services)
     I3TWRParamFiller::FillStopDelay(stopDelayFileName_, twrParams_);
     I3TWRParamFiller::FillDMADDThreshold(dmaddThrFileName_, twrParams_);
     I3TWRParamFiller::FillCableDelay(cableDelayFileName_, cidFileName_, twrParams_);
+    I3TWRParamFiller::FillTWRCharge(twrChargeFile_, twrParams_);
     if(useTunedRelsens_) I3TWRParamFiller::FillRelativeSensitivity(relSensFileName_, twrParams_);
 
     log_debug("Made new I3MCTWRParams.");

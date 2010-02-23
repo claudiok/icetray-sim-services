@@ -141,3 +141,32 @@ void I3TWRParamFiller::FillRelativeSensitivity(string filename, I3MCTWRParamsMap
   }
   ifs.close(); 
 }
+
+void I3TWRParamFiller::FillTWRCharge(string filename, I3MCTWRParamsMapPtr params_map){
+  //Read TWR charge from file and put in amandaCal
+  if(!filename.empty()){
+    
+    ifstream ifs;
+    int str,om;
+    double charge;
+    ifs.open(filename.c_str(),ifstream::in);
+    if(!ifs.good()) log_fatal("couldn't open file %s",filename.c_str());
+    
+    string str_in;
+    while(!ifs.eof()){
+      getline(ifs, str_in);
+      istringstream line_in(str_in.c_str());
+      line_in >> str;
+      line_in >> om;
+      line_in >> charge;
+      
+      OMKey omk(str,om);
+      (*params_map)[omk].peArea = charge;
+
+      //TWRCalibration twrCalib;      
+      //twrCalib.peArea = charge;    
+      //calibration->twrCal[omk] = twrCalib;
+    }
+    
+  }
+}

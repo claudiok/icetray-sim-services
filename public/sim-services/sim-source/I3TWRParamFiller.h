@@ -27,6 +27,7 @@ namespace I3TWRParamFiller
   void FillDMADDThreshold(std::string,I3MCTWRParamsMapPtr);
   void FillCableDelay(std::string,std::string,I3MCTWRParamsMapPtr);
   void FillRelativeSensitivity(std::string,I3MCTWRParamsMapPtr);
+  void FillTWRCharge(std::string, I3MCTWRParamsMapPtr);
 
 };
 
