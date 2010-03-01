@@ -50,22 +50,22 @@ class I3TweakTriggerTestModule(icetray.I3Module):
 
         i3ts = trigger_status[tkey]        
 
-        for p in i3ts.GetTriggerSettings():
+        for p in i3ts.TriggerSettings:
             print p
 
         ###
         # test the trigger name
         ###
-        if i3ts.GetTriggerName() != self.triggerName :
-            print "FAILED : trigger name %s != %s" % (i3ts.GetTriggerName(),self.triggerName)
+        if i3ts.TriggerName != self.triggerName :
+            print "FAILED : trigger name %s != %s" % (i3ts.TriggerName,self.triggerName)
             sys.exit(1)
 
         ###
         # test the trigger settings
         ###
-        if len(i3ts.GetTriggerSettings()) != len(self.valueNameList) :
+        if len(i3ts.TriggerSettings ) != len(self.valueNameList) :
             print "FAILED : len settings %d %d " % \
-                  (len(i3ts.GetTriggerSettings()),len(self.valueNameList))
+                  (len(i3ts.TriggerSettings ),len(self.valueNameList))
             sys.exit(1)
 
         ###
@@ -74,7 +74,7 @@ class I3TweakTriggerTestModule(icetray.I3Module):
         for name, value in zip(self.valueNameList, self.valueList):
             found = False
             valid = False
-            for test_name, test_value in i3ts.GetTriggerSettings():
+            for test_name, test_value in i3ts.TriggerSettings :
                 if name == test_name :
                     found = True
                     if test_value != value :
@@ -87,7 +87,7 @@ class I3TweakTriggerTestModule(icetray.I3Module):
         ###
         # test the readout windows
         ###
-        readouts = i3ts.GetReadoutSettings()
+        readouts = i3ts.ReadoutSettings
         print "len(readouts) = ",len(readouts)
         print "len(self.readoutWindowConfigs) = ",len(self.readoutWindowConfigs)
         if len(readouts) != len(self.readoutWindowConfigs) :
