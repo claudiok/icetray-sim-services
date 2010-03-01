@@ -6,7 +6,7 @@ from icecube import icetray, dataclasses, dataio, sim_services
 from os.path import expandvars
 import sys
 
-from icecube.sim_services.test_module import I3TweakTriggerTestModule
+from icecube.sim_services.test_modules.tweak_trigger_test_module import I3TweakTriggerTestModule
 
 tray = I3Tray()
 
