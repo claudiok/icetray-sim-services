@@ -188,14 +188,13 @@ I3MCCalibrationService::GetCalibration(I3Time time){
   const I3OMGeoMap& om_geo = geo->omgeo;
 
   I3OMGeoMap::const_iterator iter;
-
   for( iter  = om_geo.begin(); iter != om_geo.end(); iter++ )
   {
     if (iter->second.omtype == I3OMGeo :: AMANDA)
       continue;
 
     //set the noise and relative efficiency
-    if (iter->first.GetString() > 80){
+    if (iter->first.GetString() > 80 && iter->first.GetOM() <= 60){
       //this is a deepcore string
       domCalib.SetRelativeDomEff(deepcore_relative_efficiencies_);
       domCalib.SetDomNoiseRate(deepcore_dom_noise_rates_);
@@ -213,14 +212,50 @@ I3MCCalibrationService::GetCalibration(I3Time time){
 	iter->second.omtype == I3OMGeo::IceTop) ){
       continue;
     }	
-
+    
     calibration->domCal[iter->first] = domCalib;
     log_trace("creating record for DOM %s",iter->first.str().c_str());
-		
+  }
+  
+  // Creating IceTop VEMCal records
+  const I3StationGeoMap& sta_geo = geo->stationgeo;
+  I3StationGeoMap::const_iterator sta_iter;
+  for(sta_iter=sta_geo.begin(); sta_iter!=sta_geo.end(); ++sta_iter)
+  {
+    for(unsigned int i=0; i<sta_iter->second.size(); i++)
+    {
+      const I3TankGeo& tankGeo = sta_iter->second.at(i);
+      
+      I3VEMCalibration vemCalib;
+      vemCalib.hglgCrossOver = 2600.0;
+      vemCalib.muPeakWidth   = 20.0;
+      vemCalib.corrFactor    = 1.0;
+      
+      switch(tankGeo.tanktype)
+      {
+	case I3TankGeo::Zirconium_Lined:
+	  vemCalib.pePerVEM = 130.0;
+	  break;
+        case I3TankGeo::Tyvek_Lined:
+	  vemCalib.pePerVEM = 220.0;
+	  break;
+        default:
+	  log_error("Unknown type of Tank %d%s", sta_iter->first, (i<1?"A":"B"));   
+	  continue;
+      }
+	
+      std::vector<OMKey>::const_iterator om_iter;
+      for(om_iter  = tankGeo.omKeyList_.begin();
+	  om_iter != tankGeo.omKeyList_.end();
+	  ++om_iter)
+      {
+	calibration->vemCal[*om_iter] = vemCalib;
+	log_trace("creating vemcal record for DOM %s", om_iter->str().c_str());
+      }
+    }
   }
   
   return calibration;
-
 }
 
 
