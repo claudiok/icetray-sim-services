@@ -11,6 +11,8 @@ import sys
 
 from icecube import icetray, dataclasses, phys_services, dataio, sim_services
 
+from icecube.sim_services.sim_utils.gcd_utils import get_time
+
 tray = I3Tray()
 
 nframes = 5
@@ -20,19 +22,14 @@ parser = OptionParser()
 
 parser.add_option("-g","--gcdfile",
                   dest = "gcdfile",
-                  default = "/data/icecube01/users/olivas/GeoCalibDetectorStatus_IC59.55040.i3.gz",
+                  default = "./database.i3",
                   help = "Name of output i3file.")
 
 (options, args) = parser.parse_args()
 
 gcd_file = dataio.I3File(options.gcdfile)
 
-frame = gcd_file.pop_frame()
-while not frame.Has("I3DetectorStatus"):
-    frame = gcd_file.pop_frame()
-
-detstat = frame.Get("I3DetectorStatus")
-time = detstat.endTime
+time = get_time(gcd_file)
 tray.AddService("I3MCTimeGeneratorServiceFactory","time-gen")(
         ("Year",time.GetUTCYear()),
         ("DAQTime",time.GetUTCDaqTime())
