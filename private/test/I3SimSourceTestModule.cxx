@@ -263,8 +263,8 @@ void I3SimSourceTestModule::Physics(I3FramePtr frame)
     ENSURE_DISTANCE(cal_iter->second.GetMPEDiscCalib().slope,cal_mpe_disc_thresh_slope_, DISTANCE);
     ENSURE_DISTANCE(cal_iter->second.GetMPEDiscCalib().intercept,cal_mpe_disc_thresh_int_, DISTANCE);
 
-    ENSURE_DISTANCE(cal_iter->second.GetPMTDiscCalib().slope,cal_pmt_disc_thresh_slope_, DISTANCE);
-    ENSURE_DISTANCE(cal_iter->second.GetPMTDiscCalib().intercept,cal_pmt_disc_thresh_int_, DISTANCE);
+//    ENSURE_DISTANCE(cal_iter->second.GetPMTDiscCalib().slope,cal_pmt_disc_thresh_slope_, DISTANCE);
+ //   ENSURE_DISTANCE(cal_iter->second.GetPMTDiscCalib().intercept,cal_pmt_disc_thresh_int_, DISTANCE);
 
     ENSURE(cal_iter->first.GetString()>0,"There should be no AMANDA OMs.");
 

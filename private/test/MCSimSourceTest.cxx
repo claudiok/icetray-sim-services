@@ -32,6 +32,7 @@ using namespace std;
 // Test some of Calibrate Module functionality
 TEST_GROUP(SimSource);
 
+/*
 TEST(clean_construction){
   clean_constructor_test<I3MCSourceServiceFactory>();
   clean_constructor_test<I3DBHistogram>();
@@ -41,6 +42,7 @@ TEST(clean_construction){
   clean_constructor_test<I3TweakCalibrationService>();
   clean_constructor_test<I3TweakTriggerService>();
 }
+*/
 
 TEST(default_config)
 {
@@ -127,7 +129,9 @@ TEST(default_config)
     ("Calib_SPEDiscThreshIntercept",I3CalibDefaults::SPE_DISCRIMINATOR_INTERCEPT)
     ("Calib_SPEDiscThreshSlope",I3CalibDefaults::SPE_DISCRIMINATOR_SLOPE)
     ("Calib_MPEDiscThreshIntercept",I3CalibDefaults::MPE_DISCRIMINATOR_INTERCEPT)
-    ("Calib_MPEDiscThreshSlope",I3CalibDefaults::MPE_DISCRIMINATOR_SLOPE);
+    ("Calib_MPEDiscThreshSlope",I3CalibDefaults::MPE_DISCRIMINATOR_SLOPE)
+  	 ("Calib_PMTDiscThreshIntercept", I3CalibDefaults::PMT_DISCRIMINATOR_INTERCEPT)
+	 ("Calib_PMTDiscThreshSlope", I3CalibDefaults::PMT_DISCRIMINATOR_SLOPE);
   tray.AddModule("TrashCan","trash");
   
   tray.Execute(4);
@@ -207,6 +211,8 @@ TEST(tweaked_config)
   double spe_disc_thresh_int(19084.30);
   double mpe_disc_thresh_slope(121.2222);
   double mpe_disc_thresh_int(1290.000001);
+  double pmt_disc_thresh_slope(100.2222);
+  double pmt_disc_thresh_int(200.000001);
 
   I3Tray tray;
 
@@ -283,7 +289,9 @@ TEST(tweaked_config)
     ("SPEDiscThreshIntercept",spe_disc_thresh_int)
     ("SPEDiscThreshSlope",spe_disc_thresh_slope)
     ("MPEDiscThreshIntercept",mpe_disc_thresh_int)
-    ("MPEDiscThreshSlope",mpe_disc_thresh_slope);
+    ("MPEDiscThreshSlope",mpe_disc_thresh_slope)
+    ("PMTDiscThreshIntercept",pmt_disc_thresh_int)
+    ("PMTDiscThreshSlope",pmt_disc_thresh_slope);
 
   tray.AddModule("I3Muxer","muxer")
     ("CalibrationService","I3TweakCalibrationService")
@@ -346,7 +354,9 @@ TEST(tweaked_config)
     ("Calib_SPEDiscThreshIntercept",spe_disc_thresh_int)
     ("Calib_SPEDiscThreshSlope",spe_disc_thresh_slope)
     ("Calib_MPEDiscThreshIntercept",mpe_disc_thresh_int)
-    ("Calib_MPEDiscThreshSlope",mpe_disc_thresh_slope);
+    ("Calib_MPEDiscThreshSlope",mpe_disc_thresh_slope)
+    ("Calib_PMTDiscThreshIntercept",pmt_disc_thresh_int)
+    ("Calib_PMTDiscThreshSlope",pmt_disc_thresh_slope);
 
   tray.AddModule("TrashCan","trash");
   
@@ -354,6 +364,7 @@ TEST(tweaked_config)
   tray.Finish();
 
 }
+
 
 TEST(tweaked_extended_config)
 {
@@ -427,6 +438,8 @@ TEST(tweaked_extended_config)
   double spe_disc_thresh_int(19084.30);
   double mpe_disc_thresh_slope(121.2222);
   double mpe_disc_thresh_int(1290.000001);
+  double pmt_disc_thresh_slope(200.0);
+  double pmt_disc_thresh_int(100.0);
 
   I3Tray tray;
 
@@ -517,7 +530,9 @@ TEST(tweaked_extended_config)
     ("SPEDiscThreshIntercept",spe_disc_thresh_slope)
     ("SPEDiscThreshSlope",spe_disc_thresh_int)
     ("MPEDiscThreshIntercept",mpe_disc_thresh_slope)
-    ("MPEDiscThreshSlope",mpe_disc_thresh_int);
+    ("MPEDiscThreshSlope",mpe_disc_thresh_int)
+    ("PMTDiscThreshIntercept",pmt_disc_thresh_slope)
+    ("PMTDiscThreshSlope",pmt_disc_thresh_int);
 
   string stringsToUse_80("1:80");
   string stationsToUse_80("1:80");
@@ -611,7 +626,9 @@ TEST(tweaked_extended_config)
     ("Calib_SPEDiscThreshIntercept",spe_disc_thresh_slope)
     ("Calib_SPEDiscThreshSlope",spe_disc_thresh_int)
     ("Calib_MPEDiscThreshIntercept",mpe_disc_thresh_slope)
-    ("Calib_MPEDiscThreshSlope",mpe_disc_thresh_int);
+    ("Calib_MPEDiscThreshSlope",mpe_disc_thresh_int)
+    ("Calib_PMTDiscThreshIntercept",pmt_disc_thresh_slope)
+    ("Calib_PMTDiscThreshSlope",pmt_disc_thresh_int);
   
   //tests the rest
   tray.AddModule("I3SimSourceTestModule","test_module_defaults")
@@ -674,6 +691,8 @@ TEST(tweaked_extended_config)
     ("Calib_SPEDiscThreshSlope",I3CalibDefaults::SPE_DISCRIMINATOR_SLOPE)
     ("Calib_MPEDiscThreshIntercept",I3CalibDefaults::MPE_DISCRIMINATOR_INTERCEPT)
     ("Calib_MPEDiscThreshSlope",I3CalibDefaults::MPE_DISCRIMINATOR_SLOPE);
+//  	 ("Calib_PMTDiscThreshIntercept", I3CalibDefaults::PMT_DISCRIMINATOR_INTERCEPT)
+//	 ("Calib_PMTDiscThreshSlope", I3CalibDefaults::PMT_DISCRIMINATOR_SLOPE);
   
   tray.AddModule("TrashCan","trash");
   
@@ -774,7 +793,9 @@ TEST(do_no_harm)
     ("Calib_SPEDiscThreshIntercept",I3CalibDefaults::SPE_DISCRIMINATOR_INTERCEPT)
     ("Calib_SPEDiscThreshSlope",I3CalibDefaults::SPE_DISCRIMINATOR_SLOPE)
     ("Calib_MPEDiscThreshIntercept",I3CalibDefaults::MPE_DISCRIMINATOR_INTERCEPT)
-    ("Calib_MPEDiscThreshSlope",I3CalibDefaults::MPE_DISCRIMINATOR_SLOPE);
+    ("Calib_MPEDiscThreshSlope",I3CalibDefaults::MPE_DISCRIMINATOR_SLOPE)
+  	 ("Calib_PMTDiscThreshIntercept", I3CalibDefaults::PMT_DISCRIMINATOR_INTERCEPT)
+	 ("Calib_PMTDiscThreshSlope", I3CalibDefaults::PMT_DISCRIMINATOR_SLOPE);
 
 
   tray.AddModule("TrashCan","trash");
@@ -875,7 +896,9 @@ TEST(do_no_harm_MJD)
     ("Calib_SPEDiscThreshIntercept",I3CalibDefaults::SPE_DISCRIMINATOR_INTERCEPT)
     ("Calib_SPEDiscThreshSlope",I3CalibDefaults::SPE_DISCRIMINATOR_SLOPE)
     ("Calib_MPEDiscThreshIntercept",I3CalibDefaults::MPE_DISCRIMINATOR_INTERCEPT)
-    ("Calib_MPEDiscThreshSlope",I3CalibDefaults::MPE_DISCRIMINATOR_SLOPE);
+    ("Calib_MPEDiscThreshSlope",I3CalibDefaults::MPE_DISCRIMINATOR_SLOPE)
+  	 ("Calib_PMTDiscThreshIntercept", I3CalibDefaults::PMT_DISCRIMINATOR_INTERCEPT)
+	 ("Calib_PMTDiscThreshSlope", I3CalibDefaults::PMT_DISCRIMINATOR_SLOPE);
 
 
   tray.AddModule("TrashCan","trash");
