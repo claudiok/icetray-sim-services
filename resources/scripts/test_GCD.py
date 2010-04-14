@@ -55,11 +55,11 @@ c_and_d_strings_to_check = [
 	]
 
 for s in c_and_d_strings_to_check :
+	found_cal = False
+	found_stat = False
 	for omkey in [icetray.OMKey(s,om) for om in range(61)] :
-		found_cal = False
 		if omkey in dom_cal :
 			found_cal = True
-		found_stat = False
 		if omkey in dom_status :
 			found_stat = True
 		if found_cal and found_stat : continue
@@ -75,10 +75,10 @@ for e,p in dom_geo:
 		cal_this_om = dom_cal[e]
 		status_this_om = dom_status[e]
 
-		if cal_this_om.DOMCalVersion != "7.3.3" :
+		if cal_this_om.DOMCalVersion != "7.4.0" :
 			print '  %s  %s' % (str(e), cal_this_om.DOMCalVersion)
 		
 		threshold = dataclasses.SPEPMTThreshold(status_this_om,
 							cal_this_om) / I3Units.mV
 		if threshold < 0 :
-			print '  %s  %f' % (e.GetString(), e.GetOM(), threshold)
+			print '  %s  %f' % (str(e), threshold)
