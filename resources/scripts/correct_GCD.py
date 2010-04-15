@@ -81,9 +81,13 @@ for e,p in dom_geo:
 
 		if cal_this_om.DOMCalVersion != "7.4.0" :
 			print '  %s  %s' % (str(e), cal_this_om.DOMCalVersion)
+
+		calibration.domCal[e].DOMCalVersion = '7.5.0'
+		print calibration.domCal[e].DOMCalVersion
 		
 		threshold = dataclasses.SPEPMTThreshold(status_this_om,
 							cal_this_om) / I3Units.mV
+
 		if threshold < 0 :
 			print '  %s  %f' % (str(e), threshold)
 			print 'changing the calib'
