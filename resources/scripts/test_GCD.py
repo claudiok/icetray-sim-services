@@ -75,8 +75,17 @@ for e,p in dom_geo:
 		cal_this_om = dom_cal[e]
 		status_this_om = dom_status[e]
 
-		if cal_this_om.DOMCalVersion != "7.4.0" :
-			print '  %s  %s' % (str(e), cal_this_om.DOMCalVersion)
+		# checks for hit-maker
+		if ( status_this_om.pmtHV < 600*I3Units.V or \
+		     status_this_om.pmtHV > 1600*I3Units.V ) :
+			print '  %s  pmtHV = %s V !!' % (str(e), status_this_om.pmtHV/I3Units.V)
+
+		if ( ( cal_this_om.RelativeDomEff != 1 and e.GetString() <= 80 and e.GetOM() <= 60) or \
+		     ( cal_this_om.RelativeDomEff != 1.25 and e.GetString() > 80 ) ):
+			print '  %s  RelativeDomEff = %s !!' % (str(e), cal_this_om.RelativeDomEff)
+
+		if cal_this_om.DOMCalVersion != "7.5.0" :
+			print '  %s  DOMCalVersion = %s !!' % (str(e), cal_this_om.DOMCalVersion)
 		
 		threshold = dataclasses.SPEPMTThreshold(status_this_om,
 							cal_this_om) / I3Units.mV
