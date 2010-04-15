@@ -54,6 +54,10 @@ c_and_d_strings_to_check = [
 	10, 11, 12, 13,  2,  3,  4,  5,  6
 	]
 
+high_QE = [icetray.OMKey(36,d) for d in range(44,60) if (d != 45 and d!= 47) ] 
+for s in range(81,87):
+	high_QE += [icetray.OMKey(s,d) for d in range(81)] 
+
 for s in c_and_d_strings_to_check :
 	found_cal = False
 	found_stat = False
@@ -80,9 +84,10 @@ for e,p in dom_geo:
 		     status_this_om.pmtHV > 1600*I3Units.V ) :
 			print '  %s  pmtHV = %s V !!' % (str(e), status_this_om.pmtHV/I3Units.V)
 
-		if ( ( cal_this_om.RelativeDomEff != 1 and e.GetString() <= 80 and e.GetOM() <= 60) or \
-		     ( cal_this_om.RelativeDomEff != 1.25 and e.GetString() > 80 ) ):
-			print '  %s  RelativeDomEff = %s !!' % (str(e), cal_this_om.RelativeDomEff)
+		if e.GetOM() < 61 :
+			if ( ( cal_this_om.RelativeDomEff != 1.0 and high_QE.count(e) == 0 ) or \
+			     ( cal_this_om.RelativeDomEff != 1.25 and high_QE.count(e) == 1 ) ):
+				print '  %s  RelativeDomEff = %s !!' % (str(e), cal_this_om.RelativeDomEff)
 	
 		# checks for noise-generator
 
