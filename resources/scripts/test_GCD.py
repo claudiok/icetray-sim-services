@@ -83,11 +83,17 @@ for e,p in dom_geo:
 		if ( ( cal_this_om.RelativeDomEff != 1 and e.GetString() <= 80 and e.GetOM() <= 60) or \
 		     ( cal_this_om.RelativeDomEff != 1.25 and e.GetString() > 80 ) ):
 			print '  %s  RelativeDomEff = %s !!' % (str(e), cal_this_om.RelativeDomEff)
+	
+		# checks for noise-generator
 
-		if cal_this_om.DOMCalVersion != "7.5.0" :
-			print '  %s  DOMCalVersion = %s !!' % (str(e), cal_this_om.DOMCalVersion)
+                # checks for pmt-simulator
 		
+		# checks for DOMsimulator
 		threshold = dataclasses.SPEPMTThreshold(status_this_om,
 							cal_this_om) / I3Units.mV
 		if threshold < 0 :
 			print '  %s  %f' % (str(e), threshold)
+
+		# checks for DOMcalibrator
+		if cal_this_om.DOMCalVersion != "7.5.0" :
+			print '  %s  DOMCalVersion = %s !!' % (str(e), cal_this_om.DOMCalVersion)
