@@ -66,6 +66,10 @@ for s in c_and_d_strings_to_check :
 	if not found_cal : print 'string %s is missing from the calibration' % s
 	if not found_stat : print 'string %s is missing from the detector status' % s
 
+high_QE = [icetray.OMKey(36,d) for d in range(44,60) if (d != 45 and d!= 47) ] 
+for s in range(81,87):
+	high_QE += [icetray.OMKey(s,d) for d in range(81)] 
+
 for e,p in dom_geo:
 
 	if e in badOMs and e in dom_cal and e in dom_status:
@@ -80,10 +84,10 @@ for e,p in dom_geo:
 		     status_this_om.pmtHV > 1600*I3Units.V ) :
 			print '  %s  pmtHV = %s V !!' % (str(e), status_this_om.pmtHV/I3Units.V)
 
-		if ( ( cal_this_om.RelativeDomEff != 1 and e.GetString() <= 80 and e.GetOM() <= 60) or \
-		     ( cal_this_om.RelativeDomEff != 1.25 and e.GetString() > 80 ) ):
-			print '  %s  RelativeDomEff = %s !!' % (str(e), cal_this_om.RelativeDomEff)
-			
+		if e.GetOM() < 61 :
+			if ( ( cal_this_om.RelativeDomEff != 1.0 and high_QE.count(e) == 0 ) or \
+			     ( cal_this_om.RelativeDomEff != 1.25 and high_QE.count(e) == 1 ) ):
+				print '  %s  RelativeDomEff = %s !!' % (str(e), cal_this_om.RelativeDomEff)
 	
 		# checks for noise-generator
 		noiseRate = cal_this_om.DomNoiseRate * I3Units.second
@@ -126,6 +130,14 @@ for e,p in dom_geo:
 							cal_this_om) / I3Units.mV
 		if threshold < 0 :
 			print '  %s  %f' % (str(e), threshold)
+
+		atwdaSamplingRate = dataclasses.ATWDSamplingRate(0,status_this_om,cal_this_om)
+		if atwdaSamplingRate < 295*I3Units.megahertz or atwdaSamplingRate > 310*I3Units.megahertz :
+			print '  %s  ATWDaSamplingRate = %s MHz!!' % (str(e), atwdaSamplingRate/I3Units.megahertz)
+			
+		atwdbSamplingRate = dataclasses.ATWDSamplingRate(1,status_this_om,cal_this_om)
+		if atwdbSamplingRate < 295*I3Units.megahertz or atwdbSamplingRate > 310*I3Units.megahertz :
+			print '  %s  ATWDbSamplingRate = %s MHz!!' % (str(e), atwdbSamplingRate/I3Units.megahertz)
 
 		# checks for DOMcalibrator
 		if cal_this_om.DOMCalVersion != "7.4.0" :
