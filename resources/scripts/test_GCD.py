@@ -54,10 +54,6 @@ c_and_d_strings_to_check = [
 	10, 11, 12, 13,  2,  3,  4,  5,  6
 	]
 
-high_QE = [icetray.OMKey(36,d) for d in range(44,60) if (d != 45 and d!= 47) ] 
-for s in range(81,87):
-	high_QE += [icetray.OMKey(s,d) for d in range(81)] 
-
 for s in c_and_d_strings_to_check :
 	found_cal = False
 	found_stat = False
@@ -84,14 +80,46 @@ for e,p in dom_geo:
 		     status_this_om.pmtHV > 1600*I3Units.V ) :
 			print '  %s  pmtHV = %s V !!' % (str(e), status_this_om.pmtHV/I3Units.V)
 
-		if e.GetOM() < 61 :
-			if ( ( cal_this_om.RelativeDomEff != 1.0 and high_QE.count(e) == 0 ) or \
-			     ( cal_this_om.RelativeDomEff != 1.25 and high_QE.count(e) == 1 ) ):
-				print '  %s  RelativeDomEff = %s !!' % (str(e), cal_this_om.RelativeDomEff)
+		if ( ( cal_this_om.RelativeDomEff != 1 and e.GetString() <= 80 and e.GetOM() <= 60) or \
+		     ( cal_this_om.RelativeDomEff != 1.25 and e.GetString() > 80 ) ):
+			print '  %s  RelativeDomEff = %s !!' % (str(e), cal_this_om.RelativeDomEff)
+			
 	
 		# checks for noise-generator
+		noiseRate = cal_this_om.DomNoiseRate * I3Units.second
+		if ((not (noiseRate > 300 and noiseRate < 800)) and (e.GetOM() >= 1 and e.GetOM() <= 60)):
+			print '  %s  noise rate = %s !!' % (str(e), noiseRate)
 
-                # checks for pmt-simulator
+
+      # checks for pmt-simulator
+		pmtGain = dataclasses.PMTGain(status_this_om, cal_this_om) / 1.e7
+		if ((not (pmtGain > 0.5 and pmtGain < 3.0)) and (e.GetOM() >= 1 and e.GetOM() <= 60)):
+			print '  %s  pmtGain = %s !!' % (str(e), pmtGain)
+
+		impedence = cal_this_om.FrontEndImpedance / I3Units.ohm
+		if ((not (impedence == 43 or impedence == 50)) and (e.GetOM() >= 1 and e.GetOM() <= 60)):
+			print '  %s  impedence = %s !!' % (str(e), impedence)
+
+		# Checking TauParameters
+#		if ((not ((cal_this_om.TauParameters.P0 == 10960 and cal_this_om.TauParameters.P1 == 56665 and
+#						cal_this_om.TauParameters.P2 == 6.5 and cal_this_om.TauParameters.P3 == 500 and
+#						cal_this_om.TauParameters.P4 == 0 and cal_this_om.TauParameters.P5 == 1 and
+#						cal_this_om.TauParameters.TauFrac == -0.5) or (cal_this_om.TauParameters.P0 == 400
+#							and cal_this_om.TauParameters.P1 == 5000 and cal_this_om.TauParameters.P2 == 16
+#							and cal_this_om.TauParameters.P3 == 400 and cal_this_om.TauParameters.P4 ==
+#							5000 and cal_this_om.TauParameters.P5 == 16 and
+#						cal_this_om.TauParameters.TauFrac == -3.3))) and (e.GetOM() >= 1 and e.GetOM() <= 60)):
+		print '%s %s   %s  %s  %s  %s  %s  %s' % (str(e), cal_this_om.TauParameters.P0, 
+														cal_this_om.TauParameters.P1,
+														cal_this_om.TauParameters.P2,
+														cal_this_om.TauParameters.P3,
+														cal_this_om.TauParameters.P4,
+														cal_this_om.TauParameters.P5,
+														cal_this_om.TauParameters.TauFrac)
+
+		transitTime = dataclasses.TransitTime(status_this_om, cal_this_om);
+		if ((not (transitTime > 130 and transitTime < 151)) and (e.GetOM() >= 1 and e.GetOM() <= 60)):
+			print '%s  transitTime = %s !!' % (str(e), transitTime)
 		
 		# checks for DOMsimulator
 		threshold = dataclasses.SPEPMTThreshold(status_this_om,
@@ -100,5 +128,6 @@ for e,p in dom_geo:
 			print '  %s  %f' % (str(e), threshold)
 
 		# checks for DOMcalibrator
-		if cal_this_om.DOMCalVersion != "7.5.0" :
+		if cal_this_om.DOMCalVersion != "7.4.0" :
 			print '  %s  DOMCalVersion = %s !!' % (str(e), cal_this_om.DOMCalVersion)
+
