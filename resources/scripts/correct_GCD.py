@@ -79,11 +79,17 @@ for e,p in dom_geo:
 		cal_this_om = dom_cal[e]
 		status_this_om = dom_status[e]
 
+		if e.GetOM() == 39 and e.GetString() == 72 :
+			print "%s LCMode is %s" % ( str(e), int(dom_status[e].lcMode) )
+			if status_this_om.lcMode != dataclasses.I3DOMStatus.LCMode.UpOrDown :
+				status.domStatus[e].lcMode = dataclasses.I3DOMStatus.LCMode.UpOrDown
+				print " %s correcting LCMode to %d" % ( str(e), int(dom_status[e].lcMode) )
+				
 		if cal_this_om.DOMCalVersion != "7.4.0" :
 			print '  %s  %s' % (str(e), cal_this_om.DOMCalVersion)
 
-		calibration.domCal[e].DOMCalVersion = '7.5.0'
-		print calibration.domCal[e].DOMCalVersion
+			calibration.domCal[e].DOMCalVersion = '7.5.0'
+			print calibration.domCal[e].DOMCalVersion
 		
 		threshold = dataclasses.SPEPMTThreshold(status_this_om,
 							cal_this_om) / I3Units.mV
@@ -91,8 +97,6 @@ for e,p in dom_geo:
 		if threshold < 0 :
 			print '  %s  %f' % (str(e), threshold)
 			print 'changing the calib'
-#			calibration.domCal[e].PMTDiscCalib.slope = NaN
-#			calibration.domCal[e].PMTDiscCalib.intercept = NaN
 			fit = dataclasses.LinearFit()
 			fit.slope = NaN
 			fit.intercept = NaN

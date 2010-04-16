@@ -104,7 +104,46 @@ for e,p in dom_geo:
 		if ((not (impedence == 43 or impedence == 50)) and (e.GetOM() >= 1 and e.GetOM() <= 60)):
 			print '  %s  impedence = %s !!' % (str(e), impedence)
 
+
+		
 		# Checking TauParameters
+		binSize = 3.3 * I3Units.ns
+		timeConstant1 = ( tauparam.P0 + tauparam.P1/(1+exp(-(temperature/tauparam.P2))) ) * I3Units.ns
+		timeConstant2 = ( tauparam.P3 + tauparam.P4/(1+exp(-(temperature/tauparam.P5))) ) * I3Units.ns
+  
+		Tau1OverSampleWidth = timeConstant1/binSize
+		Tau2OverSampleWidth = timeConstant2/binSize
+  
+		factor = tauparam.TauFrac
+  
+		Exp1 = exp(-1./Tau1OverSampleWidth)
+		Exp2 = exp(-1./Tau2OverSampleWidth)
+
+		A1 = Tau1OverSampleWidth*(1.- Exp1)
+		A2 = Tau2OverSampleWidth*(1.- Exp2)
+  
+		C1 = (1. - factor) * Tau1OverSampleWidth
+		C2 =        factor * Tau2OverSampleWidth
+  
+		w1 = C1/(C1+C2)
+		w2 = C2/(C1+C2)
+  
+		coef0 = 1./(w1*A1 + w2*A2)
+		coef1 = w1*A1*A1/Tau1OverSampleWidth
+		coef2 = w2*A2*A2/Tau2OverSampleWidth
+
+		S1 = 0.
+		S2 = 0.
+  
+		X = 0
+
+		for bin in range(128):
+			S1 = X + Exp1*S1
+			S2 = X + Exp2*S2
+
+			outputWaveform[bin] =  inputWaveform[bin] * 1./ coef0 - coef1*S1 - coef2*S2
+			X = inputWaveform[bin]
+		
 #		if ((not ((cal_this_om.TauParameters.P0 == 10960 and cal_this_om.TauParameters.P1 == 56665 and
 #						cal_this_om.TauParameters.P2 == 6.5 and cal_this_om.TauParameters.P3 == 500 and
 #						cal_this_om.TauParameters.P4 == 0 and cal_this_om.TauParameters.P5 == 1 and
@@ -113,13 +152,13 @@ for e,p in dom_geo:
 #							and cal_this_om.TauParameters.P3 == 400 and cal_this_om.TauParameters.P4 ==
 #							5000 and cal_this_om.TauParameters.P5 == 16 and
 #						cal_this_om.TauParameters.TauFrac == -3.3))) and (e.GetOM() >= 1 and e.GetOM() <= 60)):
-		print '%s %s   %s  %s  %s  %s  %s  %s' % (str(e), cal_this_om.TauParameters.P0, 
-														cal_this_om.TauParameters.P1,
-														cal_this_om.TauParameters.P2,
-														cal_this_om.TauParameters.P3,
-														cal_this_om.TauParameters.P4,
-														cal_this_om.TauParameters.P5,
-														cal_this_om.TauParameters.TauFrac)
+#		print '%s %s   %s  %s  %s  %s  %s  %s' % (str(e), cal_this_om.TauParameters.P0, 
+#							  cal_this_om.TauParameters.P1,
+#							  cal_this_om.TauParameters.P2,
+#							  cal_this_om.TauParameters.P3,
+#							  cal_this_om.TauParameters.P4,
+#							  cal_this_om.TauParameters.P5,
+#							  cal_this_om.TauParameters.TauFrac)
 
 		transitTime = dataclasses.TransitTime(status_this_om, cal_this_om);
 		if ((not (transitTime > 130 and transitTime < 151)) and (e.GetOM() >= 1 and e.GetOM() <= 60)):
@@ -139,7 +178,17 @@ for e,p in dom_geo:
 		if atwdbSamplingRate < 295*I3Units.megahertz or atwdbSamplingRate > 310*I3Units.megahertz :
 			print '  %s  ATWDbSamplingRate = %s MHz!!' % (str(e), atwdbSamplingRate/I3Units.megahertz)
 
+		# ATWD gain
+		#for channel in [0,1,2]:
+		#	g = cal_this_om.ATWDGain(channel)
+
+		# GetATWDBinCount
+		#for chip in [0,1]:
+		#	for channel in [0,1,2]:
+		#		for bin in range(128): 
+		#			fit = cal_this_om.GetATWDBinCalibFit(chip,channel,bin)
+					
 		# checks for DOMcalibrator
-		if cal_this_om.DOMCalVersion != "7.4.0" :
+		if cal_this_om.DOMCalVersion != "7.5.0" :
 			print '  %s  DOMCalVersion = %s !!' % (str(e), cal_this_om.DOMCalVersion)
 
