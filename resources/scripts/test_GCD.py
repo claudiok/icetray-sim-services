@@ -95,7 +95,7 @@ for e,p in dom_geo:
 			print '  %s  noise rate = %s !!' % (str(e), noiseRate)
 
 
-      # checks for pmt-simulator
+                # checks for pmt-simulator
 		pmtGain = dataclasses.PMTGain(status_this_om, cal_this_om) / 1.e7
 		if ((not (pmtGain > 0.5 and pmtGain < 3.0)) and (e.GetOM() >= 1 and e.GetOM() <= 60)):
 			print '  %s  pmtGain = %s !!' % (str(e), pmtGain)
@@ -105,44 +105,6 @@ for e,p in dom_geo:
 			print '  %s  impedence = %s !!' % (str(e), impedence)
 
 
-		
-		# Checking TauParameters
-		binSize = 3.3 * I3Units.ns
-		timeConstant1 = ( tauparam.P0 + tauparam.P1/(1+exp(-(temperature/tauparam.P2))) ) * I3Units.ns
-		timeConstant2 = ( tauparam.P3 + tauparam.P4/(1+exp(-(temperature/tauparam.P5))) ) * I3Units.ns
-  
-		Tau1OverSampleWidth = timeConstant1/binSize
-		Tau2OverSampleWidth = timeConstant2/binSize
-  
-		factor = tauparam.TauFrac
-  
-		Exp1 = exp(-1./Tau1OverSampleWidth)
-		Exp2 = exp(-1./Tau2OverSampleWidth)
-
-		A1 = Tau1OverSampleWidth*(1.- Exp1)
-		A2 = Tau2OverSampleWidth*(1.- Exp2)
-  
-		C1 = (1. - factor) * Tau1OverSampleWidth
-		C2 =        factor * Tau2OverSampleWidth
-  
-		w1 = C1/(C1+C2)
-		w2 = C2/(C1+C2)
-  
-		coef0 = 1./(w1*A1 + w2*A2)
-		coef1 = w1*A1*A1/Tau1OverSampleWidth
-		coef2 = w2*A2*A2/Tau2OverSampleWidth
-
-		S1 = 0.
-		S2 = 0.
-  
-		X = 0
-
-		for bin in range(128):
-			S1 = X + Exp1*S1
-			S2 = X + Exp2*S2
-
-			outputWaveform[bin] =  inputWaveform[bin] * 1./ coef0 - coef1*S1 - coef2*S2
-			X = inputWaveform[bin]
 		
 #		if ((not ((cal_this_om.TauParameters.P0 == 10960 and cal_this_om.TauParameters.P1 == 56665 and
 #						cal_this_om.TauParameters.P2 == 6.5 and cal_this_om.TauParameters.P3 == 500 and
