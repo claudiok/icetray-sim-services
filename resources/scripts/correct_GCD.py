@@ -85,11 +85,10 @@ for e,p in dom_geo:
 				status.domStatus[e].lcMode = dataclasses.I3DOMStatus.LCMode.UpOrDown
 				print " %s correcting LCMode to %d" % ( str(e), int(dom_status[e].lcMode) )
 				
-		if cal_this_om.DOMCalVersion != "7.4.0" :
-			print '  %s  %s' % (str(e), cal_this_om.DOMCalVersion)
-
+		if cal_this_om.DOMCalVersion != "7.5.0" :
+			#print '  %s  %s' % (str(e), cal_this_om.DOMCalVersion)
 			calibration.domCal[e].DOMCalVersion = '7.5.0'
-			print calibration.domCal[e].DOMCalVersion
+			#print calibration.domCal[e].DOMCalVersion
 		
 		threshold = dataclasses.SPEPMTThreshold(status_this_om,
 							cal_this_om) / I3Units.mV
