@@ -103,6 +103,20 @@ for e,p in dom_geo:
 			print calibration.domCal[e].PMTDiscCalib.slope
 			print calibration.domCal[e].PMTDiscCalib.intercept
 
+		if e.GetString() == 87 or e.GetString() == 88 :
+			# make a new omkey
+			k = icetray.OMKey(e.GetString() - 8,e.GetOM())
+			print "moving %s to %s" % (str(e),str(k))
+			# move the I3OMGeo
+			dom_geo[k] = dom_geo[e]
+			del dom_geo[e]
+			# move the I3DOMCalibration
+ 			dom_cal[k] = dom_cal[e]
+			del dom_cal[e]
+			# move the I3DOMStatus
+ 			dom_status[k] = dom_status[e]
+			del dom_status[e]			
+			
 del cal_frame['I3Calibration']
 cal_frame['I3Calibration'] = calibration
 new_gcdfile.push(geo_frame)
