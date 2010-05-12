@@ -29,3 +29,25 @@ def get_domstatus(gcdfile):
 
     return frame.Get("I3DetectorStatus").domStatus
 
+def get_triggerstatus(gcdfile):
+    frame = gcdfile.pop_frame()
+    while not frame.Has("I3DetectorStatus"): frame = gcdfile.pop_frame()
+
+    return frame.Get("I3DetectorStatus").triggerStatus
+
+def put_triggerstatus(ts,gcdfile,name):
+    #gcdfile.rewind()
+    newgcd = dataio.I3File(name,dataio.I3File.Mode.Writing)
+    frame = gcdfile.pop_frame()
+    newgcd.push(frame)
+    while not frame.Has("I3DetectorStatus"):
+        newgcd.push(frame)
+        frame = gcdfile.pop_frame()
+        
+    ds = frame.Get("I3DetectorStatus")
+    del frame["I3DetectorStatus"]
+    ds.triggerStatus = ts
+    frame["I3DetectorStatus"] = ds
+    newgcd.push(frame)
+
+    return newgcd
