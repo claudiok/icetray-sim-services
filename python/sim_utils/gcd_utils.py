@@ -39,7 +39,7 @@ def put_triggerstatus(ts,gcdfile,name):
     #gcdfile.rewind()
     newgcd = dataio.I3File(name,dataio.I3File.Mode.Writing)
     frame = gcdfile.pop_frame()
-    newgcd.push(frame)
+    #newgcd.push(frame)
     while not frame.Has("I3DetectorStatus"):
         newgcd.push(frame)
         frame = gcdfile.pop_frame()
