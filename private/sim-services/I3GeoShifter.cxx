@@ -55,13 +55,19 @@ namespace I3GeoShifter{
 
   void ShiftTree(const std::pair<double,double>& xy, 
 		 I3MCTreePtr mctree){
-    I3MCTree::iterator t_iter;
-    for(t_iter = mctree->begin();
-	t_iter != mctree->end(); t_iter++){
-      double x(t_iter->GetX() + xy.first);
-      double y(t_iter->GetY() + xy.second);
-      double z(t_iter->GetZ());
-      t_iter->SetPos(x,y,z);
+    if( !isnan(xy.first) && !isnan(xy.second) ){
+      I3MCTree::iterator t_iter;
+      for(t_iter = mctree->begin();
+	  t_iter != mctree->end(); t_iter++){
+	double x(t_iter->GetX() + xy.first);
+	double y(t_iter->GetY() + xy.second);
+	double z(t_iter->GetZ());
+	t_iter->SetPos(x,y,z);
+      }
+    }else{
+      log_debug("Invalid detector center (%f,%f)",xy.first,xy.second);
+      log_debug("The particles in the I3MCTree will not be shifted.");
+      log_debug("Is there a valid Geometry in the frame?");
     }
   }
 

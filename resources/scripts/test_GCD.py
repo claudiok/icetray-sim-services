@@ -80,8 +80,8 @@ for e,p in dom_geo:
 		status_this_om = dom_status[e]
 
 		# checks for hit-maker
-		if ( status_this_om.pmtHV < 600*I3Units.V or \
-		     status_this_om.pmtHV > 1600*I3Units.V ) :
+		if ( status_this_om.pmtHV < 100*I3Units.V or \
+		     status_this_om.pmtHV > 2000*I3Units.V ) :
 			print '  %s  pmtHV = %s V !!' % (str(e), status_this_om.pmtHV/I3Units.V)
 
 		if e.GetOM() < 61 :
