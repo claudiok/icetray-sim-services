@@ -45,7 +45,7 @@ I3MCTimeGeneratorServiceFactory::I3MCTimeGeneratorServiceFactory(const I3Context
   AddParameter("DAQTime", "DAQTime of the run in 1/10 of ns", daqTime_);
   AddParameter("MJD","Modified Julian Date",mjd_);
   AddParameter("MJDSeconds","Number of seconds after the start of the MJD.",mjd_s_);
-  AddParameter("MJDNanoSeconds","Number of nanoseconds after the start of the MJD.",mjd_ns_);
+  AddParameter("MJDNanoSeconds","Number of nanoseconds after the start of the second given in MJDSeconds.",mjd_ns_);
   AddParameter("InstallEventServiceAs", "Name to install event service under", eventServiceName_);
   AddParameter("RunNumber", "Run Number", runNumber_);
   AddParameter("EventID", "Event ID", eventID_);
