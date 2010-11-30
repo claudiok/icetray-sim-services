@@ -13,41 +13,34 @@ from optparse import OptionParser
 
 parser = OptionParser()
 
-parser.add_option("-g","--gcdfile",
-                  dest="GCDFILE", default=expandvars("$I3_PORTS/test-data/sim/GeoCalibDetectorStatus_IC59.55040.i3.gz"),
-                  help="GCD file to test.")
+parser.add_option("-i","--infile",
+                  dest="INFILE", default=expandvars("$I3_BUILD/GeoCalibDetectorStatus_IC79.55380_candidate.i3.gz"),
+                  help="GCD file to correct.")
+
+parser.add_option("-o","--outfile",
+                  dest="OUTFILE", default=expandvars("$I3_BUILD/GeoCalibDetectorStatus_IC79.55380_corrected.i3.gz"),
+                  help="Corrected GCD file.")
 
 (options, args) = parser.parse_args()
 
 
-gcdfile = dataio.I3File(options.GCDFILE)
+infile = dataio.I3File(options.INFILE)
 
-new_gcdfile = dataio.I3File('new_gcd.i3.gz', dataio.I3File.Mode.Writing)
-
-geo_frame = gcdfile.pop_frame()
-while not geo_frame.Has('I3Geometry'): geo_frame = gcdfile.pop_frame()
+geo_frame = infile.pop_frame()
+while not geo_frame.Has('I3Geometry'): geo_frame = infile.pop_frame()
 geometry = geo_frame.Get('I3Geometry')
 
-cal_frame = gcdfile.pop_frame()
-while not cal_frame.Has('I3Calibration'): cal_frame = gcdfile.pop_frame()
+cal_frame = infile.pop_frame()
+while not cal_frame.Has('I3Calibration'): cal_frame = infile.pop_frame()
 calibration = cal_frame.Get('I3Calibration')
 
-status_frame = gcdfile.pop_frame()
-while not status_frame.Has('I3DetectorStatus'): status_frame = gcdfile.pop_frame()
+status_frame = infile.pop_frame()
+while not status_frame.Has('I3DetectorStatus'): status_frame = infile.pop_frame()
 status = status_frame.Get('I3DetectorStatus')
 
 dom_geo = geometry.omgeo
 dom_cal = calibration.domCal
 dom_status = status.domStatus
-
-geo_strings_to_check = range(1,87)
-for s in geo_strings_to_check:
-	found = False
-	for e,p in dom_geo:
-		if e.GetString() == s :
-			found = True
-	if not found:
-		print "string %d does not exist in the geometry" % s
 	
 c_and_d_strings_to_check = [ 
 	75, 76, 77, 78, 68, 69, 70, 71, 72, 73,
@@ -55,58 +48,46 @@ c_and_d_strings_to_check = [
 	53, 54, 55, 56, 57, 58, 59, 44, 45, 46,
 	47, 48, 49, 50, 36, 83, 37, 38, 39, 40,
 	26, 27, 28, 29, 30, 17, 18, 19, 20, 21,
-	10, 11, 12, 13,  2,  3,  4,  5,  6
+	10, 11, 12, 13,  2,  3,  4,  5,  6,
+	8,  9,  16, 25,  35, 85, 84, 82, 81, 86,
+	43, 34, 24, 15,  23, 33, 42, 51, 32, 41
 	]
-
-for s in c_and_d_strings_to_check :
-	found_cal = False
-	found_stat = False
-	for omkey in [icetray.OMKey(s,om) for om in range(61)] :
-		if omkey in dom_cal :
-			found_cal = True
-		if omkey in dom_status :
-			found_stat = True
-		if found_cal and found_stat : continue
-	if not found_cal : print 'string %s is missing from the calibration' % s
-	if not found_stat : print 'string %s is missing from the detector status' % s
 
 for e,p in dom_geo:
 
-	if e in badOMs and e in dom_cal and e in dom_status:
-		print "DOM %s is in the bad DOM list but contains status and calibration records" % str(e)
-	
 	if e not in badOMs and e in dom_cal and e in dom_status:				
 		cal_this_om = dom_cal[e]
 		status_this_om = dom_status[e]
 
 		if e.GetOM() == 39 and e.GetString() == 72 :
-			print "%s LCMode is %s" % ( str(e), int(dom_status[e].lcMode) )
 			if status_this_om.lcMode != dataclasses.I3DOMStatus.LCMode.UpOrDown :
 				status.domStatus[e].lcMode = dataclasses.I3DOMStatus.LCMode.UpOrDown
 				print " %s correcting LCMode to %d" % ( str(e), int(dom_status[e].lcMode) )
 				
-		if cal_this_om.DOMCalVersion != "7.5.0" :
-			#print '  %s  %s' % (str(e), cal_this_om.DOMCalVersion)
+		if float(cal_this_om.DOMCalVersion[:3]) < 7.5 :
+			print "Bad DOMCal"
+			print '  %s  DOMCalVersion = %s' % (str(e), cal_this_om.DOMCalVersion)
 			calibration.domCal[e].DOMCalVersion = '7.5.0'
-			#print calibration.domCal[e].DOMCalVersion
+			print '  correcting to ',calibration.domCal[e].DOMCalVersion		
 		
 		threshold = dataclasses.SPEPMTThreshold(status_this_om,
 							cal_this_om) / I3Units.mV
 
 		if threshold < 0 :
-			print '  %s  %f' % (str(e), threshold)
-			print 'changing the calib'
+			print 'Pathological PMT discriminator threshold'
+			print '  %s  threshold = %2.2f mV' % (str(e), threshold)
 			fit = dataclasses.LinearFit()
 			fit.slope = NaN
 			fit.intercept = NaN
 			calibration.domCal[e].PMTDiscCalib = fit
-			print calibration.domCal[e].PMTDiscCalib.slope
-			print calibration.domCal[e].PMTDiscCalib.intercept
+			print '  correcting to %2.2f mV' % \
+			      (dataclasses.SPEPMTThreshold(status_this_om,calibration.domCal[e])/I3Units.mV)
 
 		if e.GetString() == 87 or e.GetString() == 88 :
+			print "There should be no string 87 or 88"
 			# make a new omkey
 			k = icetray.OMKey(e.GetString() - 8,e.GetOM())
-			print "moving %s to %s" % (str(e),str(k))
+			print "   moving %s to %s" % (str(e),str(k))
 			# move the I3OMGeo
 			dom_geo[k] = dom_geo[e]
 			del dom_geo[e]
@@ -117,9 +98,18 @@ for e,p in dom_geo:
  			dom_status[k] = dom_status[e]
 			del dom_status[e]			
 			
+del geo_frame['I3Geometry']
+geo_frame['I3Geometry'] = geometry
+
 del cal_frame['I3Calibration']
 cal_frame['I3Calibration'] = calibration
-new_gcdfile.push(geo_frame)
-new_gcdfile.push(cal_frame)
-new_gcdfile.push(status_frame)
-new_gcdfile.close()
+
+del status_frame['I3DetectorStatus']
+status_frame['I3DetectorStatus'] = status
+
+
+outfile = dataio.I3File(options.OUTFILE, dataio.I3File.Mode.Writing)
+outfile.push(geo_frame)
+outfile.push(cal_frame)
+outfile.push(status_frame)
+outfile.close()
