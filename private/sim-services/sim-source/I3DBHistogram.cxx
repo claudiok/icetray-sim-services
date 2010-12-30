@@ -10,6 +10,8 @@
  *
  */
 
+#ifdef I3_USE_ROOT
+
 #include "sim-services/sim-source/I3DBHistogram.h"
 #include <interfaces/I3CalibrationService.h>
 #include <interfaces/I3DetectorStatusService.h>
@@ -1547,4 +1549,6 @@ void SetDomNoiseRate(TH1D* h){
   h->SetXTitle("rate(Hz)");
   FitAndFormatHisto(h,"calibration/DOMNoiseRates.png",defVal.str(),true);
 };
+
+#endif
 
