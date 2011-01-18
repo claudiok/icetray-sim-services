@@ -1,5 +1,6 @@
 #include "sim-services/tweak-sources/I3TweakDOMStatusService.h"
 #include "dataclasses/status/I3DetectorStatus.h"
+#include "interfaces/I3GeometryService.h"
 #include "dataclasses/I3Units.h"
 #include "icetray/I3TrayHeaders.h"
 
@@ -8,6 +9,7 @@ I3_SERVICE_FACTORY(I3TweakDOMStatusService);
 I3TweakDOMStatusService::I3TweakDOMStatusService(const I3Context& context) :
   I3ServiceFactory(context),
   oldServiceName_(I3DefaultName<I3DetectorStatusService>::value()),
+  geometryServiceName_(I3DefaultName<I3GeometryService>::value()),
   tweakedServiceName_(I3DefaultName<I3TweakDOMStatusService>::value()),
   icetopLCWindowPre_(NAN),
   icetopLCWindowPost_(NAN),
@@ -44,6 +46,7 @@ I3TweakDOMStatusService::I3TweakDOMStatusService(const I3Context& context) :
   nBinsFADC_IceTop_(INT_MIN)
 {
   AddParameter("OldServiceName","Name of service to tweak",oldServiceName_);
+  AddParameter("GeometryServiceName","Name of geometry service",geometryServiceName_);
   AddParameter("TweakedServiceName","Name of tweaked service",tweakedServiceName_);
   AddParameter("IceTopLCWindowPre","",icetopLCWindowPre_);
   AddParameter("IceTopLCWindowPost","",icetopLCWindowPost_);
@@ -84,6 +87,7 @@ I3TweakDOMStatusService::I3TweakDOMStatusService(const I3Context& context) :
 void I3TweakDOMStatusService::Configure()
 {  
   GetParameter("OldServiceName",oldServiceName_);
+  GetParameter("GeometryServiceName",geometryServiceName_);
   GetParameter("TweakedServiceName",tweakedServiceName_);
   GetParameter("IceTopLCWindowPre",icetopLCWindowPre_);
   GetParameter("IceTopLCWindowPost",icetopLCWindowPost_);
@@ -124,9 +128,12 @@ bool I3TweakDOMStatusService::InstallService(I3Context& services)
 {
   if(!status_service_){
     I3DetectorStatusServicePtr old_status = context_.Get<I3DetectorStatusServicePtr>(oldServiceName_);
+
+    I3GeometryServicePtr geo_service = context_.Get<I3GeometryServicePtr>(geometryServiceName_);
+
     status_service_ = 
       I3TweakDOMStatusPtr
-      (new I3TweakDOMStatus(old_status));
+      (new I3TweakDOMStatus(old_status,geo_service));
     log_debug("Made new I3TweakDOMStatusService.");
     //Configure the calibration
     if(!isnan(icetopLCWindowPre_))

@@ -56,6 +56,7 @@ I3TweakCalibrationService::I3TweakCalibrationService(const I3Context& context) :
   pmt_disc_thresh_int_(NAN)
 {
   AddParameter("OldServiceName","Name of service to tweak",oldServiceName_);
+  AddParameter("GeometryServiceName","Name of geometry service",geometryServiceName_);
   AddParameter("TweakedServiceName","Name of tweaked service",tweakedServiceName_);
   AddParameter("Temperature","",temperature_);
   AddParameter("FADCBaselineFit_slope","",fadcBaselineFit_slope_);
@@ -110,6 +111,7 @@ I3TweakCalibrationService::I3TweakCalibrationService(const I3Context& context) :
 void I3TweakCalibrationService::Configure()
 {  
   GetParameter("OldServiceName",oldServiceName_);
+  GetParameter("GeometryServiceName",geometryServiceName_);
   GetParameter("TweakedServiceName",tweakedServiceName_);
   GetParameter("Temperature",temperature_);
   GetParameter("FADCBaselineFit_slope",fadcBaselineFit_slope_);
@@ -165,9 +167,12 @@ bool I3TweakCalibrationService::InstallService(I3Context& services)
 {
   if(!cal_service_){
     I3CalibrationServicePtr old_cal = context_.Get<I3CalibrationServicePtr>(oldServiceName_);
+
+    I3GeometryServicePtr geo_service = context_.Get<I3GeometryServicePtr>(geometryServiceName_);
+
     cal_service_ = 
       I3TweakCalibrationPtr
-      (new I3TweakCalibration(old_cal));
+      (new I3TweakCalibration(old_cal,geo_service));
     log_debug("Made new I3TweakCalibration.");
     //Configure the calibration
     if(!isnan(temperature_))

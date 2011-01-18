@@ -4,7 +4,7 @@
 #include "dataclasses/I3Units.h"
 #include "icetray/I3TrayHeaders.h"
 
-I3TweakCalibration::I3TweakCalibration(I3CalibrationServicePtr c) :
+I3TweakCalibration::I3TweakCalibration(I3CalibrationServicePtr c, I3GeometryServicePtr g) :
   temperature_(NAN),
   fadcBaselineFit_slope_(NAN),
   fadcBaselineFit_intercept_(NAN),
@@ -50,6 +50,7 @@ I3TweakCalibration::I3TweakCalibration(I3CalibrationServicePtr c) :
   mpe_disc_thresh_int_(NAN)
 {
   cal_service_ = c;
+  geometry_service_ = g;
 }
 
 
@@ -66,13 +67,25 @@ I3TweakCalibration::GetCalibration(I3Time time){
     log_fatal("This service does not create calibration objects.");
   }
 
+  I3GeometryConstPtr geo;
+  if(!geometry_service_){
+    geo = geometry_service_->GetGeometry(time);
+    if(!geo) log_fatal("could not get geometry");
+  }else log_fatal("this service needs a geometry");
+
   //changed all inice to om_geo
   map<OMKey,I3DOMCalibration>::iterator iter;
   for( iter  = calibration->domCal.begin(); 
        iter != calibration->domCal.end(); 
        iter++ ){
 
-    if (iter->first.GetString() < 0) //skip AMANDA
+    I3OMGeoMap::const_iterator omgeo_iter = geo->omgeo.find(iter->first);
+    I3OMGeo::OMType omtype(I3OMGeo::UnknownType);
+    if(omgeo_iter != geo->omgeo.end()){
+      omtype = omgeo_iter->second.omtype;
+    }
+
+    if ( omtype == I3OMGeo::AMANDA ) //skip AMANDA
       continue;
 
     if(!isnan(temperature_))

@@ -8,7 +8,7 @@
 #include "dataclasses/physics/I3Trigger.h"
 #include "dataclasses/status/I3TriggerStatus.h"
 
-I3TweakDOMStatus::I3TweakDOMStatus(I3DetectorStatusServicePtr s) :						     
+I3TweakDOMStatus::I3TweakDOMStatus(I3DetectorStatusServicePtr s, I3GeometryServicePtr g) :
   icetopLCWindowPre_(NAN),
   icetopLCWindowPost_(NAN),
   icetopHighGainVoltage_(NAN),
@@ -44,6 +44,7 @@ I3TweakDOMStatus::I3TweakDOMStatus(I3DetectorStatusServicePtr s) :
   nBinsFADC_IceTop_(INT_MIN)
 {
   old_status_service_ = s;
+  geometry_service_ = g;
 }
 
 I3DetectorStatusConstPtr
@@ -57,13 +58,25 @@ I3TweakDOMStatus::GetDetectorStatus(I3Time time)
     }else log_fatal("this service does not create detector status objects");
   }
 
+  I3GeometryConstPtr geo;
+  if(!geometry_service_){
+    geo = geometry_service_->GetGeometry(time);
+    if(!geo) log_fatal("could not get geometry");
+  }else log_fatal("this service needs a geometry");
+
   //changed all inice to om_geo
   map<OMKey,I3DOMStatus>::iterator iter;
   for( iter  = status_->domStatus.begin(); 
        iter != status_->domStatus.end(); 
        iter++ ){
 
-    if (iter->first.GetString()<0 )//skip AMANDA
+    I3OMGeoMap::const_iterator omgeo_iter = geo->omgeo.find(iter->first);
+    I3OMGeo::OMType omtype(I3OMGeo::UnknownType);
+    if(omgeo_iter != geo->omgeo.end()){
+      omtype = omgeo_iter->second.omtype;
+    }
+
+    if ( omtype == I3OMGeo::AMANDA )//skip AMANDA
       continue;
 
     if(statusATWDa_ != I3DOMStatus::Unknown)
@@ -84,7 +97,7 @@ I3TweakDOMStatus::GetDetectorStatus(I3Time time)
     if(dacFADCRef_ != INT_MIN)
       iter->second.dacFADCRef = dacFADCRef_;
   
-    if ( iter->first.GetOM()>60 )
+    if ( omtype == I3OMGeo::IceTop )
       {
 
 	if( icetop_LCSpan_ != INT_MIN)
@@ -127,10 +140,23 @@ I3TweakDOMStatus::GetDetectorStatus(I3Time time)
       }	
     else
       {
-	if(iter->first.GetOM() == 1 && 
+
+	//find the boundaries on this string
+	unsigned topDOM(INT_MAX);
+	unsigned bottomDOM(0);
+
+	for(I3OMGeoMap::const_iterator g_iter = geo->omgeo.begin();
+	    g_iter != geo->omgeo.end(); g_iter++){
+	  if( g_iter->first.GetString() == iter->first.GetString() ){
+	    if( g_iter->first.GetOM() > bottomDOM ) bottomDOM = g_iter->first.GetOM() ;
+	    if( g_iter->first.GetOM() < topDOM ) topDOM = g_iter->first.GetOM() ;
+	  }
+	}
+
+	if(iter->first.GetOM() == topDOM && 
 	   lcMode_inice_first_ != I3DOMStatus::UnknownLCMode)
 	  iter->second.lcMode = lcMode_inice_first_;
-	else if(iter->first.GetOM() == 60 && 
+	else if(iter->first.GetOM() == bottomDOM && 
 		lcMode_inice_last_ != I3DOMStatus::UnknownLCMode)
 	  iter->second.lcMode = lcMode_inice_last_;
 	else if(lcMode_inice_bulk_ != I3DOMStatus::UnknownLCMode)	  

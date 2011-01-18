@@ -48,6 +48,7 @@ public:
   I3TweakDOMStatusPtr status_service_;
 
   std::string oldServiceName_;
+  std::string geometryServiceName_;
   std::string tweakedServiceName_;
 
   /**

@@ -48,6 +48,7 @@ public:
   I3TweakCalibrationPtr cal_service_;
 
   std::string oldServiceName_;
+  std::string geometryServiceName_;
   std::string tweakedServiceName_;
 
   double temperature_;

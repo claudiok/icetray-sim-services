@@ -16,6 +16,7 @@
 
 #include "interfaces/I3CalibrationService.h"
 #include <icetray/I3Logging.h>
+#include "interfaces/I3GeometryService.h"
 
 /**
  *
@@ -28,7 +29,7 @@ class I3TweakCalibration : public I3CalibrationService
 {
 public:
 
-  I3TweakCalibration(I3CalibrationServicePtr c);
+  I3TweakCalibration(I3CalibrationServicePtr c, I3GeometryServicePtr g);
 
   virtual I3CalibrationConstPtr GetCalibration(I3Time time);
   virtual ~I3TweakCalibration() { };
@@ -87,6 +88,8 @@ public:
  private:
   I3TweakCalibration();
   I3CalibrationServicePtr cal_service_;
+
+  I3GeometryServicePtr geometry_service_;
 
   double temperature_;
 

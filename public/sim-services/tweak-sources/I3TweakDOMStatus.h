@@ -16,6 +16,7 @@
 #include "dataclasses/physics/I3Trigger.h"
 #include "dataclasses/status/I3TriggerStatus.h"
 #include <dataclasses/status/I3DOMStatus.h>
+#include "interfaces/I3GeometryService.h"
 /**
  *
  * @brief This service allows you to fill the detector status data 
@@ -27,7 +28,7 @@ class I3TweakDOMStatus : public I3DetectorStatusService
 {
 public:
 
-  I3TweakDOMStatus(I3DetectorStatusServicePtr);
+  I3TweakDOMStatus(I3DetectorStatusServicePtr, I3GeometryServicePtr);
 
   virtual I3DetectorStatusConstPtr GetDetectorStatus(I3Time time);
 
@@ -78,6 +79,8 @@ public:
  private:
   I3TweakDOMStatus();
   I3DetectorStatusServicePtr old_status_service_;
+
+  I3GeometryServicePtr geometry_service_;
 
   shared_ptr<I3DetectorStatus> status_;
 
