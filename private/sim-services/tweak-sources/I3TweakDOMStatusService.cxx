@@ -129,6 +129,7 @@ bool I3TweakDOMStatusService::InstallService(I3Context& services)
   if(!status_service_){
     I3DetectorStatusServicePtr old_status = context_.Get<I3DetectorStatusServicePtr>(oldServiceName_);
 
+    cout<<"  name = "<<geometryServiceName_<<endl;
     I3GeometryServicePtr geo_service = context_.Get<I3GeometryServicePtr>(geometryServiceName_);
 
     status_service_ = 

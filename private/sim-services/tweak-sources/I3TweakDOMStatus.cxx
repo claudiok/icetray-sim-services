@@ -148,7 +148,8 @@ I3TweakDOMStatus::GetDetectorStatus(I3Time time)
 
 	for(I3OMGeoMap::const_iterator g_iter = geo->omgeo.begin();
 	    g_iter != geo->omgeo.end(); g_iter++){
-	  if( g_iter->first.GetString() == iter->first.GetString() ){
+	  if( g_iter->first.GetString() == iter->first.GetString() &&
+	      g_iter->second.omtype == I3OMGeo::IceCube ){
 	    if( g_iter->first.GetOM() > bottomDOM ) bottomDOM = g_iter->first.GetOM() ;
 	    if( g_iter->first.GetOM() < topDOM ) topDOM = g_iter->first.GetOM() ;
 	  }

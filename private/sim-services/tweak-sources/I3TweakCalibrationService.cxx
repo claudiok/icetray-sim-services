@@ -8,6 +8,7 @@ I3_SERVICE_FACTORY(I3TweakCalibrationService);
 I3TweakCalibrationService::I3TweakCalibrationService(const I3Context& context) :
   I3ServiceFactory(context),
   oldServiceName_(I3DefaultName<I3CalibrationService>::value()),
+  geometryServiceName_(I3DefaultName<I3GeometryService>::value()),
   tweakedServiceName_(I3DefaultName<I3TweakCalibrationService>::value()),
   temperature_(NAN),
   fadcBaselineFit_slope_(NAN),

@@ -32,7 +32,6 @@ using namespace std;
 // Test some of Calibrate Module functionality
 TEST_GROUP(SimSource);
 
-/*
 TEST(clean_construction){
   clean_constructor_test<I3MCSourceServiceFactory>();
   clean_constructor_test<I3DBHistogram>();
@@ -42,7 +41,6 @@ TEST(clean_construction){
   clean_constructor_test<I3TweakCalibrationService>();
   clean_constructor_test<I3TweakTriggerService>();
 }
-*/
 
 TEST(default_config)
 {
