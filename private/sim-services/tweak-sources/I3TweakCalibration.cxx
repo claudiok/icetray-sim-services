@@ -50,6 +50,7 @@ I3TweakCalibration::I3TweakCalibration(I3CalibrationServicePtr c, I3GeometryServ
   mpe_disc_thresh_int_(NAN)
 {
   cal_service_ = c;
+  //if(!g) log_fatal("oops!!");
   geometry_service_ = g;
 }
 
@@ -68,10 +69,11 @@ I3TweakCalibration::GetCalibration(I3Time time){
   }
 
   I3GeometryConstPtr geo;
-  if(!geometry_service_){
+  if(geometry_service_){
     geo = geometry_service_->GetGeometry(time);
-    if(!geo) log_fatal("could not get geometry");
   }else log_fatal("this service needs a geometry");
+
+  if(!geo) log_fatal("could not get geometry");
 
   //changed all inice to om_geo
   map<OMKey,I3DOMCalibration>::iterator iter;

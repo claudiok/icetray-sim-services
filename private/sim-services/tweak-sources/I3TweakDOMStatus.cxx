@@ -59,10 +59,11 @@ I3TweakDOMStatus::GetDetectorStatus(I3Time time)
   }
 
   I3GeometryConstPtr geo;
-  if(!geometry_service_){
+  if(geometry_service_){
     geo = geometry_service_->GetGeometry(time);
-    if(!geo) log_fatal("could not get geometry");
   }else log_fatal("this service needs a geometry");
+
+  if(!geo) log_fatal("could not get geometry");
 
   //changed all inice to om_geo
   map<OMKey,I3DOMStatus>::iterator iter;
