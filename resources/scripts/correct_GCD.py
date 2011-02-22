@@ -87,6 +87,8 @@ for e,p in dom_geo:
 			print "There should be no string 87 or 88"
 			# make a new omkey
 			k = icetray.OMKey(e.GetString() - 8,e.GetOM())
+			if k in dom_geo :
+				print "Ooops!  It already exists!"
 			print "   moving %s to %s" % (str(e),str(k))
 			# move the I3OMGeo
 			dom_geo[k] = dom_geo[e]

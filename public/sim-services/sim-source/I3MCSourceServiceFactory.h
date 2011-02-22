@@ -32,8 +32,6 @@ class I3MCSourceServiceFactory : public I3ServiceFactory
 
  private:
 
-  void FillTriggers(shared_ptr<I3MCDetectorStatusService>);
-
   std::string oldCalServiceName_;
   std::string oldStatusServiceName_;
 
@@ -43,10 +41,6 @@ class I3MCSourceServiceFactory : public I3ServiceFactory
 
   bool installCalibration_;
   bool installDetectorStatus_;
-
-  bool installInIceTriggers_;
-  bool installIceTopTriggers_;
-  bool installTWRTriggers_;
 
   vector<int> skipStrings_;
   vector<int> skipStations_;

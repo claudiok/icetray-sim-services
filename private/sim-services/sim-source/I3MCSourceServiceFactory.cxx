@@ -18,16 +18,18 @@ I3MCSourceServiceFactory::
 I3MCSourceServiceFactory(const I3Context& context) : 
   I3ServiceFactory(context),
   installCalibration_(true),
-  installDetectorStatus_(true),
-  installInIceTriggers_(true),
-  installIceTopTriggers_(true),
-  installTWRTriggers_(true)
+  installDetectorStatus_(true)
 {
   oldCalServiceName_ = I3DefaultName<I3CalibrationService>::value();
   oldStatusServiceName_ = I3DefaultName<I3DetectorStatusService>::value();
   calServiceName_ = I3DefaultName<I3CalibrationService>::value();
   statusServiceName_ = I3DefaultName<I3DetectorStatusService>::value();
   geoServiceName_ = I3DefaultName<I3GeometryService>::value();
+
+  // these are deprecated
+  bool installInIceTriggers(false);
+  bool installIceTopTriggers(false);
+  bool installTWRTriggers(false);
 
   AddParameter("CalServiceName","Name of calibration service to install",calServiceName_);
   AddParameter("StatusServiceName","Name of detector status service to install",statusServiceName_);
@@ -36,9 +38,9 @@ I3MCSourceServiceFactory(const I3Context& context) :
   AddParameter("GeoServiceName","Name of geometry service",geoServiceName_);
   AddParameter("InstallCalibration","Install Calibration",installCalibration_);
   AddParameter("InstallDetectorStatus","Install DetectorStatus",installDetectorStatus_);
-  AddParameter("InstallInIceTriggers","Install InIce Triggers",installInIceTriggers_);
-  AddParameter("InstallIceTopTriggers","Install IceTop Triggers",installIceTopTriggers_);
-  AddParameter("InstallTWRTriggers","Install TWR Triggers",installTWRTriggers_);
+  AddParameter("InstallInIceTriggers","Install InIce Triggers",installInIceTriggers);
+  AddParameter("InstallIceTopTriggers","Install IceTop Triggers",installIceTopTriggers);
+  AddParameter("InstallTWRTriggers","Install TWR Triggers",installTWRTriggers);
   AddParameter("DoNotModifyStrings","Do not modify these strings",skipStrings_);
   AddParameter("DoNotModifyStations","Do not modify these stations",skipStations_);
 }
@@ -48,6 +50,10 @@ I3MCSourceServiceFactory::
 
 void I3MCSourceServiceFactory::Configure()
 {
+  bool installInIceTriggers(false);
+  bool installIceTopTriggers(false);
+  bool installTWRTriggers(false);
+
   GetParameter("OldCalServiceName",oldCalServiceName_);
   GetParameter("OldStatusServiceName",oldStatusServiceName_);
   GetParameter("CalServiceName",calServiceName_);
@@ -55,11 +61,17 @@ void I3MCSourceServiceFactory::Configure()
   GetParameter("GeoServiceName",geoServiceName_);
   GetParameter("InstallCalibration",installCalibration_);
   GetParameter("InstallDetectorStatus",installDetectorStatus_);
-  GetParameter("InstallInIceTriggers",installInIceTriggers_);
-  GetParameter("InstallIceTopTriggers",installIceTopTriggers_);
-  GetParameter("InstallTWRTriggers",installTWRTriggers_);
+  GetParameter("InstallInIceTriggers",installInIceTriggers);
+  GetParameter("InstallIceTopTriggers",installIceTopTriggers);
+  GetParameter("InstallTWRTriggers",installTWRTriggers);
   GetParameter("DoNotModifyStrings",skipStrings_);
   GetParameter("DoNotModifyStations",skipStations_);
+
+  if (installInIceTriggers || installIceTopTriggers || installTWRTriggers){
+    log_error("This feature is deprecated.");
+    log_error("I3MCSourceServiceFactory is no longer responsible for installing triggers.");
+    log_error("You must start with a valid GCD file from a previous season.");
+  }
 }
 
 bool I3MCSourceServiceFactory::InstallService(I3Context& services)
@@ -77,24 +89,9 @@ bool I3MCSourceServiceFactory::InstallService(I3Context& services)
       (new I3MCDetectorStatusService(geo_service,old_status));
     log_debug("Made new I3MCDetectorStatusService.");
 
-    log_trace("number of triggers before insertion = %zu",statusService_->GetTriggerStatusSize());
-    //Fill it with triggers
-    FillTriggers(statusService_);
-    log_trace("number of triggers after insertion = %zu",statusService_->GetTriggerStatusSize());
-
-    //Configure with default parameters
-    //Configure(statusService_);    
-
     statusService_->SetSkipStrings(skipStrings_);
     statusService_->SetSkipStations(skipStations_);
 
-    //Pass the TWR Params map to the detector status
-    I3MCTWRParamsMapPtr twrParams = context_.Get<I3MCTWRParamsMapPtr>("I3MCTWRParamsMap");
-    if(twrParams){
-      statusService_->SetMCTWRParamsMap(twrParams);
-    }else{
-      log_debug("Couldn't find TWR Params Map.  Assuming IceCube only mode.");
-    }
   }
 
   if(!calibrationService_){
@@ -130,141 +127,3 @@ bool I3MCSourceServiceFactory::InstallService(I3Context& services)
 	  
 }
 
-void I3MCSourceServiceFactory::FillTriggers(I3MCDetectorStatusServicePtr s){
-
-  if(installInIceTriggers_){
-    I3Trigger t_smt;
-    t_smt.GetTriggerKey() = TriggerKey(I3InIceTriggerDefaults::SOURCE_ID, 
-				       I3InIceTriggerDefaults::TYPE_ID, 
-				       I3InIceTriggerDefaults::CONFIG_ID);
-
-    I3TriggerStatus ts_smt;
-    ts_smt.GetTriggerName().append("simple_multiplicity");
-    ts_smt.GetTriggerSettings().insert(make_pair("threshold", 
-						 I3InIceTriggerDefaults::THRESHOLD));
-    ts_smt.GetTriggerSettings().insert(make_pair("timeWindow", 
-						 static_cast<int>(I3InIceTriggerDefaults::TIME_WINDOW)));
-
-    I3Trigger t_str;
-    t_str.GetTriggerKey() = TriggerKey(TriggerKey::IN_ICE, 
-				       TriggerKey::STRING, 
-				       666);
-
-    I3TriggerStatus ts_str;
-    ts_str.GetTriggerName().append("simple_multiplicity");
-    ts_str.GetTriggerSettings().insert(make_pair("threshold", 5));
-    ts_str.GetTriggerSettings().insert(make_pair("triggerWindow", 1000));
-    ts_str.GetTriggerSettings().insert(make_pair("max_span", 7));
-    ts_str.GetTriggerSettings().insert(make_pair("veto_depth", 3));
-
-    s->InsertTriggerStatus(t_smt, ts_smt);
-    s->InsertTriggerStatus(t_str, ts_str);
-
-  }    
-
-  if(installIceTopTriggers_){
-    I3Trigger t;
-    t.GetTriggerKey() = TriggerKey(I3IceTopTriggerDefaults::SOURCE_ID,
-				   I3IceTopTriggerDefaults::TYPE_ID,
-				   I3IceTopTriggerDefaults::CONFIG_ID);
-    I3TriggerStatus ts;
-    ts.GetTriggerName().append("simple_multiplicity");
-    ts.GetTriggerSettings().insert(make_pair("threshold", 
-					     I3IceTopTriggerDefaults::THRESHOLD));
-    ts.GetTriggerSettings().insert(make_pair("timeWindow", 
-					     static_cast<int>(I3IceTopTriggerDefaults::TIME_WINDOW)));
-    s->InsertTriggerStatus(t, ts);
-  }
-
-  if(installTWRTriggers_){
-
-    /**
-     *Simple Multiplicity Trigger
-     */
-    I3Trigger smt_trig;
-    smt_trig.GetTriggerKey() = TriggerKey(TriggerKey::AMANDA_TWR_DAQ, TriggerKey::SIMPLE_MULTIPLICITY);
-
-    I3TriggerStatus smt_stat;
-    smt_stat.GetTriggerName().append("multiplicity");
-    smt_stat.GetTriggerSettings().insert(make_pair("dmadd_pretrig_mult",
-						   I3TWRDefaults::DMADD_PRETRIG_MULT));
-    smt_stat.GetTriggerSettings().insert(make_pair("dmadd_mult",
-						  I3TWRDefaults::DMADD_MULT ));
-    smt_stat.GetTriggerSettings().insert(make_pair("dmadd_window",
-						   I3TWRDefaults::DMADD_WINDOW));
-    smt_stat.GetTriggerSettings().insert(make_pair("swamp_op_maxamp",
-						   I3TWRDefaults::SWAMP_OP_MAXAMP));
-    smt_stat.GetTriggerSettings().insert(make_pair("swamp_el_maxamp",
-						   I3TWRDefaults::SWAMP_EL_MAXAMP));
-    smt_stat.GetTriggerSettings().insert(make_pair("twr_op_bins_before",
-						   I3TWRDefaults::TWR_OP_BINS_BEFORE));
-    smt_stat.GetTriggerSettings().insert(make_pair("twr_op_bins_after",
-						   I3TWRDefaults::TWR_OP_BINS_AFTER));
-    smt_stat.GetTriggerSettings().insert(make_pair("twr_op_thresh_end",
-						   I3TWRDefaults::TWR_OP_THRESH_END));
-    smt_stat.GetTriggerSettings().insert(make_pair("twr_el_bins_before",
-						   I3TWRDefaults::TWR_EL_BINS_BEFORE));
-    smt_stat.GetTriggerSettings().insert(make_pair("twr_el_bins_after",
-						   I3TWRDefaults::TWR_EL_BINS_AFTER));
-    smt_stat.GetTriggerSettings().insert(make_pair("twr_el_thresh_end_frac",
-						   I3TWRDefaults::TWR_EL_THRESH_END_FRAC));
-    s->InsertTriggerStatus(smt_trig,smt_stat );
-
-    /**
-     *String Trigger
-     */
-    I3Trigger str_trig;
-    str_trig.GetTriggerKey() = TriggerKey(TriggerKey::AMANDA_TWR_DAQ, TriggerKey::STRING);
-
-    I3TriggerStatus str_stat;
-    str_stat.GetTriggerName().append("string");
-    str_stat.GetTriggerSettings().insert(make_pair("string_1_4_nmod",
-						   I3TWRDefaults::STRING_1_4_NMOD));
-    str_stat.GetTriggerSettings().insert(make_pair("string_1_4_mult",
-						   I3TWRDefaults::STRING_1_4_MULT));
-    str_stat.GetTriggerSettings().insert(make_pair("string_5_19_nmod",
-						   I3TWRDefaults::STRING_5_19_NMOD));
-    str_stat.GetTriggerSettings().insert(make_pair("string_5_19_mult",
-						   I3TWRDefaults::STRING_5_19_MULT));
-    str_stat.GetTriggerSettings().insert(make_pair("string_mult_coin",
-						   I3TWRDefaults::STRING_MULT_COIN));
-    str_stat.GetTriggerSettings().insert(make_pair("string_prescale",
-						   I3TWRDefaults::STRING_PRESCALE));
-    s->InsertTriggerStatus(str_trig,str_stat );
-    
-    /**
-     *Fragment Multiplicity Trigger
-     */
-    I3Trigger frag_trig;
-    frag_trig.GetTriggerKey() = TriggerKey(TriggerKey::AMANDA_TWR_DAQ, TriggerKey::FRAGMENT_MULTIPLICITY);
-
-    I3TriggerStatus frag_stat;
-    frag_stat.GetTriggerName().append("fragment");
-    frag_stat.GetTriggerSettings().insert(make_pair("twr_soft_fragmult",
-						    I3TWRDefaults::TWR_SOFT_FRAGMULT));
-    frag_stat.GetTriggerSettings().insert(make_pair("twr_soft_window",
-						    I3TWRDefaults::TWR_SOFT_WINDOW));
-    s->InsertTriggerStatus(frag_trig, frag_stat);
-
-    /**
-     *Volume Trigger
-     */    
-    I3Trigger vol_trig;
-    vol_trig.GetTriggerKey() = TriggerKey(TriggerKey::AMANDA_TWR_DAQ, TriggerKey::VOLUME);
-
-    I3TriggerStatus vol_stat;
-    vol_stat.GetTriggerName().append("volume");
-    vol_stat.GetTriggerSettings().insert(make_pair("twr_soft_n1hit",
-						   I3TWRDefaults::TWR_SOFT_N1HIT));
-    vol_stat.GetTriggerSettings().insert(make_pair("twr_soft_npairs",
-						   I3TWRDefaults::TWR_SOFT_NPAIRS));
-    vol_stat.GetTriggerSettings().insert(make_pair("twr_soft_window",
-						   I3TWRDefaults::TWR_SOFT_WINDOW));
-    vol_stat.GetTriggerSettings().insert(make_pair("twr_soft_vol_startmult",
-						   I3TWRDefaults::TWR_SOFT_VOL_STARTMULT));
-    vol_stat.GetTriggerSettings().insert(make_pair("twr_soft_vol_stopmult",
-						   I3TWRDefaults::TWR_SOFT_VOL_STOPMULT));
-    s->InsertTriggerStatus(vol_trig, vol_stat);
-
-  }
-}
