@@ -53,6 +53,8 @@ c_and_d_strings_to_check = [
 	43, 34, 24, 15,  23, 33, 42, 51, 32, 41
 	]
 
+low_noise_DOMs_l = [ icetray.OMKey(82,54),  icetray.OMKey(84,54),  icetray.OMKey(85,55)]
+
 for e,p in dom_geo:
 
 	if e not in badOMs and e in dom_cal and e in dom_status:				
@@ -99,6 +101,14 @@ for e,p in dom_geo:
 			# move the I3DOMStatus
  			dom_status[k] = dom_status[e]
 			del dom_status[e]			
+
+		# check for unusually low noise DOMs that were incorrectly translated into the DB
+		if e in low_noise_DOMs_l :
+			noiseRate = calibration.domCal[e].DomNoiseRate
+			if noiseRate < 400 * I3Units.hertz :
+				calibration.domCal[e].DomNoiseRate = noiseRate + 1*I3Units.kilohertz
+				print "  correcting noise from %fHz to %fHz in %s" % (noiseRate/I3Units.hertz, calibration.domCal[e].DomNoiseRate/I3Units.hertz,e)
+				
 			
 del geo_frame['I3Geometry']
 geo_frame['I3Geometry'] = geometry
