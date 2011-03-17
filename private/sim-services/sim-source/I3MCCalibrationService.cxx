@@ -62,7 +62,8 @@ I3MCCalibrationService::I3MCCalibrationService(I3GeometryServicePtr g,
   inice_relative_efficiencies_(I3CalibDefaults::INICE_RELATIVE_EFFICIENCY),
   deepcore_relative_efficiencies_(I3CalibDefaults::DEEPCORE_RELATIVE_EFFICIENCY),
   inice_dom_noise_rates_(I3CalibDefaults::INICE_NOISE_RATE),
-  deepcore_dom_noise_rates_(I3CalibDefaults::DEEPCORE_NOISE_RATE)
+  deepcore_dom_noise_rates_(I3CalibDefaults::DEEPCORE_NOISE_RATE),
+  modifyWithExtremePrejudice_(false)
 {
   geo_service_ = g;
   cal_service_ = c;
@@ -86,7 +87,7 @@ I3MCCalibrationService::GetCalibration(I3Time time){
     calibration->startTime = start;
     calibration->endTime = end;
   }
-
+ cerr<<"C : ModifyWithExtremePrejudice = "<<modifyWithExtremePrejudice_<<endl;
   //changed all inice to om_geo
 
   I3DOMCalibration domCalib;
@@ -205,7 +206,7 @@ I3MCCalibrationService::GetCalibration(I3Time time){
     }
 
     //Only add a default if an object does not already exist
-    if(calibration->domCal.find(iter->first) != calibration->domCal.end() ||
+    if((calibration->domCal.find(iter->first) != calibration->domCal.end() && !modifyWithExtremePrejudice_)||
        (geo_sel_utils::exists(iter->first.GetString(),skipStrings_) && 
 	iter->second.omtype == I3OMGeo::IceCube) ||
        (geo_sel_utils::exists(iter->first.GetString(),skipStations_) && 

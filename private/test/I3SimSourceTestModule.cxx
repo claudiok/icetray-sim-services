@@ -255,6 +255,7 @@ void I3SimSourceTestModule::Physics(I3FramePtr frame)
 	  (cal_iter->first.GetOM() > 60))))
       continue;
 
+    cerr<<cal_iter->first<<endl;
     ENSURE_DISTANCE(cal_iter->second.GetATWDDeltaT(0),cal_atwda_deltat_, DISTANCE);
     ENSURE_DISTANCE(cal_iter->second.GetATWDDeltaT(1),cal_atwdb_deltat_, DISTANCE);
 

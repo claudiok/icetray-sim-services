@@ -61,7 +61,8 @@ I3MCDetectorStatusService::I3MCDetectorStatusService(I3GeometryServicePtr g,
   twrBaseline_(I3TWRDefaults::BASELINE),
   deltaCompression_(I3DetStatDefaults::DELTA_COMPRESSION),
   domGainType_(I3DetStatDefaults::DOM_GAIN_TYPE),
-  slcActive_(I3DetStatDefaults::SLC_ACTIVE)
+  slcActive_(I3DetStatDefaults::SLC_ACTIVE),
+  modifyWithExtremePrejudice_(false)
 {
   geo_service_ = g;
   old_status_service_ = s;
@@ -129,6 +130,8 @@ void I3MCDetectorStatusService::SetDOMStatus(I3DetectorStatusPtr& status, const 
 
   domStatus.deltaCompress = deltaCompression_;
 
+  cerr<<"ModifyWithExtremePrejudice = "<<modifyWithExtremePrejudice_<<endl;
+
   I3OMGeoMap::const_iterator iter;
   //changed all inice to omgeo
   unsigned nSkipped(0);
@@ -140,7 +143,7 @@ void I3MCDetectorStatusService::SetDOMStatus(I3DetectorStatusPtr& status, const 
       OMKey thiskey = iter->first;
       I3OMGeo::OMType type = iter->second.omtype;
       
-      if(status->domStatus.find(thiskey) != status->domStatus.end() ||
+      if((status->domStatus.find(thiskey) != status->domStatus.end() && !modifyWithExtremePrejudice_) ||
 	 (geo_sel_utils::exists(thiskey.GetString(),skipStrings_) && 
 	  type == I3OMGeo::IceCube) ||
 	 (geo_sel_utils::exists(thiskey.GetString(),skipStations_) && 
