@@ -141,11 +141,13 @@ void I3MCDetectorStatusService::SetDOMStatus(I3DetectorStatusPtr& status, const 
       OMKey thiskey = iter->first;
       I3OMGeo::OMType type = iter->second.omtype;
       
+      /**
+       * Skip DOMs that already exist unless we're modifying with extreme prejudice
+       * and then we always want to skip the modules that are in the respective Do Not Modify lists.
+       */
       if((status->domStatus.find(thiskey) != status->domStatus.end() && !modifyWithExtremePrejudice_) ||
-	 (geo_sel_utils::exists(thiskey.GetString(),skipStrings_) && 
-	  type == I3OMGeo::IceCube) ||
-	 (geo_sel_utils::exists(thiskey.GetString(),skipStations_) && 
-	  type == I3OMGeo::IceTop) ){
+	 (geo_sel_utils::exists(thiskey.GetString(),skipStrings_) && type == I3OMGeo::IceCube) ||	  
+	 (geo_sel_utils::exists(thiskey.GetString(),skipStations_) && type == I3OMGeo::IceTop) ){	  
 	nSkipped++;
 	continue;
       }	

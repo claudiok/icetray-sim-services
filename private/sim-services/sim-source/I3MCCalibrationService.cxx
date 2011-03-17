@@ -204,12 +204,13 @@ I3MCCalibrationService::GetCalibration(I3Time time){
       domCalib.SetDomNoiseRate(inice_dom_noise_rates_);
     }
 
-    //Only add a default if an object does not already exist
+    /**
+     * Skip DOMs that already exist unless we're modifying with extreme prejudice
+     * and then we always want to skip the modules that are in the respective Do Not Modify lists.
+     */
     if((calibration->domCal.find(iter->first) != calibration->domCal.end() && !modifyWithExtremePrejudice_)||
-       (geo_sel_utils::exists(iter->first.GetString(),skipStrings_) && 
-	iter->second.omtype == I3OMGeo::IceCube) ||
-       (geo_sel_utils::exists(iter->first.GetString(),skipStations_) && 
-	iter->second.omtype == I3OMGeo::IceTop) ){
+       (geo_sel_utils::exists(iter->first.GetString(),skipStrings_) && iter->second.omtype == I3OMGeo::IceCube) ||
+       (geo_sel_utils::exists(iter->first.GetString(),skipStations_) && iter->second.omtype == I3OMGeo::IceTop) ){
       continue;
     }	
     
