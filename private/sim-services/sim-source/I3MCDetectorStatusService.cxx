@@ -130,8 +130,6 @@ void I3MCDetectorStatusService::SetDOMStatus(I3DetectorStatusPtr& status, const 
 
   domStatus.deltaCompress = deltaCompression_;
 
-  cerr<<"ModifyWithExtremePrejudice = "<<modifyWithExtremePrejudice_<<endl;
-
   I3OMGeoMap::const_iterator iter;
   //changed all inice to omgeo
   unsigned nSkipped(0);

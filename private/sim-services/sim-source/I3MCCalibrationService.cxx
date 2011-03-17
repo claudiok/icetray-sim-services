@@ -87,7 +87,6 @@ I3MCCalibrationService::GetCalibration(I3Time time){
     calibration->startTime = start;
     calibration->endTime = end;
   }
- cerr<<"C : ModifyWithExtremePrejudice = "<<modifyWithExtremePrejudice_<<endl;
   //changed all inice to om_geo
 
   I3DOMCalibration domCalib;
