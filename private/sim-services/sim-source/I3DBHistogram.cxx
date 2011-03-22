@@ -336,7 +336,7 @@ void BookDOMCalibHistograms(I3CalibrationConstPtr calib,
 					  20,0.1,0.18);
   TH1D* pmt_disc_calib_int_h = new TH1D("pmt_disc_calib_int",
 					"PMT Discriminator Intercept",
-					20,-90,-60);
+					20,-12,-6);
 
 
   map<OMKey, I3DOMCalibration>::const_iterator cal_iter;

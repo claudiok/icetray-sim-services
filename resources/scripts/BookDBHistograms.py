@@ -23,13 +23,14 @@ parser = OptionParser()
 parser.add_option("-g","--gcdfile",
                   dest = "gcdfile",
                   default = "./database.i3",
-                  help = "Name of output i3file.")
+                  help = "Name of input i3file.")
 
 (options, args) = parser.parse_args()
 
 gcd_file = dataio.I3File(options.gcdfile)
 
 time = get_time(gcd_file)
+print time
 tray.AddService("I3MCTimeGeneratorServiceFactory","time-gen")(
         ("Year",time.GetUTCYear()),
         ("DAQTime",time.GetUTCDaqTime())

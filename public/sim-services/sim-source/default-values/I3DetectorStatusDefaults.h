@@ -24,9 +24,10 @@ namespace I3DetStatDefaults{
 
   /**
    *End of the valid time range of the detector status
+   * http://en.wikipedia.org/wiki/Year_2038_problem
    */
-  const int32_t END_YEAR = 3000;
-  const int64_t END_DAQTIME = 0;
+  const int32_t END_YEAR = 2038;
+  const int64_t END_DAQTIME = 15668479999999999L;
 
   /**
    * Icetop local coincidence trigger windows
@@ -38,7 +39,6 @@ namespace I3DetStatDefaults{
    * IceTop PMT voltages for high and low gain
    */
   const double ICETOP_HIGHGAIN_VOLTAGE = 1278*I3Units::volt;
-  //const double ICETOP_LOWGAIN_VOLTAGE = 945*I3Units::volt;
   const double ICETOP_LOWGAIN_VOLTAGE = 748*I3Units::volt;
 
   /**
@@ -80,8 +80,8 @@ namespace I3DetStatDefaults{
   const double ICETOP_SPE_THRESHOLD = 569;//now in DAC units
   const double ICETOP_MPE_THRESHOLD = 569;//now in DAC units
   const double FE_PEDESTAL = 2130; //now in DAC units
-  const int DAC_TRIGGER_BIAS0 = 850; 
-  const int DAC_TRIGGER_BIAS1 = 850; 
+  const int DAC_TRIGGER_BIAS0 = 825; 
+  const int DAC_TRIGGER_BIAS1 = 825; 
   const int DAC_FADC_REF = 800; 
 
   /**
