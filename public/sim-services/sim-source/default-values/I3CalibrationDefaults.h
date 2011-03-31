@@ -32,7 +32,7 @@ namespace I3CalibDefaults{
    * http://en.wikipedia.org/wiki/Year_2038_problem
    */
   const int32_t END_YEAR = 2038;
-  const int64_t END_DAQTIME = 15668479999999999L;
+  const int64_t END_DAQTIME = 15668479999999999LL;
   /**
    *Slope and intercept if FADC Baseline Fit
    */
