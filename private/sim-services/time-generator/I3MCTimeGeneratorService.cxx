@@ -50,6 +50,7 @@ I3Time I3MCTimeGeneratorService::PopEvent(I3Frame& frame)
       //Lets make a frame header that can be used for testing
       I3EventHeaderPtr eventHeader_(new I3EventHeader);
       eventHeader_->SetStartTime(evtTime);
+      eventHeader_->SetEndTime(evtTime);
       eventHeader_->SetRunID(runNumber_);
       eventHeader_->SetSubRunID(0);
       eventHeader_->SetEventID(eventID_);
