@@ -54,7 +54,7 @@ I3TweakTrigger::GetDetectorStatus(I3Time time)
   /**
    * Loop through the settings and make the required tweaks
    */
-  vector<pair<string,int> >::iterator set_iter;
+  std::vector<pair<std::string,int> >::iterator set_iter;
   for(set_iter = setting_list_.begin();
       set_iter != setting_list_.end();
       set_iter++){

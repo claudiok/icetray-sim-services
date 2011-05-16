@@ -4,7 +4,6 @@
 #include "I3SimSourceTestModule.h"
 #include "sim-services/sim-source/I3MCSourceServiceFactory.h"
 #include "sim-services/sim-source/I3DBHistogram.h"
-#include "sim-services/time-generator/I3MCTimeGeneratorServiceFactory.h"
 #include "dataclasses/I3Units.h"
 #include "sim-services/sim-source/default-values/I3CalibrationDefaults.h"
 #include "sim-services/sim-source/default-values/I3DetectorStatusDefaults.h"
@@ -15,8 +14,6 @@
 #include "sim-services/tweak-sources/I3TweakDOMStatusService.h"
 #include "sim-services/tweak-sources/I3TweakCalibrationService.h"
 #include "sim-services/tweak-sources/I3TweakTriggerService.h"
-
-#include "sim-services/sim-source/I3MCTWRParamsService.h"
 
 #include "icetray/test/ConstructorTest.h"
 
@@ -33,10 +30,7 @@ using namespace std;
 TEST_GROUP(SimSource);
 
 TEST(clean_construction){
-  clean_constructor_test<I3MCSourceServiceFactory>();
   clean_constructor_test<I3DBHistogram>();
-  clean_constructor_test<I3MCTimeGeneratorServiceFactory>();
-  clean_constructor_test<I3MCTWRParamsService>();
   clean_constructor_test<I3TweakDOMStatusService>();
   clean_constructor_test<I3TweakCalibrationService>();
   clean_constructor_test<I3TweakTriggerService>();
@@ -694,8 +688,8 @@ TEST(tweaked_extended_config)
     ("AmandaGeoFile",amageofile)
     ("IceCubeGeoFile",icecubegeofile);
 
-  string stringsToUse("21,29,30,38,39,40,49,50,59,58,67,66,74,73,65,72,78,48,57,47,46,56,63,64,55,71,70,76,77,75,69,60,68,61,62,52,44,53,54,45");
-  string stationsToUse(stringsToUse);
+  std::string stringsToUse("21,29,30,38,39,40,49,50,59,58,67,66,74,73,65,72,78,48,57,47,46,56,63,64,55,71,70,76,77,75,69,60,68,61,62,52,44,53,54,45");
+  std::string stationsToUse(stringsToUse);
     
   tray.AddService("I3GeometrySelectorServiceFactory","geo-selector")
     ("StringsToUse",stringsToUse)
@@ -773,8 +767,8 @@ TEST(tweaked_extended_config)
     ("PMTDiscThreshIntercept",pmt_disc_thresh_slope)
     ("PMTDiscThreshSlope",pmt_disc_thresh_int);
 
-  string stringsToUse_80("1:80");
-  string stationsToUse_80("1:80");
+  std::string stringsToUse_80("1:80");
+  std::string stationsToUse_80("1:80");
     
   tray.AddService("I3GeometrySelectorServiceFactory","ic80")
     ("StringsToUse",stringsToUse_80)
@@ -782,18 +776,18 @@ TEST(tweaked_extended_config)
     ("GeoSelectorName","IC80-Geo");
 
 
-  vector<string> doNotModifyStrings;
+  std::vector<std::string> doNotModifyStrings;
   split(doNotModifyStrings,stringsToUse,is_any_of(","));
 
-  vector<int> doNotModifyStrings_Int;
-  BOOST_FOREACH(string& s,doNotModifyStrings)
+  std::vector<int> doNotModifyStrings_Int;
+  BOOST_FOREACH(std::string& s,doNotModifyStrings)
     doNotModifyStrings_Int.push_back(atoi(s.c_str()));
 
-  vector<string> doNotModifyStations;
+  std::vector<std::string> doNotModifyStations;
   split(doNotModifyStations,stationsToUse,is_any_of(","));
 
-  vector<int> doNotModifyStations_Int;
-  BOOST_FOREACH(string& s,doNotModifyStations)
+  std::vector<int> doNotModifyStations_Int;
+  BOOST_FOREACH(std::string& s,doNotModifyStations)
     doNotModifyStations_Int.push_back(atoi(s.c_str()));
 
   tray.AddService("I3MCSourceServiceFactory","mcsource")

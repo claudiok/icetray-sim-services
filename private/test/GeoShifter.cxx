@@ -20,9 +20,9 @@ TEST(detector_center){
   std::string strings_to_exclude("-1:20,22:28,31:37,41:48,50:80");
   std::string stations_to_exclude("-1:20,22:28,31:37,41:46,51:56,60:65,68:73,75:80");
 
-  string icecube_geo(getenv("I3_SRC"));
+  std::string icecube_geo(getenv("I3_SRC"));
   icecube_geo += "/phys-services/resources/icecube.geo";
-  string amanda_geo(getenv("I3_SRC"));
+  std::string amanda_geo(getenv("I3_SRC"));
   amanda_geo += "/phys-services/resources/amanda.geo";
 
   tray.AddService("I3TextFileGeometryServiceFactory","geoservice")
@@ -63,11 +63,11 @@ TEST(shift_tree){
 
   const double DX(50.*I3Units::m);
   const double DY(50.*I3Units::m);
-  pair<double,double> dcent(DX,DY);
+  std::pair<double,double> dcent(DX,DY);
 
   I3GeoShifter::ShiftTree(dcent,mctree);
   
-  vector<I3Particle> primaries = I3MCTreeUtils::GetPrimaries(mctree);
+  std::vector<I3Particle> primaries = I3MCTreeUtils::GetPrimaries(mctree);
   
   //make sure the size of the tree doesn't change
   ENSURE(mctree->size() == 1);

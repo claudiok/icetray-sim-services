@@ -34,10 +34,10 @@ class I3SimSourceTestModule : public I3Module
 
   SET_LOGGER("I3SimSourceTestModule");
 
-  string stringsToUse_;
-  string stationsToUse_;
-  string stringsToExclude_;
-  string stationsToExclude_;
+  std::string stringsToUse_;
+  std::string stationsToUse_;
+  std::string stringsToExclude_;
+  std::string stationsToExclude_;
 
   /**
    *Detector Status parameters

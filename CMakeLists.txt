@@ -6,16 +6,34 @@ i3_project(sim-services
 	PYTHON_DIR python
 )
 
-i3_add_library(sim-services
+# define the lists used to build the basic library
+SET(LIB_${PROJECT_NAME}_SOURCEFILES
 	private/sim-services/*.cxx 
-	private/sim-services/*/*.cxx
+	private/sim-services/time-generator/*.cxx
+	private/sim-services/tweak-sources/*.cxx
 	
-	USE_TOOLS log4cplus boost root
+	private/sim-services/sim-source/I3MCCalibrationService.cxx
+	private/sim-services/sim-source/I3MCDetectorStatusService.cxx
+	private/sim-services/sim-source/I3MCSourceServiceFactory.cxx
+)
+SET(LIB_${PROJECT_NAME}_TOOLS log4cplus boost)
+
+# add ROOT-y bits
+if(USE_ROOT)
+	LIST(APPEND LIB_${PROJECT_NAME}_SOURCEFILES
+		private/sim-services/sim-source/I3DBHistogram.cxx
+	)
+	LIST(APPEND LIB_${PROJECT_NAME}_TOOLS root)
+endif(USE_ROOT)
+
+i3_add_library(sim-services
+	${LIB_${PROJECT_NAME}_SOURCEFILES}
+	
+	USE_TOOLS ${LIB_${PROJECT_NAME}_TOOLS}
 
 	USE_PROJECTS icetray 
 	phys-services 
 	dataclasses 
-	amanda-core 
 	simclasses 
 	interfaces
 )

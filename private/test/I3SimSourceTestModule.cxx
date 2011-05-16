@@ -225,8 +225,8 @@ void I3SimSourceTestModule::Physics(I3FramePtr frame)
 {
   log_debug("Physics");
 
-  vector<int> goodStrings = geo_sel_utils::make_good_strings(stringsToUse_, stringsToExclude_);
-  vector<int> goodStations = geo_sel_utils::make_good_strings(stationsToUse_, stationsToExclude_);
+  std::vector<int> goodStrings = geo_sel_utils::make_good_strings(stringsToUse_, stringsToExclude_);
+  std::vector<int> goodStations = geo_sel_utils::make_good_strings(stationsToUse_, stationsToExclude_);
 
   const double DISTANCE = 0.000001;
 
@@ -235,7 +235,7 @@ void I3SimSourceTestModule::Physics(I3FramePtr frame)
   
   cerr<<endl;
 
-  vector<int>::iterator i = goodStrings.begin();
+  std::vector<int>::iterator i = goodStrings.begin();
   cerr<<"goodStrings = ";
   for( ; i != goodStrings.end(); i++) cerr<<*i<<" ";
   cerr<<endl;

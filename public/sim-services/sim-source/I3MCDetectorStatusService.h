@@ -48,8 +48,8 @@ public:
 
 
   void SetMCTWRParamsMap(I3MCTWRParamsMapPtr p){ twrParamsMap_ = p;};
-  void SetSkipStrings(vector<int>& v){ skipStrings_ = v;};
-  void SetSkipStations(vector<int>& v){ skipStations_ = v;};
+  void SetSkipStrings(std::vector<int>& v){ skipStrings_ = v;};
+  void SetSkipStations(std::vector<int>& v){ skipStations_ = v;};
   void ModifyWithExtremePrejudice(bool b){ modifyWithExtremePrejudice_ = b; };
 
  private:
@@ -157,8 +157,8 @@ public:
   /**
    * Don't modify these strings/stations
    */
-  vector<int> skipStrings_;
-  vector<int> skipStations_;
+  std::vector<int> skipStrings_;
+  std::vector<int> skipStations_;
 };
 
 I3_POINTER_TYPEDEFS(I3MCDetectorStatusService);

@@ -69,13 +69,13 @@ bool I3TweakTriggerService::InstallService(I3Context& services)
     status_service_->SetConfigID(key_configID_);
     status_service_->SetTriggerName(trig_name_);
 
-    vector<pair<string,int> > setting_list;
-    vector<string>::iterator i;
-    vector<int>::iterator j;
+    std::vector<std::pair<std::string,int> > setting_list;
+    std::vector<std::string>::iterator i;
+    std::vector<int>::iterator j;
     for(i=setting_name_list_.begin(), j=setting_value_list_.begin();
 	i!=setting_name_list_.end(), j!=setting_value_list_.end();
 	i++, j++){
-      pair<string,int> p(*i,*j);
+      std::pair<std::string,int> p(*i,*j);
       setting_list.push_back(p);      
     }
     status_service_->SetValues(setting_list);
