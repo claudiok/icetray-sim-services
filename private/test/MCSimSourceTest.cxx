@@ -40,21 +40,17 @@ TEST(default_config)
 {
   I3Tray tray;
 
-  std::string I3_BUILD = getenv("I3_BUILD");
-  std::string amageofile = I3_BUILD + "/phys-services/resources/amanda.geo";
-  std::string icecubegeofile = I3_BUILD + "/phys-services/resources/icecube.geo";
+  std::string I3_PORTS(getenv("I3_PORTS"));
+  std::string gcd_file("/test-data/sim/GeoCalibDetectorStatus_IC59.55040.i3.gz");
 
-  tray.AddService("I3MCTimeGeneratorServiceFactory","time-gen")    
-    ("Year",2007)
+  tray.AddModule("I3InfiniteSource","sourceme")
+    ("Prefix", I3_PORTS + gcd_file);
+
+  tray.AddModule("I3MCEventHeaderGenerator","headerme")
+    ("Year", 2007)
     ("DAQTime",314159);
     
-  tray.AddService("I3TextFileGeometryServiceFactory","geometry")
-    ("AmandaGeoFile",amageofile)
-    ("IceCubeGeoFile",icecubegeofile);
-    
-  tray.AddService("I3MCSourceServiceFactory","mcsource");
-
-  tray.AddModule("I3Muxer","muxer");
+  tray.AddModule("I3MetaSynth","muxer");
 
   tray.AddModule("I3SimSourceTestModule","test_module")
     ("DetStat_StartYear",I3DetStatDefaults::START_YEAR)
@@ -208,19 +204,15 @@ TEST(tweaked_config)
 
   I3Tray tray;
 
-  std::string I3_BUILD = getenv("I3_BUILD");
-  std::string amageofile = I3_BUILD + "/phys-services/resources/amanda.geo";
-  std::string icecubegeofile = I3_BUILD + "/phys-services/resources/icecube.geo";
+  std::string I3_PORTS(getenv("I3_PORTS"));
+  std::string gcd_file("/test-data/sim/GeoCalibDetectorStatus_IC59.55040.i3.gz");
 
-  tray.AddService("I3MCTimeGeneratorServiceFactory","time-gen")    
-    ("Year",2007)
+  tray.AddModule("I3InfiniteSource","sourceme")
+    ("Prefix", I3_PORTS + gcd_file);
+
+  tray.AddModule("I3MCEventHeaderGenerator","headerme")
+    ("Year", 2007)
     ("DAQTime",314159);
-    
-  tray.AddService("I3TextFileGeometryServiceFactory","geometry")
-    ("AmandaGeoFile",amageofile)
-    ("IceCubeGeoFile",icecubegeofile);
-    
-  tray.AddService("I3MCSourceServiceFactory","mcsource");
 
   tray.AddService("I3TweakDOMStatusService","tweak-status")
     ("IceTopLCWindowPre",icetopLCWindowPre)
@@ -285,7 +277,7 @@ TEST(tweaked_config)
     ("PMTDiscThreshIntercept",pmt_disc_thresh_int)
     ("PMTDiscThreshSlope",pmt_disc_thresh_slope);
 
-  tray.AddModule("I3Muxer","muxer")
+  tray.AddModule("I3MetaSynth","muxer")
     ("CalibrationService","I3TweakCalibrationService")
     ("DetectorStatusService","I3TweakDOMStatusService");
 
@@ -434,19 +426,15 @@ TEST(modify_with_extreme_prejudice)
 
   I3Tray tray;
 
-  std::string I3_BUILD = getenv("I3_BUILD");
-  std::string amageofile = I3_BUILD + "/phys-services/resources/amanda.geo";
-  std::string icecubegeofile = I3_BUILD + "/phys-services/resources/icecube.geo";
+  std::string I3_PORTS(getenv("I3_PORTS"));
+  std::string gcd_file("/test-data/sim/GeoCalibDetectorStatus_IC59.55040.i3.gz");
 
-  tray.AddService("I3MCTimeGeneratorServiceFactory","time-gen")    
-    ("Year",2007)
+  tray.AddModule("I3InfiniteSource","sourceme")
+    ("Prefix", I3_PORTS + gcd_file);
+
+  tray.AddModule("I3MCEventHeaderGenerator","headerme")
+    ("Year", 2007)
     ("DAQTime",314159);
-    
-  tray.AddService("I3TextFileGeometryServiceFactory","geometry")
-    ("AmandaGeoFile",amageofile)
-    ("IceCubeGeoFile",icecubegeofile);
-    
-  tray.AddService("I3MCSourceServiceFactory","mcsource");
 
   tray.AddService("I3TweakDOMStatusService","tweak-status")
     ("IceTopLCWindowPre",icetopLCWindowPre)
@@ -518,7 +506,7 @@ TEST(modify_with_extreme_prejudice)
     ("StatusServiceName","BackToDefaultStat")
     ("ModifyWithExtremePrejudice",true);
 
-  tray.AddModule("I3Muxer","muxer")
+  tray.AddModule("I3MetaSynth","muxer")
     ("CalibrationService","BackToDefaultCal")
     ("DetectorStatusService","BackToDefaultStat");
 
@@ -676,17 +664,15 @@ TEST(tweaked_extended_config)
 
   I3Tray tray;
 
-  std::string I3_BUILD = getenv("I3_BUILD");
-  std::string amageofile = I3_BUILD + "/phys-services/resources/amanda.geo";
-  std::string icecubegeofile = I3_BUILD + "/phys-services/resources/icecube.geo";
-  
-  tray.AddService("I3MCTimeGeneratorServiceFactory","time-gen")    
-    ("Year",2007)
+  std::string I3_PORTS(getenv("I3_PORTS"));
+  std::string gcd_file("/test-data/sim/GeoCalibDetectorStatus_IC59.55040.i3.gz");
+
+  tray.AddModule("I3InfiniteSource","sourceme")
+    ("Prefix", I3_PORTS + gcd_file);
+
+  tray.AddModule("I3MCEventHeaderGenerator","headerme")
+    ("Year", 2007)
     ("DAQTime",314159);
-    
-  tray.AddService("I3TextFileGeometryServiceFactory","geometry")
-    ("AmandaGeoFile",amageofile)
-    ("IceCubeGeoFile",icecubegeofile);
 
   std::string stringsToUse("21,29,30,38,39,40,49,50,59,58,67,66,74,73,65,72,78,48,57,47,46,56,63,64,55,71,70,76,77,75,69,60,68,61,62,52,44,53,54,45");
   std::string stationsToUse(stringsToUse);
@@ -797,7 +783,7 @@ TEST(tweaked_extended_config)
     ("DoNotModifyStrings",doNotModifyStrings_Int)
     ("DoNotModifyStations",doNotModifyStations_Int);
   
-  tray.AddModule("I3Muxer","muxer")
+  tray.AddModule("I3MetaSynth","muxer")
     ("GeometryService","IC80-Geo");
   
   tray.AddModule("I3SimSourceTestModule","test_module_tweaks")
@@ -938,24 +924,20 @@ TEST(do_no_harm)
 {
   I3Tray tray;
 
-  std::string I3_BUILD = getenv("I3_BUILD");
-  std::string amageofile = I3_BUILD + "/phys-services/resources/amanda.geo";
-  std::string icecubegeofile = I3_BUILD + "/phys-services/resources/icecube.geo";
+  std::string I3_PORTS(getenv("I3_PORTS"));
+  std::string gcd_file("/test-data/sim/GeoCalibDetectorStatus_IC59.55040.i3.gz");
 
-  tray.AddService("I3MCTimeGeneratorServiceFactory","time-gen")    
-    ("Year",2007)
+  tray.AddModule("I3InfiniteSource","sourceme")
+    ("Prefix", I3_PORTS + gcd_file);
+
+  tray.AddModule("I3MCEventHeaderGenerator","headerme")
+    ("Year", 2007)
     ("DAQTime",314159);
-    
-  tray.AddService("I3TextFileGeometryServiceFactory","geometry")
-    ("AmandaGeoFile",amageofile)
-    ("IceCubeGeoFile",icecubegeofile);
-
-  tray.AddService("I3MCSourceServiceFactory","mcsource");
 
   tray.AddService("I3TweakDOMStatusService","tweak-status");
   tray.AddService("I3TweakCalibrationService","tweak-cal");
     
-  tray.AddModule("I3Muxer","muxer")
+  tray.AddModule("I3MetaSynth","muxer")
     ("CalibrationService","I3TweakCalibrationService")
     ("DetectorStatusService","I3TweakDOMStatusService");
 
@@ -1042,23 +1024,20 @@ TEST(do_no_harm_MJD)
 {
   I3Tray tray;
 
-  std::string I3_BUILD = getenv("I3_BUILD");
-  std::string amageofile = I3_BUILD + "/phys-services/resources/amanda.geo";
-  std::string icecubegeofile = I3_BUILD + "/phys-services/resources/icecube.geo";
+  std::string I3_PORTS(getenv("I3_PORTS"));
+  std::string gcd_file("/test-data/sim/GeoCalibDetectorStatus_IC59.55040.i3.gz");
 
-  tray.AddService("I3MCTimeGeneratorServiceFactory","time-gen")    
-    ("MJD",54269);
-    
-  tray.AddService("I3TextFileGeometryServiceFactory","geometry")
-    ("AmandaGeoFile",amageofile)
-    ("IceCubeGeoFile",icecubegeofile);
+  tray.AddModule("I3InfiniteSource","sourceme")
+    ("Prefix", I3_PORTS + gcd_file);
 
-  tray.AddService("I3MCSourceServiceFactory","mcsource");
+  tray.AddModule("I3MCEventHeaderGenerator","headerme")
+    ("Year", 2007)
+    ("DAQTime",314159);
 
   tray.AddService("I3TweakDOMStatusService","tweak-status");
   tray.AddService("I3TweakCalibrationService","tweak-cal");
     
-  tray.AddModule("I3Muxer","muxer")
+  tray.AddModule("I3MetaSynth","muxer")
     ("CalibrationService","I3TweakCalibrationService")
     ("DetectorStatusService","I3TweakDOMStatusService");
 
