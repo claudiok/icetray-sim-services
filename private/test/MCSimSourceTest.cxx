@@ -426,15 +426,14 @@ TEST(modify_with_extreme_prejudice)
 
   I3Tray tray;
 
-  std::string I3_PORTS(getenv("I3_PORTS"));
-  std::string gcd_file("/test-data/sim/GeoCalibDetectorStatus_IC59.55040.i3.gz");
-
   tray.AddModule("I3InfiniteSource","sourceme")
-    ("Prefix", I3_PORTS + gcd_file);
+    ("Source", I3Frame::Physics);
 
-  tray.AddModule("I3MCEventHeaderGenerator","headerme")
-    ("Year", 2007)
-    ("DAQTime",314159);
+  tray.AddService("I3EmptyStreamsFactory","streams");
+
+//  tray.AddModule("I3MCEventHeaderGenerator","headerme")
+//    ("Year", 2037)
+//    ("DAQTime",314159);
 
   tray.AddService("I3TweakDOMStatusService","tweak-status")
     ("IceTopLCWindowPre",icetopLCWindowPre)
