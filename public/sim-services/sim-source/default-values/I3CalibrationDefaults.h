@@ -87,7 +87,7 @@ namespace I3CalibDefaults{
   const double PMT_TRANSIT_TIME_SLOPE = 1983; //units are ns/sqrt(V)
   const double PMT_TRANSIT_TIME_INTERCEPT = 85.8 * I3Units::ns;
 
-  const string DOMCAL_VERSION("7.5.2");
+  const std::string DOMCAL_VERSION("7.5.2");
 
   const double ATWDA0_BASELINE = 1.0 * I3Units::mV;
   const double ATWDA1_BASELINE = -0.5552 * I3Units::mV;

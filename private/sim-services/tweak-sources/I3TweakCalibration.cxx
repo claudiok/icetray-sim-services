@@ -4,6 +4,8 @@
 #include "dataclasses/I3Units.h"
 #include "icetray/I3TrayHeaders.h"
 
+using namespace std;
+
 I3TweakCalibration::I3TweakCalibration(I3CalibrationServicePtr c, I3GeometryServicePtr g) :
   temperature_(NAN),
   fadcBaselineFit_slope_(NAN),

@@ -31,6 +31,8 @@
 #include <TF1.h>
 #include <TCanvas.h>
 
+using namespace std;
+
 I3_MODULE(I3DBTestModule);
 
 void TestCalibration(I3CalibrationConstPtr);

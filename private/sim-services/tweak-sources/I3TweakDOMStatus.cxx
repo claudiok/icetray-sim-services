@@ -8,6 +8,8 @@
 #include "dataclasses/physics/I3Trigger.h"
 #include "dataclasses/status/I3TriggerStatus.h"
 
+using namespace std;
+
 I3TweakDOMStatus::I3TweakDOMStatus(I3DetectorStatusServicePtr s, I3GeometryServicePtr g) :
   icetopLCWindowPre_(NAN),
   icetopLCWindowPost_(NAN),

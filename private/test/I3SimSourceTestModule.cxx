@@ -27,6 +27,8 @@
 
 #include "sim-services/sim-source/default-values/I3CalibrationDefaults.h"
 
+using namespace std;
+
 I3_MODULE(I3SimSourceTestModule);
 
 I3SimSourceTestModule::I3SimSourceTestModule(const I3Context& ctx) : 

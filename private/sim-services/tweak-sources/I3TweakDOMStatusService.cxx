@@ -4,6 +4,8 @@
 #include "dataclasses/I3Units.h"
 #include "icetray/I3TrayHeaders.h"
 
+using namespace std;
+
 I3_SERVICE_FACTORY(I3TweakDOMStatusService);
 
 I3TweakDOMStatusService::I3TweakDOMStatusService(const I3Context& context) :

@@ -6,6 +6,8 @@
 #include "dataclasses/physics/I3Trigger.h"
 #include "dataclasses/status/I3TriggerStatus.h"
 
+using namespace std;
+
 I3TweakTrigger::I3TweakTrigger(I3DetectorStatusServicePtr s):
   key_source_(TriggerKey::UNKNOWN_SOURCE),
   key_type_(TriggerKey::UNKNOWN_TYPE),

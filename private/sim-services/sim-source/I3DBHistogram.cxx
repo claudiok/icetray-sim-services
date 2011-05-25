@@ -40,6 +40,8 @@
 
 #include <boost/foreach.hpp>
 
+using namespace std;
+
 I3_MODULE(I3DBHistogram);
 
 void BookDOMCalibHistograms(I3CalibrationConstPtr , std::string );
