@@ -426,8 +426,7 @@ TEST(modify_with_extreme_prejudice)
 
   I3Tray tray;
 
-  tray.AddModule("I3InfiniteSource","sourceme")
-    ("Source", I3Frame::Physics);
+  tray.AddModule("I3InfiniteSource","sourceme");
 
   tray.AddService("I3EmptyStreamsFactory","streams");
 
