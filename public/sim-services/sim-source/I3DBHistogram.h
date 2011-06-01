@@ -26,7 +26,7 @@ class I3DBHistogram : public I3Module
   ~I3DBHistogram();
   
   void Configure();
-  void Physics(I3FramePtr frame);
+  void DAQ(I3FramePtr frame);
   void Calibration(I3FramePtr frame);
   void DetectorStatus(I3FramePtr frame);
 

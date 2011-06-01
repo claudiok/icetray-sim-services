@@ -176,9 +176,9 @@ void I3DBHistogram::DetectorStatus(I3FramePtr frame)
   PushFrame(frame,"OutBox");
 }//Physics()
 
-void I3DBHistogram::Physics(I3FramePtr frame)
+void I3DBHistogram::DAQ(I3FramePtr frame)
 {
-  log_debug("Physics");
+  log_debug("DAQ");
 
   I3CalibrationConstPtr calib = 
     frame->Get<I3CalibrationConstPtr>();
@@ -189,7 +189,7 @@ void I3DBHistogram::Physics(I3FramePtr frame)
   MakeDOMFunctionsPlots(calib,status);
 
   PushFrame(frame,"OutBox");
-}//Physics()
+}//DAQ()
 
 
 void BookDOMCalibHistograms(I3CalibrationConstPtr calib, 

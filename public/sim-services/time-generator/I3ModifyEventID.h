@@ -27,7 +27,7 @@ class I3ModifyEventID : public I3Module
   ~I3ModifyEventID();
   
   void Configure();
-  void Physics(I3FramePtr frame);
+  void DAQ(I3FramePtr frame);
 
  private:
   I3ModifyEventID();

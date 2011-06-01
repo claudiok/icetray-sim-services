@@ -19,7 +19,7 @@ class I3MCEventHeaderGenerator : public I3Module
 
   I3MCEventHeaderGenerator(const I3Context&);
   void Configure();
-  void Physics(I3FramePtr fr);	
+  void DAQ(I3FramePtr fr);	
 
   SET_LOGGER("I3MCEventHeaderGenerator");
 
@@ -97,7 +97,7 @@ void I3MCEventHeaderGenerator::Configure()
 	}
 }
 
-void I3MCEventHeaderGenerator::Physics(I3FramePtr fr) 
+void I3MCEventHeaderGenerator::DAQ(I3FramePtr fr) 
 {
       I3Time evtTime(year_, daqTime_);
 

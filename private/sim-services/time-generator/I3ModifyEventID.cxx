@@ -85,9 +85,9 @@ void I3ModifyEventID::Configure()
   }
 }
 
-void I3ModifyEventID::Physics(I3FramePtr frame)
+void I3ModifyEventID::DAQ(I3FramePtr frame)
 {
-  log_debug("Physics");
+  log_debug("DAQ");
 
   if (frame->Has(I3DefaultName<I3EventHeader>::value()) ) {
           const I3EventHeader& oldHeader = frame->Get<I3EventHeader>();
@@ -118,5 +118,5 @@ void I3ModifyEventID::Physics(I3FramePtr frame)
   }
 
   PushFrame(frame,"OutBox");
-}//Physics()
+}//DAQ()
  
