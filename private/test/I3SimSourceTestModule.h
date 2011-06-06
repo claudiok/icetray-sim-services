@@ -25,7 +25,7 @@ class I3SimSourceTestModule : public I3Module
   ~I3SimSourceTestModule();
   
   void Configure();
-  void Physics(I3FramePtr frame);
+  void DAQ(I3FramePtr frame);
 
  private:
   I3SimSourceTestModule();

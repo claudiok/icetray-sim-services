@@ -55,9 +55,9 @@ void I3DBTestModule::Configure()
   log_debug("Configuring I3DBTestModule");
 }
 
-void I3DBTestModule::Physics(I3FramePtr frame)
+void I3DBTestModule::DAQ(I3FramePtr frame)
 {
-  log_debug("Physics");
+  log_debug("DAQ");
 
   I3CalibrationConstPtr calib = 
     frame->Get<I3CalibrationConstPtr>();
@@ -70,7 +70,7 @@ void I3DBTestModule::Physics(I3FramePtr frame)
   TestDOMStatus(status);
 
   PushFrame(frame,"OutBox");
-}//Physics()
+}//DAQ()
 
 
 void TestCalibration(I3CalibrationConstPtr calib){

@@ -41,7 +41,7 @@ I3GeoShiftTestModule::~I3GeoShiftTestModule() {
 void I3GeoShiftTestModule::Configure() {
 }
 
-void I3GeoShiftTestModule::Physics(I3FramePtr frame) {
+void I3GeoShiftTestModule::DAQ(I3FramePtr frame) {
   
   const double X_0(0.*I3Units::m);
   const double Y_0(0.*I3Units::m);

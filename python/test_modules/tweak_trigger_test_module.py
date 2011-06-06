@@ -27,8 +27,8 @@ class I3TweakTriggerTestModule(icetray.I3Module):
         self.valueList = self.GetParameter('ValueList')
         self.readoutWindowConfigs = self.GetParameter('ReadoutWindowConfigs')
 
-    def Physics(self, frame):
-        print "Physics!!!"
+    def DAQ(self, frame):
+        print "DAQ!!!"
 
         det_stat = frame.Get("I3DetectorStatus")
         trigger_status = det_stat.triggerStatus

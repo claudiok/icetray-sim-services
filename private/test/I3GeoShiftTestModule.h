@@ -44,7 +44,7 @@ public:
    * This module takes a configuration parameter and so it must be configured
    */
   void Configure();
-  void Physics(I3FramePtr frame);
+  void DAQ(I3FramePtr frame);
 
 private:
   

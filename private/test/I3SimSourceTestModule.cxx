@@ -223,9 +223,9 @@ void I3SimSourceTestModule::Configure()
   GetParameter("Calib_DeepCoreDOMNoiseRate",cal_deepcore_dom_noise_rates_);
 }
 
-void I3SimSourceTestModule::Physics(I3FramePtr frame)
+void I3SimSourceTestModule::DAQ(I3FramePtr frame)
 {
-  log_debug("Physics");
+  log_debug("DAQ");
 
   std::vector<int> goodStrings = geo_sel_utils::make_good_strings(stringsToUse_, stringsToExclude_);
   std::vector<int> goodStations = geo_sel_utils::make_good_strings(stationsToUse_, stationsToExclude_);
@@ -380,5 +380,5 @@ void I3SimSourceTestModule::Physics(I3FramePtr frame)
   }
 
   PushFrame(frame,"OutBox");
-}//Physics()
+}//DAQ()
  

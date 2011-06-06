@@ -26,7 +26,7 @@ class I3DBTestModule : public I3Module
   ~I3DBTestModule();
   
   void Configure();
-  void Physics(I3FramePtr frame);
+  void DAQ(I3FramePtr frame);
 
  private:
   I3DBTestModule();
