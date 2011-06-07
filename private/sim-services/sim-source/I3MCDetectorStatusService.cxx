@@ -8,7 +8,6 @@
 #include "dataclasses/physics/I3Trigger.h"
 #include "dataclasses/status/I3TriggerStatus.h"
 #include "phys-services/geo-selector/GeoSelUtils.h"
-#include "sim-services/sim-source/default-values/I3TWRDefaults.h"
 
 //In this file you'll find the default values
 //for the detector status in the I3DetStatDefaults namespace
@@ -56,9 +55,6 @@ I3MCDetectorStatusService::I3MCDetectorStatusService(I3GeometryServicePtr g,
   nBinsATWD1_IceTop_(I3DetStatDefaults::NBINS_ATWD1_ICETOP),
   nBinsATWD2_IceTop_(I3DetStatDefaults::NBINS_ATWD2_ICETOP),
   nBinsFADC_IceTop_(I3DetStatDefaults::NBINS_FADC_ICETOP),
-  twrOpBinSize_(I3TWRDefaults::BIN_SIZE_OP),
-  twrElBinSize_(I3TWRDefaults::BIN_SIZE_EL),
-  twrBaseline_(I3TWRDefaults::BASELINE),
   deltaCompression_(I3DetStatDefaults::DELTA_COMPRESSION),
   domGainType_(I3DetStatDefaults::DOM_GAIN_TYPE),
   slcActive_(I3DetStatDefaults::SLC_ACTIVE),
@@ -105,8 +101,6 @@ I3MCDetectorStatusService::GetDetectorStatus(I3Time time)
   }
 
   SetDOMStatus(status_,om_geo);
-  if(twrParamsMap_)
-    SetAOMStatus(status_,om_geo);
 
   log_trace("size of I3DOMStatus Map = %zu",status_->domStatus.size());
   log_trace("size of AOMStatus Map = %zu",status_->aomStatus.size());
@@ -237,43 +231,3 @@ void I3MCDetectorStatusService::SetDOMStatus(I3DetectorStatusPtr& status, const 
   log_debug("nAMANDA: %d", nAMANDA);
 }
 
-void I3MCDetectorStatusService::SetAOMStatus(I3DetectorStatusPtr status, 
-					     const I3OMGeoMap& omgeo){
-  log_debug("Setting AOMStatus");
-
-  TWRAOMStatus aomStatus;
-
-  aomStatus.SetBaseline(twrBaseline_);
-
-  I3OMGeoMap::const_iterator iter;
-  for( iter  = omgeo.begin(); iter != omgeo.end(); iter++ ){
-    OMKey omKey = iter->first;
-    I3OMGeo::OMType type = iter->second.omtype;
-    
-    if (type != I3OMGeo :: AMANDA){
-      continue;//Only do AMANDA OMs
-    }
-    else{
-      I3MCTWRParamsMap::iterator iter = twrParamsMap_->find(omKey);
-      if(iter != twrParamsMap_->end()){
-	aomStatus.SetStopDelay(iter->second.stop_delay);
-	aomStatus.SetThreshold(iter->second.TWR_thresh);
-	
-	TWRAOMStatus::CableType t = (iter->second.optical 
-				     ? TWRAOMStatus::OPTICAL :
-				     TWRAOMStatus::ELECTRICAL);
-	aomStatus.SetCableType(t);
-
-	if(t==TWRAOMStatus::OPTICAL) aomStatus.SetBinSize(twrOpBinSize_); 
-	else aomStatus.SetBinSize(twrElBinSize_);
- 
-	status->aomStatus[omKey] = aomStatus;
-	log_trace("Added AOMStatus for %s",omKey.str().c_str());
-      }
-      else{
-	
-      }
-    }
-  }
-  
-}

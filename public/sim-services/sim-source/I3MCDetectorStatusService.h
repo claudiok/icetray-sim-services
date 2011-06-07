@@ -47,7 +47,6 @@ public:
   SET_LOGGER("I3MCDetectorStatusService");
 
 
-  void SetMCTWRParamsMap(I3MCTWRParamsMapPtr p){ twrParamsMap_ = p;};
   void SetSkipStrings(vector<int>& v){ skipStrings_ = v;};
   void SetSkipStations(vector<int>& v){ skipStations_ = v;};
   void ModifyWithExtremePrejudice(bool b){ modifyWithExtremePrejudice_ = b; };
@@ -56,10 +55,8 @@ public:
   I3MCDetectorStatusService();
   I3GeometryServicePtr geo_service_;
   I3DetectorStatusServicePtr old_status_service_;
-  I3MCTWRParamsMapPtr twrParamsMap_;
 
   void SetDOMStatus(I3DetectorStatusPtr&, const I3OMGeoMap&);
-  void SetAOMStatus(I3DetectorStatusPtr, const I3OMGeoMap&);
 
   shared_ptr<I3DetectorStatus> status_;
   map<TriggerKey, I3TriggerStatus> triggerStatus_;

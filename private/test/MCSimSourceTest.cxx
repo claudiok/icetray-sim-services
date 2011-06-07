@@ -16,8 +16,6 @@
 #include "sim-services/tweak-sources/I3TweakCalibrationService.h"
 #include "sim-services/tweak-sources/I3TweakTriggerService.h"
 
-#include "sim-services/sim-source/I3MCTWRParamsService.h"
-
 #include "icetray/test/ConstructorTest.h"
 
 #include <boost/algorithm/string/split.hpp>
@@ -36,10 +34,9 @@ TEST(clean_construction){
   clean_constructor_test<I3MCSourceServiceFactory>();
   clean_constructor_test<I3DBHistogram>();
   clean_constructor_test<I3MCTimeGeneratorServiceFactory>();
-  clean_constructor_test<I3MCTWRParamsService>();
   clean_constructor_test<I3TweakDOMStatusService>();
   clean_constructor_test<I3TweakCalibrationService>();
-  clean_constructor_test<I3TweakTriggerService>();
+  //clean_constructor_test<I3TweakTriggerService>();
 }
 
 TEST(default_config)
