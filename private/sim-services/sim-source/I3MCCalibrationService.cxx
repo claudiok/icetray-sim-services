@@ -62,8 +62,7 @@ I3MCCalibrationService::I3MCCalibrationService(I3GeometryServicePtr g,
   inice_relative_efficiencies_(I3CalibDefaults::INICE_RELATIVE_EFFICIENCY),
   deepcore_relative_efficiencies_(I3CalibDefaults::DEEPCORE_RELATIVE_EFFICIENCY),
   inice_dom_noise_rates_(I3CalibDefaults::INICE_NOISE_RATE),
-  deepcore_dom_noise_rates_(I3CalibDefaults::DEEPCORE_NOISE_RATE),
-  modifyWithExtremePrejudice_(false)
+  deepcore_dom_noise_rates_(I3CalibDefaults::DEEPCORE_NOISE_RATE)
 {
   geo_service_ = g;
   cal_service_ = c;
@@ -204,16 +203,6 @@ I3MCCalibrationService::GetCalibration(I3Time time){
       domCalib.SetDomNoiseRate(inice_dom_noise_rates_);
     }
 
-    /**
-     * Skip DOMs that already exist unless we're modifying with extreme prejudice
-     * and then we always want to skip the modules that are in the respective Do Not Modify lists.
-     */
-    if((calibration->domCal.find(iter->first) != calibration->domCal.end() && !modifyWithExtremePrejudice_)||
-       (geo_sel_utils::exists(iter->first.GetString(),skipStrings_) && iter->second.omtype == I3OMGeo::IceCube) ||
-       (geo_sel_utils::exists(iter->first.GetString(),skipStations_) && iter->second.omtype == I3OMGeo::IceTop) ){
-      continue;
-    }	
-    
     calibration->domCal[iter->first] = domCalib;
     log_trace("creating record for DOM %s",iter->first.str().c_str());
   }

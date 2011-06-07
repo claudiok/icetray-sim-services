@@ -18,8 +18,7 @@ I3MCSourceServiceFactory::
 I3MCSourceServiceFactory(const I3Context& context) : 
   I3ServiceFactory(context),
   installCalibration_(true),
-  installDetectorStatus_(true),
-  modifyWithExtremePrejudice_(false)
+  installDetectorStatus_(true)
 {
   oldCalServiceName_ = I3DefaultName<I3CalibrationService>::value();
   oldStatusServiceName_ = I3DefaultName<I3DetectorStatusService>::value();
@@ -44,7 +43,6 @@ I3MCSourceServiceFactory(const I3Context& context) :
   AddParameter("InstallTWRTriggers","Install TWR Triggers",installTWRTriggers);
   AddParameter("DoNotModifyStrings","Do not modify these strings",skipStrings_);
   AddParameter("DoNotModifyStations","Do not modify these stations",skipStations_);
-  AddParameter("ModifyWithExtremePrejudice","Overwrite C and D for modules not on the DoNotModify lists",modifyWithExtremePrejudice_);
 }
 
 I3MCSourceServiceFactory::
@@ -68,7 +66,6 @@ void I3MCSourceServiceFactory::Configure()
   GetParameter("InstallTWRTriggers",installTWRTriggers);
   GetParameter("DoNotModifyStrings",skipStrings_);
   GetParameter("DoNotModifyStations",skipStations_);
-  GetParameter("ModifyWithExtremePrejudice",modifyWithExtremePrejudice_);
 
   if (installInIceTriggers || installIceTopTriggers || installTWRTriggers){
     log_error("This feature is deprecated.");
@@ -94,7 +91,6 @@ bool I3MCSourceServiceFactory::InstallService(I3Context& services)
 
     statusService_->SetSkipStrings(skipStrings_);
     statusService_->SetSkipStations(skipStations_);
-    statusService_->ModifyWithExtremePrejudice(modifyWithExtremePrejudice_);
 
   }
 
@@ -107,7 +103,6 @@ bool I3MCSourceServiceFactory::InstallService(I3Context& services)
 
     calibrationService_->SetSkipStrings(skipStrings_);
     calibrationService_->SetSkipStations(skipStations_);
-    calibrationService_->ModifyWithExtremePrejudice(modifyWithExtremePrejudice_);
 
   }
 

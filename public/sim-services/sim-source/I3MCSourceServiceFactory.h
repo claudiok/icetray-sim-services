@@ -42,8 +42,6 @@ class I3MCSourceServiceFactory : public I3ServiceFactory
   bool installCalibration_;
   bool installDetectorStatus_;
 
-  bool modifyWithExtremePrejudice_;
-
   std::vector<int> skipStrings_;
   std::vector<int> skipStations_;
 

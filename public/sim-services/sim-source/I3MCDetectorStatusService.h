@@ -50,7 +50,6 @@ public:
   void SetMCTWRParamsMap(I3MCTWRParamsMapPtr p){ twrParamsMap_ = p;};
   void SetSkipStrings(std::vector<int>& v){ skipStrings_ = v;};
   void SetSkipStations(std::vector<int>& v){ skipStations_ = v;};
-  void ModifyWithExtremePrejudice(bool b){ modifyWithExtremePrejudice_ = b; };
 
  private:
   I3MCDetectorStatusService();
@@ -153,7 +152,6 @@ public:
   I3DOMStatus::DOMGain domGainType_;
   bool slcActive_;
 
-  bool modifyWithExtremePrejudice_;
   /**
    * Don't modify these strings/stations
    */
