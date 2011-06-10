@@ -8,11 +8,12 @@
 #include "dataclasses/physics/I3Trigger.h"
 #include "dataclasses/status/I3TriggerStatus.h"
 #include "phys-services/geo-selector/GeoSelUtils.h"
-#include "sim-services/sim-source/default-values/I3TWRDefaults.h"
 
 //In this file you'll find the default values
 //for the detector status in the I3DetStatDefaults namespace
 #include "sim-services/sim-source/default-values/I3DetectorStatusDefaults.h"
+
+using namespace std;
 
 I3MCDetectorStatusService::I3MCDetectorStatusService(I3GeometryServicePtr g,
 						     I3DetectorStatusServicePtr s):
@@ -56,9 +57,6 @@ I3MCDetectorStatusService::I3MCDetectorStatusService(I3GeometryServicePtr g,
   nBinsATWD1_IceTop_(I3DetStatDefaults::NBINS_ATWD1_ICETOP),
   nBinsATWD2_IceTop_(I3DetStatDefaults::NBINS_ATWD2_ICETOP),
   nBinsFADC_IceTop_(I3DetStatDefaults::NBINS_FADC_ICETOP),
-  twrOpBinSize_(I3TWRDefaults::BIN_SIZE_OP),
-  twrElBinSize_(I3TWRDefaults::BIN_SIZE_EL),
-  twrBaseline_(I3TWRDefaults::BASELINE),
   deltaCompression_(I3DetStatDefaults::DELTA_COMPRESSION),
   domGainType_(I3DetStatDefaults::DOM_GAIN_TYPE),
   slcActive_(I3DetStatDefaults::SLC_ACTIVE)
@@ -104,11 +102,8 @@ I3MCDetectorStatusService::GetDetectorStatus(I3Time time)
   }
 
   SetDOMStatus(status_,om_geo);
-  if(twrParamsMap_)
-    SetAOMStatus(status_,om_geo);
 
   log_trace("size of I3DOMStatus Map = %zu",status_->domStatus.size());
-  log_trace("size of AOMStatus Map = %zu",status_->aomStatus.size());
 
   return status_;
 }
@@ -133,135 +128,89 @@ void I3MCDetectorStatusService::SetDOMStatus(I3DetectorStatusPtr& status, const 
   //changed all inice to omgeo
   unsigned nSkipped(0);
   unsigned nCreated(0);
-  unsigned nAMANDA(0);
   log_trace("omgeo.size() = %zu",omgeo.size());
   log_trace("original status size = %zu",status_->domStatus.size());
   for( iter  = omgeo.begin(); iter != omgeo.end(); iter++ ){
       OMKey thiskey = iter->first;
       I3OMGeo::OMType type = iter->second.omtype;
       
-      if (type != I3OMGeo :: AMANDA){
-	//Don't do AMANDA OMs
-	if ( type == I3OMGeo::IceTop ){
-	  domStatus.lcMode = lcMode_icetop_;
-	  domStatus.statusFADC = statusFADC_IceTop_;
-	  domStatus.nBinsATWD0 = nBinsATWD0_IceTop_;
-	  domStatus.nBinsATWD1 = nBinsATWD1_IceTop_;
-	  domStatus.nBinsATWD2 = nBinsATWD2_IceTop_;
-	  domStatus.nBinsFADC = nBinsFADC_IceTop_;
-	  
-	  domStatus.lcWindowPre = icetopLCWindowPre_;
-	  domStatus.lcWindowPost = icetopLCWindowPost_;
-
-	  domStatus.lcSpan = icetop_LCSpan_;
-	  domStatus.SLCActive = false;
-
-	  domStatus.speThreshold = icetopSPEThreshold_;
-	  domStatus.mpeThreshold = icetopMPEThreshold_;
-	  
-	  if ( thiskey.GetOM() == 61 ||
-	       thiskey.GetOM() == 63 )
-	    {	
-	      domStatus.pmtHV = icetopHighGainVoltage_;
-	      domStatus.domGainType = I3DOMStatus::High;  
-	      domStatus.trigMode = icetopHGTriggerMode_;
-	    }
-	  
-	  else if ( thiskey.GetOM() == 62 ||
-		    thiskey.GetOM() == 64 )
-	    {
-	      domStatus.pmtHV = icetopLowGainVoltage_;
-	      domStatus.domGainType = I3DOMStatus::Low;  
-	      domStatus.trigMode = icetopLGTriggerMode_;
-	    }
-	}else{
-	  /**
-	   * the DOMs have different LC settings depending on where they are
-	   */
-	  //take a peak at the neighboring DOMs
-	  I3OMGeoMap::const_iterator next_omgeo(iter); next_omgeo++;
-	  I3OMGeoMap::const_iterator prev_omgeo(iter); prev_omgeo--;
-
-	  if(iter == omgeo.begin() ||
-	     prev_omgeo->first.GetString() != iter->first.GetString()){
-	    //then we're at the top of a string
-	    domStatus.lcMode = lcMode_inice_first_;
-	  }else if(next_omgeo->second.omtype == I3OMGeo::IceTop ||
-		   next_omgeo->first.GetString() != iter->first.GetString()){
-	    //then we're at the bottom of a string
-	    domStatus.lcMode = lcMode_inice_last_;
+      if (type == I3OMGeo :: AMANDA) continue;
+      //Don't do AMANDA OMs
+      if ( type == I3OMGeo::IceTop ){
+	domStatus.lcMode = lcMode_icetop_;
+	domStatus.statusFADC = statusFADC_IceTop_;
+	domStatus.nBinsATWD0 = nBinsATWD0_IceTop_;
+	domStatus.nBinsATWD1 = nBinsATWD1_IceTop_;
+	domStatus.nBinsATWD2 = nBinsATWD2_IceTop_;
+	domStatus.nBinsFADC = nBinsFADC_IceTop_;
+	
+	domStatus.lcWindowPre = icetopLCWindowPre_;
+	domStatus.lcWindowPost = icetopLCWindowPost_;
+	
+	domStatus.lcSpan = icetop_LCSpan_;
+	domStatus.SLCActive = false;
+	
+	domStatus.speThreshold = icetopSPEThreshold_;
+	domStatus.mpeThreshold = icetopMPEThreshold_;
+	
+	if ( thiskey.GetOM() == 61 ||
+	     thiskey.GetOM() == 63 )
+	  {	
+	    domStatus.pmtHV = icetopHighGainVoltage_;
+	    domStatus.domGainType = I3DOMStatus::High;  
+	    domStatus.trigMode = icetopHGTriggerMode_;
 	  }
-	  else domStatus.lcMode = lcMode_inice_bulk_;
-
-	  domStatus.lcSpan = inice_LCSpan_;
-	  domStatus.statusFADC = statusFADC_InIce_;
-	  domStatus.nBinsATWD0 = nBinsATWD0_InIce_;
-	  domStatus.nBinsATWD1 = nBinsATWD1_InIce_;
-	  domStatus.nBinsATWD2 = nBinsATWD2_InIce_;
-	  domStatus.nBinsFADC = nBinsFADC_InIce_;
-	  
-	  domStatus.lcWindowPre = iniceLCWindowPre_;
-	  domStatus.lcWindowPost = iniceLCWindowPost_;
-	  
-	  domStatus.pmtHV = iniceVoltage_;
-	  domStatus.domGainType = domGainType_;  
-	  domStatus.SLCActive = slcActive_;
-
-	  domStatus.speThreshold = iniceSPEThreshold_;
-	  domStatus.mpeThreshold = iniceMPEThreshold_;
-
-	  domStatus.trigMode = iniceTriggerMode_;
-	}
-	status->domStatus[thiskey] = domStatus;
-	log_trace("creating record for DOM %s",thiskey.str().c_str());
-	nCreated++;
+	
+	else if ( thiskey.GetOM() == 62 ||
+		  thiskey.GetOM() == 64 )
+	  {
+	    domStatus.pmtHV = icetopLowGainVoltage_;
+	    domStatus.domGainType = I3DOMStatus::Low;  
+	    domStatus.trigMode = icetopLGTriggerMode_;
+	  }
       }else{
-	log_trace("skipping AMANDA OM %s",thiskey.str().c_str());
-	nAMANDA++;
+	/**
+	 * the DOMs have different LC settings depending on where they are
+	 */
+	//take a peak at the neighboring DOMs
+	I3OMGeoMap::const_iterator next_omgeo(iter); next_omgeo++;
+	I3OMGeoMap::const_iterator prev_omgeo(iter); prev_omgeo--;
+	
+	if(iter == omgeo.begin() ||
+	   prev_omgeo->first.GetString() != iter->first.GetString()){
+	  //then we're at the top of a string
+	  domStatus.lcMode = lcMode_inice_first_;
+	}else if(next_omgeo->second.omtype == I3OMGeo::IceTop ||
+		 next_omgeo->first.GetString() != iter->first.GetString()){
+	  //then we're at the bottom of a string
+	  domStatus.lcMode = lcMode_inice_last_;
+	}
+	else domStatus.lcMode = lcMode_inice_bulk_;
+	
+	domStatus.lcSpan = inice_LCSpan_;
+	domStatus.statusFADC = statusFADC_InIce_;
+	domStatus.nBinsATWD0 = nBinsATWD0_InIce_;
+	domStatus.nBinsATWD1 = nBinsATWD1_InIce_;
+	domStatus.nBinsATWD2 = nBinsATWD2_InIce_;
+	domStatus.nBinsFADC = nBinsFADC_InIce_;
+	
+	domStatus.lcWindowPre = iniceLCWindowPre_;
+	domStatus.lcWindowPost = iniceLCWindowPost_;
+	
+	domStatus.pmtHV = iniceVoltage_;
+	domStatus.domGainType = domGainType_;  
+	domStatus.SLCActive = slcActive_;
+	
+	domStatus.speThreshold = iniceSPEThreshold_;
+	domStatus.mpeThreshold = iniceMPEThreshold_;
+	
+	domStatus.trigMode = iniceTriggerMode_;
       }
+      status->domStatus[thiskey] = domStatus;
+      log_trace("creating record for DOM %s",thiskey.str().c_str());
+      nCreated++;
   }
   log_debug("nSkipped: %d nCreated: %d ",nSkipped,nCreated);
   log_debug("status->domStatus.size() = %zu",status->domStatus.size());
-  log_debug("nAMANDA: %d", nAMANDA);
 }
 
-void I3MCDetectorStatusService::SetAOMStatus(I3DetectorStatusPtr status, 
-					     const I3OMGeoMap& omgeo){
-  log_debug("Setting AOMStatus");
-
-  TWRAOMStatus aomStatus;
-
-  aomStatus.SetBaseline(twrBaseline_);
-
-  I3OMGeoMap::const_iterator iter;
-  for( iter  = omgeo.begin(); iter != omgeo.end(); iter++ ){
-    OMKey omKey = iter->first;
-    I3OMGeo::OMType type = iter->second.omtype;
-    
-    if (type != I3OMGeo :: AMANDA){
-      continue;//Only do AMANDA OMs
-    }
-    else{
-      I3MCTWRParamsMap::iterator iter = twrParamsMap_->find(omKey);
-      if(iter != twrParamsMap_->end()){
-	aomStatus.SetStopDelay(iter->second.stop_delay);
-	aomStatus.SetThreshold(iter->second.TWR_thresh);
-	
-	TWRAOMStatus::CableType t = (iter->second.optical 
-				     ? TWRAOMStatus::OPTICAL :
-				     TWRAOMStatus::ELECTRICAL);
-	aomStatus.SetCableType(t);
-
-	if(t==TWRAOMStatus::OPTICAL) aomStatus.SetBinSize(twrOpBinSize_); 
-	else aomStatus.SetBinSize(twrElBinSize_);
- 
-	status->aomStatus[omKey] = aomStatus;
-	log_trace("Added AOMStatus for %s",omKey.str().c_str());
-      }
-      else{
-	
-      }
-    }
-  }
-  
-}

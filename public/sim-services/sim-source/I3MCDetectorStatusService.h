@@ -16,15 +16,14 @@
 
 #include "interfaces/I3DetectorStatusService.h"
 #include "interfaces/I3GeometryService.h"
-#include "simclasses/I3MCTWRParams.h"
 #include "dataclasses/physics/I3Trigger.h"
 #include "dataclasses/status/I3TriggerStatus.h"
 #include <dataclasses/status/I3DOMStatus.h>
 #include <dataclasses/status/I3DetectorStatus.h>
 #include <dataclasses/geometry/I3Geometry.h>
 
-/**
- *
+/** 
+*
  * @brief This service allows you to fill the detector status data 
  *	contained on the DetectorStatus stream by hand. 
  *	The information gets cloned for all of the IceCube
@@ -47,7 +46,6 @@ public:
   SET_LOGGER("I3MCDetectorStatusService");
 
 
-  void SetMCTWRParamsMap(I3MCTWRParamsMapPtr p){ twrParamsMap_ = p;};
   void SetSkipStrings(std::vector<int>& v){ skipStrings_ = v;};
   void SetSkipStations(std::vector<int>& v){ skipStations_ = v;};
 
@@ -55,13 +53,11 @@ public:
   I3MCDetectorStatusService();
   I3GeometryServicePtr geo_service_;
   I3DetectorStatusServicePtr old_status_service_;
-  I3MCTWRParamsMapPtr twrParamsMap_;
 
   void SetDOMStatus(I3DetectorStatusPtr&, const I3OMGeoMap&);
-  void SetAOMStatus(I3DetectorStatusPtr, const I3OMGeoMap&);
 
   shared_ptr<I3DetectorStatus> status_;
-  map<TriggerKey, I3TriggerStatus> triggerStatus_;
+  std::map<TriggerKey, I3TriggerStatus> triggerStatus_;
 
   /**
    *Configuration parameters for detector status
@@ -143,10 +139,6 @@ public:
   int nBinsATWD1_IceTop_;
   int nBinsATWD2_IceTop_;
   int nBinsFADC_IceTop_;
-
-  double twrOpBinSize_;
-  double twrElBinSize_;
-  unsigned twrBaseline_;
 
   I3DOMStatus::OnOff deltaCompression_;
   I3DOMStatus::DOMGain domGainType_;

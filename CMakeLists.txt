@@ -16,7 +16,7 @@ SET(LIB_${PROJECT_NAME}_SOURCEFILES
 	private/sim-services/sim-source/I3MCDetectorStatusService.cxx
 	private/sim-services/sim-source/I3MCSourceServiceFactory.cxx
 )
-SET(LIB_${PROJECT_NAME}_TOOLS log4cplus boost)
+SET(LIB_${PROJECT_NAME}_TOOLS log4cplus boost gsl)
 
 # add ROOT-y bits
 if(USE_ROOT)
@@ -29,13 +29,15 @@ endif(USE_ROOT)
 i3_add_library(sim-services
 	${LIB_${PROJECT_NAME}_SOURCEFILES}
 	
-	USE_TOOLS ${LIB_${PROJECT_NAME}_TOOLS}
+	USE_TOOLS ${LIB_${PROJECT_NAME}_TOOLS} 
 
 	USE_PROJECTS icetray 
 	phys-services 
 	dataclasses 
 	simclasses 
 	interfaces
+	cmc
+	mmc-icetray
 )
 
 i3_test_executable(test 
