@@ -7,7 +7,8 @@ from I3Tray import *
 from icecube import icetray, dataclasses, dataio, simclasses
 
 from icecube.BadDomList import bad_dom_list_static
-badOMs = bad_dom_list_static.IC59_static_bad_dom_list()
+#badOMs = bad_dom_list_static.IC59_static_bad_dom_list()
+badOMs = bad_dom_list_static.IC79_static_bad_dom_list()
 
 from optparse import OptionParser
 
@@ -35,6 +36,9 @@ status = frame.Get('I3DetectorStatus')
 dom_geo = geometry.omgeo
 dom_cal = calibration.domCal
 dom_status = status.domStatus
+#for IceTop
+vem_cal = calibration.vemCal
+sta_geo = geometry.stationgeo
 
 geo_strings_to_check = range(1,87)
 for s in geo_strings_to_check:
@@ -70,11 +74,18 @@ c_and_d_strings_to_check = [
 for s in c_and_d_strings_to_check :
 	found_cal = False
 	found_stat = False
-	for omkey in [icetray.OMKey(s,om) for om in range(61)] :
+	found_vemcal = False
+#	for omkey in [icetray.OMKey(s,om) for om in range(61)] :
+	for omkey in [icetray.OMKey(s,om) for om in range(65)] :
 		if omkey in dom_cal :
 			found_cal = True
 		if omkey in dom_status :
 			found_stat = True
+		if omkey.GetOM() > 60 and s < 82:
+			if omkey in vem_cal:
+				found_vemcal = True
+			else :
+				print '%s is missing from the VEMCal' % omkey
 		if found_cal and found_stat : continue
 	if not found_cal : print 'string %s is missing from the calibration' % s
 	if not found_stat : print 'string %s is missing from the detector status' % s
@@ -84,7 +95,6 @@ for s in range(81,87):
 	high_QE += [icetray.OMKey(s,d) for d in range(81)] 
 
 for e,p in dom_geo:
-
 	if e in badOMs and e in dom_cal and e in dom_status:
 		print "DOM %s is in the bad DOM list but contains status and calibration records" % str(e)
 	
@@ -111,20 +121,44 @@ for e,p in dom_geo:
 			print '  %s  noise rate = %s !!' % (str(e), noiseRate)
 
 
+
+		############
 		# checks for pmt-simulator
 		pmtGain = dataclasses.PMTGain(status_this_om, cal_this_om) / 1.e7
 		if ((not (pmtGain > 0.5 and pmtGain < 3.0)) and (e.GetOM() >= 1 and e.GetOM() <= 60)):
 			print '  %s  pmtGain = %s !!' % (str(e), pmtGain)
-
+			
+		# For IceTop 
+		pmtHGain = dataclasses.PMTGain(status_this_om, cal_this_om) / 5.e6
+		pmtLGain = dataclasses.PMTGain(status_this_om, cal_this_om) / 1.e5
+		if (e.GetOM() > 60) :
+			if(status_this_om.domGainType == dataclasses.I3DOMStatus.DOMGain.High):
+				if (not (pmtHGain > 0.5 and pmtHGain < 3.0)):
+					print '  %s  pmtGain = %s !!' % (str(e), pmtHGain)
+				elif e.GetString() in [39,67,26]:
+					print '  Checking switched gain DOMs %s  pmtGain = %s !!' % (str(e), pmtHGain)
+			elif(status_this_om.domGainType == dataclasses.I3DOMStatus.DOMGain.Low):
+				if (not (pmtLGain > 0.5 and pmtLGain < 3.0)):
+					print '  %s  pmtGain = %s !!' % (str(e), pmtLGain)
+				elif e.GetString() in [39,67,26]:
+					print '  Checking switched gain DOMs %s  pmtGain = %s !!' % (str(e), pmtLGain)
+			else:
+				print 'Unknown Gain for  %s  Gain %s pmtGain = %s !!!!!' % (str(e), status_this_om.domGainType,dataclasses.PMTGain(status_this_om, cal_this_om))
+			
 		impedence = cal_this_om.FrontEndImpedance / I3Units.ohm
-		if ((not (impedence == 43 or impedence == 50)) and (e.GetOM() >= 1 and e.GetOM() <= 60)):
+		if ((not (impedence == 43 or impedence == 50)) and (e.GetOM() >= 1 and e.GetOM() <= 64)):    # IT DOMs have same impedance
 			print '  %s  impedence = %s !!' % (str(e), impedence)
 
 
 		transitTime = dataclasses.TransitTime(status_this_om, cal_this_om);
 		if ((not (transitTime > 130 and transitTime < 151)) and (e.GetOM() >= 1 and e.GetOM() <= 60)):
 			print '%s  transitTime = %s !!' % (str(e), transitTime)
-		
+		## For IceTop transit times are different (because of different gains, see Chris Weaver's presentation in IceCal Call 06-10-2011)
+		elif ((not (transitTime > 130 and transitTime < 165)) and (e.GetOM() >= 61 and e.GetOM() <= 64)) or (e.GetOM() == 61 and e.GetString() == 26): # (26,61) is known to be a bit different sometimes
+			print 'IceTop : %s  transitTime = %s  voltage = %s (behaviour should be ~2000/sqrt(voltage)+87.21) !!' % (str(e), transitTime,status_this_om.pmtHV/icetray.I3Units.volt)
+                ###########
+
+			
 		# checks for DOMsimulator
 		threshold = dataclasses.SPEPMTThreshold(status_this_om,
 							cal_this_om) / I3Units.mV
@@ -153,3 +187,20 @@ for e,p in dom_geo:
 		if cal_this_om.DOMCalVersion != "7.5.2" :
 			print '  %s  DOMCalVersion = %s !!' % (str(e), cal_this_om.DOMCalVersion)
 
+		# checks for topsimulator : snowheight (part of TankGeo), vemcal, MET (later)
+		if e.GetOM()> 60:
+			vemcal_this_om = vem_cal[e]
+			if ( (vemcal_this_om.pePerVEM <= 0) or (vemcal_this_om.pePerVEM > 220)):
+				print 'IceTop %s pePerVEM is %f' % (e,vemcal_this_om.pePerVEM)
+			if( (vemcal_this_om.corrFactor <= 0) or (vemcal_this_om.corrFactor > 1.1)):
+				print 'IceTop %s corrFactor is %f' % (e,vemcal_this_om.corrFactor)
+			if( (status_this_om.domGainType==dataclasses.I3DOMStatus.DOMGain.High) and (vemcal_this_om.hglgCroddOver <= 1500) or (vemcal_this_om.hglgCroddOver > 4000)): # weird pybinding name corrected in the dataclasses trunk
+				print 'IceTop %s hglgCrossOver is %f' % (e,vemcal_this_om.hglgCroddOver)
+
+
+for e,st in sta_geo:
+	for t in st:
+		snowh = t.snowheight
+		omkeyInTank = [omk for omk in t.omKeyList]
+		if ((snowh < 0.01*I3Units.m) or (snowh > 1.8*I3Units.m)):
+			print 'IceTop station %s with DOMs(%s) snowheight is %f' % (e,omkeyInTank,snowh)
