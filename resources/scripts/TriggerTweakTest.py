@@ -19,7 +19,7 @@ while not frame.Has("I3DetectorStatus"):
 
 detstat = frame.Get("I3DetectorStatus")
 time = detstat.endTime
-tray.AddService("I3MCTimeGeneratorServiceFactory","time-gen")(
+tray.AddModule("I3MCEventHeaderGenerator","time-gen")(
         ("Year",time.GetUTCYear()),
         ("DAQTime",time.GetUTCDaqTime())
         )

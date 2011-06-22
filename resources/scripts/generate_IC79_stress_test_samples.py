@@ -135,7 +135,7 @@ tray.AddService("I3ReaderServiceFactory","gcd")(
 from icecube import dataio
 from icecube.sim_services.sim_utils.gcd_utils import get_time
 time = get_time(dataio.I3File(options.gcd_file))
-tray.AddService("I3MCTimeGeneratorServiceFactory","time-gen")(
+tray.AddModule("I3MCEventHeaderGenerator","time-gen")(
         ("Year",time.GetUTCYear()),
         ("DAQTime",time.GetUTCDaqTime()),
         ("RunNumber",999)

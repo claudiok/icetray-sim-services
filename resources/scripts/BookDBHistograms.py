@@ -31,7 +31,7 @@ gcd_file = dataio.I3File(options.gcdfile)
 
 time = get_time(gcd_file)
 print time
-tray.AddService("I3MCTimeGeneratorServiceFactory","time-gen")(
+tray.AddModule("I3MCEventHeaderGenerator","time-gen")(
         ("Year",time.GetUTCYear()),
         ("DAQTime",time.GetUTCDaqTime())
         )

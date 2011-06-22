@@ -27,7 +27,7 @@ nevents = 4
 #MJD = 54301
 MJD = 54571
 
-tray.AddService("I3MCTimeGeneratorServiceFactory","time-gen")(
+tray.AddModule("I3MCEventHeaderGenerator","time-gen")(
     ("Mjd",MJD)
 #    ("Year",2007),
 #    ("DAQTime",173357040000000000),

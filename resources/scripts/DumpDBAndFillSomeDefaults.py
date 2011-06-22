@@ -24,7 +24,7 @@ nevents = 4
 
 # The following DAQTime of 236184998900773063
 # corresponds to the first event time of run 00089742
-tray.AddService("I3MCTimeGeneratorServiceFactory","time-gen")(
+tray.AddModule("I3MCEventHeaderGenerator","time-gen")(
         ("Year",2007),
         ("DAQTime", 314159)
         )
