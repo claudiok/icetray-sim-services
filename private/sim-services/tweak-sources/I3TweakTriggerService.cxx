@@ -1,6 +1,6 @@
 #include "sim-services/tweak-sources/I3TweakTriggerService.h"
 #include "dataclasses/status/I3DetectorStatus.h"
-#include "dataclasses/I3Units.h"
+#include "icetray/I3Units.h"
 #include "icetray/I3TrayHeaders.h"
 
 I3_SERVICE_FACTORY(I3TweakTriggerService);

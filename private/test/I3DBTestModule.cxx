@@ -15,7 +15,7 @@
 #include <interfaces/I3DetectorStatusService.h>
 #include <interfaces/I3EventService.h>
 #include <dataclasses/I3Time.h>
-#include <dataclasses/I3Units.h>
+#include <icetray/I3Units.h>
 #include <dataclasses/calibration/I3DOMCalibration.h>
 #include <dataclasses/calibration/I3Calibration.h>
 #include <dataclasses/status/I3DOMStatus.h>

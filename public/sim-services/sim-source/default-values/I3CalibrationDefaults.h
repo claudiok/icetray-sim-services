@@ -12,7 +12,7 @@
 #ifndef I3CALIBRATIONDEFAULTS_H
 #define I3CALIBRATIONDEFAULTS_H
 
-#include "dataclasses/I3Units.h"
+#include "icetray/I3Units.h"
 
 namespace I3CalibDefaults{
   /**

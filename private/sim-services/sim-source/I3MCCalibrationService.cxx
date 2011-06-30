@@ -2,7 +2,7 @@
 #include <interfaces/I3GeometryService.h>
 #include "dataclasses/calibration/I3Calibration.h"
 #include "dataclasses/geometry/I3Geometry.h"
-#include "dataclasses/I3Units.h"
+#include "icetray/I3Units.h"
 #include "icetray/I3TrayHeaders.h"
 #include "sim-services/sim-source/default-values/I3CalibrationDefaults.h"
 #include "phys-services/geo-selector/GeoSelUtils.h"

@@ -12,7 +12,7 @@
 #ifndef I3DETECTORSTATUSDEFAULTS_H
 #define I3DETECTORSTATUSDEFAULTS_H
 
-#include "dataclasses/I3Units.h"
+#include "icetray/I3Units.h"
 #include "dataclasses/status/I3DOMStatus.h"
 
 namespace I3DetStatDefaults{

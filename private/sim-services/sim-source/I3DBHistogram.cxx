@@ -20,7 +20,7 @@
 #include <dataclasses/calibration/I3Calibration.h>
 #include <dataclasses/status/I3DetectorStatus.h>
 #include <dataclasses/I3Time.h>
-#include <dataclasses/I3Units.h>
+#include <icetray/I3Units.h>
 #include <dataclasses/I3DOMFunctions.h>
 #include "icetray/I3TrayHeaders.h"
 #include "icetray/I3Module.h"
