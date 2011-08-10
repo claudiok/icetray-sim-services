@@ -8,9 +8,17 @@ i3_project(sim-services
 
 # define the lists used to build the basic library
 SET(LIB_${PROJECT_NAME}_SOURCEFILES
-	private/sim-services/*.cxx 
-	private/sim-services/time-generator/*.cxx
-	private/sim-services/tweak-sources/*.cxx
+	private/sim-services/I3GeoShifter.cxx 
+	private/sim-services/PropagatorServiceUtils.cxx 
+	
+	private/sim-services/time-generator/I3MCEventHeaderGenerator.cxx
+	private/sim-services/time-generator/I3ModifyEventID.cxx
+	private/sim-services/tweak-sources/I3TweakCalibration.cxx
+	private/sim-services/tweak-sources/I3TweakCalibrationService.cxx
+	private/sim-services/tweak-sources/I3TweakDOMStatus.cxx
+	private/sim-services/tweak-sources/I3TweakDOMStatusService.cxx
+	private/sim-services/tweak-sources/I3TweakTrigger.cxx
+	private/sim-services/tweak-sources/I3TweakTriggerService.cxx
 	
 	private/sim-services/sim-source/I3MCCalibrationService.cxx
 	private/sim-services/sim-source/I3MCDetectorStatusService.cxx
