@@ -20,31 +20,30 @@ TEST(detector_center){
   std::string strings_to_exclude("-1:20,22:28,31:37,41:48,50:80");
   std::string stations_to_exclude("-1:20,22:28,31:37,41:46,51:56,60:65,68:73,75:80");
 
-  string icecube_geo(getenv("I3_SRC"));
-  icecube_geo += "/phys-services/resources/icecube.geo";
-  string amanda_geo(getenv("I3_SRC"));
-  amanda_geo += "/phys-services/resources/amanda.geo";
+  std::string I3_PORTS(getenv("I3_PORTS"));
+  std::string gcd_file("/test-data/sim/GeoCalibDetectorStatus_IC59.55040.i3.gz");
 
-  tray.AddService("I3TextFileGeometryServiceFactory","geoservice")
-    ("IceCubeGeoFile",icecube_geo.c_str())
-    ("AmandaGeoFile",amanda_geo.c_str());
-  tray.AddService("I3EmptyStreamsFactory","empty_streams")
-    ("NFrames",4)
-    ("InstallGeometry",false);
+  tray.AddModule("I3InfiniteSource","sourceme")
+    ("Prefix", I3_PORTS + gcd_file);
+
+  tray.AddModule("I3MCEventHeaderGenerator","headerme")
+    ("Year", 2007)
+    ("DAQTime",314159);
+
   tray.AddService("I3GeometrySelectorServiceFactory","geo_selector")
     ("StringsToUse",strings_to_use.c_str())
     ("StationsToUse",stations_to_use.c_str())
     ("GeoSelectorName","I3GeometrySelectorService")
     ;
 
-  tray.AddModule("I3Muxer","muxer")
+  tray.AddModule("I3MetaSynth","muxer")
     ("GeometryService","I3GeometrySelectorService");
   //I3GeoShiftTestModule contains ENSURE statements
   tray.AddModule("I3GeoShiftTestModule","geo_test");
 
   tray.AddModule("TrashCan","trash");
 
-  tray.Execute();
+  tray.Execute(4);
   tray.Finish();
 
 
@@ -63,11 +62,11 @@ TEST(shift_tree){
 
   const double DX(50.*I3Units::m);
   const double DY(50.*I3Units::m);
-  pair<double,double> dcent(DX,DY);
+  std::pair<double,double> dcent(DX,DY);
 
   I3GeoShifter::ShiftTree(dcent,mctree);
   
-  vector<I3Particle> primaries = I3MCTreeUtils::GetPrimaries(mctree);
+  std::vector<I3Particle> primaries = I3MCTreeUtils::GetPrimaries(mctree);
   
   //make sure the size of the tree doesn't change
   ENSURE(mctree->size() == 1);

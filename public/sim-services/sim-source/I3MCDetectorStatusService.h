@@ -16,15 +16,14 @@
 
 #include "interfaces/I3DetectorStatusService.h"
 #include "interfaces/I3GeometryService.h"
-#include "simclasses/I3MCTWRParams.h"
 #include "dataclasses/physics/I3Trigger.h"
 #include "dataclasses/status/I3TriggerStatus.h"
 #include <dataclasses/status/I3DOMStatus.h>
 #include <dataclasses/status/I3DetectorStatus.h>
 #include <dataclasses/geometry/I3Geometry.h>
 
-/**
- *
+/** 
+*
  * @brief This service allows you to fill the detector status data 
  *	contained on the DetectorStatus stream by hand. 
  *	The information gets cloned for all of the IceCube
@@ -47,9 +46,8 @@ public:
   SET_LOGGER("I3MCDetectorStatusService");
 
 
-  void SetSkipStrings(vector<int>& v){ skipStrings_ = v;};
-  void SetSkipStations(vector<int>& v){ skipStations_ = v;};
-  void ModifyWithExtremePrejudice(bool b){ modifyWithExtremePrejudice_ = b; };
+  void SetSkipStrings(std::vector<int>& v){ skipStrings_ = v;};
+  void SetSkipStations(std::vector<int>& v){ skipStations_ = v;};
 
  private:
   I3MCDetectorStatusService();
@@ -59,7 +57,7 @@ public:
   void SetDOMStatus(I3DetectorStatusPtr&, const I3OMGeoMap&);
 
   shared_ptr<I3DetectorStatus> status_;
-  map<TriggerKey, I3TriggerStatus> triggerStatus_;
+  std::map<TriggerKey, I3TriggerStatus> triggerStatus_;
 
   /**
    *Configuration parameters for detector status
@@ -142,20 +140,15 @@ public:
   int nBinsATWD2_IceTop_;
   int nBinsFADC_IceTop_;
 
-  double twrOpBinSize_;
-  double twrElBinSize_;
-  unsigned twrBaseline_;
-
   I3DOMStatus::OnOff deltaCompression_;
   I3DOMStatus::DOMGain domGainType_;
   bool slcActive_;
 
-  bool modifyWithExtremePrejudice_;
   /**
    * Don't modify these strings/stations
    */
-  vector<int> skipStrings_;
-  vector<int> skipStations_;
+  std::vector<int> skipStrings_;
+  std::vector<int> skipStations_;
 };
 
 I3_POINTER_TYPEDEFS(I3MCDetectorStatusService);

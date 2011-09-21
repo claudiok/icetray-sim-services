@@ -27,6 +27,8 @@
 
 #include "sim-services/sim-source/default-values/I3CalibrationDefaults.h"
 
+using namespace std;
+
 I3_MODULE(I3SimSourceTestModule);
 
 I3SimSourceTestModule::I3SimSourceTestModule(const I3Context& ctx) : 
@@ -221,12 +223,12 @@ void I3SimSourceTestModule::Configure()
   GetParameter("Calib_DeepCoreDOMNoiseRate",cal_deepcore_dom_noise_rates_);
 }
 
-void I3SimSourceTestModule::Physics(I3FramePtr frame)
+void I3SimSourceTestModule::DAQ(I3FramePtr frame)
 {
-  log_debug("Physics");
+  log_debug("DAQ");
 
-  vector<int> goodStrings = geo_sel_utils::make_good_strings(stringsToUse_, stringsToExclude_);
-  vector<int> goodStations = geo_sel_utils::make_good_strings(stationsToUse_, stationsToExclude_);
+  std::vector<int> goodStrings = geo_sel_utils::make_good_strings(stringsToUse_, stringsToExclude_);
+  std::vector<int> goodStations = geo_sel_utils::make_good_strings(stationsToUse_, stationsToExclude_);
 
   const double DISTANCE = 0.000001;
 
@@ -235,7 +237,7 @@ void I3SimSourceTestModule::Physics(I3FramePtr frame)
   
   cerr<<endl;
 
-  vector<int>::iterator i = goodStrings.begin();
+  std::vector<int>::iterator i = goodStrings.begin();
   cerr<<"goodStrings = ";
   for( ; i != goodStrings.end(); i++) cerr<<*i<<" ";
   cerr<<endl;
@@ -378,5 +380,5 @@ void I3SimSourceTestModule::Physics(I3FramePtr frame)
   }
 
   PushFrame(frame,"OutBox");
-}//Physics()
+}//DAQ()
  

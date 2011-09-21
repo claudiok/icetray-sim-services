@@ -20,7 +20,7 @@
 #include <dataclasses/calibration/I3Calibration.h>
 #include <dataclasses/status/I3DetectorStatus.h>
 #include <dataclasses/I3Time.h>
-#include <dataclasses/I3Units.h>
+#include <icetray/I3Units.h>
 #include <dataclasses/I3DOMFunctions.h>
 #include "icetray/I3TrayHeaders.h"
 #include "icetray/I3Module.h"
@@ -39,6 +39,8 @@
 #include <TROOT.h>
 
 #include <boost/foreach.hpp>
+
+using namespace std;
 
 I3_MODULE(I3DBHistogram);
 
@@ -126,8 +128,8 @@ void SetDomNoiseRate(TH1D*);
 
 
 void FitAndFormatHisto(TH1D* h, 
-		       string, 
-		       string, 
+		       std::string, 
+		       std::string, 
 		       bool);
 
 
@@ -174,9 +176,9 @@ void I3DBHistogram::DetectorStatus(I3FramePtr frame)
   PushFrame(frame,"OutBox");
 }//Physics()
 
-void I3DBHistogram::Physics(I3FramePtr frame)
+void I3DBHistogram::DAQ(I3FramePtr frame)
 {
-  log_debug("Physics");
+  log_debug("DAQ");
 
   I3CalibrationConstPtr calib = 
     frame->Get<I3CalibrationConstPtr>();
@@ -187,7 +189,7 @@ void I3DBHistogram::Physics(I3FramePtr frame)
   MakeDOMFunctionsPlots(calib,status);
 
   PushFrame(frame,"OutBox");
-}//Physics()
+}//DAQ()
 
 
 void BookDOMCalibHistograms(I3CalibrationConstPtr calib, 
@@ -717,8 +719,8 @@ void MakeDOMFunctionsPlots(I3CalibrationConstPtr calib,
     }
   }
 
-  const string I3_BUILD(getenv("I3_BUILD"));
-  string plot_path(I3_BUILD + "/sim-services/resources/plots/");
+  const std::string I3_BUILD(getenv("I3_BUILD"));
+  std::string plot_path(I3_BUILD + "/sim-services/resources/plots/");
 
   TCanvas c;
   c.SetLogy(true);
@@ -776,8 +778,8 @@ void MakeDOMFunctionsPlots(I3CalibrationConstPtr calib,
 } 
 
 void FitAndFormatHisto(TH1D* h, 
-		       string filename, 
-		       string defVal, 
+		       std::string filename, 
+		       std::string defVal, 
 		       bool fit=false){
 
   TPaveText* t;
@@ -799,8 +801,8 @@ void FitAndFormatHisto(TH1D* h,
   h->Draw();
   t->Draw();
 
-  const string I3_BUILD(getenv("I3_BUILD"));
-  string plot_path(I3_BUILD + "/sim-services/resources/plots/");
+  const std::string I3_BUILD(getenv("I3_BUILD"));
+  std::string plot_path(I3_BUILD + "/sim-services/resources/plots/");
   c.SaveAs((plot_path+filename).c_str());
 }
 
@@ -846,8 +848,8 @@ void SetFADCGain(TH1D* h){
   dg->SetParameter(5,0.0025e-3);
   h->Fit("dg"); 
 
-  const string I3_BUILD(getenv("I3_BUILD"));
-  string plot_path(I3_BUILD + "/sim-services/resources/plots/");
+  const std::string I3_BUILD(getenv("I3_BUILD"));
+  std::string plot_path(I3_BUILD + "/sim-services/resources/plots/");
   c.SaveAs((plot_path+"calibration/FADCGain.png").c_str());
 };
 
@@ -864,8 +866,8 @@ void SetATWD0Gain(TH1D* h){
   dg->SetParameter(5,0.5);
   h->Fit("dg"); 
 
-  const string I3_BUILD(getenv("I3_BUILD"));
-  string plot_path(I3_BUILD + "/sim-services/resources/plots/");
+  const std::string I3_BUILD(getenv("I3_BUILD"));
+  std::string plot_path(I3_BUILD + "/sim-services/resources/plots/");
   c.SaveAs((plot_path+"calibration/ATWD0Gain.png").c_str());
 
 };
@@ -882,8 +884,8 @@ void SetATWD1Gain(TH1D* h){
   dg->SetParameter(5,0.1);
   h->Fit("dg"); 
 
-  const string I3_BUILD(getenv("I3_BUILD"));
-  string plot_path(I3_BUILD + "/sim-services/resources/plots/");
+  const std::string I3_BUILD(getenv("I3_BUILD"));
+  std::string plot_path(I3_BUILD + "/sim-services/resources/plots/");
   c.SaveAs((plot_path+"calibration/ATWD1Gain.png").c_str());
 };
 
@@ -905,8 +907,8 @@ void SetATWD2Gain(TH1D* h){
   dg->SetParameter(5,0.005);
   h->Fit("dg"); 
 
-  const string I3_BUILD(getenv("I3_BUILD"));
-  string plot_path(I3_BUILD + "/sim-services/resources/plots/");
+  const std::string I3_BUILD(getenv("I3_BUILD"));
+  std::string plot_path(I3_BUILD + "/sim-services/resources/plots/");
   c.SaveAs((plot_path+"calibration/ATWD2Gain.png").c_str());
 };
 

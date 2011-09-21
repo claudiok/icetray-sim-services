@@ -1,10 +1,12 @@
 #include "sim-services/tweak-sources/I3TweakTrigger.h"
 #include "dataclasses/status/I3DOMStatus.h"
 #include "dataclasses/status/I3DetectorStatus.h"
-#include "dataclasses/I3Units.h"
+#include "icetray/I3Units.h"
 #include "icetray/I3TrayHeaders.h"
 #include "dataclasses/physics/I3Trigger.h"
 #include "dataclasses/status/I3TriggerStatus.h"
+
+using namespace std;
 
 I3TweakTrigger::I3TweakTrigger(I3DetectorStatusServicePtr s):
   key_source_(TriggerKey::UNKNOWN_SOURCE),
@@ -54,7 +56,7 @@ I3TweakTrigger::GetDetectorStatus(I3Time time)
   /**
    * Loop through the settings and make the required tweaks
    */
-  vector<pair<string,int> >::iterator set_iter;
+  std::vector<pair<std::string,int> >::iterator set_iter;
   for(set_iter = setting_list_.begin();
       set_iter != setting_list_.end();
       set_iter++){

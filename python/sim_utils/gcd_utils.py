@@ -9,7 +9,7 @@ def get_time(gcdfile):
     frame = gcdfile.pop_frame()
     while not frame.Has("I3DetectorStatus"): frame = gcdfile.pop_frame()
 
-    return frame.Get("I3DetectorStatus").startTime
+    return frame.Get("I3DetectorStatus").start_time
 
 def get_omgeo(gcdfile):
     frame = gcdfile.pop_frame()

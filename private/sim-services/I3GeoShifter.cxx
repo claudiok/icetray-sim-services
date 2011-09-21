@@ -26,8 +26,8 @@ namespace I3GeoShifter{
 		  I3OMGeo::OMType omType){
 
     const I3Geometry geo = frame->Get<I3Geometry>();
-    vector<double> x;
-    vector<double> y;
+    std::vector<double> x;
+    std::vector<double> y;
     I3OMGeoMap::const_iterator  i;
     int current_str(INT_MIN);
     for(i=geo.omgeo.begin(); i!=geo.omgeo.end(); i++){
@@ -74,7 +74,7 @@ namespace I3GeoShifter{
   void ShiftTree(I3FramePtr frame,
 		 I3MCTreePtr mctree,
 		 I3OMGeo::OMType omType){
-    pair<double,double> xy = DetectorCenter(frame, omType);
+    std::pair<double,double> xy = DetectorCenter(frame, omType);
     ShiftTree(xy,mctree);
   }
 

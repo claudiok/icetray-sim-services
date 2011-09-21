@@ -15,7 +15,7 @@
 #include <interfaces/I3DetectorStatusService.h>
 #include <interfaces/I3EventService.h>
 #include <dataclasses/I3Time.h>
-#include <dataclasses/I3Units.h>
+#include <icetray/I3Units.h>
 #include <dataclasses/calibration/I3DOMCalibration.h>
 #include <dataclasses/calibration/I3Calibration.h>
 #include <dataclasses/status/I3DOMStatus.h>
@@ -30,6 +30,8 @@
 #include <TH1D.h>
 #include <TF1.h>
 #include <TCanvas.h>
+
+using namespace std;
 
 I3_MODULE(I3DBTestModule);
 
@@ -53,9 +55,9 @@ void I3DBTestModule::Configure()
   log_debug("Configuring I3DBTestModule");
 }
 
-void I3DBTestModule::Physics(I3FramePtr frame)
+void I3DBTestModule::DAQ(I3FramePtr frame)
 {
-  log_debug("Physics");
+  log_debug("DAQ");
 
   I3CalibrationConstPtr calib = 
     frame->Get<I3CalibrationConstPtr>();
@@ -68,7 +70,7 @@ void I3DBTestModule::Physics(I3FramePtr frame)
   TestDOMStatus(status);
 
   PushFrame(frame,"OutBox");
-}//Physics()
+}//DAQ()
 
 
 void TestCalibration(I3CalibrationConstPtr calib){

@@ -6,11 +6,38 @@ i3_project(sim-services
 	PYTHON_DIR python
 )
 
-i3_add_library(sim-services
-	private/sim-services/*.cxx 
-	private/sim-services/*/*.cxx
+# define the lists used to build the basic library
+SET(LIB_${PROJECT_NAME}_SOURCEFILES
+	private/sim-services/I3GeoShifter.cxx 
+	private/sim-services/PropagatorServiceUtils.cxx 
 	
-	USE_TOOLS log4cplus boost root gsl
+	private/sim-services/time-generator/I3MCEventHeaderGenerator.cxx
+	private/sim-services/time-generator/I3ModifyEventID.cxx
+	private/sim-services/tweak-sources/I3TweakCalibration.cxx
+	private/sim-services/tweak-sources/I3TweakCalibrationService.cxx
+	private/sim-services/tweak-sources/I3TweakDOMStatus.cxx
+	private/sim-services/tweak-sources/I3TweakDOMStatusService.cxx
+	private/sim-services/tweak-sources/I3TweakTrigger.cxx
+	private/sim-services/tweak-sources/I3TweakTriggerService.cxx
+	
+	private/sim-services/sim-source/I3MCCalibrationService.cxx
+	private/sim-services/sim-source/I3MCDetectorStatusService.cxx
+	private/sim-services/sim-source/I3MCSourceServiceFactory.cxx
+)
+SET(LIB_${PROJECT_NAME}_TOOLS log4cplus boost gsl)
+
+# add ROOT-y bits
+if(USE_ROOT)
+	LIST(APPEND LIB_${PROJECT_NAME}_SOURCEFILES
+		private/sim-services/sim-source/I3DBHistogram.cxx
+	)
+	LIST(APPEND LIB_${PROJECT_NAME}_TOOLS root)
+endif(USE_ROOT)
+
+i3_add_library(sim-services
+	${LIB_${PROJECT_NAME}_SOURCEFILES}
+	
+	USE_TOOLS ${LIB_${PROJECT_NAME}_TOOLS} 
 
 	USE_PROJECTS icetray 
 	phys-services 
@@ -23,7 +50,7 @@ i3_add_library(sim-services
 
 i3_test_executable(test 
 	private/test/*.cxx
-	USE_PROJECTS dataclasses phys-services sim-services trigger-sim
+	USE_PROJECTS dataclasses phys-services sim-services trigger-sim dataio
 )
 
 add_subdirectory(private/pybindings)

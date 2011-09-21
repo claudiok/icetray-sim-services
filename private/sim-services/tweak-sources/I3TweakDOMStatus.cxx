@@ -2,11 +2,13 @@
 #include "dataclasses/status/I3DOMStatus.h"
 #include "dataclasses/geometry/I3Geometry.h"
 #include "dataclasses/status/I3DetectorStatus.h"
-#include "dataclasses/I3Units.h"
+#include "icetray/I3Units.h"
 #include "icetray/I3TrayHeaders.h"
 #include "interfaces/I3GeometryService.h"
 #include "dataclasses/physics/I3Trigger.h"
 #include "dataclasses/status/I3TriggerStatus.h"
+
+using namespace std;
 
 I3TweakDOMStatus::I3TweakDOMStatus(I3DetectorStatusServicePtr s, I3GeometryServicePtr g) :
   icetopLCWindowPre_(NAN),

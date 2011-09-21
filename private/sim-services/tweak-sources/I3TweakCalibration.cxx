@@ -1,8 +1,10 @@
 #include "sim-services/tweak-sources/I3TweakCalibration.h"
 #include "dataclasses/calibration/I3Calibration.h"
 #include "dataclasses/geometry/I3Geometry.h"
-#include "dataclasses/I3Units.h"
+#include "icetray/I3Units.h"
 #include "icetray/I3TrayHeaders.h"
+
+using namespace std;
 
 I3TweakCalibration::I3TweakCalibration(I3CalibrationServicePtr c, I3GeometryServicePtr g) :
   temperature_(NAN),

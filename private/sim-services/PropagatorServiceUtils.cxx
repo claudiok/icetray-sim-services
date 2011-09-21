@@ -13,6 +13,8 @@
 #include <sim-services/PropagatorServiceUtils.h>
 #include <boost/foreach.hpp>
 
+using namespace std;
+
 I3MMCTrackListPtr PropagatorServiceUtils::Propagate(I3MCTreePtr mctree_ptr, I3PropagatorServicePtr propagator){
   //find all the muons and taus and propagate them
   //the propagator updates the length and fills a

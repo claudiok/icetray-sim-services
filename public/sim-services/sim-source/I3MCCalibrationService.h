@@ -41,7 +41,6 @@ public:
 
   void SetSkipStrings(std::vector<int>& v){ skipStrings_ = v;};
   void SetSkipStations(std::vector<int>& v){ skipStations_ = v;};
-  void ModifyWithExtremePrejudice(bool b){ modifyWithExtremePrejudice_ = b; };
 
   SET_LOGGER("I3MCCalibrationService");
 
@@ -126,7 +125,6 @@ public:
   double inice_dom_noise_rates_;
   double deepcore_dom_noise_rates_;
 
-  bool modifyWithExtremePrejudice_;
   /**
    * Don't modify these strings/stations
    */
