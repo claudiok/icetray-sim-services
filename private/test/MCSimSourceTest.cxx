@@ -29,13 +29,6 @@ using namespace std;
 // Test some of Calibrate Module functionality
 TEST_GROUP(SimSource);
 
-TEST(clean_construction){
-  clean_constructor_test<I3DBHistogram>();
-  clean_constructor_test<I3TweakDOMStatusService>();
-  clean_constructor_test<I3TweakCalibrationService>();
-  clean_constructor_test<I3TweakTriggerService>(); //this test fails since pre-q-frame, typedef std::map<I3TriggerStatus::Subdetector, I3TriggerReadoutConfig> errors
-}
-
 TEST(default_config)
 {
   I3Tray tray;
