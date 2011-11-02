@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import sys, os
+import sys, os, math
 from os.path import expandvars
 
 from I3Tray import *
@@ -84,28 +84,37 @@ for e,p in dom_geo:
 		if ( status_this_om.pmt_hv < 100*I3Units.V or \
 		     status_this_om.pmt_hv > 2000*I3Units.V ) :
 			print '  %s  pmt_hv = %s V !!' % (str(e), status_this_om.pmt_hv/I3Units.V)
+		
+		if(math.isnan(status_this_om.pmt_hv*0)):
+			print '  %s  pmt_hv = %s V !!' % (str(e), status_this_om.pmt_hv/I3Units.V)
 
 		if e.om < 61 :
 			if ( ( cal_this_om.relative_dom_eff != 1.0 and high_QE.count(e) == 0 ) or \
 			     ( ( cal_this_om.relative_dom_eff < 1.34 or cal_this_om.relative_dom_eff > 1.36 ) and \
 			       high_QE.count(e) == 1 ) ):
 				print '  %s  relative_dom_eff = %s !!' % (str(e), cal_this_om.relative_dom_eff)
-	
+	        if(cal_this_om.relative_dom_eff != cal_this_om.relative_dom_eff):
+			print '  %s  relative_dom_eff = %s !!' % (str(e), cal_this_om.relative_dom_eff)
+		
+	        
 		# checks for noise-generator
 		noiseRate = cal_this_om.dom_noise_rate * I3Units.second
 		if (( ( high_QE.count(e) == 0 and ( noiseRate < 300 or noiseRate > 850) ) or \
+		      
 		      ( high_QE.count(e) == 1 and ( noiseRate < 400 or noiseRate > 1100) )) and \
 		    (e.om >= 1 and e.om <= 60)):
 			print '  %s  noise rate = %s !!' % (str(e), noiseRate)
-
-
-
+		
+		if(math.isnan(noiseRate)):
+			print '  %s  noise rate = %s !!' % (str(e), noiseRate)
+			
 		############
 		# checks for pmt-simulator
 		pmtGain = dataclasses.pmt_gain(status_this_om, cal_this_om) / 1.e7
 		if ((not (pmtGain > 0.5 and pmtGain < 3.0)) and (e.om >= 1 and e.om <= 60)):
 			print '  %s  pmt_gain = %s !!' % (str(e), pmtGain)
-			
+		if(math.isnan(pmtGain*0)):
+			print '  %s  pmt_gain = %s !!' % (str(e), pmtGain)
 		# For IceTop 
 		pmtHGain = dataclasses.pmt_gain(status_this_om, cal_this_om) / 5.e6
 		pmtLGain = dataclasses.pmt_gain(status_this_om, cal_this_om) / 1.e5
@@ -134,9 +143,9 @@ for e,p in dom_geo:
 		## For IceTop transit times are different (because of different gains, see Chris Weaver's presentation in IceCal Call 06-10-2011)
 		elif ((not (transitTime > 130 and transitTime < 165)) and (e.om >= 61 and e.om <= 64)) or (e.om == 61 and e.string == 26): # (26,61) is known to be a bit different sometimes
 			print 'IceTop : %s  transitTime = %s  voltage = %s (behaviour should be ~2000/sqrt(voltage)+87.21) !!' % (str(e), transitTime,status_this_om.pmt_hv/icetray.I3Units.volt)
-                ###########
-
-			
+		 ###########
+	        if(math.isnan(transitTime*0)):
+			print '%s  transitTime = %s !!' % (str(e), transitTime)
 		# checks for DOMsimulator
 		threshold = dataclasses.spe_pmt_threshold(status_this_om,
 							cal_this_om) / I3Units.mV
@@ -144,12 +153,12 @@ for e,p in dom_geo:
 			print '  %s  %f' % (str(e), threshold)
 
 		atwdaSamplingRate = dataclasses.atwd_sampling_rate(0,status_this_om,cal_this_om)
-		if atwdaSamplingRate < 295*I3Units.megahertz or atwdaSamplingRate > 310*I3Units.megahertz :
-			print '  %s  ATWDaSamplingRate = %s MHz!!' % (str(e), atwdaSamplingRate/I3Units.megahertz)
+		#if atwdaSamplingRate < 295*I3Units.megahertz or atwdaSamplingRate > 310*I3Units.megahertz :
+			#print '  %s  ATWDaSamplingRate = %s MHz!!' % (str(e), atwdaSamplingRate/I3Units.megahertz)
 			
 		atwdbSamplingRate = dataclasses.atwd_sampling_rate(1,status_this_om,cal_this_om)
-		if atwdbSamplingRate < 295*I3Units.megahertz or atwdbSamplingRate > 310*I3Units.megahertz :
-			print '  %s  ATWDbSamplingRate = %s MHz!!' % (str(e), atwdbSamplingRate/I3Units.megahertz)
+		#if atwdbSamplingRate < 295*I3Units.megahertz or atwdbSamplingRate > 310*I3Units.megahertz :
+			#print '  %s  ATWDbSamplingRate = %s MHz!!' % (str(e), atwdbSamplingRate/I3Units.megahertz)
 					
 		# checks for DOMcalibrator
 		if cal_this_om.dom_cal_version[:3] != "7.5" :
