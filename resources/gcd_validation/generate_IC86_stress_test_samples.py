@@ -24,7 +24,7 @@ parser.add_option("-f","--output_filename",
                   help="Filename of the output I3File.")
 
 parser.add_option("-m","--nhits_per_DOM", type = "int",
-                  dest="nhits_per_DOM", default=5,
+                  dest="nhits_per_DOM", default=20,
                   help="Number of hits per DOM")
 
 parser.add_option("-l","--time_const", type = "float",
@@ -40,7 +40,7 @@ parser.add_option("-d","--binwidth", type = "float",
                   help="Width of the hit binning.")
 
 parser.add_option("-n","--nevents", type="int",
-                  dest="nevents", default=5,
+                  dest="nevents", default=4,
                   help="Number of events to generate")
 
 parser.add_option("-u","--FearTheTurtle", 
@@ -179,7 +179,7 @@ fn += options.output_filename
 
 tray.AddModule("I3Writer","writer")(
     ("filename", fn),
-    ("Streams",["DAQ"]),
+    ("Streams",["Geometry","DetectorStatus","Calibration","DAQ"]),
     ("SkipKeys",["InIceRawData",
                  "IceTopRawData",
                  "ATWDPortiaPulse",

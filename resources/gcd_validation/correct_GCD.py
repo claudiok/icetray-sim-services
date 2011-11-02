@@ -15,15 +15,18 @@ from optparse import OptionParser
 parser = OptionParser()
 
 parser.add_option("-i","--infile",
-                  dest="INFILE", default=expandvars("$I3_BUILD/GeoCalibDetectorStatus_IC86.55750_candidate.i3.gz"),
+                  dest="INFILE", default=expandvars("$I3_PORTS/test-data/sim/GeoCalibDetectorStatus_IC86.55750_candidate.i3.gz"),
                   help="GCD file to correct.")
 
 parser.add_option("-o","--outfile",
-                  dest="OUTFILE", default=expandvars("$I3_BUILD/GeoCalibDetectorStatus_IC86.55750_corrected.i3.gz"),
+                  dest="OUTFILE", default=None,
                   help="Corrected GCD file.")
 
 (options, args) = parser.parse_args()
 
+if not options.OUTFILE :
+	print "you must specify and output file."
+	sys.exit()
 
 infile = dataio.I3File(options.INFILE)
 
@@ -48,9 +51,6 @@ c_and_d_strings_to_check = range(1,87)
 low_noise_DOMs_l = [ icetray.OMKey(82,54),  icetray.OMKey(84,54),  icetray.OMKey(85,55)]
 
 strings_IC86 = [ 1, 7, 14, 22, 31, 79, 80 ]
-
-HQE_noise_l = list()
-LQE_noise_l = list()
 
 for e,p in dom_geo:
 
@@ -93,15 +93,7 @@ for e,p in dom_geo:
 					print "  correcting RDE from 'nan' to %.2f in %s" % (calibration.dom_cal[e].relative_dom_eff,e)
 				if e.string in [1, 7, 14, 22, 31] :
 					calibration.dom_cal[e].relative_dom_eff = 1.0
-					print "  correcting RDE from 'nan' to %.2f in %s" % (calibration.dom_cal[e].relative_dom_eff,e)
-				
-		else:
-			if not isnan(cal_this_om.dom_noise_rate) :
-				if cal_this_om.relative_dom_eff > 1 :
-					HQE_noise_l.append( cal_this_om.dom_noise_rate/I3Units.hertz )
-				else:
-					LQE_noise_l.append( cal_this_om.dom_noise_rate/I3Units.hertz )
-
+					print "  correcting RDE from 'nan' to %.2f in %s" % (calibration.dom_cal[e].relative_dom_eff,e)				
 
 		# check for unusually low noise DOMs that were incorrectly translated into the DB
 		if e in low_noise_DOMs_l :
@@ -126,10 +118,3 @@ outfile.push(geo_frame)
 outfile.push(cal_frame)
 outfile.push(status_frame)
 outfile.close()
-
-import pylab
-pylab.hist(LQE_noise_l, histtype='step', bins = 100, log=True, label = "HQE")
-pylab.hist(HQE_noise_l, histtype='step', bins = 100, log=True,  label = "LQE")
-pylab.ylim(1,pylab.ylim()[1] )
-pylab.legend()
-pylab.show()

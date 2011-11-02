@@ -7,15 +7,11 @@ from os.path import expandvars
 from optparse import OptionParser
 parser = OptionParser()
 
-parser.add_option("-g","--gcd_file", dest="GCDFILE",                  
-                  default=expandvars("$I3_PORTS/test-data/sim/GeoCalibDetectorStatus_IC59.55040.i3.gz"),
-                  help="I3File which contains the GCD.")
-
 parser.add_option("-i","--infile", dest="INFILE",                   
                   help="Input file to read.")
 
 parser.add_option("-m","--nhits_per_DOM", type = "int",
-                  dest="nhits_per_DOM", default=10000,
+                  dest="nhits_per_DOM", default=20,
                   help="Number of hits per DOM")
 
 (options, args) = parser.parse_args()
@@ -26,16 +22,18 @@ from icecube.BadDomList import bad_dom_list_static
 badDOMList = bad_dom_list_static.IC86_static_bad_dom_list_HLC()
 
 from icecube.sim_services.sim_utils.gcd_utils import get_omgeo, get_domcal, get_domstatus
-omgeo = get_omgeo( dataio.I3File(options.GCDFILE) )
-domcal = get_domcal( dataio.I3File(options.GCDFILE) )
-domstat = get_domstatus( dataio.I3File(options.GCDFILE) )
+omgeo = get_omgeo( dataio.I3File(options.INFILE) )
+domcal = get_domcal( dataio.I3File(options.INFILE) )
+domstat = get_domstatus( dataio.I3File(options.INFILE) )
 goodDOMList = [omkey for omkey,g in omgeo \
                if badDOMList.count(omkey) == 0 and omkey.om <= 60 and omkey.string > 0]
 
 counter = 0
 while f.more():
     counter += 1
-    frame = f.pop_frame()    
+    frame = f.pop_frame()
+
+    if frame.Stop != icetray.I3Frame.DAQ : continue
 
     print "[  Frame %d ]" % (counter)
 
