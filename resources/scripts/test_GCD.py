@@ -93,14 +93,13 @@ for e,p in dom_geo:
 			     ( ( cal_this_om.relative_dom_eff < 1.34 or cal_this_om.relative_dom_eff > 1.36 ) and \
 			       high_QE.count(e) == 1 ) ):
 				print '  %s  relative_dom_eff = %s !!' % (str(e), cal_this_om.relative_dom_eff)
-	        if(cal_this_om.relative_dom_eff != cal_this_om.relative_dom_eff):
+	        if(math.isnan(cal_this_om.relative_dom_eff)):
 			print '  %s  relative_dom_eff = %s !!' % (str(e), cal_this_om.relative_dom_eff)
 		
 	        
 		# checks for noise-generator
 		noiseRate = cal_this_om.dom_noise_rate * I3Units.second
 		if (( ( high_QE.count(e) == 0 and ( noiseRate < 300 or noiseRate > 850) ) or \
-		      
 		      ( high_QE.count(e) == 1 and ( noiseRate < 400 or noiseRate > 1100) )) and \
 		    (e.om >= 1 and e.om <= 60)):
 			print '  %s  noise rate = %s !!' % (str(e), noiseRate)
@@ -153,12 +152,12 @@ for e,p in dom_geo:
 			print '  %s  %f' % (str(e), threshold)
 
 		atwdaSamplingRate = dataclasses.atwd_sampling_rate(0,status_this_om,cal_this_om)
-		#if atwdaSamplingRate < 295*I3Units.megahertz or atwdaSamplingRate > 310*I3Units.megahertz :
-			#print '  %s  ATWDaSamplingRate = %s MHz!!' % (str(e), atwdaSamplingRate/I3Units.megahertz)
+		if atwdaSamplingRate < 295*I3Units.megahertz or atwdaSamplingRate > 310*I3Units.megahertz :
+			print '  %s  ATWDaSamplingRate = %s MHz!!' % (str(e), atwdaSamplingRate/I3Units.megahertz)
 			
 		atwdbSamplingRate = dataclasses.atwd_sampling_rate(1,status_this_om,cal_this_om)
-		#if atwdbSamplingRate < 295*I3Units.megahertz or atwdbSamplingRate > 310*I3Units.megahertz :
-			#print '  %s  ATWDbSamplingRate = %s MHz!!' % (str(e), atwdbSamplingRate/I3Units.megahertz)
+		if atwdbSamplingRate < 295*I3Units.megahertz or atwdbSamplingRate > 310*I3Units.megahertz :
+			print '  %s  ATWDbSamplingRate = %s MHz!!' % (str(e), atwdbSamplingRate/I3Units.megahertz)
 					
 		# checks for DOMcalibrator
 		if cal_this_om.dom_cal_version[:3] != "7.5" :
