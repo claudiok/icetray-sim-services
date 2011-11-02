@@ -23,19 +23,19 @@ parser.add_option("-m","--nhits_per_DOM", type = "int",
 f = dataio.I3File(options.INFILE)
 
 from icecube.BadDomList import bad_dom_list_static
-badDOMList = bad_dom_list_static.IC79_static_bad_dom_list_HLC()
+badDOMList = bad_dom_list_static.IC86_static_bad_dom_list_HLC()
 
 from icecube.sim_services.sim_utils.gcd_utils import get_omgeo, get_domcal, get_domstatus
 omgeo = get_omgeo( dataio.I3File(options.GCDFILE) )
 domcal = get_domcal( dataio.I3File(options.GCDFILE) )
 domstat = get_domstatus( dataio.I3File(options.GCDFILE) )
 goodDOMList = [omkey for omkey,g in omgeo \
-               if badDOMList.count(omkey) == 0 and omkey.GetOM() <= 60 and omkey.GetString() > 0]
+               if badDOMList.count(omkey) == 0 and omkey.om <= 60 and omkey.string > 0]
 
 counter = 0
 while f.more():
     counter += 1
-    frame = f.pop_physics()
+    frame = f.pop_frame()    
 
     print "[  Frame %d ]" % (counter)
 
@@ -47,7 +47,7 @@ while f.more():
         if badDOMList.count(omkey) > 0 :
             print "%s : this DOM is in the BAD DOM List!!!" % str(omkey)
 
-        charge = sum([rp.Charge for rp in rpseries])
+        charge = sum([rp.charge for rp in rpseries])
         if(charge/float(options.nhits_per_DOM) < 0.2 or \
            charge/float(options.nhits_per_DOM) > 2.0 ) :
             print "%s : what do you think about this (%f) charge and this (%f) charge ratio? " % \
@@ -62,12 +62,12 @@ while f.more():
             if omkey not in domcal :
                 print "   %s : this DOM has no domcal entry!!!" % str(omkey)
             else:
-                print "        impedance = %f ohms" % ( (domcal[omkey].FrontEndImpedance)/I3Units.ohm)
+                print "        impedance = %f ohms" % ( (domcal[omkey].front_end_impedance)/I3Units.ohm)
             if omkey not in domstat :
                 print "   %s : this DOM has no domstat entry!!!" % str(omkey)
             else:
-                print "        voltage = %f V" % ( (domstat[omkey].pmtHV)/I3Units.V)
+                print "        voltage = %f V" % ( (domstat[omkey].pmt_hv)/I3Units.V)
             if omkey in domcal and omkey in domstat :
-                print "        gain = %f " % ( dataclasses.PMTGain(domstat[omkey],domcal[omkey]) )
-                print "        ttime = %f ns " % ( dataclasses.TransitTime(domstat[omkey],domcal[omkey])/I3Units.ns )
+                print "        gain = %f " % ( dataclasses.pmt_gain(domstat[omkey],domcal[omkey]) )
+                print "        ttime = %f ns " % ( dataclasses.transit_time(domstat[omkey],domcal[omkey])/I3Units.ns )
             

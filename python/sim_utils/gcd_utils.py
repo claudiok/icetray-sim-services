@@ -21,19 +21,19 @@ def get_domcal(gcdfile):
     frame = gcdfile.pop_frame()
     while not frame.Has("I3Calibration"): frame = gcdfile.pop_frame()
 
-    return frame.Get("I3Calibration").domCal
+    return frame.Get("I3Calibration").dom_cal
 
 def get_domstatus(gcdfile):
     frame = gcdfile.pop_frame()
     while not frame.Has("I3DetectorStatus"): frame = gcdfile.pop_frame()
 
-    return frame.Get("I3DetectorStatus").domStatus
+    return frame.Get("I3DetectorStatus").dom_status
 
 def get_triggerstatus(gcdfile):
     frame = gcdfile.pop_frame()
     while not frame.Has("I3DetectorStatus"): frame = gcdfile.pop_frame()
 
-    return frame.Get("I3DetectorStatus").triggerStatus
+    return frame.Get("I3DetectorStatus").trigger_status
 
 def put_triggerstatus(ts,gcdfile,name):
     #gcdfile.rewind()

@@ -2,23 +2,24 @@
 
 import sys, os
 from os.path import expandvars
+from math import isnan
 
 from I3Tray import *
 from icecube import icetray, dataclasses, dataio, simclasses
 
 from icecube.BadDomList import bad_dom_list_static
-badOMs = bad_dom_list_static.IC59_static_bad_dom_list()
+badOMs = bad_dom_list_static.IC86_static_bad_dom_list()
 
 from optparse import OptionParser
 
 parser = OptionParser()
 
 parser.add_option("-i","--infile",
-                  dest="INFILE", default=expandvars("$I3_BUILD/GeoCalibDetectorStatus_IC79.55380_candidate.i3.gz"),
+                  dest="INFILE", default=expandvars("$I3_BUILD/GeoCalibDetectorStatus_IC86.55750_candidate.i3.gz"),
                   help="GCD file to correct.")
 
 parser.add_option("-o","--outfile",
-                  dest="OUTFILE", default=expandvars("$I3_BUILD/GeoCalibDetectorStatus_IC79.55380_corrected.i3.gz"),
+                  dest="OUTFILE", default=expandvars("$I3_BUILD/GeoCalibDetectorStatus_IC86.55750_corrected.i3.gz"),
                   help="Corrected GCD file.")
 
 (options, args) = parser.parse_args()
@@ -39,21 +40,17 @@ while not status_frame.Has('I3DetectorStatus'): status_frame = infile.pop_frame(
 status = status_frame.Get('I3DetectorStatus')
 
 dom_geo = geometry.omgeo
-dom_cal = calibration.domCal
-dom_status = status.domStatus
+dom_cal = calibration.dom_cal
+dom_status = status.dom_status
 	
-c_and_d_strings_to_check = [ 
-	75, 76, 77, 78, 68, 69, 70, 71, 72, 73,
-	74, 60, 61, 62, 63, 64, 65, 66, 67, 52,
-	53, 54, 55, 56, 57, 58, 59, 44, 45, 46,
-	47, 48, 49, 50, 36, 83, 37, 38, 39, 40,
-	26, 27, 28, 29, 30, 17, 18, 19, 20, 21,
-	10, 11, 12, 13,  2,  3,  4,  5,  6,
-	8,  9,  16, 25,  35, 85, 84, 82, 81, 86,
-	43, 34, 24, 15,  23, 33, 42, 51, 32, 41
-	]
+c_and_d_strings_to_check = range(1,87)
 
 low_noise_DOMs_l = [ icetray.OMKey(82,54),  icetray.OMKey(84,54),  icetray.OMKey(85,55)]
+
+strings_IC86 = [ 1, 7, 14, 22, 31, 79, 80 ]
+
+HQE_noise_l = list()
+LQE_noise_l = list()
 
 for e,p in dom_geo:
 
@@ -61,18 +58,13 @@ for e,p in dom_geo:
 		cal_this_om = dom_cal[e]
 		status_this_om = dom_status[e]
 
-		if e.GetOM() == 39 and e.GetString() == 72 :
-			if status_this_om.lcMode != dataclasses.I3DOMStatus.LCMode.UpOrDown :
-				status.domStatus[e].lcMode = dataclasses.I3DOMStatus.LCMode.UpOrDown
-				print " %s correcting LCMode to %d" % ( str(e), int(dom_status[e].lcMode) )
-				
-		if float(cal_this_om.DOMCalVersion[:3]) < 7.5 :
+		if float(cal_this_om.dom_cal_version[:3]) < 7.5 :
 			print "Bad DOMCal"
-			print '  %s  DOMCalVersion = %s' % (str(e), cal_this_om.DOMCalVersion)
-			calibration.domCal[e].DOMCalVersion = '7.5.0'
-			print '  correcting to ',calibration.domCal[e].DOMCalVersion		
+			print '  %s  DOMCalVersion = %s' % (str(e), cal_this_om.dom_cal_version)
+			calibration.dom_cal[e].dom_cal_version = '7.5.3'
+			print '  correcting to ',calibration.dom_cal[e].dom_cal_version		
 		
-		threshold = dataclasses.SPEPMTThreshold(status_this_om,
+		threshold = dataclasses.spe_pmt_threshold(status_this_om,
 							cal_this_om) / I3Units.mV
 
 		if threshold < 0 :
@@ -81,33 +73,42 @@ for e,p in dom_geo:
 			fit = dataclasses.LinearFit()
 			fit.slope = NaN
 			fit.intercept = NaN
-			calibration.domCal[e].PMTDiscCalib = fit
+			calibration.dom_cal[e].PMTDiscCalib = fit
 			print '  correcting to %2.2f mV' % \
-			      (dataclasses.SPEPMTThreshold(status_this_om,calibration.domCal[e])/I3Units.mV)
+			      (dataclasses.spe_pmt_threshold(status_this_om,calibration.dom_cal[e])/I3Units.mV)
 
-		if e.GetString() == 87 or e.GetString() == 88 :
-			print "There should be no string 87 or 88"
-			# make a new omkey
-			k = icetray.OMKey(e.GetString() - 8,e.GetOM())
-			if k in dom_geo :
-				print "Ooops!  It already exists!"
-			print "   moving %s to %s" % (str(e),str(k))
-			# move the I3OMGeo
-			dom_geo[k] = dom_geo[e]
-			del dom_geo[e]
-			# move the I3DOMCalibration
- 			dom_cal[k] = dom_cal[e]
-			del dom_cal[e]
-			# move the I3DOMStatus
- 			dom_status[k] = dom_status[e]
-			del dom_status[e]			
+		# check the noise rates and relative DOM efficiencies in the new strings
+		if e.string in strings_IC86 :
+			if isnan(cal_this_om.dom_noise_rate) :
+				if e.string in [79, 80] :
+					calibration.dom_cal[e].dom_noise_rate = 750 * I3Units.hertz
+					print "  correcting noise from 'nan' to %d Hz in %s" % (calibration.dom_cal[e].dom_noise_rate/I3Units.hertz,e)
+				if e.string in [1, 7, 14, 22, 31] :
+					calibration.dom_cal[e].dom_noise_rate = 500 * I3Units.hertz
+					print "  correcting noise from 'nan' to %d Hz in %s" % (calibration.dom_cal[e].dom_noise_rate/I3Units.hertz,e)
+
+ 			if isnan(cal_this_om.relative_dom_eff) :
+				if e.string in [79, 80] :
+					calibration.dom_cal[e].relative_dom_eff = 1.35
+					print "  correcting RDE from 'nan' to %.2f in %s" % (calibration.dom_cal[e].relative_dom_eff,e)
+				if e.string in [1, 7, 14, 22, 31] :
+					calibration.dom_cal[e].relative_dom_eff = 1.0
+					print "  correcting RDE from 'nan' to %.2f in %s" % (calibration.dom_cal[e].relative_dom_eff,e)
+				
+		else:
+			if not isnan(cal_this_om.dom_noise_rate) :
+				if cal_this_om.relative_dom_eff > 1 :
+					HQE_noise_l.append( cal_this_om.dom_noise_rate/I3Units.hertz )
+				else:
+					LQE_noise_l.append( cal_this_om.dom_noise_rate/I3Units.hertz )
+
 
 		# check for unusually low noise DOMs that were incorrectly translated into the DB
 		if e in low_noise_DOMs_l :
-			noiseRate = calibration.domCal[e].DomNoiseRate
+			noiseRate = calibration.dom_cal[e].dom_noise_rate
 			if noiseRate < 400 * I3Units.hertz :
-				calibration.domCal[e].DomNoiseRate = noiseRate + 1*I3Units.kilohertz
-				print "  correcting noise from %fHz to %fHz in %s" % (noiseRate/I3Units.hertz, calibration.domCal[e].DomNoiseRate/I3Units.hertz,e)
+				calibration.dom_cal[e].dom_noise_rate = noiseRate + 1*I3Units.kilohertz
+				print "  correcting noise from %fHz to %fHz in %s" % (noiseRate/I3Units.hertz, calibration.dom_cal[e].dom_noise_rate/I3Units.hertz,e)
 				
 			
 del geo_frame['I3Geometry']
@@ -125,3 +126,10 @@ outfile.push(geo_frame)
 outfile.push(cal_frame)
 outfile.push(status_frame)
 outfile.close()
+
+import pylab
+pylab.hist(LQE_noise_l, histtype='step', bins = 100, log=True, label = "HQE")
+pylab.hist(HQE_noise_l, histtype='step', bins = 100, log=True,  label = "LQE")
+pylab.ylim(1,pylab.ylim()[1] )
+pylab.legend()
+pylab.show()

@@ -12,7 +12,7 @@ from optparse import OptionParser
 parser = OptionParser()
 
 parser.add_option("-g","--gcd_file",
-                  dest="gcd_file", default=expandvars("$I3_PORTS/test-data/sim/GeoCalibDetectorStatus_IC59.55040.i3.gz"),
+                  dest="gcd_file", default=expandvars("$I3_BUILD/GeoCalibDetectorStatus_IC86.55750_corrected.i3.gz"),
                   help="I3File which contains the GCD.")
 
 parser.add_option("-o","--output_path",
@@ -24,7 +24,7 @@ parser.add_option("-f","--output_filename",
                   help="Filename of the output I3File.")
 
 parser.add_option("-m","--nhits_per_DOM", type = "int",
-                  dest="nhits_per_DOM", default=10000,
+                  dest="nhits_per_DOM", default=5,
                   help="Number of hits per DOM")
 
 parser.add_option("-l","--time_const", type = "float",
@@ -120,50 +120,39 @@ load("libphys-services")
 load("libsim-services")
 load("libdataio")
 load("libpmt-simulator")
-load("libromeo-interface")
 load("libDOMsimulator")
 load("libDOMcalibrator")
 load("libNFE")
 
 tray = I3Tray()
 
-tray.AddService("I3ReaderServiceFactory","gcd")(
-    ("filename",options.gcd_file),
-    ("OmitEvent",True)
-    )
+
+tray.AddModule("I3InfiniteSource", "source",\
+               prefix = options.gcd_file , \
+               stream = icetray.I3Frame.DAQ ) 
 
 from icecube import dataio
 from icecube.sim_services.sim_utils.gcd_utils import get_time
 time = get_time(dataio.I3File(options.gcd_file))
 tray.AddModule("I3MCEventHeaderGenerator","time-gen")(
-        ("Year",time.GetUTCYear()),
-        ("DAQTime",time.GetUTCDaqTime()),
+        ("Year",time.utc_year),
+        ("DAQTime",time.utc_daq_time),
         ("RunNumber",999)
         )
 
-ic22 = "21,29,30,38,39,40,49,50,59,58,67,66,74,73,65,72,78,48,57,47,46,56"
-ic2008= "63,64,55,71,70,76,77,75,69,60,68,61,62,52,44,53,54,45"
-ic2009 = "2,3,4,5,6,10,11,12,13,17,18,19,20,26,27,28,36,37,83"
-ic2010 = "8,9,16,25,35,85,84,82,81,86,43,34,24,15,23,33,42,51,32,41"
-
-it79 = "2,3,4,5,6,9,10,11,12,13,17,18,19,20,21,26,27,28,29,30,36,37,38,"
-it79 += "39,40,44,45,46,47,48,49,50,52,53,54,55,56,57,58,59,60,61,62,63,"
-it79 += "64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,"
-it79 += "8,16,25,35,43,34,24,15,23,33,42,51,32,41"
-tray.AddService("I3GeometrySelectorServiceFactory","geo-selector")(
-        ("StringsToUse",ic22 + "," + ic2008 + "," + ic2009 + "," + ic2010),
-        ("StationsToUse",it79),
-        ("GeoSelectorName","IC79-Geo")
-        )
+# some GCDs come with driving times and some don't
+def DrivingTime( frame ):
+    if "DrivingTime" in frame : 
+        del frame["DrivingTime"]
+        frame.Put("DrivingTime", time )
+        
+tray.AddModule( DrivingTime, "dt",\
+                Streams = [icetray.I3Frame.DAQ] )
 
 tray.AddService("I3SPRNGRandomServiceFactory","random")(
 	("Seed",1),
 	("NStreams",2),
  	("StreamNum",1))
-
-tray.AddModule("I3Muxer","muxer")(
-    ("GeometryService","IC79-Geo")
-    )
 
 tray.AddModule("I3TestGenericSource","hits")(
     ("HitTimes",t),
@@ -181,7 +170,7 @@ tray.AddModule( "I3NFE", "NFE" )(
     )
 
 fn = options.output_path 
-fn += "IC79_"
+fn += "IC86_"
 fn += "n%d_" % options.nhits_per_DOM
 fn += "tc%3.3f_" % options.time_const
 if options.binhits :
@@ -190,7 +179,7 @@ fn += options.output_filename
 
 tray.AddModule("I3Writer","writer")(
     ("filename", fn),
-    ("Streams",["Physics"]),
+    ("Streams",["DAQ"]),
     ("SkipKeys",["InIceRawData",
                  "IceTopRawData",
                  "ATWDPortiaPulse",
