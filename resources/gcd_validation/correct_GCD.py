@@ -102,7 +102,23 @@ for e,p in dom_geo:
 				calibration.dom_cal[e].dom_noise_rate = noiseRate + 1*I3Units.kilohertz
 				print "  correcting noise from %fHz to %fHz in %s" % (noiseRate/I3Units.hertz, calibration.dom_cal[e].dom_noise_rate/I3Units.hertz,e)
 				
-			
+
+# let's clean the trigger cruft out
+# we only simulate InIce and IceTop trigggers and
+# only SM, Cluster, Cylinder, and SlowMonopole
+# so that's all we're keeping
+for tkey, ts in status.trigger_status :
+	if ( tkey.source != dataclasses.I3Trigger.IN_ICE and tkey.source != dataclasses.I3Trigger.ICE_TOP) or \
+	       ( tkey.type != dataclasses.I3Trigger.SIMPLE_MULTIPLICITY and
+		 tkey.type != dataclasses.I3Trigger.STRING and
+		 tkey.type != dataclasses.I3Trigger.VOLUME and
+		 tkey.type != dataclasses.I3Trigger.SLOW_PARTICLE ) :
+		del status.trigger_status[tkey]
+	if tkey.source == dataclasses.I3Trigger.IN_ICE and \
+		 tkey.type == dataclasses.I3Trigger.SLOW_PARTICLE :
+		tkey.type = dataclasses.I3Trigger.SIMPLE_MULTIPLICITY 
+		
+
 del geo_frame['I3Geometry']
 geo_frame['I3Geometry'] = geometry
 
