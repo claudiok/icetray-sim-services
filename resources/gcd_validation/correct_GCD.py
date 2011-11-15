@@ -6,6 +6,10 @@ from math import isnan
 
 from I3Tray import *
 from icecube import icetray, dataclasses, dataio, simclasses
+from icecube.icetray import OMKey
+
+from lxml import etree
+import gzip
 
 from icecube.BadDomList import bad_dom_list_static
 badOMs = bad_dom_list_static.IC86_static_bad_dom_list()
@@ -52,6 +56,41 @@ low_noise_DOMs_l = [ icetray.OMKey(82,54),  icetray.OMKey(84,54),  icetray.OMKey
 
 strings_IC86 = [ 1, 7, 14, 22, 31, 79, 80 ]
 
+f = gzip.open( expandvars("$I3_BUILD/phys-services/resources/mainboard_ids.xml.gz") )
+tree = etree.parse( f )
+
+root = tree.getroot()
+
+mbid_to_omkey = dict()
+
+# Need to generate a MBID to OMKey map
+for c in root[0] :
+    omkey = OMKey()
+    mbid = None
+    for cc in c :
+        if cc.tag == "first" :
+            mbid = int(cc.text)
+        if cc.tag == "second" :
+            for ccc in cc :
+                if ccc.tag == "StringNumber" :
+                    omkey.string = int(ccc.text)
+                if ccc.tag == "OMNumber" :
+                    omkey.om = int(ccc.text)
+    if mbid :
+        mbid_to_omkey[ str( hex( mbid ) )[2:] ] = omkey
+
+# Parse the DAQ noise rates text file
+daq_noise_rates_d = dict()
+daq_rate_f = open( expandvars("$I3_BUILD/noise-generator/resources/noise-constants/STAT118631.txt") )
+bad_noise_f = open("bad_noise.txt","w")
+for l in daq_rate_f.readlines() :
+    sl = l.split()
+    string = int(sl[0][:2])
+    om = int(sl[0][3:])                 
+    omkey = OMKey( string, om )
+    noise_rate = float(sl[1]) * I3Units.hertz
+    daq_noise_rates_d[ omkey ] = noise_rate
+
 for e,p in dom_geo:
 
 	if e not in badOMs and e in dom_cal and e in dom_status:				
@@ -77,23 +116,25 @@ for e,p in dom_geo:
 			print '  correcting to %2.2f mV' % \
 			      (dataclasses.spe_pmt_threshold(status_this_om,calibration.dom_cal[e])/I3Units.mV)
 
-		# check the noise rates and relative DOM efficiencies in the new strings
-		if e.string in strings_IC86 :
-			if isnan(cal_this_om.dom_noise_rate) :
-				if e.string in [79, 80] :
-					calibration.dom_cal[e].dom_noise_rate = 750 * I3Units.hertz
-					print "  correcting noise from 'nan' to %d Hz in %s" % (calibration.dom_cal[e].dom_noise_rate/I3Units.hertz,e)
-				if e.string in [1, 7, 14, 22, 31] :
-					calibration.dom_cal[e].dom_noise_rate = 500 * I3Units.hertz
-					print "  correcting noise from 'nan' to %d Hz in %s" % (calibration.dom_cal[e].dom_noise_rate/I3Units.hertz,e)
+		# set the noise rates and relative DOM efficiencies in the new strings
+		if daq_noise_rates_d[ e ] < 1 * I3Units.hertz and p.omtype == dataclasses.I3OMGeo.IceCube :
+			if e not in badOMs and isnan( calibration.dom_cal[e].dom_noise_rate ) :
+				print "ERROR : no valid noise rate for this DOM %s " % str(e)
+				bad_noise_f.write( "%s\n" % str(e) )
 
- 			if isnan(cal_this_om.relative_dom_eff) :
+		else :
+			print "  correcting noise from %.3f Hz to %d Hz in %s" % \
+			      (calibration.dom_cal[e].dom_noise_rate/I3Units.hertz, daq_noise_rates_d[ e ]/I3Units.hertz, e)
+			calibration.dom_cal[e].dom_noise_rate = daq_noise_rates_d[ e ]
+
+		if e.string in strings_IC86 :
+			if isnan(cal_this_om.relative_dom_eff) :
 				if e.string in [79, 80] :
 					calibration.dom_cal[e].relative_dom_eff = 1.35
 					print "  correcting RDE from 'nan' to %.2f in %s" % (calibration.dom_cal[e].relative_dom_eff,e)
 				if e.string in [1, 7, 14, 22, 31] :
 					calibration.dom_cal[e].relative_dom_eff = 1.0
-					print "  correcting RDE from 'nan' to %.2f in %s" % (calibration.dom_cal[e].relative_dom_eff,e)				
+					print "  correcting RDE from 'nan' to %.2f in %s" % (calibration.dom_cal[e].relative_dom_eff,e)
 
 		# check for unusually low noise DOMs that were incorrectly translated into the DB
 		if e in low_noise_DOMs_l :
