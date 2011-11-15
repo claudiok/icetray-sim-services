@@ -1,12 +1,7 @@
 #!/usr/bin/env python
-from I3Tray import *
 
 from os.path import expandvars
-
-import os
-import sys
-import math
-import random
+from I3Tray import I3Units, I3Tray, load
 
 from optparse import OptionParser
 parser = OptionParser()
@@ -56,6 +51,19 @@ if options.fear_the_turtle:
     import numpy
     import pylab
     from loot.plotting import I3Hist
+
+import os
+import sys
+import math
+import random
+
+load("libDOMcalibrator")
+load("libNFE")
+
+from icecube import icetray, dataclasses, dataio
+from icecube import phys_services, sim_services, pmt_simulator
+from icecube import DOMsimulator
+from icecube.sim_services.gcd_validation.hit_generator import StressTestHitGenerator
 
 ###
 # Generate the hit series to feed to I3TestGenericSource
@@ -115,15 +123,6 @@ else:
     w = list()
     t = times
 
-load("libdataclasses")
-load("libphys-services")
-load("libsim-services")
-load("libdataio")
-load("libpmt-simulator")
-load("libDOMsimulator")
-load("libDOMcalibrator")
-load("libNFE")
-
 tray = I3Tray()
 
 
@@ -154,10 +153,9 @@ tray.AddService("I3SPRNGRandomServiceFactory","random")(
 	("NStreams",2),
  	("StreamNum",1))
 
-tray.AddModule("I3TestGenericSource","hits")(
-    ("HitTimes",t),
-    ("Weights",w)
-    )
+tray.AddModule(StressTestHitGenerator ,"hits",\
+               Streams = [icetray.I3Frame.DAQ],\
+               hit_times = t, weights = w )
 
 tray.AddModule("I3PMTSimulator","pmt")
 
@@ -177,18 +175,21 @@ if options.binhits :
     fn += "dt%2.2f_" % options.binwidth
 fn += options.output_filename
 
-tray.AddModule("I3Writer","writer")(
-    ("filename", fn),
-    ("Streams",["Geometry","DetectorStatus","Calibration","DAQ"]),
-    ("SkipKeys",["InIceRawData",
-                 "IceTopRawData",
-                 "ATWDPortiaPulse",
-                 "PortiaEvent",
-                 "MCHitSeriesMap",
-                 "InitialHitSeriesReco",
-                 "I3EventHeader",
-                 "FADCPortiaPulse",
-                 "FADCPulseSeries"])
+tray.AddModule("I3Writer","writer",
+    filename = fn,\
+    Streams = [icetray.I3Frame.Geometry,\
+               icetray.I3Frame.Calibration,\
+               icetray.I3Frame.DetectorStatus,\
+               icetray.I3Frame.DAQ],\
+    SkipKeys = ["InIceRawData",\
+                "IceTopRawData",\
+                "ATWDPortiaPulse",\
+                "PortiaEvent",\
+                "MCHitSeriesMap",\
+                "InitialHitSeriesReco",\
+                "I3EventHeader",\
+                "FADCPortiaPulse",\
+                "FADCPulseSeries"]\
     )
 
 tray.AddModule("TrashCan", "the can")
