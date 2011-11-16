@@ -15,7 +15,7 @@ from optparse import OptionParser
 parser = OptionParser()
 
 parser.add_option("-g","--gcdfile",
-                  dest="GCDFILE", default=expandvars("$I3_BUILD/GeoCalibDetectorStatus_IC86.55750_corrected.i3.gz"),
+                  dest="GCDFILE", default=expandvars("$I3_BUILD/GeoCalibDetectorStatus_IC86.55697_corrected.i3.gz"),
                   help="GCD file to test.")
 
 (options, args) = parser.parse_args()
