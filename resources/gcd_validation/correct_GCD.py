@@ -56,6 +56,10 @@ low_noise_DOMs_l = [ icetray.OMKey(82,54),  icetray.OMKey(84,54),  icetray.OMKey
 
 strings_IC86 = [ 1, 7, 14, 22, 31, 79, 80 ]
 
+high_QE_IC86 = [ icetray.OMKey( 79, i ) for i in range(30, 45) if i not in [ 32, 41, 43 ] ]
+		 
+high_QE_IC86.extend( [ icetray.OMKey( 80, i ) for i in range(30, 44) ] )
+
 f = gzip.open( expandvars("$I3_BUILD/phys-services/resources/mainboard_ids.xml.gz") )
 tree = etree.parse( f )
 
@@ -91,6 +95,9 @@ for l in daq_rate_f.readlines() :
     noise_rate = float(sl[1]) * I3Units.hertz
     daq_noise_rates_d[ omkey ] = noise_rate
 
+print "Setting noise in (7,56) by hand"
+daq_noise_rates_d[ icetray.OMKey( 7, 56 ) ] = 800 * I3Units.hertz
+ 
 for e,p in dom_geo:
 
 	if e not in badOMs and e in dom_cal and e in dom_status:				
@@ -117,24 +124,25 @@ for e,p in dom_geo:
 			      (dataclasses.spe_pmt_threshold(status_this_om,calibration.dom_cal[e])/I3Units.mV)
 
 		# set the noise rates and relative DOM efficiencies in the new strings
-		if daq_noise_rates_d[ e ] < 1 * I3Units.hertz and p.omtype == dataclasses.I3OMGeo.IceCube :
-			if e not in badOMs and isnan( calibration.dom_cal[e].dom_noise_rate ) :
-				print "ERROR : no valid noise rate for this DOM %s " % str(e)
-				bad_noise_f.write( "%s\n" % str(e) )
+		if p.omtype == dataclasses.I3OMGeo.IceCube :
+			if daq_noise_rates_d[ e ] < 1 * I3Units.hertz :
+				if e not in badOMs and isnan( calibration.dom_cal[e].dom_noise_rate ) :
+					print "ERROR : no valid noise rate for this DOM %s " % str(e)
+					bad_noise_f.write( "%s\n" % str(e) )
 
-		else :
-			print "  correcting noise from %.3f Hz to %d Hz in %s" % \
-			      (calibration.dom_cal[e].dom_noise_rate/I3Units.hertz, daq_noise_rates_d[ e ]/I3Units.hertz, e)
-			calibration.dom_cal[e].dom_noise_rate = daq_noise_rates_d[ e ]
+			else :
+				print "  correcting noise from %.3f Hz to %d Hz in %s" % \
+				      (calibration.dom_cal[e].dom_noise_rate/I3Units.hertz, daq_noise_rates_d[ e ]/I3Units.hertz, e)
+				calibration.dom_cal[e].dom_noise_rate = daq_noise_rates_d[ e ]
 
-		if e.string in strings_IC86 :
-			if isnan(cal_this_om.relative_dom_eff) :
-				if e.string in [79, 80] :
-					calibration.dom_cal[e].relative_dom_eff = 1.35
-					print "  correcting RDE from 'nan' to %.2f in %s" % (calibration.dom_cal[e].relative_dom_eff,e)
-				if e.string in [1, 7, 14, 22, 31] :
-					calibration.dom_cal[e].relative_dom_eff = 1.0
-					print "  correcting RDE from 'nan' to %.2f in %s" % (calibration.dom_cal[e].relative_dom_eff,e)
+			if e.string in strings_IC86 :
+				if isnan(cal_this_om.relative_dom_eff) :
+					if e in high_QE_IC86 :
+						calibration.dom_cal[e].relative_dom_eff = 1.35
+						print "  correcting RDE from 'nan' to %.2f in %s" % (calibration.dom_cal[e].relative_dom_eff,e)
+					else :
+						calibration.dom_cal[e].relative_dom_eff = 1.0
+						print "  correcting RDE from 'nan' to %.2f in %s" % (calibration.dom_cal[e].relative_dom_eff,e)
 
 		# check for unusually low noise DOMs that were incorrectly translated into the DB
 		if e in low_noise_DOMs_l :

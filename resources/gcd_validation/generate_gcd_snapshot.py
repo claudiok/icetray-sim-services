@@ -5,7 +5,7 @@ from icecube.dataclasses import *
 
 import os
 
-season_to_MJD = { "IC86" : 55750,\
+season_to_MJD = { "IC86" : 55697,\
 		  "IC79" : 55380,\
 		  "IC59" : 55000,\
 		  "IC40" : 54649,\
