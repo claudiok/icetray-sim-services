@@ -19,7 +19,7 @@ from optparse import OptionParser
 parser = OptionParser()
 
 parser.add_option("-i","--infile",
-                  dest="INFILE", default=expandvars("$I3_PORTS/test-data/sim/GeoCalibDetectorStatus_IC86.55750_candidate.i3.gz"),
+                  dest="INFILE", default=expandvars("$I3_PORTS/test-data/sim/GeoCalibDetectorStatus_IC86.55697_candidate.i3.gz"),
                   help="GCD file to correct.")
 
 parser.add_option("-o","--outfile",

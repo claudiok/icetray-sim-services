@@ -7,7 +7,7 @@ from optparse import OptionParser
 parser = OptionParser()
 
 parser.add_option("-g","--gcd_file",
-                  dest="gcd_file", default=expandvars("$I3_BUILD/GeoCalibDetectorStatus_IC86.55750_corrected.i3.gz"),
+                  dest="gcd_file", default=expandvars("$I3_BUILD/GeoCalibDetectorStatus_IC86.55697_corrected.i3.gz"),
                   help="I3File which contains the GCD.")
 
 parser.add_option("-o","--output_path",
