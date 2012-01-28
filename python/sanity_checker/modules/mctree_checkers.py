@@ -1,4 +1,11 @@
-from math import isnan
+# isnan is new in python 2.6 and we need to be able to support
+# python versions as old as 2.4.  the hack below should do the
+# trick, but whenever possible use the real thing
+try :
+    from math import isnan
+except :
+    isnan = lambda x : str(x) == "nan" 
+
 from icecube import dataclasses as dc
 
 from icecube.sim_services.sanity_checker.utils.counter import Counter
