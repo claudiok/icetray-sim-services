@@ -3,6 +3,8 @@
 from icecube.sim_services.sanity_checker.utils.histogram import Histogram
 from icecube.sim_services.sanity_checker.utils.histogram import calc_rchisq
 
+from icecube.icetray.I3Test import *
+
 from os.path import expandvars
 REF_PATH = expandvars("$I3_BUILD/sim-services/resources/")
 f = open(REF_PATH + "histogram_test.pickle","r")
@@ -27,9 +29,9 @@ for i in range(10000):
         chisq_l.append( rchisq )
     last_value = this_value
 
-import pylab
-h = pylab.hist( chisq_l, histtype = "step", log = True)
-pylab.show()
+
+ENSURE( chisq_l[-1] < 2.0 , "chisq should be close to 1" )
+
 
 
 
