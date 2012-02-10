@@ -1,22 +1,30 @@
 # isnan is new in python 2.6 and we need to be able to support
 # python versions as old as 2.4.  the hack below should do the
 # trick, but whenever possible use the real thing
-try :
+# look for isnan in math, then numpy, then i3math
+# if it's not in any of those modules use the str compare hack
+try:
     from math import isnan
-except :
-    isnan = lambda x : str(x) == "nan" 
+except ImportError :
+    try:
+        from numpy import isnan
+    except ImportError :
+        try:
+            from icecube.i3math import isnan
+        except ImportError :
+            isnan = lambda x : str(x) == "nan" 
 
 from icecube import dataclasses as dc
 
 from icecube.sim_services.sanity_checker.utils.counter import Counter
-from icecube.sim_services.sanity_checker.bases.checker import Checker
+from icecube.sim_services.sanity_checker.bases.checker import SCBaseModule
 
-class CorsikaTreeChecker( Checker ) :
+class CorsikaTreeSCModule( SCBaseModule ) :
     def __init__(self):
-        Checker.__init__(self)
+        SCBaseModule.__init__(self)
 
-    def configure(self):
-        # if we get 10 events in a row flag an error
+    #def configure(self):
+        # if we get 100 events in a row flag an error
         self.missingStochasticCounter = Counter( ) 
         self.daughterlessCounter = Counter( ) 
         self.nanLengthMuonCounter = Counter( ) 
@@ -27,11 +35,11 @@ class CorsikaTreeChecker( Checker ) :
         self.nanLengthMuonCounter.failure_msg = "Too many events with NAN length InIce muons."
         self.noInIceMuonsCounter.failure_msg = "Too many events with daughterless InIce muons."
 
-        self.register( self.missingStochasticCounter  )
-        self.register( self.daughterlessCounter  )
-        self.register( self.nanLengthMuonCounter  )
-        self.register( self.noInIceMuonsCounter  )
-        
+        self.register( "missingStochasticCounter" )
+        self.register( "daughterlessCounter" )
+        self.register( "nanLengthMuonCounter" )
+        self.register( "noInIceMuonsCounter" )
+
     # returns True if all is well
     def check( self, frame ):
         mctree = frame.Get("I3MCTree")
@@ -62,7 +70,7 @@ class CorsikaTreeChecker( Checker ) :
         self.noInIceMuonsCounter.test_condition( n_inice_muons == 0 )
 
         # call the base class 'check' method
-        return Checker.check(self)
+        return SCBaseModule.check(self)
 
             
 

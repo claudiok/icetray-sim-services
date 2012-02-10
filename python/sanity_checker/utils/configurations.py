@@ -3,8 +3,8 @@ from icecube import dataclasses as dc
 
 import sys
 
-from ..modules.mctree_checkers import CorsikaTreeChecker
-from ..modules.launch_checkers import HLCLaunchChecker
+from ..modules.mctree_checkers import CorsikaTreeSCModule
+from ..modules.launch_checkers import HLCLaunchSCModule
 
 RunConfigurations = dict()
-RunConfigurations["CORSIKA"] =[ CorsikaTreeChecker, HLCLaunchChecker ]
+RunConfigurations["CORSIKA"] =[ CorsikaTreeSCModule, HLCLaunchSCModule ]

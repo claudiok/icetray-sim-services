@@ -55,10 +55,9 @@ fn = expandvars("$I3_BUILD/sim-services/resources/simprod_reference_files/CORSIK
 from icecube.sim_services.sanity_checker import SimulationSanityChecker
 tray.AddModule( SimulationSanityChecker, "sanitycheck",
 		RunType = "CORSIKA" ,
-		GenerateReferences = True , 
-		ReferenceFilename = fn )
+		OutputRefFilename = fn )
 
-tray.AddModule("Dump", "dump")
+#tray.AddModule("Dump", "dump")
 tray.AddModule("TrashCan", "the can")
 
 print options.NEVENTS

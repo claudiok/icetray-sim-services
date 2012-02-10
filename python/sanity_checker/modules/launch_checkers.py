@@ -1,31 +1,36 @@
-from math import isnan
+# isnan is new in python 2.6 and we need to be able to support
+# python versions as old as 2.4.  the hack below should do the
+# trick, but whenever possible use the real thing
+# look for isnan in math, then numpy, then i3math
+# if it's not in any of those modules use the str compare hack
+try:
+    from math import isnan
+except ImportError :
+    try:
+        from numpy import isnan
+    except ImportError :
+        try:
+            from icecube.i3math import isnan
+        except ImportError :
+            isnan = lambda x : str(x) == "nan" 
+    
 from icecube import dataclasses as dc
 from icecube.sim_services.sanity_checker.utils.histogram import Histogram
-from icecube.sim_services.sanity_checker.bases.checker import Checker
+from icecube.sim_services.sanity_checker.bases.checker import SCBaseModule
 from os.path import expandvars
 import cPickle as pickle
 
-REF_PATH = expandvars("$I3_BUILD/sim-services/resources/simprod_reference_files/")
-class HLCLaunchChecker( Checker ) :
+class HLCLaunchSCModule( SCBaseModule ) :
     def __init__(self):
-        Checker.__init__(self)
+        SCBaseModule.__init__(self)
 
-    def configure( self ):
-        if self.generate_references :
-            s = {"xmin": 0 , "xmax": 100 , "binwidth" : 1 } 
-            self.nHLCLaunchHist = Histogram( settings = s ) 
-            self.nSLCLaunchHist = Histogram( settings = s ) 
-        else :
-            f = open( REF_PATH + "nHLCLaunchHistRef.pickle" ,"r")
-            nHLCLaunchHistRef = pickle.load( f )
-            self.nHLCLaunchHist = Histogram( nHLCLaunchHistRef ) 
+        s = { "xmin": 0 , "xmax": 100 , "binwidth" : 1 } 
+        self.nHLCLaunchHist = Histogram( settings = s ) 
+        self.nSLCLaunchHist = Histogram( settings = s ) 
 
-            f = open( REF_PATH + "nSLCLaunchHistRef.pickle" ,"r")
-            nSLCLaunchHistRef = pickle.load( f )
-            self.nSLCLaunchHist = Histogram( nSLCLaunchHistRef ) 
-
-        self.register( self.nHLCLaunchHist  )
-        self.register( self.nSLCLaunchHist  )        
+        # only register on generation
+        self.register( "nHLCLaunchHist" )
+        self.register( "nSLCLaunchHist" ) 
 
     def check( self, frame ):
         launchmap = frame.Get("InIceRawData")
@@ -36,21 +41,14 @@ class HLCLaunchChecker( Checker ) :
             nHLCLaunches += sum( [ 1 for l in v if l.lc_bit ] )
             nSLCLaunches += sum( [ 1 for l in v if not l.lc_bit ] )
 
-        self.nHLCLaunchHist.fill( nHLCLaunches )
         self.nSLCLaunchHist.fill( nSLCLaunches )
+        self.nHLCLaunchHist.fill( nHLCLaunches )
 
-        return Checker.check(self)
+        return SCBaseModule.check(self)
 
-    def finish( self ):
-        if self.generate_references :
-            proto = pickle.HIGHEST_PROTOCOL
-            f = open( REF_PATH + "nHLCLaunchHistRef.pickle" ,"w")
-            pickle.dump( self.nHLCLaunchHist, f, proto )
 
-            f = open( REF_PATH + "nSLCLaunchHistRef.pickle" ,"w")
-            pickle.dump( self.nSLCLaunchHist, f, proto )
 
-            
+        
 
 
             
