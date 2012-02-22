@@ -74,7 +74,7 @@ tray.AddModule("FrameCheck","framecheck")(
     )
 
 tray.AddModule("I3Writer","writer",
-	       streams = ["Geometry","Calibration","DetectorStatus"],
+	       streams = [icetray.I3Frame.Geometry,icetray.I3Frame.Calibration,icetray.I3Frame.DetectorStatus],
                filename="GeoCalibDetectorStatus_"+options.SEASON+"."+str(MJD)+"_candidate.i3.gz")
 
 tray.AddModule("TrashCan","trash")
