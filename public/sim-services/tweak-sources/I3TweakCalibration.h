@@ -18,6 +18,8 @@
 #include <icetray/I3Logging.h>
 #include "interfaces/I3GeometryService.h"
 
+#include <string>
+
 /**
  *
  * @brief This module allow you to fill the RawDOMStatus data 
