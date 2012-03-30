@@ -56,9 +56,14 @@ low_noise_DOMs_l = [ icetray.OMKey(82,54),  icetray.OMKey(84,54),  icetray.OMKey
 
 strings_IC86 = [ 1, 7, 14, 22, 31, 79, 80 ]
 
-high_QE_IC86 = [ icetray.OMKey( 79, i ) for i in range(30, 45) if i not in [ 32, 41, 43 ] ]
+high_QE = [ icetray.OMKey( 79, i ) for i in range(30, 45) if i not in [ 32, 41, 43 ] ]
 		 
-high_QE_IC86.extend( [ icetray.OMKey( 80, i ) for i in range(30, 44) ] )
+high_QE.extend( [ icetray.OMKey( 80, i ) for i in range(30, 44) ] )
+
+high_QE.extend( [ icetray.OMKey( 43, 55 ) ] )#Mark Krasberg (post deployment after surface testing)
+
+for s in range(81,87):
+  high_QE.extend( [ icetray.OMKey( s, i ) for i in range(1, 61) ] )
 
 f = gzip.open( expandvars("$I3_BUILD/phys-services/resources/mainboard_ids.xml.gz") )
 tree = etree.parse( f )
@@ -135,15 +140,23 @@ for e,p in dom_geo:
 				      (calibration.dom_cal[e].dom_noise_rate/I3Units.hertz, daq_noise_rates_d[ e ]/I3Units.hertz, e)
 				calibration.dom_cal[e].dom_noise_rate = daq_noise_rates_d[ e ]
 
-			if e.string in strings_IC86 :
-				if isnan(cal_this_om.relative_dom_eff) :
-					if e in high_QE_IC86 :
+			
+			if isnan(cal_this_om.relative_dom_eff) :
+				if e.string in strings_IC86 :
+					if e in high_QE :
+						calibration.dom_cal[e].relative_dom_eff = 1.35
+						print " (newstringIC86) correcting RDE from 'nan' to %.2f in %s" % (calibration.dom_cal[e].relative_dom_eff,e)
+					else :
+						calibration.dom_cal[e].relative_dom_eff = 1.0
+						print " (newstringIC86) correcting RDE from 'nan' to %.2f in %s" % (calibration.dom_cal[e].relative_dom_eff,e)
+				else :
+					if e in high_QE :
 						calibration.dom_cal[e].relative_dom_eff = 1.35
 						print "  correcting RDE from 'nan' to %.2f in %s" % (calibration.dom_cal[e].relative_dom_eff,e)
 					else :
 						calibration.dom_cal[e].relative_dom_eff = 1.0
 						print "  correcting RDE from 'nan' to %.2f in %s" % (calibration.dom_cal[e].relative_dom_eff,e)
-
+			
 		# check for unusually low noise DOMs that were incorrectly translated into the DB
 		if e in low_noise_DOMs_l :
 			noiseRate = calibration.dom_cal[e].dom_noise_rate

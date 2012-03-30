@@ -69,8 +69,11 @@ for s in c_and_d_strings_to_check :
 	if not found_stat : print 'string %s is missing from the detector status' % s
 
 high_QE = [icetray.OMKey(36,d) for d in range(44,60) if (d != 45 and d!= 47) ] 
-for s in range(79,87):
-	high_QE += [icetray.OMKey(s,d) for d in range(81)] 
+high_QE += [ icetray.OMKey( 79, i ) for i in range(30, 45) if i not in [ 32, 41, 43 ] ]
+high_QE += ( [ icetray.OMKey( 80, i ) for i in range(30, 44) ] )
+for s in range(81,87):
+	high_QE += [icetray.OMKey(s,d) for d in range(1,61)]
+high_QE += [icetray.OMKey(43,55)] #Mark Krasberg (post deployment after surface testing)
 
 for e,p in dom_geo:
 	if e in badOMs and e in dom_cal and e in dom_status:
@@ -92,7 +95,7 @@ for e,p in dom_geo:
 			if ( ( cal_this_om.relative_dom_eff != 1.0 and high_QE.count(e) == 0 ) or \
 			     ( ( cal_this_om.relative_dom_eff < 1.34 or cal_this_om.relative_dom_eff > 1.36 ) and \
 			       high_QE.count(e) == 1 ) ):
-				print '  %s  relative_dom_eff = %s !!' % (str(e), cal_this_om.relative_dom_eff)
+				 print '  %s  relative_dom_eff = %s !!' % (str(e), cal_this_om.relative_dom_eff)
 	        if(math.isnan(cal_this_om.relative_dom_eff)):
 			print '  %s  relative_dom_eff = %s !!' % (str(e), cal_this_om.relative_dom_eff)
 		
