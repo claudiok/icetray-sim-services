@@ -10,6 +10,7 @@ i3_project(sim-services
 SET(LIB_${PROJECT_NAME}_SOURCEFILES
 	private/sim-services/I3GeoShifter.cxx 
 	private/sim-services/PropagatorServiceUtils.cxx 
+	private/sim-services/I3SumGenerator.cxx 
 	
 	private/sim-services/time-generator/I3MCEventHeaderGenerator.cxx
 	private/sim-services/time-generator/I3ModifyEventID.cxx
