@@ -63,6 +63,8 @@ I3MMCTrackListPtr PropagatorServiceUtils::Propagate(I3MCTreePtr mctree_ptr, I3Pr
       mctree_ptr->replace(t_iter, *copy_iter);
     }	 
   }
+  //just before returning we need to swap the pointers
+  mctree_ptr = tree_copy;
   return mmcTrackList;
 }
 
