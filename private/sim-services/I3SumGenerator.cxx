@@ -1,7 +1,7 @@
 #include <iostream>
 #include <cmath>
 #include <string>
-#include "sim-services/I3SumGenerator.h"
+#include <sim-services/I3SumGenerator.h>
 
 using namespace std;
 /**

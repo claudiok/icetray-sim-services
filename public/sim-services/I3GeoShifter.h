@@ -1,9 +1,9 @@
 /**
  * copyright  (C) 2004
  * the IceCube collaboration
- *  $Id: I3Selection.h 2601 2005-02-08 20:05:42Z olivas $
-  *
- * @file I3Selection.h
+ *  $Id: I3GeoShifter.h 2601 2005-02-08 20:05:42Z olivas $
+ *
+ * @file I3GeoShifter.h
  * @version $Revision: 1.3 $
  * @date $Date: 2005-02-08 21:05:42 +0100 (Tue, 08 Feb 2005) $
  * @author olivas
@@ -16,8 +16,6 @@
  * @brief Utilities for parsing the input parameters for I3GeometrySelector.
  */
 
-#include <vector>
-#include <string>
 #include "dataclasses/geometry/I3Geometry.h"
 #include "dataclasses/physics/I3MCTree.h"
 

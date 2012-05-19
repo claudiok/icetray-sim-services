@@ -22,7 +22,7 @@
 #define I3SUM_GENERATOR_H
 #include <vector>
 #include <boost/function.hpp>
-#include "phys-services/I3RandomService.h"
+#include <phys-services/I3RandomService.h>
 
 class I3SumGenerator 
 {

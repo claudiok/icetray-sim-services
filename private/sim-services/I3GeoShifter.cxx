@@ -12,9 +12,8 @@
  * for shifting particles to the detector center.
 */
 
-// headers for this selection
-#include "sim-services/I3GeoShifter.h"
-#include "icetray/I3Frame.h"
+#include <sim-services/I3GeoShifter.h>
+#include <icetray/I3Frame.h>
 #include <numeric> //for accumulate
 
 using namespace std;
