@@ -11,6 +11,7 @@ SET(LIB_${PROJECT_NAME}_SOURCEFILES
 	private/sim-services/I3GeoShifter.cxx 
 	private/sim-services/PropagatorServiceUtils.cxx 
 	private/sim-services/I3SumGenerator.cxx 
+	private/sim-services/I3MCTreeHybridSimulationSplitter.cxx
 )
 SET(LIB_${PROJECT_NAME}_TOOLS log4cplus boost )
 
