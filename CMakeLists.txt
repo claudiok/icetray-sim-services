@@ -12,6 +12,8 @@ SET(LIB_${PROJECT_NAME}_SOURCEFILES
 	private/sim-services/PropagatorServiceUtils.cxx 
 	private/sim-services/I3SumGenerator.cxx 
 	private/sim-services/I3MCTreeHybridSimulationSplitter.cxx
+	private/sim-services/time-generator/I3MCEventHeaderGenerator.cxx
+	private/sim-services/time-generator/I3ModifyEventID.cxx
 )
 SET(LIB_${PROJECT_NAME}_TOOLS log4cplus boost )
 
