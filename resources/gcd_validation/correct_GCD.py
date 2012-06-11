@@ -14,12 +14,14 @@ import gzip
 from icecube.BadDomList import bad_dom_list_static
 badOMs = bad_dom_list_static.IC86_static_bad_dom_list()
 
+DEFAULT_GCD_FN = expandvars("$I3_PORTS/test-data/sim/GeoCalibDetectorStatus_IC86.55697_candidate.i3.gz")
+
 from optparse import OptionParser
 
 parser = OptionParser()
 
 parser.add_option("-i","--infile",
-                  dest="INFILE", default=expandvars("$I3_PORTS/test-data/sim/GeoCalibDetectorStatus_IC86.55697_candidate.i3.gz"),
+                  dest="INFILE", default= DEFAULT_GCD_FN,
                   help="GCD file to correct.")
 
 parser.add_option("-o","--outfile",
@@ -126,7 +128,8 @@ for e,p in dom_geo:
 			fit.intercept = NaN
 			calibration.dom_cal[e].PMTDiscCalib = fit
 			print '  correcting to %2.2f mV' % \
-			      (dataclasses.spe_pmt_threshold(status_this_om,calibration.dom_cal[e])/I3Units.mV)
+			      (dataclasses.spe_pmt_threshold(status_this_om,\
+							     calibration.dom_cal[e])/I3Units.mV)
 
 		# set the noise rates and relative DOM efficiencies in the new strings
 		if p.omtype == dataclasses.I3OMGeo.IceCube :
@@ -137,7 +140,9 @@ for e,p in dom_geo:
 
 			else :
 				print "  correcting noise from %.3f Hz to %d Hz in %s" % \
-				      (calibration.dom_cal[e].dom_noise_rate/I3Units.hertz, daq_noise_rates_d[ e ]/I3Units.hertz, e)
+				      (calibration.dom_cal[e].dom_noise_rate/I3Units.hertz, \
+				       daq_noise_rates_d[ e ]/I3Units.hertz, \
+				       e)
 				calibration.dom_cal[e].dom_noise_rate = daq_noise_rates_d[ e ]
 
 			
@@ -145,24 +150,29 @@ for e,p in dom_geo:
 				if e.string in strings_IC86 :
 					if e in high_QE :
 						calibration.dom_cal[e].relative_dom_eff = 1.35
-						print " (newstringIC86) correcting RDE from 'nan' to %.2f in %s" % (calibration.dom_cal[e].relative_dom_eff,e)
+						print " (newstringIC86) correcting RDE from 'nan' to %.2f in %s" % \
+						      (calibration.dom_cal[e].relative_dom_eff,e)
 					else :
 						calibration.dom_cal[e].relative_dom_eff = 1.0
-						print " (newstringIC86) correcting RDE from 'nan' to %.2f in %s" % (calibration.dom_cal[e].relative_dom_eff,e)
+						print " (newstringIC86) correcting RDE from 'nan' to %.2f in %s" % \
+						      (calibration.dom_cal[e].relative_dom_eff,e)
 				else :
 					if e in high_QE :
 						calibration.dom_cal[e].relative_dom_eff = 1.35
-						print "  correcting RDE from 'nan' to %.2f in %s" % (calibration.dom_cal[e].relative_dom_eff,e)
+						print "  correcting RDE from 'nan' to %.2f in %s" % \
+						      (calibration.dom_cal[e].relative_dom_eff,e)
 					else :
 						calibration.dom_cal[e].relative_dom_eff = 1.0
-						print "  correcting RDE from 'nan' to %.2f in %s" % (calibration.dom_cal[e].relative_dom_eff,e)
+						print "  correcting RDE from 'nan' to %.2f in %s" % \
+						      (calibration.dom_cal[e].relative_dom_eff,e)
 			
 		# check for unusually low noise DOMs that were incorrectly translated into the DB
 		if e in low_noise_DOMs_l :
 			noiseRate = calibration.dom_cal[e].dom_noise_rate
 			if noiseRate < 400 * I3Units.hertz :
 				calibration.dom_cal[e].dom_noise_rate = noiseRate + 1*I3Units.kilohertz
-				print "  correcting noise from %fHz to %fHz in %s" % (noiseRate/I3Units.hertz, calibration.dom_cal[e].dom_noise_rate/I3Units.hertz,e)
+				print "  correcting noise from %fHz to %fHz in %s" % \
+				      (noiseRate/I3Units.hertz, calibration.dom_cal[e].dom_noise_rate/I3Units.hertz,e)
 				
 
 # let's clean the trigger cruft out
@@ -196,3 +206,33 @@ outfile.push(geo_frame)
 outfile.push(cal_frame)
 outfile.push(status_frame)
 outfile.close()
+
+# now correct the baselines
+print "Correcting baselines ... "
+
+from icecube import icetray, dataio, WaveCalibrator
+import I3Tray
+
+tray = I3Tray.I3Tray()
+tray.AddModule("I3Reader", "reader", filename = options.OUTFILE)
+
+# Simulation: no baseline offsets
+# Copy DOMCal baselines into calibrations as they go by
+tray.AddModule(WaveCalibrator.DOMCalBaselineModule, "domcal_baseliner")
+
+new_outfile_fn = options.outfile.replace(".i3","_beacon.i3") \
+		 if ".i3" in options.outfile \
+		 else options.outfile + "_beacon"
+
+tray.AddModule("I3Writer", "writer", \
+	       filename = new_outfile_fn, \
+	       streams=[icetray.I3Frame.Geometry, \
+			icetray.I3Frame.Calibration, \
+			icetray.I3Frame.DetectorStatus])
+
+tray.AddModule("TrashCan", "YesWeCan")
+
+tray.Execute()
+tray.Finish()
+
+print "Done."
