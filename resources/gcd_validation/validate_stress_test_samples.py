@@ -18,7 +18,7 @@ parser.add_option("-m","--nhits_per_DOM", type = "int",
 
 f = dataio.I3File(options.INFILE)
 
-from icecube.BadDomList import bad_dom_list_static
+from icecube.sim_services import bad_dom_list_static
 badDOMList = bad_dom_list_static.IC86_static_bad_dom_list_HLC()
 
 from icecube.sim_services.sim_utils.gcd_utils import get_omgeo, get_domcal, get_domstatus

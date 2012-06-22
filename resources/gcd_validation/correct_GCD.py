@@ -11,7 +11,7 @@ from icecube.icetray import OMKey
 from lxml import etree
 import gzip
 
-from icecube.BadDomList import bad_dom_list_static
+from icecube.sim_services import bad_dom_list_static
 badOMs = bad_dom_list_static.IC86_static_bad_dom_list()
 
 DEFAULT_GCD_FN = expandvars("$I3_PORTS/test-data/sim/GeoCalibDetectorStatus_IC86.55697_candidate.i3.gz")

@@ -6,7 +6,7 @@ from os.path import expandvars
 from I3Tray import *
 from icecube import icetray, dataclasses, dataio, simclasses
 
-from icecube.BadDomList import bad_dom_list_static
+from icecube.sim_services import bad_dom_list_static
 #badOMs = bad_dom_list_static.IC59_static_bad_dom_list()
 badOMs = bad_dom_list_static.IC86_static_bad_dom_list()
 
