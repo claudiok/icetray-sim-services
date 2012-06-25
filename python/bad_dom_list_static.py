@@ -5,8 +5,6 @@ def IC59_static_bad_dom_list():
      static_list.append(OMKey(5,5))
      static_list.append(OMKey(5,6))
      static_list.append(OMKey(6,11))
-    #static_list.append(OMKey(11,1))
-    #static_list.append(OMKey(11,2))
      static_list.append(OMKey(18,45))
      static_list.append(OMKey(18,46))
      static_list.append(OMKey(19,59))
@@ -21,7 +19,6 @@ def IC59_static_bad_dom_list():
      static_list.append(OMKey(30,23))
      static_list.append(OMKey(30,60))
      static_list.append(OMKey(38,59))
-    #static_list.append(OMKey(39,21))
      static_list.append(OMKey(39,22))
      static_list.append(OMKey(39,61))
      static_list.append(OMKey(40,51))
@@ -30,29 +27,18 @@ def IC59_static_bad_dom_list():
      static_list.append(OMKey(44,26))
      static_list.append(OMKey(44,47))
      static_list.append(OMKey(44,48))
-    #static_list.append(OMKey(44,55))
-    #static_list.append(OMKey(44,56))
-    #static_list.append(OMKey(46,49))
-    #static_list.append(OMKey(46,50))
      static_list.append(OMKey(47,55))
      static_list.append(OMKey(47,56))
      static_list.append(OMKey(50,36))
      static_list.append(OMKey(53,17))
      static_list.append(OMKey(53,18))
-    #static_list.append(OMKey(53,59))
-    #static_list.append(OMKey(53,60))
      static_list.append(OMKey(54,47))
-    #static_list.append(OMKey(59,45))
-    #static_list.append(OMKey(59,46))
-    #static_list.append(OMKey(60,55))
-    #static_list.append(OMKey(60,56))
      static_list.append(OMKey(62,51))
      static_list.append(OMKey(62,52))
      static_list.append(OMKey(66,33))
      static_list.append(OMKey(66,34))
      static_list.append(OMKey(66,45))
      static_list.append(OMKey(66,46))
-    #static_list.append(OMKey(68,42))
      static_list.append(OMKey(69,23))
      static_list.append(OMKey(69,24))
      static_list.append(OMKey(69,44))
@@ -60,16 +46,10 @@ def IC59_static_bad_dom_list():
      static_list.append(OMKey(69,48))
      static_list.append(OMKey(71,39))
      static_list.append(OMKey(74,9))
-     #RC entries (taken from monitoring)
-     #static_list.append(OMKey(39,21))
      static_list.append(OMKey(54,51))
      static_list.append(OMKey(54,52))
      static_list.append(OMKey(59,45))
      static_list.append(OMKey(59,46))
-     #static_list.append(OMKey(69,47))
-     #static_list.append(OMKey(69,48))
-     #static_list.append(OMKey(72,37))
-     #static_list.append(OMKey(72,38))
      static_list.append(OMKey(54,51))
      static_list.append(OMKey(54,52))
      static_list.append(OMKey(59,45))
@@ -78,7 +58,6 @@ def IC59_static_bad_dom_list():
      static_list.append(OMKey(62,52))
      static_list.append(OMKey(68,42))
                         
-
      return static_list
 
 def IC59_static_bad_dom_list_HLC():
@@ -86,8 +65,6 @@ def IC59_static_bad_dom_list_HLC():
      static_list.append(OMKey(5,5))
      static_list.append(OMKey(5,6))
      static_list.append(OMKey(6,11))
-     #static_list.append(OMKey(11,1))
-     #static_list.append(OMKey(11,2))
      static_list.append(OMKey(18,45))
      static_list.append(OMKey(18,46))
      static_list.append(OMKey(19,59))
@@ -102,7 +79,6 @@ def IC59_static_bad_dom_list_HLC():
      static_list.append(OMKey(30,23))
      static_list.append(OMKey(30,60))
      static_list.append(OMKey(38,59))
-     #static_list.append(OMKey(39,21))
      static_list.append(OMKey(39,22))
      static_list.append(OMKey(39,61))
      static_list.append(OMKey(40,51))
@@ -111,29 +87,16 @@ def IC59_static_bad_dom_list_HLC():
      static_list.append(OMKey(44,26))
      static_list.append(OMKey(44,47))
      static_list.append(OMKey(44,48))
-     #static_list.append(OMKey(44,55))
-     #static_list.append(OMKey(44,56))
-     #static_list.append(OMKey(46,49))
-     #static_list.append(OMKey(46,50))
      static_list.append(OMKey(47,55))
      static_list.append(OMKey(47,56))
      static_list.append(OMKey(50,36))
      static_list.append(OMKey(53,17))
      static_list.append(OMKey(53,18))
-     #static_list.append(OMKey(53,59))
-     #static_list.append(OMKey(53,60))
      static_list.append(OMKey(54,47))
-     #static_list.append(OMKey(59,45))
-     #static_list.append(OMKey(59,46))
-     #static_list.append(OMKey(60,55))
-     #static_list.append(OMKey(60,56))
-     #static_list.append(OMKey(62,51))
-     #static_list.append(OMKey(62,52))
      static_list.append(OMKey(66,33))
      static_list.append(OMKey(66,34))
      static_list.append(OMKey(66,45))
      static_list.append(OMKey(66,46))
-     #static_list.append(OMKey(68,42))
      static_list.append(OMKey(69,23))
      static_list.append(OMKey(69,24))
      static_list.append(OMKey(69,44))
@@ -141,16 +104,6 @@ def IC59_static_bad_dom_list_HLC():
      static_list.append(OMKey(69,48))
      static_list.append(OMKey(71,39))
      static_list.append(OMKey(74,9))
-     #RC entries (taken from monitoring)
-     #static_list.append(OMKey(39,21))
-     #static_list.append(OMKey(54,51))
-     #static_list.append(OMKey(54,52))
-     #static_list.append(OMKey(59,45))
-     #static_list.append(OMKey(59,46))
-     #static_list.append(OMKey(69,47))
-     #static_list.append(OMKey(69,48))
-     #static_list.append(OMKey(72,37))
-     #static_list.append(OMKey(72,38))
      #SLC only DOMs
      static_list.append(OMKey(28,10))
      static_list.append(OMKey(36,3))
@@ -334,8 +287,6 @@ def IC86_static_bad_dom_list():
      static_list.append(OMKey(27,8)) # Hu
      static_list.append(OMKey(28,41)) # Behbahan
      static_list.append(OMKey(28,42)) # Humerus
-     #static_list.append(OMKey(28,57)) # Cacofonix
-     #static_list.append(OMKey(28,58)) # Zarand
      static_list.append(OMKey(29,59)) # Auroraphobia
      static_list.append(OMKey(29,60)) # Nix
      static_list.append(OMKey(30,23)) # Peugeot_505
@@ -379,7 +330,6 @@ def IC86_static_bad_dom_list():
      static_list.append(OMKey(59,45)) # Essex_6
      static_list.append(OMKey(59,46)) # Pichelsberg
      static_list.append(OMKey(60,55)) # Schango
-     #static_list.append(OMKey(60,56)) # Mascarpone
      static_list.append(OMKey(62,51)) # Ottawa_Tribe
      static_list.append(OMKey(62,52)) # Sauron
      static_list.append(OMKey(66,33)) # New_York
