@@ -32,7 +32,7 @@ i3_add_library(sim-services
 
 i3_test_executable(test 
 	private/test/*.cxx
-	USE_TOOLS boost python log4cplus jni
+	USE_TOOLS boost python log4cplus jni gsl
 	USE_PROJECTS dataclasses phys-services sim-services trigger-sim dataio interfaces icetray
 	c2j-icetray
 )
