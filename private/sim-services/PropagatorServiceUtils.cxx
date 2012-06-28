@@ -15,7 +15,8 @@
 
 using namespace std;
 
-I3MMCTrackListPtr PropagatorServiceUtils::Propagate(I3MCTreePtr mctree_ptr, I3PropagatorServicePtr propagator){
+I3MMCTrackListPtr PropagatorServiceUtils::Propagate(I3MCTreePtr& mctree_ptr, 
+						    I3PropagatorServicePtr propagator){
   
   //find all the muons and taus and propagate them
   //the propagator updates the length and fills a
@@ -35,6 +36,7 @@ I3MMCTrackListPtr PropagatorServiceUtils::Propagate(I3MCTreePtr mctree_ptr, I3Pr
       //only propagate taus and muons 
       vector<I3Particle> children;
       I3MMCTrackPtr mmcTrack = propagator->Propagate(*t_iter, children);
+
       if(mmcTrack) mmcTrackList->push_back(*mmcTrack);
 
       // from this point on we modify the copy
@@ -59,8 +61,11 @@ I3MMCTrackListPtr PropagatorServiceUtils::Propagate(I3MCTreePtr mctree_ptr, I3Pr
 	log_fatal("lost track of the particle");
       
       BOOST_FOREACH(I3Particle& c, children)
-	mctree_ptr->append_child(copy_iter, c);
-      mctree_ptr->replace(t_iter, *copy_iter);
+	tree_copy->append_child(copy_iter, c);
+
+      log_trace("t_iter->GetLength() = %f", t_iter->GetLength() );
+      log_trace("copy_iter->GetLength() = %f", copy_iter->GetLength() );
+      tree_copy->replace(copy_iter, *t_iter);
     }	 
   }
   //just before returning we need to swap the pointers

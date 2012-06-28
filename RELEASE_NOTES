@@ -2,9 +2,16 @@
 # $Author: olivas $
 # $Date: 2011-10-10 $
 
-October 10, 2011 Alex Olivas  (olivas@icecube.umd.edu)
+June 27, 2012 Alex Olivas  (olivas@icecube.umd.edu)
 --------------------------------------------------------------------
-Going to get serious about release notes for individual projects.
+Revisions : 
+More fixes to PropagatorServiceUtils::Propagate.  The copy was not
+updated.  The original tree was updated and a pointer to the unadulterated
+copy was returned.  In addition to the tree pointer needed to be passed
+by reference.  It would have been nice if Alex-of-May-18th included
+a simple test along with revision 88449 that tested this.  The current 
+version ( V01-02-02 ) does include tests for all three flavors.  There
+are 6 tests ( two x three for each function and flavor ). 
 
 May 18, 2012 Alex Olivas  (olivas@icecube.umd.edu)
 --------------------------------------------------------------------
@@ -14,3 +21,8 @@ particles as daughters to the original, especially when using AtmFlux.
 Since the tree was updated and iterated in-place the daughters would
 be propagated, causing an infinite loop.  Now the original tree
 is iterated over and a copy is updated.
+
+October 10, 2011 Alex Olivas  (olivas@icecube.umd.edu)
+--------------------------------------------------------------------
+Going to get serious about release notes for individual projects.
+
