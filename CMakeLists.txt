@@ -34,6 +34,7 @@ i3_test_executable(test
 	private/test/*.cxx
 	USE_TOOLS boost python log4cplus jni
 	USE_PROJECTS dataclasses phys-services sim-services trigger-sim dataio interfaces icetray
+	c2j-icetray
 )
 
 add_subdirectory(private/pybindings)

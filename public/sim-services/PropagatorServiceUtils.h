@@ -23,7 +23,7 @@
 namespace PropagatorServiceUtils{
 
   shared_ptr<I3Vector<I3MMCTrack> > 
-    Propagate(shared_ptr<I3MCTree> mctree_ptr, shared_ptr<I3PropagatorService> propagator);
+    Propagate(shared_ptr<I3MCTree>& mctree_ptr, shared_ptr<I3PropagatorService> propagator);
 
   shared_ptr<I3Vector<I3MMCTrack> > SecondPass(shared_ptr<I3MCTree>& mctree_ptr, 
 				    shared_ptr<I3CascadeMCService> cmc ,
