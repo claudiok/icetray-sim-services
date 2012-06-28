@@ -55,4 +55,5 @@ i3_test_executable(test
 )
 
 add_subdirectory(private/pybindings)
-i3_test_scripts(resources/tests/*.py)
+#i3_test_scripts(resources/tests/*.py)
+i3_test_scripts(resources/tests/hist_test.py)
