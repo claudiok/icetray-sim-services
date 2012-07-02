@@ -76,21 +76,32 @@ for s in geo_strings_to_check:
 #
 ##########
 c_and_d_strings_to_check = range(1,87)
+icecube_omkeys = [icetray.OMKey(s,om) for s in range(1,87) for om in range(1,61)]
+icetop_omkeys = [icetray.OMKey(s,om) for s in range(1,80) for om in range(61,65)]
 for s in c_and_d_strings_to_check :
 	found_cal = False
 	found_stat = False
-	found_vemcal = False
-	for omkey in [icetray.OMKey(s,om) for om in range(65)] :
+	for omkey in icecube_omkeys :
 		if omkey in dom_cal :
 			found_cal = True
 		if omkey in dom_status :
 			found_stat = True
-		if dom_geo[ omkey ].type == dataclasses.I3OMGeo.IceTop :
-			if omkey in vem_cal :
-				found_vemcal = True
-			else :
-				print '%s is missing from the VEMCal' % omkey
+		if omkey not in dom_geo :
+			print '%s is missing from the IceCube geometry' % omkey
 		if found_cal and found_stat : continue
+
+	for station in range(1,81) :
+		if station not in sta_geo :
+			print '%s is missing from the IceTop geometry' % omkey
+
+	for omkey in icetop_omkeys :
+		if omkey in dom_cal :
+			found_cal = True
+		if omkey in dom_status :
+			found_stat = True
+		if omkey not in vem_cal :
+			print '%s is missing from the VEMCal' % omkey
+			
 	if not found_cal : print 'string %s is missing from the calibration' % s
 	if not found_stat : print 'string %s is missing from the detector status' % s
 
@@ -127,7 +138,7 @@ for omkey,omgeo in dom_geo:
 		this_domcal = dom_cal[omkey]
 		this_domstatus = dom_status[omkey]
 
-		this_dom_type = dom_geo[ omkey ].type 
+		this_dom_type = dom_geo[ omkey ].omtype 
 
 		# break each of these out to separate modules
 
@@ -143,14 +154,14 @@ for omkey,omgeo in dom_geo:
 			print '  %s  pmt_hv = %s V !!' % \
 			      (str(omkey), this_domstatus.pmt_hv/I3Units.V)
 
-		if this_dom_type == dataclasses.I3OMGeo.InIce :
+		if this_dom_type == dataclasses.I3OMGeo.IceCube :
 			if ( ( this_domcal.relative_dom_eff != 1.0 \
 			       and high_QE.count(e) == 0 ) \
 			     or ( ( this_domcal.relative_dom_eff < 1.34 \
 				    or this_domcal.relative_dom_eff > 1.36 ) \
 				  and high_QE.count(e) == 1 ) ):
-				 print '  %s  relative_dom_eff = %s !!' %
-				 (str(e), this_domcal.relative_dom_eff)
+				 print '  %s  relative_dom_eff = %s !!' % \
+				       (str(e), this_domcal.relative_dom_eff)
 
 	        if(math.isnan(this_domcal.relative_dom_eff)):
 			print '  %s  relative_dom_eff = %s !!' % \
@@ -164,8 +175,8 @@ for omkey,omgeo in dom_geo:
 		if ((( high_QE.count(e) == 0 and \
 			( noiseRate < 300 or noiseRate > 850) ) \
 		      or ( high_QE.count(e) == 1 and \
-			   ( noiseRate < 400 or noiseRate > 1100))) \
-		    and	this_dom_type == dataclasses.I3OMGeo.InIce :
+			   ( noiseRate < 400 or noiseRate > 1100)))) \
+		    and	this_dom_type == dataclasses.I3OMGeo.IceCube :
 			print '  %s  noise rate = %s !!' % (str(e), noiseRate)
 		
 		if(math.isnan(noiseRate)):
