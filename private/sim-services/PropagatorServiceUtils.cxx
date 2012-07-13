@@ -13,13 +13,21 @@
 #include <sim-services/PropagatorServiceUtils.h>
 #include <boost/foreach.hpp>
 
+using namespace std;
+
 I3MMCTrackListPtr PropagatorServiceUtils::Propagate(I3MCTreePtr mctree_ptr, I3PropagatorServicePtr propagator){
+  
   //find all the muons and taus and propagate them
   //the propagator updates the length and fills a
   //vector with the children
+
+  // copy the tree and fill that as we go.
+  I3MCTreePtr tree_copy( new I3MCTree(*mctree_ptr) );
+  I3MCTree::iterator copy_iter = tree_copy->begin();
+
   I3MMCTrackListPtr mmcTrackList( new I3MMCTrackList);
   for(I3MCTree::iterator t_iter = mctree_ptr->begin();
-      t_iter != mctree_ptr->end(); t_iter++){
+      t_iter != mctree_ptr->end(); t_iter++, copy_iter++){
     if( (t_iter->GetType() == I3Particle::MuMinus ||
 	 t_iter->GetType() == I3Particle::MuPlus ||
 	 t_iter->GetType() == I3Particle::TauMinus ||
@@ -28,16 +36,42 @@ I3MMCTrackListPtr PropagatorServiceUtils::Propagate(I3MCTreePtr mctree_ptr, I3Pr
       vector<I3Particle> children;
       I3MMCTrackPtr mmcTrack = propagator->Propagate(*t_iter, children);
       if(mmcTrack) mmcTrackList->push_back(*mmcTrack);
+
+      // from this point on we modify the copy
+      if( t_iter->GetMinorID() != copy_iter->GetMinorID() ||
+	  t_iter->GetMajorID() != copy_iter->GetMajorID() ){
+	// these are not copies of each other
+	// somehow we got out of sync.  
+	// need to match them the hard way.
+	for( copy_iter = tree_copy->begin();
+	     copy_iter != tree_copy->end();
+	     copy_iter++){
+	  if( t_iter->GetMinorID() == copy_iter->GetMinorID() &&
+	      t_iter->GetMajorID() == copy_iter->GetMajorID() )
+	    break;
+	}
+      }    
+      // just one last sanity check
+      if( copy_iter == tree_copy->end() ||
+	  ! tree_copy->is_valid( copy_iter ) ||
+	  t_iter->GetMinorID() != copy_iter->GetMinorID() ||
+	  t_iter->GetMajorID() != copy_iter->GetMajorID() ) 
+	log_fatal("lost track of the particle");
+      
       BOOST_FOREACH(I3Particle& c, children)
-	mctree_ptr->append_child(t_iter, c);
+	mctree_ptr->append_child(copy_iter, c);
+      mctree_ptr->replace(t_iter, *copy_iter);
     }	 
   }
+  //just before returning we need to swap the pointers
+  mctree_ptr = tree_copy;
   return mmcTrackList;
 }
 
 I3MMCTrackListPtr PropagatorServiceUtils::SecondPass(I3MCTreePtr& mctree_ptr, 
 				 shared_ptr<I3CascadeMCService> cmc ,
 				 I3PropagatorServicePtr propagator){
+
   I3MMCTrackListPtr mmcTrackList( new I3MMCTrackList);
   // copy the tree and fill that as we go.
   // this keeps us from recursively splitting cascades
@@ -75,7 +109,8 @@ I3MMCTrackListPtr PropagatorServiceUtils::SecondPass(I3MCTreePtr& mctree_ptr,
     if( copy_iter == tree_copy->end() ||
 	! tree_copy->is_valid( copy_iter ) ||
        t_iter->GetMinorID() != copy_iter->GetMinorID() ||
-	t_iter->GetMajorID() != copy_iter->GetMajorID() ) log_fatal("lost track of the particle");
+	t_iter->GetMajorID() != copy_iter->GetMajorID() ) 
+      log_fatal("lost track of the particle");
 
     // ok we're free and clear
     if(cascadeChildren.size() > 0 ){
