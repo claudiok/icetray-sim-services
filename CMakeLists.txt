@@ -23,7 +23,9 @@ i3_add_library(sim-services
 
 i3_test_executable(test 
 	private/test/*.cxx
-	USE_PROJECTS dataclasses phys-services sim-services trigger-sim
+	USE_PROJECTS dataclasses phys-services sim-services trigger-sim c2j-icetray
 )
 
 add_subdirectory(private/pybindings)
+#i3_test_scripts(resources/tests/hist_test.py)
+i3_test_scripts(resources/tests/*.py)
