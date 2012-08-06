@@ -47,6 +47,11 @@ calibration = frame.Get('I3Calibration')
 while not frame.Has('I3DetectorStatus'): frame = gcdfile.pop_frame()
 status = frame.Get('I3DetectorStatus')
 
+if "BadDomsList" in frame :
+	print "Found a BadDomsList in the frame."
+	print "Using this one instead." 
+	badOMs = frame.Get("BadDomsList")
+
 dom_geo = geometry.omgeo
 dom_cal = calibration.dom_cal
 vem_cal = calibration.vem_cal #for IceTop
@@ -166,7 +171,6 @@ for omkey,omgeo in dom_geo:
 	        if(math.isnan(this_domcal.relative_dom_eff)):
 			print '  %s  relative_dom_eff = %s !!' % \
 			      (str(e), this_domcal.relative_dom_eff)
-		
 	        
 	        ##########
 		# checks for noise-generator
@@ -177,10 +181,7 @@ for omkey,omgeo in dom_geo:
 		      or ( high_QE.count(e) == 1 and \
 			   ( noiseRate < 400 or noiseRate > 1100)))) \
 		    and	this_dom_type == dataclasses.I3OMGeo.IceCube :
-			print '  %s  noise rate = %s !!' % (str(e), noiseRate)
-		
-		if(math.isnan(noiseRate)):
-			print '  %s  noise rate = %s !!' % (str(e), noiseRate)
+			print '  %s  noise rate = %s !!' % (str(e), noiseRate)		
 			
 	        ##########
 		# checks for pmt-simulator

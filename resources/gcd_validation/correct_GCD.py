@@ -8,12 +8,6 @@ from I3Tray import *
 from icecube import icetray, dataclasses, dataio, simclasses
 from icecube.icetray import OMKey
 
-from lxml import etree
-import gzip
-
-from icecube.sim_services import bad_dom_list_static
-badOMs = bad_dom_list_static.IC86_static_bad_dom_list()
-
 DEFAULT_GCD_FN = expandvars("$I3_PORTS/test-data/sim/GeoCalibDetectorStatus_IC86.55697_candidate.i3.gz")
 
 from optparse import OptionParser
@@ -48,6 +42,15 @@ status_frame = infile.pop_frame()
 while not status_frame.Has('I3DetectorStatus'): status_frame = infile.pop_frame()
 status = status_frame.Get('I3DetectorStatus')
 
+badOMs = list()
+if "BadDomsList" in status_frame :
+	print "Found a BadDomsList in the frame."
+	print "Using this one instead." 
+	badOMs = status_frame.Get("BadDomsList")
+else:
+	from icecube.BadDomList import bad_dom_list_static
+	badOMs = bad_dom_list_static.IC86_static_bad_dom_list()
+
 dom_geo = geometry.omgeo
 dom_cal = calibration.dom_cal
 dom_status = status.dom_status
@@ -59,52 +62,11 @@ low_noise_DOMs_l = [ icetray.OMKey(82,54),  icetray.OMKey(84,54),  icetray.OMKey
 strings_IC86 = [ 1, 7, 14, 22, 31, 79, 80 ]
 
 high_QE = [ icetray.OMKey( 79, i ) for i in range(30, 45) if i not in [ 32, 41, 43 ] ]
-		 
 high_QE.extend( [ icetray.OMKey( 80, i ) for i in range(30, 44) ] )
-
 high_QE.extend( [ icetray.OMKey( 43, 55 ) ] )#Mark Krasberg (post deployment after surface testing)
-
 for s in range(81,87):
   high_QE.extend( [ icetray.OMKey( s, i ) for i in range(1, 61) ] )
 
-f = gzip.open( expandvars("$I3_BUILD/phys-services/resources/mainboard_ids.xml.gz") )
-tree = etree.parse( f )
-
-root = tree.getroot()
-
-mbid_to_omkey = dict()
-
-# Need to generate a MBID to OMKey map
-for c in root[0] :
-    omkey = OMKey()
-    mbid = None
-    for cc in c :
-        if cc.tag == "first" :
-            mbid = int(cc.text)
-        if cc.tag == "second" :
-            for ccc in cc :
-                if ccc.tag == "StringNumber" :
-                    omkey.string = int(ccc.text)
-                if ccc.tag == "OMNumber" :
-                    omkey.om = int(ccc.text)
-    if mbid :
-        mbid_to_omkey[ str( hex( mbid ) )[2:] ] = omkey
-
-# Parse the DAQ noise rates text file
-daq_noise_rates_d = dict()
-daq_rate_f = open( expandvars("$I3_BUILD/noise-generator/resources/noise-constants/STAT118631.txt") )
-bad_noise_f = open("bad_noise.txt","w")
-for l in daq_rate_f.readlines() :
-    sl = l.split()
-    string = int(sl[0][:2])
-    om = int(sl[0][3:])                 
-    omkey = OMKey( string, om )
-    noise_rate = float(sl[1]) * I3Units.hertz
-    daq_noise_rates_d[ omkey ] = noise_rate
-
-print "Setting noise in (7,56) by hand"
-daq_noise_rates_d[ icetray.OMKey( 7, 56 ) ] = 800 * I3Units.hertz
- 
 for e,p in dom_geo:
 
 	if e not in badOMs and e in dom_cal and e in dom_status:				
@@ -133,18 +95,10 @@ for e,p in dom_geo:
 
 		# set the noise rates and relative DOM efficiencies in the new strings
 		if p.omtype == dataclasses.I3OMGeo.IceCube :
-			if daq_noise_rates_d[ e ] < 1 * I3Units.hertz :
-				if e not in badOMs and isnan( calibration.dom_cal[e].dom_noise_rate ) :
-					print "ERROR : no valid noise rate for this DOM %s " % str(e)
-					bad_noise_f.write( "%s\n" % str(e) )
-
-			else :
-				print "  correcting noise from %.3f Hz to %d Hz in %s" % \
-				      (calibration.dom_cal[e].dom_noise_rate/I3Units.hertz, \
-				       daq_noise_rates_d[ e ]/I3Units.hertz, \
-				       e)
-				calibration.dom_cal[e].dom_noise_rate = daq_noise_rates_d[ e ]
-
+			if isnan( calibration.dom_cal[e].dom_noise_rate ) :
+				print "  ERRROR : noise = %s Hz on DOM %s" % \
+				      (calibration.dom_cal[e].dom_noise_rate/I3Units.hertz, e)
+				print "     NOT CORRECTING"
 			
 			if isnan(cal_this_om.relative_dom_eff) :
 				if e.string in strings_IC86 :
@@ -190,6 +144,18 @@ for tkey, ts in status.trigger_status :
 		 tkey.type == dataclasses.I3Trigger.SLOW_PARTICLE :
 		tkey.type = dataclasses.I3Trigger.SIMPLE_MULTIPLICITY 
 		
+
+# now we clean out the AMANDA geometry as well
+for omkey, i3omgeo in geometry.omgeo:
+	if i3omgeo.omtype == dataclasses.I3OMGeo.AMANDA :
+		print "Removing AMANDA OM %s from the geometry." % str(omkey)
+		del geometry.omgeo[omkey]
+
+for omkey, i3omgeo in geometry.omgeo:
+	if i3omgeo.omtype == dataclasses.I3OMGeo.AMANDA :
+		print "ERROR: Why is this %s AMANDA OM still in the geometry? " \
+		      % str(omkey)
+
 
 del geo_frame['I3Geometry']
 geo_frame['I3Geometry'] = geometry
