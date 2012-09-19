@@ -57,12 +57,9 @@ import sys
 import math
 import random
 
-load("libDOMcalibrator")
-load("libNFE")
-
 from icecube import icetray, dataclasses, dataio
 from icecube import phys_services, sim_services, pmt_simulator
-from icecube import DOMsimulator
+from icecube import DOMsimulator, WaveCalibrator, wavedeform
 from icecube.sim_services.gcd_validation.hit_generator import StressTestHitGenerator
 
 ###
@@ -161,11 +158,9 @@ tray.AddModule("I3PMTSimulator","pmt")
 
 tray.AddModule("I3DOMsimulator","domsim")
 
-tray.AddModule("I3DOMcalibrator","domcal")
-
-tray.AddModule( "I3NFE", "NFE" )(
-    ("InputWaveformName","CalibratedATWD")
-    )
+tray.AddModule('I3WaveCalibrator', 'wavecal')
+   
+tray.AddModule('I3Wavedeform', 'DeformInIce')
 
 fn = options.output_path 
 fn += "IC86_"
@@ -181,11 +176,9 @@ tray.AddModule("I3Writer","writer",
                icetray.I3Frame.Calibration,\
                icetray.I3Frame.DetectorStatus,\
                icetray.I3Frame.DAQ],\
-    SkipKeys = ["InIceRawData",\
-                "IceTopRawData",\
+    SkipKeys = ["IceTopRawData",\
                 "ATWDPortiaPulse",\
                 "PortiaEvent",\
-                "MCHitSeriesMap",\
                 "InitialHitSeriesReco",\
                 "I3EventHeader",\
                 "FADCPortiaPulse",\

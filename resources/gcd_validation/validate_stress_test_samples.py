@@ -18,38 +18,79 @@ parser.add_option("-m","--nhits_per_DOM", type = "int",
 
 f = dataio.I3File(options.INFILE)
 
-from icecube.BadDomList import bad_dom_list_static
-badDOMList = bad_dom_list_static.IC86_static_bad_dom_list_HLC()
+infile = dataio.I3File(options.INFILE) 
+status_frame = infile.pop_frame()
+while not status_frame.Has('I3DetectorStatus'): status_frame = infile.pop_frame()
+status = status_frame.Get('I3DetectorStatus')
+badDOMList = list()
+badDOMListSLC = list()
+if "BadDomsList" in status_frame :
+    print "Found a BadDomsList in the frame."
+    print "Using this one instead."
+    badDOMList = status_frame.Get("BadDomsList")
+    badDOMListSLC = status_frame.Get("BadDomsListSLC")
+else:
+    print status_frame
+    try :
+        from icecube.BadDomList import bad_dom_list_static
+        badDOMList = bad_dom_list_static.IC86_static_bad_dom_list()
+    except ImportError :
+        print "ERROR : BadDomsList wasn't found in the frame"
+        print "and either the BadDomList doesn't exist or"
+        print "there's no static_bad_dom_list."
+        sys.exit(1)
 
 from icecube.sim_services.sim_utils.gcd_utils import get_omgeo, get_domcal, get_domstatus
 omgeo = get_omgeo( dataio.I3File(options.INFILE) )
 domcal = get_domcal( dataio.I3File(options.INFILE) )
 domstat = get_domstatus( dataio.I3File(options.INFILE) )
 goodDOMList = [omkey for omkey,g in omgeo \
-               if badDOMList.count(omkey) == 0 and omkey.om <= 60 and omkey.string > 0]
+               if omkey not in badDOMList and omkey.om <= 60 and omkey.string > 0]
 
 counter = 0
+bad_doms_with_hits = list()
 while f.more():
     counter += 1
-    frame = f.pop_frame()
-
+    frame = f.pop_frame()    
+    
     if frame.Stop != icetray.I3Frame.DAQ : continue
 
     print "[  Frame %d ]" % (counter)
+    print frame
 
-    rpmap = frame.Get("NFEATWDPulses")
+    rpmap = frame.Get("WavedeformPulses")
+    mchitmap = frame.Get("MCHitSeriesMap")
     pmtmap = frame.Get("MCPMTResponseMap")
+    dlmap = frame.Get("InIceRawData")
 
     # make sure this DOM is not in the bad DOM list
     for omkey, rpseries in rpmap :
-        if badDOMList.count(omkey) > 0 :
-            print "%s : this DOM is in the BAD DOM List!!!" % str(omkey)
-
         charge = sum([rp.charge for rp in rpseries])
+        # DOMs in the badDOMListSLC should have no waveforms at all
+        if omkey in badDOMListSLC :
+            print "%s : this DOM is in the BAD DOM List!!!" % str(omkey)
+            print "  number of recopulses = ",len(rpseries)
+            print "  charge = %.2f" % charge
+            print "  ",len(mchitmap[omkey])
+            print "  number of launches = ",len(dlmap[omkey])
+            print "  lc_bit = ",dlmap[omkey][0].lc_bit
+            print "  trigger_type = ",dlmap[omkey][0].trigger_type
+            print "  trigger_mode = ",dlmap[omkey][0].trigger_mode
+            for mchit in mchitmap[omkey]:
+                print "  ",mchit.hit_source
+            if omkey not in bad_doms_with_hits:
+                bad_doms_with_hits.append(omkey)
+
         if(charge/float(options.nhits_per_DOM) < 0.2 or \
            charge/float(options.nhits_per_DOM) > 2.0 ) :
             print "%s : what do you think about this (%f) charge and this (%f) charge ratio? " % \
                   (str(omkey),charge,charge/float(options.nhits_per_DOM))
+
+        if omkey in badDOMList and omkey not in badDOMListSLC:
+            # these are SLC-only DOMs
+            for dl in dlmap[omkey] :
+                if dl.lc_bit :
+                    print "ERROR: This %s is an SLC-only DOM with LCBit set to True." % omkey
             
     # make sure every DOM in the good DOM list has a hit
     for omkey in goodDOMList :
@@ -69,3 +110,11 @@ while f.more():
                 print "        gain = %f " % ( dataclasses.pmt_gain(domstat[omkey],domcal[omkey]) )
                 print "        ttime = %f ns " % ( dataclasses.transit_time(domstat[omkey],domcal[omkey])/I3Units.ns )
             
+
+print "number of bad DOMs with hits = ",len(bad_doms_with_hits)
+print "len(badDOMList) = ",len(badDOMList)
+print "len(badDOMListSLC) = ",len(badDOMListSLC)
+
+for d in bad_doms_with_hits:
+    print d
+
