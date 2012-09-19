@@ -35,9 +35,3 @@ tray.AddService("I3SPRNGRandomServiceFactory","random")(
     ("StreamNum",1))
 
 
-tray.AddModule("Dump", "dump")
-
-tray.Execute(1)
-
-tray.Finish()
-
