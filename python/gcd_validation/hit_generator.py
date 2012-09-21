@@ -20,7 +20,7 @@ def StressTestHitGenerator( frame, \
     for t,w in zip( hit_times, weights ) :
         hit = dc.I3MCHit()
         hit.time = t
-        hit.weight = w if w else 1
+        hit.npe = w if w else 1
         mchits.append( hit )
 
     for omkey, geo in frame.Get("I3Geometry").omgeo :
