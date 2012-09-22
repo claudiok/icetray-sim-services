@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-from I3Tray import *
+from I3Tray import I3Tray, I3Units
 
-from icecube.dataclasses import *
+from icecube import dataclasses as dc
 
 import os
 from os.path import expandvars
@@ -30,13 +30,12 @@ dbhost = "dbs2.icecube.wisc.edu"
 # dbhost = "icedb.umh.ac.be"
 # dbhost = "localhost"
 
-tray.AddService("I3DbOMKey2MBIDFactory","dbomkey2mbid")(
-    ("host", dbhost)
-    )
+tray.AddService("I3DbOMKey2MBIDFactory","dbomkey2mbid",
+    host = dbhost)
 
 MJD = season_to_MJD[options.SEASON]
 
-time = I3Time()
+time = dc.I3Time()
 time.set_mod_julian_time(MJD, 0, 0.0)
 print "Using simulation time:", time
 print "In DAQ time, Yr", time.utc_year,"ns:",time.utc_daq_time
@@ -44,7 +43,7 @@ print "In DAQ time, Yr", time.utc_year,"ns:",time.utc_daq_time
 tray.AddModule("I3InfiniteSource","streams", Stream=icetray.I3Frame.DAQ)
 def seteventtime(fr):
     fr['DrivingTime'] = time
-    evh = dataclasses.I3EventHeader()
+    evh = dc.I3EventHeader()
     evh.start_time = time
     evh.end_time = time + 10*I3Units.microsecond
     fr['I3EventHeader'] = evh
@@ -73,30 +72,21 @@ tray.AddService('I3BadDomListFactory', 'BadDomListService',
                 QFileName = xmlfile,
                 )
 
-tray.AddService('I3BadDomListFactory', 'BadDomListServiceSLC',
-                ServiceName = 'BadDomListServiceSLC',
-                Hostname = dbhost,
-                Timeout = 180,
-                QFileName = xmlfile,
-                )
-
 tray.AddModule("I3MetaSynth","muxme")
 
 tray.AddModule('I3BadDomListModule', 'BadDoms',
                BadDomListServiceName = 'BadDomListService',
                CleanedKeys = list(),
                BadDomsListVector = "BadDomsList",
-               ## MC:
                CleanedKeysOnly = False,
                DisabledKeysOnly = True,
                AddGoodSlcOnlyKeys  = True,
                )
 
 tray.AddModule('I3BadDomListModule', 'BadDomsSLC',
-               BadDomListServiceName = 'BadDomListServiceSLC',
+               BadDomListServiceName = 'BadDomListService',
                CleanedKeys = list(),
                BadDomsListVector = "BadDomsListSLC",
-               ## MC:
                CleanedKeysOnly = False,
                DisabledKeysOnly = True,
                AddGoodSlcOnlyKeys  = False,
