@@ -12,7 +12,7 @@ class Counter :
             self._counter = 0
 
     def is_within_tolerance(self):
-        return self._counter < self._tolerance 
+        return self._counter <= self._tolerance 
 
     def reset( self ):
         self._counter = 0
@@ -23,7 +23,3 @@ class Counter :
                   "_counter" : self._counter , \
                   "_tolerance" :  self._tolerance }
         return state
-
-#    def __setstate__( self, state ):
-#        self.__dict__.update( state )
-#        self.__dict__["_counter"] = 0
