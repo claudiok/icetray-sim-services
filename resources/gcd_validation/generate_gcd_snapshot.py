@@ -1,7 +1,13 @@
 #!/usr/bin/env python
-from I3Tray import *
 
-from icecube.dataclasses import *
+from optparse import OptionParser
+
+parser = OptionParser()
+parser.add_option("-s","--season",
+                  dest="SEASON", default="2012" ,
+                  help="Season to generate (2012, IC86, IC79, IC59, IC40)")
+
+(options, args) = parser.parse_args()
 
 import os
 from os.path import expandvars
@@ -13,16 +19,10 @@ season_to_MJD = { "2012" : 56062,\
                   "IC40" : 54649,\
                   }
 
-from optparse import OptionParser
-
-parser = OptionParser()
-parser.add_option("-s","--season",
-                  dest="SEASON", default="2012" ,
-                  help="Season to generate (2012, IC86, IC79, IC59, IC40)")
-
-(options, args) = parser.parse_args()
-
-from icecube import icetray, dataclasses, phys_services, dataio, I3Db, BadDomList
+from I3Tray import I3Tray, I3Units
+from icecube import dataclasses as dc
+from icecube import icetray, phys_services, dataio, I3Db, BadDomList
+from icecube import WaveCalibrator
 
 tray = I3Tray()
 
@@ -30,13 +30,12 @@ dbhost = "dbs2.icecube.wisc.edu"
 # dbhost = "icedb.umh.ac.be"
 # dbhost = "localhost"
 
-tray.AddService("I3DbOMKey2MBIDFactory","dbomkey2mbid")(
-    ("host", dbhost)
-    )
+tray.AddService("I3DbOMKey2MBIDFactory","dbomkey2mbid",
+    host = dbhost )
 
 MJD = season_to_MJD[options.SEASON]
 
-time = I3Time()
+time = dc.I3Time()
 time.set_mod_julian_time(MJD, 0, 0.0)
 print "Using simulation time:", time
 print "In DAQ time, Yr", time.utc_year,"ns:",time.utc_daq_time
@@ -44,7 +43,7 @@ print "In DAQ time, Yr", time.utc_year,"ns:",time.utc_daq_time
 tray.AddModule("I3InfiniteSource","streams", Stream=icetray.I3Frame.DAQ)
 def seteventtime(fr):
     fr['DrivingTime'] = time
-    evh = dataclasses.I3EventHeader()
+    evh = dc.I3EventHeader()
     evh.start_time = time
     evh.end_time = time + 10*I3Units.microsecond
     fr['I3EventHeader'] = evh
@@ -73,34 +72,27 @@ tray.AddService('I3BadDomListFactory', 'BadDomListService',
                 QFileName = xmlfile,
                 )
 
-tray.AddService('I3BadDomListFactory', 'BadDomListServiceSLC',
-                ServiceName = 'BadDomListServiceSLC',
-                Hostname = dbhost,
-                Timeout = 180,
-                QFileName = xmlfile,
-                )
-
 tray.AddModule("I3MetaSynth","muxme")
 
 tray.AddModule('I3BadDomListModule', 'BadDoms',
                BadDomListServiceName = 'BadDomListService',
                CleanedKeys = list(),
                BadDomsListVector = "BadDomsList",
-               ## MC:
                CleanedKeysOnly = False,
                DisabledKeysOnly = True,
                AddGoodSlcOnlyKeys  = True,
                )
 
 tray.AddModule('I3BadDomListModule', 'BadDomsSLC',
-               BadDomListServiceName = 'BadDomListServiceSLC',
+               BadDomListServiceName = 'BadDomListService',
                CleanedKeys = list(),
                BadDomsListVector = "BadDomsListSLC",
-               ## MC:
                CleanedKeysOnly = False,
                DisabledKeysOnly = True,
                AddGoodSlcOnlyKeys  = False,
                )
+
+tray.AddModule(WaveCalibrator.DOMCalBaselineModule, "domcal_baseliner")
 
 tray.AddModule("FrameCheck","framecheck",
                ensure_physics_has = ["DrivingTime",

@@ -3,8 +3,10 @@ from icecube import dataclasses as dc
 
 import sys
 
-from icecube.sim_services.sanity_checker.modules.mctree_checkers import CorsikaTreeSCModule
-from icecube.sim_services.sanity_checker.modules.launch_checkers import HLCLaunchSCModule
+from icecube.sim_services.sanity_checker.modules.mctree_checkers import MCTreeSCModule
 
 RunConfigurations = dict()
-RunConfigurations["CORSIKA"] =[ CorsikaTreeSCModule, HLCLaunchSCModule ]
+RunConfigurations["CORSIKA"] = [ MCTreeSCModule ]
+RunConfigurations["NuMu"] = [ MCTreeSCModule ]
+RunConfigurations["NuE"] = [ MCTreeSCModule ]
+RunConfigurations["NuTau"] = [ MCTreeSCModule ]

@@ -159,33 +159,3 @@ outfile.push(geo_frame)
 outfile.push(cal_frame)
 outfile.push(status_frame)
 outfile.close()
-
-# now correct the baselines
-print "Correcting baselines ... "
-
-from icecube import icetray, dataio, WaveCalibrator
-import I3Tray
-
-tray = I3Tray.I3Tray()
-tray.AddModule("I3Reader", "reader", filename = options.OUTFILE)
-
-# Simulation: no baseline offsets
-# Copy DOMCal baselines into calibrations as they go by
-tray.AddModule(WaveCalibrator.DOMCalBaselineModule, "domcal_baseliner")
-
-new_outfile_fn = options.OUTFILE.replace(".i3","_beacon.i3") \
-                 if ".i3" in options.OUTFILE \
-                 else options.OUTFILE + "_beacon"
-
-tray.AddModule("I3Writer", "writer", \
-               filename = new_outfile_fn, \
-               streams=[icetray.I3Frame.Geometry, \
-                        icetray.I3Frame.Calibration, \
-                        icetray.I3Frame.DetectorStatus])
-
-tray.AddModule("TrashCan", "YesWeCan")
-
-tray.Execute()
-tray.Finish()
-
-print "Done."
