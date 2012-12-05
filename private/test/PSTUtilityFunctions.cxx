@@ -1,5 +1,6 @@
 #include <I3Test.h>
 #include <icetray/I3Units.h>
+#include <mmc-icetray/I3PropagatorServiceMMC.h>
 #include <sim-services/PropagatorServiceUtils.h>
 #include <dataclasses/physics/I3MCTreeUtils.h>
 #include <c2j-icetray/I3JavaVM.h>
@@ -23,9 +24,9 @@ PSTUtils::Setup(I3Particle lepton){
   mmcopts += "-seed=1 -radius=600 -length=1200 ";
   if( lepton.GetType() == I3Particle::TauPlus ||
       lepton.GetType() == I3Particle::TauMinus ){
-    mmcopts += "-prop ";
+    mmcopts += "-tau ";
   }
-  I3PropagatorServicePtr p( new I3PropagatorService(jvm,mmcopts) );
+  I3PropagatorServiceBasePtr p( new I3PropagatorServiceMMC(jvm,mmcopts) );
   
   I3GSLRandomServicePtr rand( new I3GSLRandomService(42) );
   shared_ptr<I3CascadeMCService> cmc( new I3CascadeMCService(rand) );
