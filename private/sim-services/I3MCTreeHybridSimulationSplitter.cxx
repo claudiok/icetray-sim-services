@@ -71,13 +71,13 @@ outputMCTreeNameCascades_("I3MCTreeCascades")
                  outputMCTreeNameCascades_);
 
     // these will end up in the "Track" I3MCTree
-	lightProducingTracks_.push_back(I3Particle::MuMinus);
-	lightProducingTracks_.push_back(I3Particle::MuPlus);
-	lightProducingTracks_.push_back(I3Particle::TauMinus);
-	lightProducingTracks_.push_back(I3Particle::TauPlus);
-	lightProducingTracks_.push_back(I3Particle::STauMinus);
-	lightProducingTracks_.push_back(I3Particle::STauPlus);
-	lightProducingTracks_.push_back(I3Particle::Monopole);
+    lightProducingTracks_.push_back(I3Particle::MuMinus);
+    lightProducingTracks_.push_back(I3Particle::MuPlus);
+    lightProducingTracks_.push_back(I3Particle::TauMinus);
+    lightProducingTracks_.push_back(I3Particle::TauPlus);
+    lightProducingTracks_.push_back(I3Particle::STauMinus);
+    lightProducingTracks_.push_back(I3Particle::STauPlus);
+    lightProducingTracks_.push_back(I3Particle::Monopole);
 
     // these will not be changed in either output tree
     doNotTouchThese_.push_back(I3Particle::NuE);
@@ -86,7 +86,7 @@ outputMCTreeNameCascades_("I3MCTreeCascades")
     doNotTouchThese_.push_back(I3Particle::NuMuBar);
     doNotTouchThese_.push_back(I3Particle::NuTau);
     doNotTouchThese_.push_back(I3Particle::NuTauBar);
-    
+
     AddOutBox("OutBox");
 }
 

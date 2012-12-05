@@ -12,6 +12,7 @@ SET(LIB_${PROJECT_NAME}_SOURCEFILES
 	private/sim-services/PropagatorServiceUtils.cxx 
 	private/sim-services/I3SumGenerator.cxx 
 	private/sim-services/I3MCTreeHybridSimulationSplitter.cxx
+	private/sim-services/I3PropagatorServiceBase.cxx
 	private/sim-services/time-generator/I3MCEventHeaderGenerator.cxx
 	private/sim-services/time-generator/I3ModifyEventID.cxx
 )
@@ -27,14 +28,13 @@ i3_add_library(sim-services
 	dataclasses 
 	simclasses 
 	cmc
-	mmc-icetray
 )
 
 i3_test_executable(test 
 	private/test/*.cxx
 	USE_TOOLS boost python log4cplus jni gsl
 	USE_PROJECTS dataclasses phys-services sim-services trigger-sim dataio interfaces icetray
-	c2j-icetray
+	c2j-icetray mmc-icetray
 )
 
 add_subdirectory(private/pybindings)

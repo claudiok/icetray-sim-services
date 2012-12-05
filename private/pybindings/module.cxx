@@ -15,6 +15,7 @@ namespace bp = boost::python;
 #include <sim-services/I3GeoShifter.h>
 
 void register_I3SumGenerator();
+void register_I3PropagatorServiceBase();
 
 void
 shiftTreeToCenter(I3FramePtr frame , I3MCTreePtr tree, 
@@ -30,5 +31,6 @@ BOOST_PYTHON_MODULE(sim_services)
   def("shiftTreeToCenter", &shiftTreeToCenter);
 
   register_I3SumGenerator();
+  register_I3PropagatorServiceBase();
 }
 

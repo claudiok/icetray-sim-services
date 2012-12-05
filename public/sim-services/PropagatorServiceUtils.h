@@ -17,17 +17,17 @@
 #include <dataclasses/physics/I3Particle.h>
 #include <dataclasses/physics/I3MCTree.h>
 #include <cmc/I3CascadeMCService.h>
-#include <mmc-icetray/I3PropagatorService.h>
+#include <sim-services/I3PropagatorServiceBase.h>
 #include <simclasses/I3MMCTrack.h>
 
 namespace PropagatorServiceUtils{
 
   shared_ptr<I3Vector<I3MMCTrack> > 
-    Propagate(shared_ptr<I3MCTree>& mctree_ptr, shared_ptr<I3PropagatorService> propagator);
+    Propagate(shared_ptr<I3MCTree>& mctree_ptr, shared_ptr<I3PropagatorServiceBase> propagator);
 
   shared_ptr<I3Vector<I3MMCTrack> > SecondPass(shared_ptr<I3MCTree>& mctree_ptr, 
 				    shared_ptr<I3CascadeMCService> cmc ,
-				    shared_ptr<I3PropagatorService> propagator);
+				    shared_ptr<I3PropagatorServiceBase> propagator);
     
 }
 

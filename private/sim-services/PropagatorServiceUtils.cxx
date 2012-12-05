@@ -13,69 +13,77 @@
 #include <sim-services/PropagatorServiceUtils.h>
 #include <boost/foreach.hpp>
 
-using namespace std;
 
-I3MMCTrackListPtr PropagatorServiceUtils::Propagate(I3MCTreePtr& mctree_ptr, 
-						    I3PropagatorServicePtr propagator){
-  
-  //find all the muons and taus and propagate them
-  //the propagator updates the length and fills a
-  //vector with the children
+I3MMCTrackListPtr
+PropagatorServiceUtils::Propagate(I3MCTreePtr& mctree_ptr, 
+                                  I3PropagatorServiceBasePtr propagator)
+{
+    // Iteratively apply propagator->Propagate() to all muons and taus
+    // in the tree. In case any tau should generate another muon,
+    // propagate that muon as well. 
 
-  // copy the tree and fill that as we go.
-  I3MCTreePtr tree_copy( new I3MCTree(*mctree_ptr) );
-  I3MCTree::iterator copy_iter = tree_copy->begin();
+    // We return a list of mmcTrack informational structures for
+    // each tau/muon. Prepare the output vector.
+    I3MMCTrackListPtr mmcTrackList(new I3MMCTrackList);
 
-  I3MMCTrackListPtr mmcTrackList( new I3MMCTrackList);
-  for(I3MCTree::iterator t_iter = mctree_ptr->begin();
-      t_iter != mctree_ptr->end(); t_iter++, copy_iter++){
-    if( (t_iter->GetType() == I3Particle::MuMinus ||
-	 t_iter->GetType() == I3Particle::MuPlus ||
-	 t_iter->GetType() == I3Particle::TauMinus ||
-	 t_iter->GetType() == I3Particle::TauPlus ) ) {
-      //only propagate taus and muons 
-      vector<I3Particle> children;
-      I3MMCTrackPtr mmcTrack = propagator->Propagate(*t_iter, children);
+    // Extract a list of particles to work on
+    std::deque<I3MCTree::iterator> particlesToPropagate;
+    
+    for(I3MCTree::iterator t_iter = mctree_ptr->begin();
+        t_iter != mctree_ptr->end(); t_iter++)
+    {
+        if ((t_iter->GetType() != I3Particle::MuMinus) &&
+            (t_iter->GetType() != I3Particle::MuPlus) &&
+            (t_iter->GetType() != I3Particle::TauMinus) &&
+            (t_iter->GetType() != I3Particle::TauPlus))
+             continue;
 
-      if(mmcTrack) mmcTrackList->push_back(*mmcTrack);
+        // it's either a tau or a muon. propagate it later.
+        particlesToPropagate.push_back(t_iter);
+    }
+    
+    
+    // The main propagation loop.
+    while (!particlesToPropagate.empty())
+    {
+        // retrieve the first entry
+        const I3MCTree::iterator &currentParticle_it =
+            particlesToPropagate.front();
+        particlesToPropagate.pop_front();
 
-      // from this point on we modify the copy
-      if( t_iter->GetMinorID() != copy_iter->GetMinorID() ||
-	  t_iter->GetMajorID() != copy_iter->GetMajorID() ){
-	// these are not copies of each other
-	// somehow we got out of sync.  
-	// need to match them the hard way.
-	for( copy_iter = tree_copy->begin();
-	     copy_iter != tree_copy->end();
-	     copy_iter++){
-	  if( t_iter->GetMinorID() == copy_iter->GetMinorID() &&
-	      t_iter->GetMajorID() == copy_iter->GetMajorID() )
-	    break;
-	}
-      }    
-      // just one last sanity check
-      if( copy_iter == tree_copy->end() ||
-	  ! tree_copy->is_valid( copy_iter ) ||
-	  t_iter->GetMinorID() != copy_iter->GetMinorID() ||
-	  t_iter->GetMajorID() != copy_iter->GetMajorID() ) 
-	log_fatal("lost track of the particle");
-      
-      BOOST_FOREACH(I3Particle& c, children)
-	tree_copy->append_child(copy_iter, c);
+        // propagate it!
+        std::vector<I3Particle> children;
+        const I3MMCTrackPtr mmcTrack =
+            propagator->Propagate(*currentParticle_it, children);
+        if(mmcTrack) mmcTrackList->push_back(*mmcTrack);
+        log_trace("number of children: %zu", children.size());
 
-      log_trace("t_iter->GetLength() = %f", t_iter->GetLength() );
-      log_trace("copy_iter->GetLength() = %f", copy_iter->GetLength() );
-      tree_copy->replace(copy_iter, *t_iter);
-    }	 
-  }
-  //just before returning we need to swap the pointers
-  mctree_ptr = tree_copy;
-  return mmcTrackList;
+
+        // Insert each of the children into the tree. While at it,
+        // check to see if any of them is something we should propagate.
+        BOOST_FOREACH(const I3Particle& child, children)
+        {
+            const I3MCTree::iterator child_it =
+                mctree_ptr->append_child(currentParticle_it, child);
+            
+            if ((child_it->GetType() == I3Particle::MuMinus) ||
+                (child_it->GetType() == I3Particle::MuPlus) ||
+                (child_it->GetType() == I3Particle::TauMinus) ||
+                (child_it->GetType() == I3Particle::TauPlus))
+            {
+                // it's either a tau or a muon. propagate it later.
+                particlesToPropagate.push_back(child_it);
+            }
+        }
+
+    }
+
+    return mmcTrackList;
 }
 
 I3MMCTrackListPtr PropagatorServiceUtils::SecondPass(I3MCTreePtr& mctree_ptr, 
-				 shared_ptr<I3CascadeMCService> cmc ,
-				 I3PropagatorServicePtr propagator){
+                                 shared_ptr<I3CascadeMCService> cmc ,
+                                 I3PropagatorServiceBasePtr propagator){
 
   I3MMCTrackListPtr mmcTrackList( new I3MMCTrackList);
   // copy the tree and fill that as we go.
@@ -91,30 +99,30 @@ I3MMCTrackListPtr PropagatorServiceUtils::SecondPass(I3MCTreePtr& mctree_ptr,
   for(;t_iter != mctree_ptr->end(); t_iter++, copy_iter++){
    
     //simulate everything CMC can
-    vector<I3Particle> cascadeChildren;
+    std::vector<I3Particle> cascadeChildren;
     cmc->Simulate(*t_iter, cascadeChildren);
     // we want hit-maker to ignore this and generate hits
     // for the children only
 
     // from this point on we modify the copy
     if( t_iter->GetMinorID() != copy_iter->GetMinorID() ||
-	t_iter->GetMajorID() != copy_iter->GetMajorID() ){
+        t_iter->GetMajorID() != copy_iter->GetMajorID() ){
       // these are not copies of each other
       // somehow we got out of sync.  
       // need to match them the hard way.
       for( copy_iter = tree_copy->begin();
-	   copy_iter != tree_copy->end();
-	   copy_iter++){
-	if( t_iter->GetMinorID() == copy_iter->GetMinorID() &&
-	    t_iter->GetMajorID() == copy_iter->GetMajorID() )
-	  break;
+           copy_iter != tree_copy->end();
+           copy_iter++){
+        if( t_iter->GetMinorID() == copy_iter->GetMinorID() &&
+            t_iter->GetMajorID() == copy_iter->GetMajorID() )
+          break;
       }
     }    
     // just one last sanity check
     if( copy_iter == tree_copy->end() ||
-	! tree_copy->is_valid( copy_iter ) ||
+        ! tree_copy->is_valid( copy_iter ) ||
        t_iter->GetMinorID() != copy_iter->GetMinorID() ||
-	t_iter->GetMajorID() != copy_iter->GetMajorID() ) 
+        t_iter->GetMajorID() != copy_iter->GetMajorID() ) 
       log_fatal("lost track of the particle");
 
     // ok we're free and clear
@@ -123,18 +131,18 @@ I3MMCTrackListPtr PropagatorServiceUtils::SecondPass(I3MCTreePtr& mctree_ptr,
     
       //now append the children to the tree and propagate muons
       BOOST_FOREACH(I3Particle& c, cascadeChildren){
-	// we need to keep the iterator of the cascade we're append
-	// this will make it easier to add the muon children
-	I3MCTree::iterator c_iter = tree_copy->append_child(copy_iter, c);
+        // we need to keep the iterator of the cascade we're append
+        // this will make it easier to add the muon children
+        I3MCTree::iterator c_iter = tree_copy->append_child(copy_iter, c);
       
-	if(c_iter->GetType() == I3Particle::MuMinus ||
-	   c_iter->GetType() == I3Particle::MuPlus ){
-	  vector<I3Particle> muonChildren;
-	  I3MMCTrackPtr mmcTrack = propagator->Propagate(*c_iter, muonChildren);
-	  if(mmcTrack) mmcTrackList->push_back(*mmcTrack);
-	  BOOST_FOREACH(I3Particle& s, muonChildren)
-	    tree_copy->append_child(c_iter, s);
-	}	  
+        if(c_iter->GetType() == I3Particle::MuMinus ||
+           c_iter->GetType() == I3Particle::MuPlus ){
+          std::vector<I3Particle> muonChildren;
+          I3MMCTrackPtr mmcTrack = propagator->Propagate(*c_iter, muonChildren);
+          if(mmcTrack) mmcTrackList->push_back(*mmcTrack);
+          BOOST_FOREACH(I3Particle& s, muonChildren)
+            tree_copy->append_child(c_iter, s);
+        }         
       } // end loop over children of the cascade 
     } // end if cmc actually did something
   } // end iteration over all the particles in the tree
