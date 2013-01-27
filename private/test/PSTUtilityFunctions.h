@@ -10,6 +10,7 @@ namespace PSTUtils{
     shared_ptr<I3PropagatorServiceBase> prop;
     shared_ptr<I3MCTree> mctree;
     shared_ptr<I3CascadeMCService> cmc;
+    shared_ptr<I3JavaVM> jvm;
   };
 
   void BasicTrackTests( Configuration );      

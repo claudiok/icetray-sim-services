@@ -15,7 +15,7 @@ PSTUtils::Setup(I3Particle lepton){
   
   std::vector<std::string> jvmOpts;
   jvmOpts.push_back( std::string("-Djava.class.path="+I3_BUILD+"/lib/mmc.jar") );
-  I3JavaVM jvm(jvmOpts);  
+  I3JavaVMPtr jvm(new I3JavaVM(jvmOpts)); 
   
   std::string mmcopts("-romb=5 -raw -user -sdec -time -lpm -bs=1 ");
   mmcopts += "-ph=3 -bb=2 -sh=2 -frho -cont ";
@@ -26,7 +26,7 @@ PSTUtils::Setup(I3Particle lepton){
       lepton.GetType() == I3Particle::TauMinus ){
     mmcopts += "-tau ";
   }
-  I3PropagatorServiceBasePtr p( new I3PropagatorServiceMMC(jvm,mmcopts) );
+  I3PropagatorServiceBasePtr p( new I3PropagatorServiceMMC(*jvm,mmcopts) );
   
   I3GSLRandomServicePtr rand( new I3GSLRandomService(42) );
   shared_ptr<I3CascadeMCService> cmc( new I3CascadeMCService(rand) );
@@ -68,6 +68,7 @@ PSTUtils::Setup(I3Particle lepton){
   c.prop = p;
   c.mctree = t;
   c.cmc = cmc;
+  c.jvm = jvm;
   return c;
 }
   
