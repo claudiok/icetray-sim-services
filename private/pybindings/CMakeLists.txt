@@ -3,7 +3,7 @@ if(BUILD_PYBINDINGS)
    I3SumGenerator.cxx
    I3PropagatorServiceBase.cxx
    module.cxx
-   USE_TOOLS boost python log4cplus
+   USE_TOOLS boost python
    USE_PROJECTS sim-services
    )
 endif(BUILD_PYBINDINGS)
