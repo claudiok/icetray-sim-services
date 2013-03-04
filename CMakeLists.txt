@@ -16,7 +16,7 @@ SET(LIB_${PROJECT_NAME}_SOURCEFILES
 	private/sim-services/time-generator/I3MCEventHeaderGenerator.cxx
 	private/sim-services/time-generator/I3ModifyEventID.cxx
 )
-SET(LIB_${PROJECT_NAME}_TOOLS log4cplus boost )
+SET(LIB_${PROJECT_NAME}_TOOLS python boost )
 
 i3_add_library(sim-services
 	${LIB_${PROJECT_NAME}_SOURCEFILES}
