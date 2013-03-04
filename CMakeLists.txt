@@ -30,12 +30,15 @@ i3_add_library(sim-services
 	cmc
 )
 
+# TODO: make the tests use PROPOSAL instead of MMC
+IF (IS_DIRECTORY ${CMAKE_SOURCE_DIR}/c2j-icetray AND IS_DIRECTORY ${CMAKE_SOURCE_DIR}/mmc-icetray)
 i3_test_executable(test 
 	private/test/*.cxx
 	USE_TOOLS boost python log4cplus jni gsl
 	USE_PROJECTS dataclasses phys-services sim-services trigger-sim dataio interfaces icetray
 	c2j-icetray mmc-icetray
 )
+ENDIF (IS_DIRECTORY ${CMAKE_SOURCE_DIR}/c2j-icetray AND IS_DIRECTORY ${CMAKE_SOURCE_DIR}/mmc-icetray)
 
 add_subdirectory(private/pybindings)
 
