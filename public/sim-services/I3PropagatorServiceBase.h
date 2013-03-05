@@ -16,7 +16,7 @@
 
 class I3PropagatorServiceBase {
   public:
-    virtual shared_ptr<I3MMCTrack> Propagate(I3Particle& p, std::vector<I3Particle>& daughters) = 0;
+    virtual boost::shared_ptr<I3MMCTrack> Propagate(I3Particle& p, std::vector<I3Particle>& daughters) = 0;
 
     I3PropagatorServiceBase();
     virtual ~I3PropagatorServiceBase();
