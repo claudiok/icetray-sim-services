@@ -82,7 +82,7 @@ PropagatorServiceUtils::Propagate(I3MCTreePtr& mctree_ptr,
 }
 
 I3MMCTrackListPtr PropagatorServiceUtils::SecondPass(I3MCTreePtr& mctree_ptr, 
-                                 shared_ptr<I3CascadeMCService> cmc ,
+                                 shared_ptr<I3CascadeMCServiceBase> cmc ,
                                  I3PropagatorServiceBasePtr propagator){
 
   I3MMCTrackListPtr mmcTrackList( new I3MMCTrackList);

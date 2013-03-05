@@ -13,6 +13,7 @@ SET(LIB_${PROJECT_NAME}_SOURCEFILES
 	private/sim-services/I3SumGenerator.cxx 
 	private/sim-services/I3MCTreeHybridSimulationSplitter.cxx
 	private/sim-services/I3PropagatorServiceBase.cxx
+	private/sim-services/I3CascadeMCServiceBase.cxx
 	private/sim-services/time-generator/I3MCEventHeaderGenerator.cxx
 	private/sim-services/time-generator/I3ModifyEventID.cxx
 )
@@ -27,7 +28,6 @@ i3_add_library(sim-services
 	phys-services 
 	dataclasses 
 	simclasses 
-	cmc
 )
 
 # TODO: make the tests use PROPOSAL instead of MMC
@@ -36,7 +36,7 @@ i3_test_executable(test
 	private/test/*.cxx
 	USE_TOOLS boost python jni gsl
 	USE_PROJECTS dataclasses phys-services sim-services trigger-sim dataio interfaces icetray
-	c2j-icetray mmc-icetray
+	#c2j-icetray mmc-icetray
 )
 ENDIF (IS_DIRECTORY ${CMAKE_SOURCE_DIR}/c2j-icetray AND IS_DIRECTORY ${CMAKE_SOURCE_DIR}/mmc-icetray)
 
