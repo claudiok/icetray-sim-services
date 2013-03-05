@@ -16,6 +16,7 @@ namespace bp = boost::python;
 
 void register_I3SumGenerator();
 void register_I3PropagatorServiceBase();
+void register_I3SimConstants();
 void register_I3CascadeMCServiceBase();
 
 void
@@ -25,7 +26,6 @@ shiftTreeToCenter(I3FramePtr frame , I3MCTreePtr tree,
   I3GeoShifter::ShiftTree(frame, tree, omType);
 }
 
-
 BOOST_PYTHON_MODULE(sim_services)
 {
   load_project("libsim-services", false);
@@ -33,6 +33,7 @@ BOOST_PYTHON_MODULE(sim_services)
 
   register_I3SumGenerator();
   register_I3PropagatorServiceBase();
+  register_I3SimConstants();
   register_I3CascadeMCServiceBase();
 }
 
