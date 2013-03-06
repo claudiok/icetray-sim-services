@@ -89,6 +89,13 @@ private:
     /// Parameter: a random number generator service
     I3RandomServicePtr random_;
 
+    /// Parameter: set this to a non-empty string to save the RNG state to the frame
+    ///  before each propagation (per event). If it already exist, it is loaded instead
+    ///  and the RNG state is being reset before propagation. This allows to re-generate
+    ///  MCTrees using just the output of ucr/corsika-reader or neutrino-generator and
+    ///  the RNG state.
+    std::string rngStateName_;
+
 private:
     // default, assignment, and copy constructor declared private
     I3PropagatorModule();
@@ -126,6 +133,11 @@ I3PropagatorModule::I3PropagatorModule(const I3Context& context)
                  "A random number generator service.",
                  random_);
 
+    rngStateName_ = "";
+    AddParameter("RNGStateName",
+                 "A random number generator service.",
+                 rngStateName_);
+
     // add an outbox
     AddOutBox("OutBox");
 
@@ -145,6 +157,7 @@ void I3PropagatorModule::Configure()
     GetParameter("OutputMCTreeName", outputMCTreeName_);
     GetParameter("PropagatorServices", particleToPropagatorServiceMap_);
     GetParameter("RandomService", random_);
+    GetParameter("RNGStateName", rngStateName_);
 
     if (!random_)
         log_fatal("No random number generator service was configured. Please set the \"RandomService\" parameter");
@@ -173,6 +186,20 @@ void I3PropagatorModule::DAQ(I3FramePtr frame)
 {
     log_trace("%s", __PRETTY_FUNCTION__);
     
+    if (rngStateName_.size() > 0) {
+        I3FrameObjectConstPtr rngState = frame->Get<I3FrameObjectConstPtr>(rngStateName_);
+
+        if (rngState) {
+            // there is a state in the frame. Set the RNG to that state.
+            random_->RestoreState(rngState);
+        } else {
+            // there is no state in the frame. Get the current one and save it.
+            rngState = random_->GetState();
+
+            frame->Put(rngStateName_, rngState);
+        }
+    }
+
     I3MCTreeConstPtr inputMCTree = frame->Get<I3MCTreeConstPtr>(inputMCTreeName_);
     if (!inputMCTree) {
         log_debug("Frame does not contain an I3MCTree named \"%s\".",
@@ -196,7 +223,7 @@ void I3PropagatorModule::DAQ(I3FramePtr frame)
         // don't propagate particle types that are not configures
         if (it == particleToPropagatorServiceMap_->end()) continue;
 
-        // it's either a tau or a muon. propagate it later.
+        // it's something we know how to propagate. Add it to the list.
         particlesToPropagate.push_back(std::make_pair(t_iter, it->second));
     }
 
