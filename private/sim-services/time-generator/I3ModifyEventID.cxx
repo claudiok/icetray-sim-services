@@ -110,13 +110,6 @@ void I3ModifyEventID::DAQ(I3FramePtr frame)
           log_info("No I3EventHeader to modify.");
   }
 
-  if (frame->Has("DrivingTime") && modTime_) { 
-          frame->Delete("DrivingTime"); 
-          frame->Put("DrivingTime",I3TimePtr(new I3Time(year_,daqTime_)));
-  } else { 
-          log_info("No DrivingTime to modify.");
-  }
-
   PushFrame(frame,"OutBox");
 }//DAQ()
  
