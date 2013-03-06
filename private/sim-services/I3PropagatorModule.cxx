@@ -1,0 +1,249 @@
+/**
+ * Copyright (c) 2013
+ * Claudio Kopper <claudio.kopper@icecube.wisc.edu>
+ * and the IceCube Collaboration <http://www.icecube.wisc.edu>
+ *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
+ * SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION
+ * OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
+ * CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ *
+ *
+ * $Id$
+ *
+ * @file I3PropagatorModule.cxx
+ * @version $Revision$
+ * @date $Date$
+ * @author Claudio Kopper
+ */
+
+#include <deque>
+#include <boost/foreach.hpp>
+
+#include "icetray/I3ConditionalModule.h"
+
+#include "dataclasses/physics/I3Particle.h"
+#include "dataclasses/physics/I3MCTree.h"
+#include "dataclasses/physics/I3MCTreeUtils.h"
+#include "dataclasses/I3TreeUtils.h"
+
+#include "phys-services/I3RandomService.h"
+
+#include "sim-services/I3PropagatorService.h"
+
+
+/**
+ * Propagates all particles found in an MCTree that have
+ * configured I3PropagatorServices. If one service returns
+ * another particle that can be propagated by another service,
+ * it will be passed to that one. The results, in turn, will
+ * also be propagated until there are no more particles
+ * to propagate.
+ *
+ * The ususal use case is to pass an MCTree to PROPOSAL,
+ * the results to CMC and the resulting muons back to PROPOSAL.
+ */
+class I3PropagatorModule : public I3ConditionalModule
+{
+public:
+    /**
+     * Builds an instance of this class
+     */
+    I3PropagatorModule(const I3Context& ctx);
+    
+    /**
+     * Destroys an instance of this class
+     */
+    virtual ~I3PropagatorModule();
+    
+    /**
+     * This module takes a configuration parameter and so it must be configured.
+     */
+    virtual void Configure();
+    
+    /**
+     * The module needs to process Physics frames
+     */
+    virtual void DAQ(I3FramePtr frame);
+    
+private:
+    // parameters
+    
+    /// Parameter: Name of the I3MCTree frame object. 
+    std::string inputMCTreeName_;
+
+    /// Parameter: Name of the output I3MCTree frame object. If identical to the
+    /// input or empty, the input object will be replaced.
+    std::string outputMCTreeName_;
+    
+    /// Parameter: map of particle type to a propagator that should propagate this type.
+    I3ParticleTypePropagatorServiceMapPtr particleToPropagatorServiceMap_;
+
+    /// Parameter: a random number generator service
+    I3RandomServicePtr random_;
+
+private:
+    // default, assignment, and copy constructor declared private
+    I3PropagatorModule();
+    I3PropagatorModule(const I3PropagatorModule&);
+    I3PropagatorModule& operator=(const I3PropagatorModule&);
+    
+    SET_LOGGER("I3PropagatorModule");
+};
+
+
+
+// The module
+I3_MODULE(I3PropagatorModule);
+
+I3PropagatorModule::I3PropagatorModule(const I3Context& context) 
+: I3ConditionalModule(context)
+{
+    
+    inputMCTreeName_="I3MCTree";
+    AddParameter("InputMCTreeName",
+                 "Name of the I3MCTree frame object.",
+                 inputMCTreeName_);
+
+    inputMCTreeName_="I3MCTree";
+    AddParameter("OutputMCTreeName",
+                 "Name of the output I3MCTree frame object. If identical to the\n"
+                 "input or empty, the input object will be replaced.",
+                 outputMCTreeName_);
+
+    AddParameter("PropagatorServices",
+                 "A dict mapping I3Particle::ParticleType to I3PropagatorService.",
+                 particleToPropagatorServiceMap_);
+
+    AddParameter("RandomService",
+                 "A random number generator service.",
+                 random_);
+
+    // add an outbox
+    AddOutBox("OutBox");
+
+}
+
+I3PropagatorModule::~I3PropagatorModule()
+{
+    log_trace("%s", __PRETTY_FUNCTION__);
+}
+
+
+void I3PropagatorModule::Configure()
+{
+    log_trace("%s", __PRETTY_FUNCTION__);
+
+    GetParameter("InputMCTreeName", inputMCTreeName_);
+    GetParameter("OutputMCTreeName", outputMCTreeName_);
+    GetParameter("PropagatorServices", particleToPropagatorServiceMap_);
+    GetParameter("RandomService", random_);
+
+    if (!random_)
+        log_fatal("No random number generator service was configured. Please set the \"RandomService\" parameter");
+
+    if (!particleToPropagatorServiceMap_)
+        log_fatal("Please configure a set of propagators and particle types using the \"PropagatorServices\" parameter");
+
+    if (inputMCTreeName_=="")
+        log_fatal("The \"InputMCTreeName\" parameter must not be empty.");
+
+    // configure the services with our random number generator
+    for (I3ParticleTypePropagatorServiceMap::const_iterator it =
+        particleToPropagatorServiceMap_->begin(); it != particleToPropagatorServiceMap_->end(); ++it)
+    {
+        const I3PropagatorServicePtr &propagator = it->second;
+
+        if (!propagator)
+            log_fatal("(null) propagator in propagator map is invalid");
+
+        propagator->SetRandomNumberGenerator(random_);
+    }
+}
+
+
+void I3PropagatorModule::DAQ(I3FramePtr frame)
+{
+    log_trace("%s", __PRETTY_FUNCTION__);
+    
+    I3MCTreeConstPtr inputMCTree = frame->Get<I3MCTreeConstPtr>(inputMCTreeName_);
+    if (!inputMCTree) {
+        log_debug("Frame does not contain an I3MCTree named \"%s\".",
+                  inputMCTreeName_.c_str());
+        PushFrame(frame);
+        return;
+    }
+
+    // allocate the output I3MCTree
+    I3MCTreePtr outputMCTree(new I3MCTree(*inputMCTree));
+
+    // Extract a list of particles to work on
+    std::deque<std::pair<I3MCTree::iterator, I3PropagatorServicePtr> > particlesToPropagate;
+
+    // build a map of MCTree::iterator to I3PropagatorService
+    for(I3MCTree::iterator t_iter = outputMCTree->begin();
+        t_iter != outputMCTree->end(); t_iter++)
+    {
+        I3ParticleTypePropagatorServiceMap::const_iterator it =
+            particleToPropagatorServiceMap_->find(t_iter->GetType());
+        // don't propagate particle types that are not configures
+        if (it == particleToPropagatorServiceMap_->end()) continue;
+
+        // it's either a tau or a muon. propagate it later.
+        particlesToPropagate.push_back(std::make_pair(t_iter, it->second));
+    }
+
+
+    // The main propagation loop.
+    while (!particlesToPropagate.empty())
+    {
+        // retrieve the first entry
+        const std::pair<I3MCTree::iterator, I3PropagatorServicePtr> &currentItem =
+            particlesToPropagate.front();
+        particlesToPropagate.pop_front();
+
+
+        const I3MCTree::iterator &currentParticle_it = currentItem.first;
+        I3PropagatorServicePtr currentPropagator = currentItem.second;
+
+        // propagate it!
+        const std::vector<I3Particle> children =
+        currentPropagator->Propagate(*currentParticle_it, frame);
+
+
+        // Insert each of the children into the tree. While at it,
+        // check to see if any of them are on the list and should be propagated.
+        BOOST_FOREACH(const I3Particle& child, children)
+        {
+            const I3MCTree::iterator child_it =
+                outputMCTree->append_child(currentParticle_it, child);
+            
+            I3ParticleTypePropagatorServiceMap::const_iterator it =
+                particleToPropagatorServiceMap_->find(child.GetType());
+            if (it != particleToPropagatorServiceMap_->end()) {
+                // we know how to propagate this! add it to the list!
+
+                particlesToPropagate.push_back(std::make_pair(child_it, it->second));
+            }
+        }
+
+    }
+
+    // store the output I3MCTree
+    if ((outputMCTreeName_=="") || (outputMCTreeName_==inputMCTreeName_)) {
+        frame->Delete(inputMCTreeName_);
+        frame->Put(inputMCTreeName_, outputMCTree);
+    } else {
+        frame->Put(outputMCTreeName_, outputMCTree);
+    }
+    
+    // that's it!
+    PushFrame(frame);
+}

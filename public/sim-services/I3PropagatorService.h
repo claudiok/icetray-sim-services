@@ -1,6 +1,8 @@
 #ifndef I3PROPAGATORSERVICE_H
 #define I3PROPAGATORSERVICE_H
 
+#include <map>
+
 #include <icetray/I3PointerTypedefs.h>
 #include <icetray/I3Frame.h>
 #include <dataclasses/physics/I3Particle.h>
@@ -16,5 +18,9 @@ class I3PropagatorService {
 };
 
 I3_POINTER_TYPEDEFS(I3PropagatorService);
+
+typedef std::map<I3Particle::ParticleType, I3PropagatorServicePtr> I3ParticleTypePropagatorServiceMap;
+
+I3_POINTER_TYPEDEFS(I3ParticleTypePropagatorServiceMap);
 
 #endif //I3PROPAGATORSERVICE_H

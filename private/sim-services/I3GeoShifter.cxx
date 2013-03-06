@@ -24,12 +24,14 @@ namespace I3GeoShifter{
   DetectorCenter(I3FramePtr frame,
 		  I3OMGeo::OMType omType){
 
-    const I3Geometry geo = frame->Get<I3Geometry>();
+    I3GeometryConstPtr geo = frame->Get<I3GeometryConstPtr>();
+    if (!geo) return make_pair(NAN,NAN);
+
     std::vector<double> x;
     std::vector<double> y;
     I3OMGeoMap::const_iterator  i;
     int current_str(INT_MIN);
-    for(i=geo.omgeo.begin(); i!=geo.omgeo.end(); i++){
+    for(i=geo->omgeo.begin(); i!=geo->omgeo.end(); i++){
       if(i->first.GetString() != current_str){
 	if(i->second.omtype == omType ) {
 	  current_str = i->first.GetString();

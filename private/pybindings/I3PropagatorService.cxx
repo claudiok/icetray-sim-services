@@ -1,5 +1,6 @@
 #include <sim-services/I3PropagatorService.h>
 #include <icetray/python/gil_holder.hpp>
+#include <icetray/python/std_map_indexing_suite.hpp>
 
 namespace bp = boost::python;
 
@@ -40,4 +41,8 @@ void register_I3PropagatorService()
     bp::implicitly_convertible<shared_ptr<I3PropagatorServiceWrapper>, shared_ptr<const I3PropagatorService> >();
     bp::implicitly_convertible<shared_ptr<I3PropagatorServiceWrapper>, shared_ptr<I3PropagatorService> >();
     bp::implicitly_convertible<shared_ptr<I3PropagatorServiceWrapper>, shared_ptr<const I3PropagatorServiceWrapper> >();
+
+    bp::class_<I3ParticleTypePropagatorServiceMap, I3ParticleTypePropagatorServiceMapPtr>("I3ParticleTypePropagatorServiceMap")
+    .def(bp::std_map_indexing_suite<I3ParticleTypePropagatorServiceMap>())
+    ;
 }
