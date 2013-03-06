@@ -14,17 +14,14 @@
 #include <boost/foreach.hpp>
 
 
-I3MMCTrackListPtr
+void
 PropagatorServiceUtils::Propagate(I3MCTreePtr& mctree_ptr, 
-                                  I3PropagatorServiceBasePtr propagator)
+                                  I3PropagatorServicePtr propagator,
+                                  I3FramePtr frame)
 {
     // Iteratively apply propagator->Propagate() to all muons and taus
     // in the tree. In case any tau should generate another muon,
     // propagate that muon as well. 
-
-    // We return a list of mmcTrack informational structures for
-    // each tau/muon. Prepare the output vector.
-    I3MMCTrackListPtr mmcTrackList(new I3MMCTrackList);
 
     // Extract a list of particles to work on
     std::deque<I3MCTree::iterator> particlesToPropagate;
@@ -52,10 +49,8 @@ PropagatorServiceUtils::Propagate(I3MCTreePtr& mctree_ptr,
         particlesToPropagate.pop_front();
 
         // propagate it!
-        std::vector<I3Particle> children;
-        const I3MMCTrackPtr mmcTrack =
-            propagator->Propagate(*currentParticle_it, children);
-        if(mmcTrack) mmcTrackList->push_back(*mmcTrack);
+        std::vector<I3Particle> children =
+        propagator->Propagate(*currentParticle_it, frame);
         log_trace("number of children: %zu", children.size());
 
 
@@ -77,15 +72,13 @@ PropagatorServiceUtils::Propagate(I3MCTreePtr& mctree_ptr,
         }
 
     }
-
-    return mmcTrackList;
 }
 
-I3MMCTrackListPtr PropagatorServiceUtils::SecondPass(I3MCTreePtr& mctree_ptr, 
-                                 shared_ptr<I3CascadeMCServiceBase> cmc ,
-                                 I3PropagatorServiceBasePtr propagator){
+void PropagatorServiceUtils::SecondPass(I3MCTreePtr& mctree_ptr, 
+                                 I3PropagatorServicePtr cmc ,
+                                 I3PropagatorServicePtr propagator,
+                                 I3FramePtr frame){
 
-  I3MMCTrackListPtr mmcTrackList( new I3MMCTrackList);
   // copy the tree and fill that as we go.
   // this keeps us from recursively splitting cascades
   // may not be a bad idea, but this may unneccesarily inflate the tree size. 
@@ -99,8 +92,8 @@ I3MMCTrackListPtr PropagatorServiceUtils::SecondPass(I3MCTreePtr& mctree_ptr,
   for(;t_iter != mctree_ptr->end(); t_iter++, copy_iter++){
    
     //simulate everything CMC can
-    std::vector<I3Particle> cascadeChildren;
-    cmc->Simulate(*t_iter, cascadeChildren);
+    std::vector<I3Particle> cascadeChildren =
+    cmc->Propagate(*t_iter, frame);
     // we want hit-maker to ignore this and generate hits
     // for the children only
 
@@ -137,9 +130,8 @@ I3MMCTrackListPtr PropagatorServiceUtils::SecondPass(I3MCTreePtr& mctree_ptr,
       
         if(c_iter->GetType() == I3Particle::MuMinus ||
            c_iter->GetType() == I3Particle::MuPlus ){
-          std::vector<I3Particle> muonChildren;
-          I3MMCTrackPtr mmcTrack = propagator->Propagate(*c_iter, muonChildren);
-          if(mmcTrack) mmcTrackList->push_back(*mmcTrack);
+          std::vector<I3Particle> muonChildren =
+          propagator->Propagate(*c_iter, frame);
           BOOST_FOREACH(I3Particle& s, muonChildren)
             tree_copy->append_child(c_iter, s);
         }         
@@ -148,5 +140,4 @@ I3MMCTrackListPtr PropagatorServiceUtils::SecondPass(I3MCTreePtr& mctree_ptr,
   } // end iteration over all the particles in the tree
   //just before returning we need to swap the pointers
   mctree_ptr = tree_copy;
-  return mmcTrackList;
 } // end of function 

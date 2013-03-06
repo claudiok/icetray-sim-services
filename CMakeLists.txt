@@ -12,8 +12,7 @@ SET(LIB_${PROJECT_NAME}_SOURCEFILES
 	private/sim-services/PropagatorServiceUtils.cxx 
 	private/sim-services/I3SumGenerator.cxx 
 	private/sim-services/I3MCTreeHybridSimulationSplitter.cxx
-	private/sim-services/I3PropagatorServiceBase.cxx
-	private/sim-services/I3CascadeMCServiceBase.cxx
+	private/sim-services/I3PropagatorService.cxx
 	private/sim-services/time-generator/I3MCEventHeaderGenerator.cxx
 	private/sim-services/time-generator/I3ModifyEventID.cxx
 )

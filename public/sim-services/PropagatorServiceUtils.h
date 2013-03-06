@@ -14,20 +14,21 @@
  * 
  */
 
+#include <icetray/I3Frame.h>
 #include <dataclasses/physics/I3Particle.h>
 #include <dataclasses/physics/I3MCTree.h>
-#include <sim-services/I3CascadeMCServiceBase.h>
-#include <sim-services/I3PropagatorServiceBase.h>
-#include <simclasses/I3MMCTrack.h>
+#include <sim-services/I3PropagatorService.h>
 
 namespace PropagatorServiceUtils{
 
-  shared_ptr<I3Vector<I3MMCTrack> > 
-    Propagate(shared_ptr<I3MCTree>& mctree_ptr, shared_ptr<I3PropagatorServiceBase> propagator);
+  void Propagate(shared_ptr<I3MCTree>& mctree_ptr,
+  					I3PropagatorServicePtr propagator,
+  					I3FramePtr frame);
 
-  shared_ptr<I3Vector<I3MMCTrack> > SecondPass(shared_ptr<I3MCTree>& mctree_ptr, 
-				    shared_ptr<I3CascadeMCServiceBase> cmc ,
-				    shared_ptr<I3PropagatorServiceBase> propagator);
+  void SecondPass(shared_ptr<I3MCTree>& mctree_ptr, 
+				    I3PropagatorServicePtr cmc ,
+				    I3PropagatorServicePtr propagator,
+				    I3FramePtr frame);
     
 }
 
