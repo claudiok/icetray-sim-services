@@ -44,5 +44,4 @@ ENDIF (IS_DIRECTORY ${CMAKE_SOURCE_DIR}/c2j-icetray AND IS_DIRECTORY ${CMAKE_SOU
 add_subdirectory(private/pybindings)
 
 # disable "test2.py" for now to make the build bots happy.
-i3_test_scripts(resources/tests/hist_test.py)
-i3_test_scripts(resources/tests/propagator_storate_state.py)
+i3_test_scripts(resources/tests/hist_test.py resources/tests/propagator_storate_state.py)
