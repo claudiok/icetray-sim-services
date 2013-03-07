@@ -34,7 +34,7 @@ void register_I3PropagatorService()
         bp::scope I3PropagatorService_scope = 
         bp::class_<I3PropagatorServiceWrapper, boost::shared_ptr<I3PropagatorServiceWrapper>, boost::noncopyable>("I3PropagatorService")
         .def("Propagate", bp::pure_virtual(&I3PropagatorService::Propagate))
-        .def("SetRandomNumberGenerator", bp::pure_virtual(&I3PropagatorService::Propagate))
+        .def("SetRandomNumberGenerator", bp::pure_virtual(&I3PropagatorService::SetRandomNumberGenerator))
         ;
     }
     

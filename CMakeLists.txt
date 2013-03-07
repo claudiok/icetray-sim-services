@@ -45,3 +45,4 @@ add_subdirectory(private/pybindings)
 
 # disable "test2.py" for now to make the build bots happy.
 i3_test_scripts(resources/tests/hist_test.py)
+i3_test_scripts(resources/tests/propagator_storate_state.py)

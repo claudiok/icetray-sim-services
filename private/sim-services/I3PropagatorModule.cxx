@@ -114,16 +114,14 @@ I3PropagatorModule::I3PropagatorModule(const I3Context& context)
 : I3ConditionalModule(context)
 {
     
-    inputMCTreeName_="I3MCTree";
     AddParameter("InputMCTreeName",
                  "Name of the I3MCTree frame object.",
-                 inputMCTreeName_);
+                 "I3MCTree");
 
-    inputMCTreeName_="I3MCTree";
     AddParameter("OutputMCTreeName",
                  "Name of the output I3MCTree frame object. If identical to the\n"
                  "input or empty, the input object will be replaced.",
-                 outputMCTreeName_);
+                 "I3MCTree");
 
     AddParameter("PropagatorServices",
                  "A dict mapping I3Particle::ParticleType to I3PropagatorService.",
@@ -133,10 +131,9 @@ I3PropagatorModule::I3PropagatorModule(const I3Context& context)
                  "A random number generator service.",
                  random_);
 
-    rngStateName_ = "";
     AddParameter("RNGStateName",
-                 "A random number generator service.",
-                 rngStateName_);
+                 "Name under which to store the state of the supplied RNG",
+                 "");
 
     // add an outbox
     AddOutBox("OutBox");
@@ -184,7 +181,7 @@ void I3PropagatorModule::Configure()
 
 void I3PropagatorModule::DAQ(I3FramePtr frame)
 {
-    log_trace("%s", __PRETTY_FUNCTION__);
+    log_debug("%s", __PRETTY_FUNCTION__);
     
     if (rngStateName_.size() > 0) {
         I3FrameObjectConstPtr rngState = frame->Get<I3FrameObjectConstPtr>(rngStateName_);
@@ -226,7 +223,8 @@ void I3PropagatorModule::DAQ(I3FramePtr frame)
         // it's something we know how to propagate. Add it to the list.
         particlesToPropagate.push_back(std::make_pair(t_iter, it->second));
     }
-
+    
+    log_debug("Going to propagate %zu particles", particlesToPropagate.size());
 
     // The main propagation loop.
     while (!particlesToPropagate.empty())
@@ -234,8 +232,6 @@ void I3PropagatorModule::DAQ(I3FramePtr frame)
         // retrieve the first entry
         const std::pair<I3MCTree::iterator, I3PropagatorServicePtr> &currentItem =
             particlesToPropagate.front();
-        particlesToPropagate.pop_front();
-
 
         const I3MCTree::iterator &currentParticle_it = currentItem.first;
         I3PropagatorServicePtr currentPropagator = currentItem.second;
@@ -243,7 +239,6 @@ void I3PropagatorModule::DAQ(I3FramePtr frame)
         // propagate it!
         const std::vector<I3Particle> children =
         currentPropagator->Propagate(*currentParticle_it, frame);
-
 
         // Insert each of the children into the tree. While at it,
         // check to see if any of them are on the list and should be propagated.
@@ -260,7 +255,7 @@ void I3PropagatorModule::DAQ(I3FramePtr frame)
                 particlesToPropagate.push_back(std::make_pair(child_it, it->second));
             }
         }
-
+        particlesToPropagate.pop_front();
     }
 
     // store the output I3MCTree
