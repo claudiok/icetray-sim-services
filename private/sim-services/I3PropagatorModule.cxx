@@ -249,11 +249,9 @@ void I3PropagatorModule::DAQ(I3FramePtr frame)
             
             I3ParticleTypePropagatorServiceMap::const_iterator it =
                 particleToPropagatorServiceMap_->find(child.GetType());
-            if (it != particleToPropagatorServiceMap_->end()) {
-                // we know how to propagate this! add it to the list!
-
+            // In looping as in public health, don't consume your own output.
+            if (it != particleToPropagatorServiceMap_->end() && it->second != currentPropagator)
                 particlesToPropagate.push_back(std::make_pair(child_it, it->second));
-            }
         }
         particlesToPropagate.pop_front();
     }
