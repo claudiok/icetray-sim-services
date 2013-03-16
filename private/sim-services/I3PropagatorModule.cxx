@@ -199,10 +199,8 @@ void I3PropagatorModule::DAQ(I3FramePtr frame)
 
     I3MCTreeConstPtr inputMCTree = frame->Get<I3MCTreeConstPtr>(inputMCTreeName_);
     if (!inputMCTree) {
-        log_debug("Frame does not contain an I3MCTree named \"%s\".",
+        log_fatal("Frame does not contain an I3MCTree named \"%s\".",
                   inputMCTreeName_.c_str());
-        PushFrame(frame);
-        return;
     }
 
     // allocate the output I3MCTree
