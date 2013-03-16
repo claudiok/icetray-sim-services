@@ -1,68 +1,85 @@
 #!/usr/bin/env python
 
 """
-Demonstrate that the results of muon and 
-can be exactly recovered by caching the random number generator state.
+Demonstrate that the results of muon propagation and cascade simulation
+can be exactly recovered by storing the random number generator state
+and re-playing the simulation for a subset of events with the same
+random number sequence.
 """
 
 from icecube import icetray, dataclasses, dataio
 from I3Tray import I3Tray
 from icecube import MuonGun, phys_services, sim_services
-from icecube.PROPOSAL import I3PropagatorServicePROPOSAL
-from icecube.cmc import I3CascadeMCService
 from icecube.MuonGun.segments import MakePropagator, GenerateBundles
 from os.path import expandvars
 from os import unlink
 
-# icetray.logging.set_level_for_unit('I3PropagatorModule', 'TRACE')
-
 gcd = expandvars("$I3_PORTS/test-data/sim/GeoCalibDetectorStatus_IC80_DC6.54655.i3.gz")
 
 def make_propagators():
+	"""
+	Set up a stable of propagators for all the kinds of particles we're going to see.
+	"""
+	from icecube.PROPOSAL import I3PropagatorServicePROPOSAL
+	from icecube.cmc import I3CascadeMCService
 	propagators = sim_services.I3ParticleTypePropagatorServiceMap()
 	muprop = I3PropagatorServicePROPOSAL(type=dataclasses.I3Particle.MuMinus)
 	cprop = I3CascadeMCService(phys_services.I3GSLRandomService(1)) # dummy RNG
 	for pt in 'MuMinus', 'MuPlus':
 		propagators[getattr(dataclasses.I3Particle.ParticleType, pt)] = muprop
-	# for pt in 'DeltaE', 'Brems', 'PairProd', 'NuclInt', 'Hadrons', 'EMinus', 'EPlus':
-	# 	propagators[getattr(dataclasses.I3Particle.ParticleType, pt)] = cprop
+	for pt in 'DeltaE', 'Brems', 'PairProd', 'NuclInt', 'Hadrons', 'EMinus', 'EPlus':
+		propagators[getattr(dataclasses.I3Particle.ParticleType, pt)] = cprop
 	return propagators
 
 def generate(nevents=1, fname='foo.i3'):
 	tray = I3Tray()
 	
 	generator = MuonGun.Floodlight()
-
+	
 	# set up a random number generator
 	randomService = phys_services.I3SPRNGRandomService(
 	    seed = 1,
 	    nstreams = 10000,
 	    streamnum = 1)
+	tray.context['I3RandomService'] = randomService
 
-	# a random number generator
-	tray.AddService("I3SPRNGRandomServiceFactory","sprngrandom",
-	    seed = 2,
-	    nstreams = 10000,
-	    streamnum = 1)
+	def make_particle():
+		p = dataclasses.I3Particle()
+		p.pos = dataclasses.I3Position(0,0,2e3)
+		p.dir = dataclasses.I3Direction(0,0)
+		p.time = 0
+		p.energy = 10**randomService.Uniform(3, 6)
+		p.type = p.DeltaE
+		p.location_type = p.InIce
+		return p
+	make_particle.i = 0
 
-	tray.AddSegment(GenerateBundles, 'BundleGen', Generator=generator, RandomService=randomService,
+	def make_mctree(frame):
+		mctree = dataclasses.I3MCTree()
+		primary = make_particle()
+		primary.location_type = primary.Anywhere
+		primary.type = primary.unknown
+		muon = make_particle()
+		mctree.add_root(primary)
+		mctree.append_child(primary, muon)
+		frame['I3MCTree'] = mctree
+	
+	tray.AddSegment(GenerateBundles, 'BundleGen', Generator=generator,
 	    NEvents=nevents, GCDFile=gcd)	
-	    
+	
 	def stash(frame):
 		frame['RemadeMCTree'] = dataclasses.I3MCTree(frame['I3MCTree'])
 	tray.AddModule(stash, 'copy', Streams=[icetray.I3Frame.DAQ])
 	
 	tray.AddModule('I3PropagatorModule', 'propagator', PropagatorServices=make_propagators(),
 	    RandomService=randomService, RNGStateName="RNGState")
-	#     
-	# tray.AddModule('Dump', 'dump')
+	
 	tray.AddModule('I3Writer', 'writer',
 	    Streams=[icetray.I3Frame.DAQ, icetray.I3Frame.Physics],
-	    # DropOrphanStreams=[icetray.I3Frame.DAQ],
 	    filename=fname)
-
+	
 	tray.AddModule('TrashCan', 'YesWeCan')
-	tray.Execute()
+	tray.Execute(nevents+3)
 	tray.Finish()
 	
 def check(fname='foo.i3', fraction=0.1):
@@ -75,30 +92,34 @@ def check(fname='foo.i3', fraction=0.1):
 	
 	# set up a random number generator
 	randomService = phys_services.I3SPRNGRandomService(
-	    seed = 1,
+	    seed = 2,
 	    nstreams = 10000,
 	    streamnum = 1)
 	
+	# Throw out a random subset of events. The remainder must be reproducible
+	# given the same random number sequence
 	def drop_random_events(frame, fraction=fraction):
-		import random
-		return random.uniform(0, 1) < (1-fraction)
+		return randomService.uniform(0, 1) < (1-fraction)
 	tray.AddModule(drop_random_events, 'triggerhappy', Streams=[icetray.I3Frame.DAQ])
 	
 	tray.AddModule('I3PropagatorModule', 'propagator', PropagatorServices=make_propagators(),
 	    RandomService=randomService, RNGStateName="RNGState", InputMCTreeName="RemadeMCTree", OutputMCTreeName="RemadeMCTree")
 	
 	class MCTreeCompare(TestCase):
+		"""
+		Ensure that every entry in the re-simulated MCTree is completely
+		identical to the original one.
+		"""
 		def setUp(self):
 			self.orig_tree = self.frame['I3MCTree']
 			self.new_tree = self.frame['RemadeMCTree']
 		def testTotalSize(self):
-			# print self.orig_tree
-			# print self.new_tree
 			self.assertEquals(len(self.orig_tree), len(self.new_tree))
 		def testParticleContent(self):
-			return
 			from itertools import izip
 			for p1, p2 in izip(self.orig_tree, self.new_tree):
+				if p1.location_type != p1.InIce:
+					continue
 				self.assertEquals(p1.energy, p2.energy)
 				self.assertEquals(p1.type, p2.type)
 				self.assertEquals(p1.time, p2.time)
@@ -116,8 +137,8 @@ def check(fname='foo.i3', fraction=0.1):
 	
 
 fname = 'propagator_state_storage.i3'
-generate(nevents=int(1e3), fname=fname)
-check(fraction=0.99, fname=fname)
+generate(nevents=int(1e2), fname=fname)
+check(fraction=0.9, fname=fname)
 
 unlink(fname)
 
