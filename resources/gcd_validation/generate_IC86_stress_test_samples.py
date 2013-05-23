@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 
 from os.path import expandvars
-from I3Tray import I3Units, I3Tray, load
-
+from I3Tray import I3Units
 from optparse import OptionParser
 parser = OptionParser()
 
@@ -44,6 +43,8 @@ parser.add_option("-u","--FearTheTurtle",
 
 (options, args) = parser.parse_args()
 
+from I3Tray import I3Tray
+
 options.binwidth *= I3Units.ns
 options.time_const *= I3Units.ns
 
@@ -57,10 +58,15 @@ import sys
 import math
 import random
 
-from icecube import icetray, dataclasses, dataio
-from icecube import phys_services, sim_services, pmt_simulator
-from icecube import DOMsimulator, WaveCalibrator, wavedeform
-from icecube.sim_services.gcd_validation.hit_generator import StressTestHitGenerator
+from icecube import icetray
+from icecube import dataclasses
+from icecube import dataio
+from icecube import phys_services
+from icecube import sim_services
+from icecube import DOMLauncher
+from icecube import WaveCalibrator
+from icecube import wavedeform
+from icecube.sim_services.gcd_validation.pe_generator import StressTestPEGenerator
 
 ###
 # Generate the hit series to feed to I3TestGenericSource
@@ -150,17 +156,22 @@ tray.AddService("I3SPRNGRandomServiceFactory","random")(
 	("NStreams",2),
  	("StreamNum",1))
 
-tray.AddModule(StressTestHitGenerator ,"hits",\
+tray.AddModule(StressTestPEGenerator ,"pes",\
                Streams = [icetray.I3Frame.DAQ],\
                hit_times = t, weights = w )
 
-tray.AddModule("I3PMTSimulator","pmt")
+tray.AddModule("PMTResponseSimulator","pmt")
 
-tray.AddModule("I3DOMsimulator","domsim")
+tray.AddModule("DOMLauncher","domsim")
 
-tray.AddModule('I3WaveCalibrator', 'wavecal')
+tray.AddModule('I3WaveCalibrator', 'wavecal',\
+               Launches = "DOMLaunchSeries")
    
-tray.AddModule('I3Wavedeform', 'DeformInIce')
+tray.AddModule('I3Wavedeform', 'DeformInIce',\
+                   UseDOMsimulatorTemplates = False)
+
+tray.AddModule("Dump","dump")
+
 
 fn = options.output_path 
 fn += "IC86_"

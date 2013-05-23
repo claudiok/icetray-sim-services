@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+ #!/usr/bin/env python
 from I3Tray import I3Tray, I3Units
 
 from icecube import dataclasses as dc
@@ -6,7 +6,8 @@ from icecube import dataclasses as dc
 import os
 from os.path import expandvars
 
-season_to_MJD = { "2012" : 56062,\
+season_to_MJD = { "2013" : 56429,\
+                  "2012" : 56063,\
                   "IC86" : 55697,\
                   "IC79" : 55380,\
                   "IC59" : 55000,\
@@ -17,8 +18,8 @@ from optparse import OptionParser
 
 parser = OptionParser()
 parser.add_option("-s","--season",
-                  dest="SEASON", default="2012" ,
-                  help="Season to generate (2012, IC86, IC79, IC59, IC40)")
+                  dest="SEASON", default="2013" ,
+                  help="Season to generate (2013, 2012, IC86, IC79, IC59, IC40)")
 
 (options, args) = parser.parse_args()
 
