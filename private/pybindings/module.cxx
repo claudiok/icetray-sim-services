@@ -16,6 +16,7 @@ namespace bp = boost::python;
 void register_I3SumGenerator();
 void register_I3PropagatorService();
 void register_I3SimConstants();
+void register_I3MCTree();
 
 BOOST_PYTHON_MODULE(sim_services)
 {
@@ -24,5 +25,6 @@ BOOST_PYTHON_MODULE(sim_services)
   register_I3SumGenerator();
   register_I3PropagatorService();
   register_I3SimConstants();
+  register_I3MCTree();
 }
 
