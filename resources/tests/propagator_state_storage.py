@@ -10,7 +10,7 @@ random number sequence.
 from icecube import icetray, dataclasses, dataio
 from I3Tray import I3Tray
 from icecube import MuonGun, phys_services, sim_services
-from icecube.MuonGun.segments import MakePropagator, GenerateBundles
+from icecube.MuonGun.segments import GenerateBundles
 from os.path import expandvars
 from os import unlink
 
