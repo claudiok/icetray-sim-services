@@ -29,6 +29,8 @@ if "BadDomsList" in status_frame :
     print "Using this one instead."
     badDOMList = status_frame.Get("BadDomsList")
     badDOMListSLC = status_frame.Get("BadDomsListSLC")
+    print "len(badDOMList) = ",len(badDOMList)
+    print "len(badDOMListSLC) = ",len(badDOMListSLC)
 else:
     print status_frame
     try :
@@ -59,9 +61,8 @@ while f.more():
     print frame
 
     rpmap = frame.Get("WavedeformPulses")
-    mchitmap = frame.Get("MCHitSeriesMap")
-    pmtmap = frame.Get("MCPMTResponseMap")
-    dlmap = frame.Get("InIceRawData")
+    pulsemap = frame.Get("I3MCPulseSeriesMap")
+    dlmap = frame.Get("I3DOMLaunchSeriesMap")
 
     # make sure this DOM is not in the bad DOM list
     for omkey, rpseries in rpmap :
@@ -71,13 +72,10 @@ while f.more():
             print "%s : this DOM is in the BAD DOM List!!!" % str(omkey)
             print "  number of recopulses = ",len(rpseries)
             print "  charge = %.2f" % charge
-            print "  ",len(mchitmap[omkey])
             print "  number of launches = ",len(dlmap[omkey])
             print "  lc_bit = ",dlmap[omkey][0].lc_bit
             print "  trigger_type = ",dlmap[omkey][0].trigger_type
             print "  trigger_mode = ",dlmap[omkey][0].trigger_mode
-            for mchit in mchitmap[omkey]:
-                print "  ",mchit.hit_source
             if omkey not in bad_doms_with_hits:
                 bad_doms_with_hits.append(omkey)
 
@@ -86,7 +84,9 @@ while f.more():
             print "%s : what do you think about this (%f) charge and this (%f) charge ratio? " % \
                   (str(omkey),charge,charge/float(options.nhits_per_DOM))
 
-        if omkey in badDOMList and omkey not in badDOMListSLC:
+        # The BadDOMListSLC are DOMs that are off and should not contain any hits
+        # The BadDOMList are DOMs that do not participate in HLC launches
+        if omkey in badDOMListSLC and omkey not in badDOMList:
             # these are SLC-only DOMs
             for dl in dlmap[omkey] :
                 if dl.lc_bit :
@@ -96,7 +96,7 @@ while f.more():
     for omkey in goodDOMList :
         if omkey not in rpmap:
             print "%s : this DOM is good but produced no hits!!!" % str(omkey)
-            if omkey not in pmtmap :
+            if omkey not in pulsemap :
                 print "   %s : this DOM has no PMT waveform!!!" % str(omkey)
             if omkey not in domcal :
                 print "   %s : this DOM has no domcal entry!!!" % str(omkey)
