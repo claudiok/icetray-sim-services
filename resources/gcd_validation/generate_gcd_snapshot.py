@@ -1,4 +1,4 @@
- #!/usr/bin/env python
+#!/usr/bin/env python
 from I3Tray import I3Tray, I3Units
 
 from icecube import dataclasses as dc
@@ -73,6 +73,13 @@ tray.AddService('I3BadDomListFactory', 'BadDomListService',
                 QFileName = xmlfile,
                 )
 
+tray.AddService('I3BadDomListFactory', 'BadDomListServiceSLC',
+                ServiceName = 'BadDomListServiceSLC',
+                Hostname = dbhost,
+                Timeout = 180,
+                QFileName = xmlfile,
+                )
+
 tray.AddModule("I3MetaSynth","muxme")
 
 tray.AddModule('I3BadDomListModule', 'BadDoms',
@@ -85,7 +92,7 @@ tray.AddModule('I3BadDomListModule', 'BadDoms',
                )
 
 tray.AddModule('I3BadDomListModule', 'BadDomsSLC',
-               BadDomListServiceName = 'BadDomListService',
+               BadDomListServiceName = 'BadDomListServiceSLC',
                CleanedKeys = list(),
                BadDomsListVector = "BadDomsListSLC",
                CleanedKeysOnly = False,

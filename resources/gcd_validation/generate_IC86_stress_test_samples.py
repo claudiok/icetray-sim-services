@@ -165,10 +165,10 @@ tray.AddModule("PMTResponseSimulator","pmt")
 tray.AddModule("DOMLauncher","domsim")
 
 tray.AddModule('I3WaveCalibrator', 'wavecal',\
-               Launches = "DOMLaunchSeries")
+               Launches = "I3DOMLaunchSeriesMap")
    
 tray.AddModule('I3Wavedeform', 'DeformInIce',\
-                   UseDOMsimulatorTemplates = False)
+               UseDOMsimulatorTemplates = False)
 
 tray.AddModule("Dump","dump")
 

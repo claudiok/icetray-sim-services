@@ -25,5 +25,5 @@ def StressTestPEGenerator( frame, \
     for omkey, geo in frame.Get("I3Geometry").omgeo :
         mcpe_map[ omkey ] = mcpes
 
-    frame["MCHitSeriesMap"] = mcpe_map
+    frame["I3MCPESeriesMap"] = mcpe_map
     
