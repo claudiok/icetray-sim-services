@@ -17,6 +17,7 @@ SET(LIB_${PROJECT_NAME}_SOURCEFILES
 	private/sim-services/time-generator/I3ModifyEventID.cxx
 	private/sim-services/I3PropagatorModule.cxx
 	private/sim-services/I3CombineMCPE.cxx
+	private/sim-services/I3MCPEtoI3MCHitConverter.cxx
 )
 SET(LIB_${PROJECT_NAME}_TOOLS python boost )
 
