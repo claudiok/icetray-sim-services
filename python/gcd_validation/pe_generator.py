@@ -9,8 +9,8 @@ def StressTestPEGenerator( frame, \
     weights = weights if weights else  [ None for h in hit_times ] 
      
     if len( hit_times ) != len( weights ) :
-        print "ERROR : Different sizes for 'hit_times' and 'weights'."
-        print "Either 'weights' needs to be empty (unweighted) or of the same size as 'hit_times'."
+        print("ERROR : Different sizes for 'hit_times' and 'weights'.")
+        print("Either 'weights' needs to be empty (unweighted) or of the same size as 'hit_times'.")
         sys.exit(0)
 
     mcpes = sc.I3MCPESeries()

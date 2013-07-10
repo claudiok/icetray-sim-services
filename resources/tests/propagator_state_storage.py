@@ -116,8 +116,8 @@ def check(fname='foo.i3', fraction=0.1):
 		def testTotalSize(self):
 			self.assertEquals(len(self.orig_tree), len(self.new_tree))
 		def testParticleContent(self):
-			from itertools import izip
-			for p1, p2 in izip(self.orig_tree, self.new_tree):
+			
+			for p1, p2 in zip(self.orig_tree, self.new_tree):
 				if p1.location_type != p1.InIce:
 					continue
 				self.assertEquals(p1.energy, p2.energy)

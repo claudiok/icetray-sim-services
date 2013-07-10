@@ -18,7 +18,6 @@ from icecube import dataclasses as dc
 from icecube.sim_services.sanity_checker.utils.histogram import Histogram
 from icecube.sim_services.sanity_checker.bases.checker import SCBaseModule
 from os.path import expandvars
-import cPickle as pickle
 
 class HLCLaunchSCModule( SCBaseModule ) :
     def __init__(self):

@@ -38,8 +38,8 @@ MJD = season_to_MJD[options.SEASON]
 
 time = dc.I3Time()
 time.set_mod_julian_time(MJD, 0, 0.0)
-print "Using simulation time:", time
-print "In DAQ time, Yr", time.utc_year,"ns:",time.utc_daq_time
+print("Using simulation time:", time)
+print("In DAQ time, Yr", time.utc_year,"ns:",time.utc_daq_time)
 
 tray.AddModule("I3InfiniteSource","streams", Stream=icetray.I3Frame.DAQ)
 def seteventtime(fr):

@@ -18,7 +18,7 @@ class TestModule(icetray.I3Module):
         self.domsToExclude = self.GetParameter('DOMsToExclude')
 
     def DAQ(self, frame):
-        print "TestModule : DAQ!!!"
+        print("TestModule : DAQ!!!")
 
             
         self.PushFrame(frame)

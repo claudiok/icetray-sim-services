@@ -9,8 +9,8 @@ def StressTestHitGenerator( frame, \
     weights = weights if weights else  [ None for h in hit_times ] 
      
     if len( hit_times ) != len( weights ) :
-        print "ERROR : Different sizes for 'hit_times' and 'weights'."
-        print "Either 'weights' needs to be empty (unweighted) or of the same size as 'hit_times'."
+        print("ERROR : Different sizes for 'hit_times' and 'weights'.")
+        print("Either 'weights' needs to be empty (unweighted) or of the same size as 'hit_times'.")
         sys.exit(0)
 
     # this goes in the frame
@@ -31,7 +31,7 @@ def StressTestHitGenerator( frame, \
         DT = hit_times[1] - hit_times[0]
         for t0,t1 in zip( hit_times[:-1], hit_times[1:]) :
             if abs( t1 - t0 - DT ) > 1 * I3Units.nanosecond :
-                print "ERROR : variable length binning is not supported in simulation"
+                print("ERROR : variable length binning is not supported in simulation")
                 sys.exit()
 
         frame["HitBinWidth"] = dc.I3Double( DT )                

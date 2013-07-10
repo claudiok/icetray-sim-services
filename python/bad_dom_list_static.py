@@ -390,7 +390,7 @@ def IC86_bad_dom_list_semi_static(runId,inputFile):
         data = data_file.readlines()
 
         for line  in data:
-           stringId,domId,startRun,stopRun=map(int,line.split())
+           stringId,domId,startRun,stopRun=list(map(int,line.split()))
            assert startRun <= stopRun, 'OMKey(%d,%d): startRun= %d  < stopRun = %d \n Check time range in the input file= %s' %(stringId,domId,startRun,stopRun,inputFile)
            if  runId >= startRun and runId <= stopRun :   #if run within the range, add DOM to the list
                static_list.append(icetray.OMKey(stringId,domId))

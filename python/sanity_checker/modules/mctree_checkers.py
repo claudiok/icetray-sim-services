@@ -70,7 +70,7 @@ class MCTreeSCModule( SCBaseModule ) :
                     if( p.energy > 1*I3Units.TeV \
                         and (p.length == 0 \
                              or len(mctree.get_daughters(p)) == 0 ) ):
-                        print mctree
+                        print(mctree)
                         self.unpropagatedTausCounter.test_condition( True )
 
         self.noInIceMuonsCounter.test_condition( n_inice_muons == 0 )

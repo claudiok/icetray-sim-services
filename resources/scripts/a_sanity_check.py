@@ -29,7 +29,7 @@ parser.add_option("-n","--nevents", default = None,
 (options, args) = parser.parse_args()
 
 if options.INFILE and options.INPATH :
-	print "please specify a path or file, but not both"
+	print("please specify a path or file, but not both")
 	sys.exit()
 
 filelist = [ options.GCDFILE ]
@@ -46,7 +46,7 @@ if options.INPATH :
 
 tray = I3Tray()
 
-print filelist
+print(filelist)
 tray.AddModule("I3Reader", "read",
 	       filenamelist = filelist )
 
@@ -60,11 +60,11 @@ tray.AddModule( SimulationSanityChecker, "sanitycheck",
 #tray.AddModule("Dump", "dump")
 tray.AddModule("TrashCan", "the can")
 
-print options.NEVENTS
+print(options.NEVENTS)
 if options.NEVENTS :
 	tray.Execute(options.NEVENTS)
 else:
-	print " calling execute"
+	print(" calling execute")
 	tray.Execute()
 
 tray.Finish()

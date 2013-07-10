@@ -19,8 +19,11 @@ import sys
 #       def fail( self ) :
 #           print "something went horribly wrong."
 
-from utils.configurations import RunConfigurations
-import cPickle as pickle
+from icecube.sim_services.sanity_checker.utils.configurations import RunConfigurations
+if sys.version_info[0] >= 3:
+    import pickle
+else:
+    import cPickle as pickle
 
 class SimulationSanityChecker( I3Module ) :
     def __init__( self, context ):
@@ -55,19 +58,19 @@ class SimulationSanityChecker( I3Module ) :
                 for scm in self.sanity_check_modules :
                     scm.reset_registry()
             else:
-                print "ERROR : input filename %s does not exist" % self.filename
+                print("ERROR : input filename %s does not exist" % self.filename)
                 raise Exception
         else:
             # no input filename
             if not self.run_type :
-                print "Need to set RunType or InputRefFilename if you're planning to generate output."
+                print("Need to set RunType or InputRefFilename if you're planning to generate output.")
                 raise Exception
 
             if self.run_type not in RunConfigurations :
-                print "unknown run '%s' type passed as a parameter " % self.run_type
-                print "here's a list of possible run types to choose from ( note : case is not important ) :"
-                for key, value in RunConfigurations.iteritems() :
-                    print "  ", key
+                print("unknown run '%s' type passed as a parameter " % self.run_type)
+                print("here's a list of possible run types to choose from ( note : case is not important ) :")
+                for key, value in RunConfigurations.items() :
+                    print("  ", key)
                 raise Exception
 
             # Sanity Checkers can only have a trivial ctor
@@ -84,15 +87,15 @@ class SimulationSanityChecker( I3Module ) :
                     # needs a fail method
                     # this is what you do when things go wrong
                     obj.fail()
-            except Exception, e :
+            except Exception as e :
                 sane = False
-                print "Sanity check %s threw the following exception" % obj.__class__.__name__
-                print e
+                print("Sanity check %s threw the following exception" % obj.__class__.__name__)
+                print(e)
 
             all_is_well = sane and all_is_well        
 
         if not all_is_well :
-            print "This sample appears to have problems"
+            print("This sample appears to have problems")
             raise Exception
 
         self.PushFrame( frame )

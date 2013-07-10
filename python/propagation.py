@@ -94,8 +94,8 @@ def RecreateMCTree(tray, name, MCTree="I3MCTree", RawMCTree="I3MCTreeRaw",
 			def testTotalSize(self):
 				self.assertEquals(len(self.orig_tree), len(self.new_tree))
 			def testParticleContent(self):
-				from itertools import izip
-				for p1, p2 in izip(self.orig_tree, self.new_tree):
+				
+				for p1, p2 in zip(self.orig_tree, self.new_tree):
 					if p1.location_type != p1.InIce:
 						continue
 					self.assertEquals(p1.type, p2.type)

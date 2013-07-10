@@ -5,7 +5,7 @@ from icecube import icetray, dataio, sim_services
 import sys
 
 if len(sys.argv) != 3: 
-    print "usage: SplitMCTreeForHybridSimulation.py input_file output_file"
+    print("usage: SplitMCTreeForHybridSimulation.py input_file output_file")
     sys.exit(-1)
 
 tray = I3Tray()

@@ -6,7 +6,7 @@ class SCBaseModule :
     def check( self ):
 
         all_is_well = True
-        for k,c in self.registry.iteritems() :
+        for k,c in self.registry.items() :
             all_is_well = all_is_well and c.is_within_tolerance()
         return all_is_well
 
@@ -14,14 +14,14 @@ class SCBaseModule :
         self.registry[ c_str ] = self.__dict__[ c_str ] 
 
     def reset_registry( self ):
-        for k,c in self.registry.iteritems() :
+        for k,c in self.registry.items() :
             c.reset()
         
     # what to do if there's a failure
     def fail( self ) :
-        for k,c in self.registry.iteritems() :
+        for k,c in self.registry.items() :
             if not c.is_within_tolerance() :
-                print "FAIL : ",c.failure_msg
+                print("FAIL : ",c.failure_msg)
 
     def __getstate__( self ) :
        return self.registry

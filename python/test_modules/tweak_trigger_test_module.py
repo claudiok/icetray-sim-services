@@ -28,7 +28,7 @@ class I3TweakTriggerTestModule(icetray.I3Module):
         self.readoutWindowConfigs = self.GetParameter('ReadoutWindowConfigs')
 
     def DAQ(self, frame):
-        print "DAQ!!!"
+        print("DAQ!!!")
 
         det_stat = frame.Get("I3DetectorStatus")
         trigger_status = det_stat.triggerStatus
@@ -39,33 +39,33 @@ class I3TweakTriggerTestModule(icetray.I3Module):
         tkey.ConfigID = self.configID
 
         if not tkey in trigger_status:
-            print "trigger not found in the detector status"
-            print "  Source ID = ",tkey.Source
-            print "  Type ID = ",tkey.Type
-            print "  Config ID = ",tkey.ConfigID
+            print("trigger not found in the detector status")
+            print("  Source ID = ",tkey.Source)
+            print("  Type ID = ",tkey.Type)
+            print("  Config ID = ",tkey.ConfigID)
 
-            for k,v in trigger_status.iteritems():
-                print "%d %d %d" % (k.Source,k.Type,k.ConfigID)
+            for k,v in trigger_status.items():
+                print("%d %d %d" % (k.Source,k.Type,k.ConfigID))
             sys.exit(1)
 
         i3ts = trigger_status[tkey]        
 
         for p in i3ts.TriggerSettings:
-            print p
+            print(p)
 
         ###
         # test the trigger name
         ###
         if i3ts.TriggerName != self.triggerName :
-            print "FAILED : trigger name %s != %s" % (i3ts.TriggerName,self.triggerName)
+            print("FAILED : trigger name %s != %s" % (i3ts.TriggerName,self.triggerName))
             sys.exit(1)
 
         ###
         # test the trigger settings
         ###
         if len(i3ts.TriggerSettings ) != len(self.valueNameList) :
-            print "FAILED : len settings %d %d " % \
-                  (len(i3ts.TriggerSettings ),len(self.valueNameList))
+            print("FAILED : len settings %d %d " % \
+                  (len(i3ts.TriggerSettings ),len(self.valueNameList)))
             sys.exit(1)
 
         ###
@@ -78,35 +78,35 @@ class I3TweakTriggerTestModule(icetray.I3Module):
                 if name == test_name :
                     found = True
                     if test_value != value :
-                        print "FAILED : value mismatch"
+                        print("FAILED : value mismatch")
                         sys.exit(1)
         
                     if not found :
-                        print "FAILED : value not found"
+                        print("FAILED : value not found")
                         sys.exit(1)
         ###
         # test the readout windows
         ###
         readouts = i3ts.ReadoutSettings
-        print "len(readouts) = ",len(readouts)
-        print "len(self.readoutWindowConfigs) = ",len(self.readoutWindowConfigs)
+        print("len(readouts) = ",len(readouts))
+        print("len(self.readoutWindowConfigs) = ",len(self.readoutWindowConfigs))
         if len(readouts) != len(self.readoutWindowConfigs) :
-            print "FAILED : ReadoutWindowConfigs len settings %d %d " % \
-                  (len(readouts),len(self.readoutWindowConfigs))
+            print("FAILED : ReadoutWindowConfigs len settings %d %d " % \
+                  (len(readouts),len(self.readoutWindowConfigs)))
             sys.exit(1)
 
         for e in readouts:
             k = e.key()
             v = e.data()
             if not k in self.readoutWindowConfigs :
-                print "FAILED : key %d not found readout window config"
+                print("FAILED : key %d not found readout window config")
                 sys.exit(1)
 
             test_ro_config = self.readoutWindowConfigs[k]
             if v.readoutTimeMinus != test_ro_config.readoutTimeMinus and \
                v.readoutTimePlus != test_ro_config.readoutTimePlus and \
                v.readoutTimeOffset != test_ro_config.readoutTimeOffset :
-                print "FAILED : readout window values not set properly"
-                print v.readoutTimeMinus, v.readoutTimePlus, v.readoutTimeOffset
-                print test_ro_config.readoutTimeMinus, test_ro_config.readoutTimePlus, test_ro_config.readoutTimeOffset,
+                print("FAILED : readout window values not set properly")
+                print(v.readoutTimeMinus, v.readoutTimePlus, v.readoutTimeOffset)
+                print(test_ro_config.readoutTimeMinus, test_ro_config.readoutTimePlus, test_ro_config.readoutTimeOffset)
                 sys.exit(1)

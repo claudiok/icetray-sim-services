@@ -1,5 +1,9 @@
 #!/usr/bin/env python
-import cPickle as pickle
+import sys
+if sys.version_info[0] >= 3:
+    import pickle
+else:
+    import cPickle as pickle
 import random
 from os.path import expandvars
 from icecube.icetray.I3Test import *
@@ -15,12 +19,12 @@ h = Histogram( settings = s )
 for i in range(1000):
     h.fill( random.uniform( -1., 2.) )
 
-of = open(REF_PATH + "histogram_io_test.pickle","w")
+of = open(REF_PATH + "histogram_io_test.pickle","wb")
 pickle.dump( h , of )
 of.close()
 
 
-f = open(REF_PATH + "histogram_io_test.pickle","r")
+f = open(REF_PATH + "histogram_io_test.pickle","rb")
 ih = pickle.load( f )
 
 # make sure these are different objects
@@ -37,8 +41,8 @@ for i in range(10000):
     this_value = h_target.is_within_tolerance()
     rchisq = calc_rchisq( h_target, h )
     if this_value != last_value :
-        print " %d : transition from %s to %s " % \
-              ( i, str(last_value), str(this_value) )
+        print(" %d : transition from %s to %s " % \
+              ( i, str(last_value), str(this_value) ))
     last_value = this_value
 
 ENSURE( last_value < 2.0 , "chisq should converge close to 1" )

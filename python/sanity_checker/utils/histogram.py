@@ -30,8 +30,8 @@ class Histogram :
                   fail_rchisq_tolerance = 10,\
                   warn_rchisq_tolerance = 2 ):
         if not rhist and not settings :
-            print "Either you need to pass settings ( dict() with 'xmin', 'xmax','binwidth' ) "\
-                  "or you need to pass a reference histogram to the constructor."
+            print("Either you need to pass settings ( dict() with 'xmin', 'xmax','binwidth' ) "\
+                  "or you need to pass a reference histogram to the constructor.")
             raise Exception
         
         if rhist :

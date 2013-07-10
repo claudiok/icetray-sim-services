@@ -13,11 +13,11 @@ class HoboPropagatorServiceTracks(sim_services.I3PropagatorService):
         self.random = None
 
     def SetRandomNumberGenerator(self, random):
-        print "RANDOM!"
+        print("RANDOM!")
         self.random = random
 
     def Propagate(self, particle, frame):
-        print "track!", particle.length
+        print("track!", particle.length)
 
         if "I3MMCTrackList" not in frame:
             trackList = simclasses.I3MMCTrackList()
@@ -58,7 +58,7 @@ class HoboPropagatorServiceMonopole(sim_services.I3PropagatorService):
         self.random = random
 
     def Propagate(self, particle, frame):
-        print "monopole!", particle.length
+        print("monopole!", particle.length)
 
         newP = dataclasses.I3Particle()
         newP.type = dataclasses.I3Particle.ParticleType.EMinus
@@ -66,7 +66,7 @@ class HoboPropagatorServiceMonopole(sim_services.I3PropagatorService):
         return [newP, dataclasses.I3Particle()]
 
 if len(sys.argv) != 2: 
-    print "usage: ApplyPropagatorsToMCTree.py output_file"
+    print("usage: ApplyPropagatorsToMCTree.py output_file")
     sys.exit(-1)
 
 tray = I3Tray()
