@@ -1,27 +1,31 @@
 #!/usr/bin/env python
 
-import sys, os
+import os
+import sys
 from os.path import expandvars
 from math import isnan
 
-from I3Tray import *
-from icecube import icetray, dataclasses, dataio, simclasses
+from I3Tray import I3Units
+from icecube import icetray
+from icecube import dataclasses
+from icecube import dataio
+from icecube import simclasses
 from icecube.icetray import OMKey
 
 from optparse import OptionParser
-
 parser = OptionParser()
-
-default_fn = expandvars("$I3_PORTS/test-data/sim/GeoCalibDetectorStatus_2012.56062_candidate.i3.gz")
 parser.add_option("-i","--infile",
-                  dest="INFILE", default = default_fn,
+                  dest="INFILE", default = None,
                   help="GCD file to correct.")
 
 parser.add_option("-o","--outfile",
-                  dest="OUTFILE", default=None,
+                  dest="OUTFILE", default = None,
                   help="Corrected GCD file.")
-
 (options, args) = parser.parse_args()
+
+if not options.INFILE :
+    print("you must specify and input file.")
+    sys.exit()
 
 if not options.OUTFILE :
     print("you must specify and output file.")
@@ -30,21 +34,23 @@ if not options.OUTFILE :
 infile = dataio.I3File(options.INFILE)
 
 geo_frame = infile.pop_frame()
-while not geo_frame.Has('I3Geometry'): geo_frame = infile.pop_frame()
+while not geo_frame.Has('I3Geometry') :
+    geo_frame = infile.pop_frame()
 geometry = geo_frame.Get('I3Geometry')
 
 cal_frame = infile.pop_frame()
-while not cal_frame.Has('I3Calibration'): cal_frame = infile.pop_frame()
+while not cal_frame.Has('I3Calibration') :
+    cal_frame = infile.pop_frame()
 calibration = cal_frame.Get('I3Calibration')
 
 status_frame = infile.pop_frame()
-while not status_frame.Has('I3DetectorStatus'): status_frame = infile.pop_frame()
+while not status_frame.Has('I3DetectorStatus') :
+    status_frame = infile.pop_frame()
 status = status_frame.Get('I3DetectorStatus')
 
 badOMs = list()
 if "BadDomsList" in status_frame :
     print("Found a BadDomsList in the frame.")
-    print("Using this one instead.")
     badOMs = status_frame.Get("BadDomsList")
 else:
     print(status_frame)
@@ -61,58 +67,67 @@ dom_geo = geometry.omgeo
 dom_cal = calibration.dom_cal
 dom_status = status.dom_status
 
-low_noise_DOMs_l = [ icetray.OMKey(82,54),  icetray.OMKey(84,54),  icetray.OMKey(85,55)]
+low_noise_DOMs_l = [ icetray.OMKey(82,54),  \
+                     icetray.OMKey(84,54),  \
+                     icetray.OMKey(85,55)]
 
 strings_IC86 = [ 1, 7, 14, 22, 31, 79, 80 ]
 
-high_QE = [ icetray.OMKey( 79, i ) for i in range(30, 45) if i not in [ 32, 41, 43 ] ]
+high_QE = [ icetray.OMKey( 79, i ) for i in range(30, 45) \
+            if i not in [ 32, 41, 43 ] ]
 high_QE.extend( [ icetray.OMKey( 80, i ) for i in range(30, 44) ] )
-high_QE.extend( [ icetray.OMKey( 43, 55 ) ] )#Mark Krasberg (post deployment after surface testing)
+#Mark Krasberg (post deployment after surface testing)
+high_QE.extend( [ icetray.OMKey( 43, 55 ) ] )
 for s in range(81,87):
     high_QE.extend( [ icetray.OMKey( s, i ) for i in range(1, 61) ] )
 
-for e,p in dom_geo:
+for omkey, omgeo in dom_geo:
 
-    if e not in badOMs and e in dom_cal and e in dom_status:
-        cal_this_om = dom_cal[e]
-        status_this_om = dom_status[e]
+    if omkey not in badOMs \
+           and omkey in dom_cal \
+           and omkey in dom_status:
 
-        if float(cal_this_om.dom_cal_version[:3]) < 7.5:
-            print("Bad DOMCal")
-            print('  %s  DOMCalVersion = %s' % (str(e), cal_this_om.dom_cal_version))
-            calibration.dom_cal[e].dom_cal_version = '7.5.3'
-            print('  correcting to ',calibration.dom_cal[e].dom_cal_version)
+        domcal = dom_cal[omkey]
+        domstat = dom_status[omkey]
 
-        threshold = dataclasses.spe_pmt_threshold(status_this_om,
-                                              cal_this_om) / I3Units.mV
-
+        threshold = dataclasses.spe_pmt_threshold(domstat, domcal)
+        threshold /= I3Units.mV
+                                                  
         if threshold < 0 :
             print('Pathological PMT discriminator threshold')
-            print('  %s  threshold = %2.2f mV' % (str(e), threshold))
+            print('  %s  threshold = %2.2f mV' % (str(omkey), threshold))
             fit = dataclasses.LinearFit()
             fit.slope = NaN
             fit.intercept = NaN
-            calibration.dom_cal[e].PMTDiscCalib = fit
-            print('  correcting to %2.2f mV' % \
-                  (dataclasses.spe_pmt_threshold(status_this_om,calibration.dom_cal[e])/I3Units.mV))
+            calibration.dom_cal[omkey].PMTDiscCalib = fit
 
-        if p.omtype == dataclasses.I3OMGeo.IceCube :
-            if e not in badOMs and isnan( calibration.dom_cal[e].dom_noise_rate ) :
-                print("ERROR : no valid noise rate for this DOM %s " % str(e))
+            dc = calibration.dom_cal[omkey]
+            thresh = dataclasses.spe_pmt_threshold(domstat, dc)
+            print('  correcting to %2.2f mV' % thresh/I3Units.mV )
+
+        if omgeo.omtype == dataclasses.I3OMGeo.IceCube :
+            if omkey not in badOMs and isnan( domcal.noise_rate )
+                print("ERROR : no valid noise rate for this DOM %s " % str(omkey))
                 print("  NOT CORRECTING")
 
-            if isnan(cal_this_om.relative_dom_eff) :
-                if e.string in strings_IC86 :
-                    calibration.dom_cal[e].relative_dom_eff = 1.35 if e in high_QE else 1.0 
-                    print(" correcting RDE from 'nan' to %.2f in %s" % (calibration.dom_cal[e].relative_dom_eff,e))
+            if isnan(domcal.relative_dom_eff) :
+                if omkey.string in strings_IC86 :
+                    new_RDE =1.35 if e in high_QE else 1.0
+                    calibration.dom_cal[omkey].relative_dom_eff = new_RDE                    
+                    print(" correcting RDE from 'nan' to %.2f in %s" % \
+                          (new_RDE,omkey))
 
-            # check for unusually low noise DOMs that were incorrectly translated into the DB
-            if e in low_noise_DOMs_l :
+            # check for unusually low noise DOMs that were
+            # incorrectly translated into the DB
+            if omkey in low_noise_DOMs_l :
                 noiseRate = calibration.dom_cal[e].dom_noise_rate
                 if noiseRate < 400 * I3Units.hertz :
-                    calibration.dom_cal[e].dom_noise_rate = noiseRate + 1*I3Units.kilohertz
-                    print("  correcting noise from %fHz to %fHz in %s" % (noiseRate/I3Units.hertz,
-                                                                          calibration.dom_cal[e].dom_noise_rate/I3Units.hertz,e))
+                    new_rate = noiseRate + 1*I3Units.kilohertz
+                    calibration.dom_cal[e].dom_noise_rate = new_rate
+                    print("  correcting noise from %fHz to %fHz in %s" % \
+                          (noiseRate/I3Units.hertz,
+                           new_rate/I3Units.hertz,omkey))
+                           
 
 
 # let's clean the trigger cruft out
@@ -120,27 +135,19 @@ for e,p in dom_geo:
 # only SM, Cluster, Cylinder, and SlowMonopole
 # so that's all we're keeping
 for tkey, ts in status.trigger_status :
-    if ( tkey.source != dataclasses.I3Trigger.IN_ICE and tkey.source != dataclasses.I3Trigger.ICE_TOP) or \
-           ( tkey.type != dataclasses.I3Trigger.SIMPLE_MULTIPLICITY and
-             tkey.type != dataclasses.I3Trigger.STRING and
-             tkey.type != dataclasses.I3Trigger.VOLUME and
-             tkey.type != dataclasses.I3Trigger.SLOW_PARTICLE ) :
+    if ( tkey.source != dataclasses.I3Trigger.IN_ICE \
+         and tkey.source != dataclasses.I3Trigger.ICE_TOP) or \
+         ( tkey.type != dataclasses.I3Trigger.SIMPLE_MULTIPLICITY and
+           tkey.type != dataclasses.I3Trigger.STRING and
+           tkey.type != dataclasses.I3Trigger.VOLUME and
+           tkey.type != dataclasses.I3Trigger.SLOW_PARTICLE ) :
         del status.trigger_status[tkey]
-    if tkey.source == dataclasses.I3Trigger.IN_ICE and \
-           tkey.type == dataclasses.I3Trigger.SLOW_PARTICLE :
-        tkey.type = dataclasses.I3Trigger.SIMPLE_MULTIPLICITY
 
 # now we clean out the AMANDA geometry as well
 for omkey, i3omgeo in geometry.omgeo:
   if i3omgeo.omtype == dataclasses.I3OMGeo.AMANDA :
     print("Removing AMANDA OM %s from the geometry." % str(omkey))
     del geometry.omgeo[omkey]
-
-for omkey, i3omgeo in geometry.omgeo:
-  if i3omgeo.omtype == dataclasses.I3OMGeo.AMANDA :
-    print("ERROR: Why is this %s AMANDA OM still in the geometry? " \
-          % str(omkey))
-
 
 del geo_frame['I3Geometry']
 geo_frame['I3Geometry'] = geometry
@@ -161,7 +168,9 @@ outfile.close()
 # now correct the baselines
 print("Correcting baselines ... ")
 
-from icecube import icetray, dataio, WaveCalibrator
+from icecube import icetray
+from icecube import dataio
+from icecube import WaveCalibrator
 import I3Tray
 
 tray = I3Tray.I3Tray()
