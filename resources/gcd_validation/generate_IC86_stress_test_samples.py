@@ -63,6 +63,7 @@ from icecube import dataclasses
 from icecube import dataio
 from icecube import phys_services
 from icecube import sim_services
+from icecube import vuvuzela
 from icecube import DOMLauncher
 from icecube import WaveCalibrator
 from icecube import wavedeform
@@ -159,6 +160,8 @@ tray.AddService("I3SPRNGRandomServiceFactory","random")(
 tray.AddModule(StressTestPEGenerator ,"pes",\
                Streams = [icetray.I3Frame.DAQ],\
                hit_times = t, weights = w )
+
+tray.AddModule("Vuvuzela","noise")
 
 tray.AddModule("PMTResponseSimulator","pmt")
 

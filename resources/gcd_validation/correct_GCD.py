@@ -50,7 +50,7 @@ status = status_frame.Get('I3DetectorStatus')
 
 badOMs = list()
 if "BadDomsList" in status_frame :
-    print("Found a BadDomsList in the frame.")
+    print("Found a BadDomsList in the frame.  Gonna use it.")
     badOMs = status_frame.Get("BadDomsList")
 else:
     print(status_frame)
@@ -92,7 +92,7 @@ for omkey, omgeo in dom_geo:
 
         threshold = dataclasses.spe_pmt_threshold(domstat, domcal)
         threshold /= I3Units.mV
-                                                  
+
         if threshold < 0 :
             print('Pathological PMT discriminator threshold')
             print('  %s  threshold = %2.2f mV' % (str(omkey), threshold))
@@ -106,7 +106,7 @@ for omkey, omgeo in dom_geo:
             print('  correcting to %2.2f mV' % thresh/I3Units.mV )
 
         if omgeo.omtype == dataclasses.I3OMGeo.IceCube :
-            if omkey not in badOMs and isnan( domcal.noise_rate )
+            if omkey not in badOMs and isnan( domcal.dom_noise_rate ) :
                 print("ERROR : no valid noise rate for this DOM %s " % str(omkey))
                 print("  NOT CORRECTING")
 
@@ -120,10 +120,10 @@ for omkey, omgeo in dom_geo:
             # check for unusually low noise DOMs that were
             # incorrectly translated into the DB
             if omkey in low_noise_DOMs_l :
-                noiseRate = calibration.dom_cal[e].dom_noise_rate
+                noiseRate = calibration.dom_cal[omkey].dom_noise_rate
                 if noiseRate < 400 * I3Units.hertz :
                     new_rate = noiseRate + 1*I3Units.kilohertz
-                    calibration.dom_cal[e].dom_noise_rate = new_rate
+                    calibration.dom_cal[omkey].dom_noise_rate = new_rate
                     print("  correcting noise from %fHz to %fHz in %s" % \
                           (noiseRate/I3Units.hertz,
                            new_rate/I3Units.hertz,omkey))
@@ -195,4 +195,17 @@ tray.AddModule("TrashCan", "YesWeCan")
 tray.Execute()
 tray.Finish()
 
-print("Done.")
+print("Done correcting baselines.")
+
+print("Injecting vuvuzela parameters ... ")
+import subprocess
+
+I3_BUILD = expandvars("$I3_BUILD")
+print I3_BUILD +"/vuvuzela/resources/data/parameters.dat"
+cmd = I3_BUILD + "/vuvuzela/resources/scripts/InjectNoiseParameters.py"
+subprocess.call([ cmd, \
+                  "-i", new_outfile_fn, \
+                  "-o", new_outfile_fn.replace("_beacon","_vuvuzela"), \
+                  "-t", I3_BUILD +"/vuvuzela/resources/data/parameters.dat" ])
+
+print("Done injecting vuvuzela parameters.")
