@@ -34,7 +34,7 @@ parser.add_option("-d","--binwidth", type = "float",
                   help="Width of the hit binning.")
 
 parser.add_option("-n","--nevents", type="int",
-                  dest="nevents", default=4,
+                  dest="nevents", default=5,
                   help="Number of events to generate")
 
 parser.add_option("-u","--FearTheTurtle", 
