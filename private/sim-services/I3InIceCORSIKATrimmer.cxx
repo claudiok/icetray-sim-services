@@ -9,9 +9,9 @@ public:
 	I3InIceCORSIKATrimmer(const I3Context &ctx) : I3ConditionalModule(ctx)
 	{
 		AddOutBox("OutBox");
-		AddParameter("MinEnergy", "Minimum surface energy of muons.", 273*I3Units::GeV);
-		AddParameter("FilterMode", "Drop events when no particles survive", true);
-		AddParameter("RemoveNeutrinos", "Remove neutrinos from the bundle.", false);
+		AddParameter("MinEnergy", "Minimum surface energy of muons", 273*I3Units::GeV);
+		AddParameter("FilterMode", "Drop events with no InIce particles", true);
+		AddParameter("RemoveNeutrinos", "Remove neutrinos from the bundle", false);
 	}
 	
 	void Configure()
@@ -24,7 +24,6 @@ public:
 		GetParameter("FilterMode", filterMode_);
 		GetParameter("RemoveNeutrinos", dropNeutrinos_);
 	}
-
 	
 	void DAQ(I3FramePtr frame)
 	{
@@ -43,8 +42,6 @@ public:
 		
 		if (inIceCount == 0)
 			return;
-		
-		frame->Put("I3MCTreeRaw", I3MCTreePtr(new I3MCTree(*mctree)));
 		
 		// Clean up newly childless parents
 		for (I3MCTree::post_order_iterator p = mctree->begin_post(); p != mctree->end_post(); ) {
