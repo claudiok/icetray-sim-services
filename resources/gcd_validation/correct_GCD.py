@@ -201,7 +201,7 @@ print("Injecting vuvuzela parameters ... ")
 import subprocess
 
 I3_BUILD = expandvars("$I3_BUILD")
-print I3_BUILD +"/vuvuzela/resources/data/parameters.dat"
+print(I3_BUILD +"/vuvuzela/resources/data/parameters.dat")
 cmd = I3_BUILD + "/vuvuzela/resources/scripts/InjectNoiseParameters.py"
 subprocess.call([ cmd, \
                   "-i", new_outfile_fn, \
