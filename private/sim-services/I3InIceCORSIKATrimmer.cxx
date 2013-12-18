@@ -40,7 +40,7 @@ public:
 				p++;
 			}
 		
-		if (inIceCount == 0)
+		if (filterMode_ && inIceCount == 0)
 			return;
 		
 		// Clean up newly childless parents
