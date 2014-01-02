@@ -8,8 +8,8 @@ from icecube.sim_services.sanity_checker.modules.mctree_checkers import InIceMCT
 from icecube.sim_services.sanity_checker.modules.mctree_checkers import IceTopMCTreeSCModule
 
 RunConfigurations = dict()
-RunConfigurations["CORSIKA"] = [ MCTreeSCModule, InIceMCTreeModule ]
-RunConfigurations["NuMu"] = [ MCTreeSCModule, InIceMCTreeModule ]
-RunConfigurations["NuE"] = [ MCTreeSCModule, InIceMCTreeModule ]
-RunConfigurations["NuTau"] = [ MCTreeSCModule, InIceMCTreeModule ]
-RunConfigurations["IceTop"] = [ MCTreeSCModule, IceTopMCTreeModule ]
+RunConfigurations["corsika"] = [ MCTreeSCModule, InIceMCTreeSCModule ]
+RunConfigurations["numu"] = [ MCTreeSCModule, InIceMCTreeSCModule ]
+RunConfigurations["nue"] = [ MCTreeSCModule, InIceMCTreeSCModule ]
+RunConfigurations["nutau"] = [ MCTreeSCModule, InIceMCTreeSCModule ]
+RunConfigurations["icetop"] = [ MCTreeSCModule, IceTopMCTreeSCModule ]

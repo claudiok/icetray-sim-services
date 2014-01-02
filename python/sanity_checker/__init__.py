@@ -43,7 +43,7 @@ class SimulationSanityChecker( I3Module ) :
         # filename
         # unpickle loads all of the configurations
         
-        self.run_type = self.GetParameter("RunType")
+        self.run_type = self.GetParameter("RunType").lower()
         self.infilename = self.GetParameter("InputRefFilename")
         self.outfilename = self.GetParameter("OutputRefFilename")
 

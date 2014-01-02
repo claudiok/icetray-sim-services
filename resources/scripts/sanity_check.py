@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import os
+import sys
 from os.path import expandvars
 
 from I3Tray import I3Tray
@@ -28,8 +29,16 @@ parser.add_option("-n","--nevents", default = None,
 
 (options, args) = parser.parse_args()
 
+if not options.GCDFILE :
+        print ("please specify a GCD file.")
+        sys.exit()
+
+if not options.INFILE and not options.INPATH :
+	print("please specify either a path or file.")
+	sys.exit()
+
 if options.INFILE and options.INPATH :
-	print("please specify a path or file, but not both")
+	print("please specify a path or file, but not both.")
 	sys.exit()
 
 filelist = [ options.GCDFILE ]
@@ -55,8 +64,8 @@ fn = expandvars("$I3_BUILD/sim-services/resources/simprod_reference_files/CORSIK
 from icecube.sim_services.sanity_checker import SimulationSanityChecker
 tray.AddModule( SimulationSanityChecker, "sanitycheck",
 		RunType = "CORSIKA" ,
-		GenerateReferences = True , 
-		ReferenceFilename = fn )
+		GenerateReferences = True ,
+		OutputRefFilename = fn )
 
 tray.AddModule("Dump", "dump")
 tray.AddModule("TrashCan", "the can")
