@@ -3,9 +3,9 @@
     one or two dimensional histograms, estimating the necessary
     binning and fill them.
 """
-from icecube.sim_services.sanity_checker.kombu.hist1d import hist1d
-from icecube.sim_services.sanity_checker.kombu.hist2d import hist2d
-import icecube.sim_services.sanity_checker.kombu.histfuncs as histfuncs
+from hist1d import hist1d
+from hist2d import hist2d
+import histfuncs as histfuncs
 import numpy as n
 
 def generate_hist1d(sample, bins, weights=None, label=None, title=None):

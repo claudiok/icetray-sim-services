@@ -362,7 +362,7 @@ class hist1d(histogram):
 
         stringdict = OrderedDict()
 
-        formatfunc = dashi.histfuncs.number_format
+        formatfunc = histfuncs.number_format
 
         if not name:       
             name = None   #empty string causes pylab crash
