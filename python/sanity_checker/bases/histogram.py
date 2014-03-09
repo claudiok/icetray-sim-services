@@ -1,5 +1,6 @@
 import pylab
 import copy 
+import numpy
 from ..kombu import histfactory
 
 class Histogram :
@@ -10,13 +11,23 @@ class Histogram :
         self.draw_args = draw_args
         
     def fill(self, frame):
-        self.data.extend( self.frame_op(frame) )
+        rval = self.frame_op(frame)
+        if numpy.isscalar(rval) : self.data.append( rval )
+        else : self.data.extend( rval )
 
     def generate_histogram(self) :
-        self.hist = histfactory.generate_hist1d( self.data,
-                                                 bins = self.draw_args["bins"],
-                                                 label = self.draw_args["label"],
-                                                 title = self.draw_args["title"])
+        if len(self.data) > 0 \
+           and isinstance(self.data[0], tuple) :
+            self.hist = histfactory.generate_hist1d( [t[0] for t in self.data],
+                                                     weights = [t[1] for t in self.data],
+                                                     bins = self.draw_args["bins"],
+                                                     label = self.draw_args["label"],
+                                                     title = self.draw_args["title"])
+        else:
+            self.hist = histfactory.generate_hist1d( self.data,
+                                                     bins = self.draw_args["bins"],
+                                                     label = self.draw_args["label"],
+                                                     title = self.draw_args["title"])
 
     def draw(self, path = "./") : 
         pylab.figure()

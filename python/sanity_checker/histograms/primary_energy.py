@@ -1,15 +1,18 @@
 import numpy
+from math import log10
 from icecube import dataclasses
+from I3Tray import I3Units
 from ..bases.histogram import Histogram
+from .utils import bins
 
-def _primary_energy(frame):
-    return [p.energy for p in frame["I3MCTree"]]    
+def _frame_op(frame):
+    return [log10(p.energy/I3Units.GeV) for p in frame["I3MCTree"].primaries]    
 
-_draw_args = { "bins" : numpy.arange(0,10,0.2),
-               "label" : r"$log_{10}(E/GeV)$",
-               "title" : "Primary Energy",
+_draw_args = { "bins" : bins(50,0,10),
+               "label" : r"$\log_{10}(\rm{E/GeV})$",
+               "title" : "Primary Energy Spectrum",
                "figname" : "primary_energy.png",
                "log" : True }
 
-primary_energy_h = Histogram(frame_op = _primary_energy,
+primary_energy_h = Histogram(frame_op = _frame_op,
                              draw_args = _draw_args)

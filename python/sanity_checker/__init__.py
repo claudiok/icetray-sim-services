@@ -109,9 +109,9 @@ class SimulationSanityChecker( I3Module ) :
             pickle.dump( self.sanity_check_modules, f , pickle.HIGHEST_PROTOCOL )
 
 
-class I3BasicHistos( I3Module ) :
+class I3SlowBasicHistos( I3Module ) :
     def __init__( self, context ):
-        super( I3BasicHistos, self ).__init__(context)
+        super( I3SlowBasicHistos, self ).__init__(context)
         self.AddParameter("RunType", "List of sanity checks to run.", None )
         self.AddParameter("OutputFilename", "Name of output pickle file.", None )
         self.AddOutBox("OutBox")
@@ -146,6 +146,62 @@ class I3BasicHistos( I3Module ) :
 
         for t,h in self.histograms.iteritems() :
             h.generate_histogram()
+            h.draw()
+
+        import cPickle as pickle
+        f = open(self.outfilename, "w")
+        pickle.dump(self.histograms,f)
+
+from math import log10
+from .histograms.primary_type import type_to_int_dict
+from I3Tray import I3Units
+class I3FastBasicHistos( I3Module ) :
+    def __init__( self, context ):
+        super( I3FastBasicHistos, self ).__init__(context)
+        self.AddParameter("RunType", "List of sanity checks to run.", None )
+        self.AddParameter("OutputFilename", "Name of output pickle file.", None )
+        self.AddOutBox("OutBox")
+
+    def Configure( self ):
+
+        self.run_type = self.GetParameter("RunType").lower()
+        self.outfilename = self.GetParameter("OutputFilename")
+
+        if not self.run_type :
+            print("Need to set RunType or InputRefFilename if you're planning to generate output.")
+            raise Exception
+
+        if self.run_type not in HistogramConfigurations :
+            print("unknown run '%s' type passed as a parameter " % self.run_type)
+            print("here's a list of possible run types to choose from ( note : case is not important ) :")
+            for key, value in HistogramConfigurations.items() :
+                print("  ", key)
+            raise Exception
+
+        # Generate the dictionary of histograms, where the key is the histogram's title
+        self.histograms = dict()
+        for h in HistogramConfigurations[ self.run_type ] :
+            self.histograms[h.draw_args["title"]] = h
+
+    def DAQ( self, frame ):
+        if "I3MCTree" in frame :
+            mctree = frame["I3MCTree"]
+            for p in mctree.primaries :
+                if "Primary Type" in self.histograms :
+                    itype = type_to_int_dict[p.type] \
+                            if p.type in type_to_int_dict else 41
+                    self.histograms["Primary Type"].data.append(itype)
+
+                if "Primary Energy Spectrum" in self.histograms :
+                    self.histograms["Primary Energy Spectrum"].data.append(log10(p.energy/I3Units.GeV))
+
+        self.PushFrame( frame )
+
+    def Finish( self ):        
+
+        for t,h in self.histograms.iteritems() :
+            h.generate_histogram()
+            h.draw()
 
         import cPickle as pickle
         f = open(self.outfilename, "w")
