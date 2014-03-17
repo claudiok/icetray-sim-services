@@ -114,13 +114,15 @@ class I3SlowBasicHistos( I3Module ) :
         super( I3SlowBasicHistos, self ).__init__(context)
         self.AddParameter("RunType", "List of sanity checks to run.", None )
         self.AddParameter("OutputFilename", "Name of output pickle file.", None )
+        self.AddParameter("HistoDataLiveTime", "Live time of the data", 1 )
         self.AddOutBox("OutBox")
 
     def Configure( self ):
 
         self.run_type = self.GetParameter("RunType").lower()
         self.outfilename = self.GetParameter("OutputFilename")
-
+        self.datalivetime = self.GetParameter("HistoDataLiveTime")
+        
         if not self.run_type :
             print("Need to set RunType or InputRefFilename if you're planning to generate output.")
             raise Exception
@@ -138,8 +140,10 @@ class I3SlowBasicHistos( I3Module ) :
             self.histograms[h.draw_args["title"]] = h
 
     def DAQ( self, frame ):
+        frame["DataLiveTime"] = dc.I3Double(self.datalivetime)
         for t,h in self.histograms.iteritems() :
             h.fill(frame)
+        del frame["DataLiveTime"]
         self.PushFrame( frame )
 
     def Finish( self ):        

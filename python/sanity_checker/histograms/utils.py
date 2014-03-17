@@ -6,12 +6,13 @@ def bins(nbins, min, max) :
     return numpy.arange(min,max,db)
 
 def data_livetime(frame) :
+    
     if "CorsikaWeightMap" in frame :
         weightmap = frame["CorsikaWeightMap"]
         return weightmap["TimeScale"]/(weightmap["Weight"] * weightmap["DiplopiaWeight"])
     
     if "I3MCWeightDict" in frame :
         weightmap = frame["I3MCWeightDict"]
-        return weightmap["NEvents"]/weightmap["OneWeight"]
+        return weightmap["NEvents"]/(weightmap["OneWeight"] * frame["DataLiveTime"].value)
 
     return 1.*I3Units.second
