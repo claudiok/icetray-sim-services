@@ -14,8 +14,9 @@ type_to_int_dict = {dataclasses.I3Trigger.IN_ICE : 0,
 
 def _frame_op(frame):
     if "I3TriggerHierarchy" in frame :
-        return [type_to_int_dict[t.key.source] \
-                if t.key.source in type_to_int_dict else 7\
+        weight = 1./data_livetime(frame)
+        return [(type_to_int_dict[t.key.source], weight) \
+                if t.key.source in type_to_int_dict else (7, weight) \
                 for t in frame["I3TriggerHierarchy"]]
 
 _labels = list()
@@ -28,9 +29,10 @@ _xticks_kwargs = {"rotation" : -45,
                   "size" : "x-small"}
 
 _draw_args = { "bins" : 8,
-               "label" : "",
+               "xlabel" : "",
                "title" : "Trigger Source",
                "figname" : "trig_source.png",
+               "ylabel" : r"$\Gamma(\rm{Hz})$",
                "log" : True,
                "xticks_args" : _xticks_args,
                "xticks_kwargs" : _xticks_kwargs

@@ -2,7 +2,7 @@ import numpy
 from I3Tray import I3Units
 from icecube import dataclasses
 from ..bases.histogram import Histogram
-from .utils import bins
+from .utils import bins, data_livetime
 
 def _frame_op(frame):
     return[ p.length/I3Units.m for p in frame["I3MCTree"]\
@@ -10,7 +10,7 @@ def _frame_op(frame):
                 p.type == dataclasses.I3Particle.MuPlus) ]
 
 _draw_args = { "bins" : bins(100,0,20.*I3Units.km),
-               "label" : "l(m)",
+               "xlabel" : "l(m)",
                "title" : r"$\mu Length$",
                "figname" : "mu_length.png",
                "log" : True }

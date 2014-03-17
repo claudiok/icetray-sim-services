@@ -8,7 +8,7 @@ def _frame_op(frame):
     return [p.dir.zenith/I3Units.degree for p in frame["I3MCTree"].primaries]    
 
 _draw_args = { "bins" : bins(50,0,180),
-               "label" : r"$\theta(\rm{deg})$",
+               "xlabel" : r"$\theta(\rm{deg})$",
                "title" : "Primary Zenith Spectrum",
                "figname" : "primary_zenith.png",
                "log" : True }

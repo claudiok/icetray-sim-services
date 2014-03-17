@@ -3,7 +3,7 @@ from math import log10
 from icecube import dataclasses
 from I3Tray import I3Units
 from ..bases.histogram import Histogram
-from .utils import bins
+from .utils import bins, data_livetime
 
 def _frame_op(frame):
     e = list()
@@ -16,7 +16,7 @@ def _frame_op(frame):
     return e
 
 _draw_args = { "bins" : bins(50,0,10),
-               "label" : r"$log_{10}(E/GeV)$",
+               "xlabel" : r"$log_{10}(E/GeV)$",
                "title" : "Secondary Energy (mu+,mu-) Spectrum",
                "figname" : "secondary_energy.png",
                "log" : True }

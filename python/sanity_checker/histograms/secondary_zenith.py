@@ -2,7 +2,7 @@ import numpy
 from icecube import dataclasses
 from I3Tray import I3Units
 from ..bases.histogram import Histogram
-from .utils import bins
+from .utils import bins, data_livetime
 
 def _frame_op(frame):
     tree = frame["I3MCTree"]
@@ -15,7 +15,7 @@ def _frame_op(frame):
     return z
 
 _draw_args = { "bins" : bins(50,0,180),
-               "label" : r"$\theta(\rm{deg})$",
+               "xlabel" : r"$\theta(\rm{deg})$",
                "title" : "Secondary Zenith (mu+,mu-) Spectrum",
                "figname" : "secondary_zenith.png",
                "log" : True }

@@ -3,7 +3,7 @@ from math import cos
 from icecube import dataclasses
 from I3Tray import I3Units
 from ..bases.histogram import Histogram
-from .utils import bins
+from .utils import bins, data_livetime
 
 def _frame_op(frame):
     tree = frame["I3MCTree"]
@@ -16,7 +16,7 @@ def _frame_op(frame):
     return z
 
 _draw_args = { "bins" : bins(50,0,1),
-               "label" : r"$\theta(\rm{deg})$",
+               "xlabel" : r"$\theta(\rm{deg})$",
                "title" : "Secondary Cosine Zenith (mu+,mu-) Spectrum",
                "figname" : "secondary_cos_zenith.png",
                "log" : True }

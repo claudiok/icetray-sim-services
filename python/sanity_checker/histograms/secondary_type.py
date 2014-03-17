@@ -59,7 +59,7 @@ _xticks_kwargs = {"rotation" : -45,
                   "size" : "x-small"}
 
 _draw_args = { "bins" : 30,
-               "label" : "",
+               "xlabel" : "",
                "title" : "Secondary Type",
                "figname" : "secondary_type.png",
                "log" : True,

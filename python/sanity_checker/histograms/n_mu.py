@@ -1,7 +1,7 @@
 import numpy
 from icecube import dataclasses
 from ..bases.histogram import Histogram
-from .utils import bins
+from .utils import bins, data_livetime
 
 def _frame_op(frame):
     return[ len([1 for p in frame["I3MCTree"]\
@@ -9,7 +9,7 @@ def _frame_op(frame):
                      p.type == dataclasses.I3Particle.MuPlus)]) ]
 
 _draw_args = { "bins" : bins(100,0,100),
-               "label" : "N",
+               "xlabel" : "N",
                "title" : "N (mu+,mu-)",
                "figname" : "n_mu.png",
                "log" : True }
