@@ -11,7 +11,7 @@ def _frame_op(frame):
 
 _draw_args = { "bins" : bins(100,0,20.*I3Units.km),
                "xlabel" : "l(m)",
-               "title" : r"$\mu Length$",
+               "title" : r"$\mu \rm{ Length}$",
                "figname" : "mu_length.png",
                "log" : True }
 
