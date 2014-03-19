@@ -8,10 +8,14 @@ from ..modules.mctree_checkers import InIceMCTreeSCModule
 from ..modules.mctree_checkers import IceTopMCTreeSCModule
 
 RunConfigurations = dict()
-RunConfigurations["corsika"] = [ MCTreeSCModule, InIceMCTreeSCModule ]
-RunConfigurations["numu"] = [ MCTreeSCModule, InIceMCTreeSCModule ]
-RunConfigurations["nue"] = [ MCTreeSCModule, InIceMCTreeSCModule ]
-RunConfigurations["nutau"] = [ MCTreeSCModule, InIceMCTreeSCModule ]
+RunConfigurations["corsika_weighted"] = [ MCTreeSCModule, InIceMCTreeSCModule ]
+RunConfigurations["corsika_unweighted"] = [ MCTreeSCModule, InIceMCTreeSCModule ]
+RunConfigurations["nugen_numu"] = [ MCTreeSCModule, InIceMCTreeSCModule ]
+RunConfigurations["nugen_nue"] = [ MCTreeSCModule, InIceMCTreeSCModule ]
+RunConfigurations["nugen_nutau"] = [ MCTreeSCModule, InIceMCTreeSCModule ]
+RunConfigurations["genie_numu"] = [ MCTreeSCModule, InIceMCTreeSCModule ]
+RunConfigurations["genie_nue"] = [ MCTreeSCModule, InIceMCTreeSCModule ]
+RunConfigurations["genie_nutau"] = [ MCTreeSCModule, InIceMCTreeSCModule ]
 RunConfigurations["icetop"] = [ MCTreeSCModule, IceTopMCTreeSCModule ]
 
 from ..histograms.primary_energy import primary_energy_h
