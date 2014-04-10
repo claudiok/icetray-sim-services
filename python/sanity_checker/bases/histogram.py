@@ -1,5 +1,6 @@
 import pylab
 import copy 
+from copy import deepcopy
 import numpy
 from ..kombu import histfactory
 
@@ -9,6 +10,10 @@ class Histogram :
         self.frame_op = frame_op
         self.data = list()
         self.draw_args = draw_args
+
+    def fresh_copy(self):
+        d = deepcopy(self.draw_args)
+        return Histogram(self.frame_op, d)
         
     def fill(self, frame):
         rval = self.frame_op(frame)
@@ -23,13 +28,9 @@ class Histogram :
             self.hist = histfactory.generate_hist1d( [t[0] for t in self.data],
                                                      weights = [t[1] for t in self.data],
                                                      bins = self.draw_args["bins"])
-#                                                     label = self.draw_args["xlabel"],
-#                                                     title = self.draw_args["title"])
         else:
             self.hist = histfactory.generate_hist1d( self.data,
                                                      bins = self.draw_args["bins"])
-#                                                     label = self.draw_args["xlabel"],
-#                                                     title = self.draw_args["title"])
 
     def draw(self, path = "./") : 
         pylab.figure()
