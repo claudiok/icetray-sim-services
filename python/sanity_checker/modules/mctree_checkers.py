@@ -32,7 +32,7 @@ class MCTreeChecker( SanityChecker ) :
         mctree = frame.Get("I3MCTree")
         for p in mctree :
             # no particles should have negative lengths
-            self.negLengthParticleCounter.test_condition( (not isnan(p.length)) \
+            self.negLengthParticleCounter.assert( (not isnan(p.length)) \
                                                           and p.length < 0 )
         # call the base class 'check' method
         return SanityChecker.check(self)
@@ -73,20 +73,25 @@ class InIceMCTreeChecker( SanityChecker ) :
                      or p.type == dc.I3Particle.TauPlus \
                      or p.type == dc.I3Particle.TauPlus ) :
 
-                    self.nanLengthTrackCounter.test_condition( isnan(p.length) )
+                    self.nanLengthTrackCounter.assert( isnan(p.length) )
                     n_inice_muons += 1
 
                 # tau specific checks
                 if ( p.type == dc.I3Particle.TauPlus or \
                      p.type == dc.I3Particle.TauPlus ) :
                     if( p.energy > 1*I3Units.TeV \
-                        and (p.length == 0 \
-                             or len(mctree.get_daughters(p)) == 0 ) ):
+                        and (p.length == 0 or len(mctree.get_daughters(p)) == 0 ) ):                             
                         print(mctree)
-                        self.unpropagatedTausCounter.test_condition( True )
+                        print(p)
+                        self.unpropagatedTausCounter.failure_msg += "\n"
+                        self.unpropagatedTausCounter.failure_msg += "  This test fails if InIce taus above 1TeV have no daughters or 0 length."
+                        self.unpropagatedTausCounter.failure_msg += "  tau energy = %f TeV\n" % p.energy/I3Units.TeV
+                        self.unpropagatedTausCounter.failure_msg += "  tau length = %f m\n" % p.length/I3Units.m
+                        self.unpropagatedTausCounter.failure_msg += "  n daughters = %d\n" % len(mctree.get_daughters(p)
+                        self.unpropagatedTausCounter.assert( True )
 
-        self.noInIceMuonsCounter.test_condition( n_inice_muons == 0 )
-        self.noInIceParticlesCounter.test_condition( n_inice_particles == 0 )
+        self.noInIceMuonsCounter.assert( n_inice_muons == 0 )
+        self.noInIceParticlesCounter.assert( n_inice_particles == 0 )
 
         # call the base class 'check' method
         return SanityChecker.check(self)
