@@ -1,6 +1,7 @@
 import numpy
 from icecube import dataclasses
 from ..bases.histogram import Histogram
+from .utils import data_livetime
 
 type_to_int_dict = {dataclasses.I3Trigger.IN_ICE : 0,
                     dataclasses.I3Trigger.ICE_TOP : 1,

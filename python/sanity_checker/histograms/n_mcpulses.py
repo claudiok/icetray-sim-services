@@ -1,7 +1,7 @@
 import numpy
 from icecube import dataclasses
 from ..bases.histogram import Histogram
-from .utils import bins, data_livetime
+from .utils import bins
 
 def _frame_op(frame):
     if "I3MCPulseSeriesMap" in frame :

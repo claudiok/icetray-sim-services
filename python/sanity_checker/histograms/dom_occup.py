@@ -2,12 +2,12 @@ import numpy
 from I3Tray import I3Units
 from icecube import dataclasses
 from ..bases.histogram import Histogram
-from .utils import bins, data_livetime
+from .utils import bins, data_livetime, event_weight
 
 def _frame_op(frame):
     if "I3Geometry" in frame \
        and "InIceRawData" in frame :
-        weight = 1./data_livetime(frame)
+        weight = event_weight(frame)
         geo = frame["I3Geometry"].omgeo
         launches = frame["InIceRawData"]
         rval = list()

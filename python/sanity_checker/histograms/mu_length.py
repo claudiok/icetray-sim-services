@@ -2,7 +2,7 @@ import numpy
 from I3Tray import I3Units
 from icecube import dataclasses
 from ..bases.histogram import Histogram
-from .utils import bins, data_livetime
+from .utils import bins
 
 def _frame_op(frame):
     return[ p.length/I3Units.m for p in frame["I3MCTree"]\

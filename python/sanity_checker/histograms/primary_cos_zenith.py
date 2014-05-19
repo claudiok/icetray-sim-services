@@ -2,7 +2,7 @@ import numpy
 from math import cos
 from icecube import dataclasses
 from ..bases.histogram import Histogram
-from .utils import bins, data_livetime
+from .utils import bins
 
 def _frame_op(frame):
     return [cos(p.energy) for p in frame["I3MCTree"].primaries]    
