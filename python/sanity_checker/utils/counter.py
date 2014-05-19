@@ -5,7 +5,7 @@ class Counter :
         self._counter = 0
         self._tolerance = tolerance
 
-    def test_condition( self, cond ):
+    def assert( self, cond ):
         if cond :
             self._counter += 1
         else:
