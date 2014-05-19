@@ -17,11 +17,11 @@ except ImportError :
 from I3Tray import I3Units
 from icecube import dataclasses as dc
 from icecube.sim_services.sanity_checker.utils.counter import Counter
-from icecube.sim_services.sanity_checker.bases.checker import SCBaseModule
+from icecube.sim_services.sanity_checker.bases.sanity_checker checker import SanityChecker
 
-class MCTreeSCModule( SCBaseModule ) :
+class MCTreeChecker( SanityChecker ) :
     def __init__(self):
-        SCBaseModule.__init__(self)
+        SanityChecker.__init__(self)
 
         self.negLengthParticleCounter = Counter( tolerance = 0 )
         self.negLengthParticleCounter.failure_msg = "Particles should not have negative lengths."
@@ -35,11 +35,11 @@ class MCTreeSCModule( SCBaseModule ) :
             self.negLengthParticleCounter.test_condition( (not isnan(p.length)) \
                                                           and p.length < 0 )
         # call the base class 'check' method
-        return SCBaseModule.check(self)
+        return SanityChecker.check(self)
 
-class InIceMCTreeSCModule( SCBaseModule ) :
+class InIceMCTreeChecker( SanityChecker ) :
     def __init__(self):
-        SCBaseModule.__init__(self)
+        SanityChecker.__init__(self)
 
         self.nanLengthTrackCounter = Counter( tolerance = 0 )
         self.noInIceMuonsCounter = Counter( tolerance = 100 )
@@ -89,13 +89,13 @@ class InIceMCTreeSCModule( SCBaseModule ) :
         self.noInIceParticlesCounter.test_condition( n_inice_particles == 0 )
 
         # call the base class 'check' method
-        return SCBaseModule.check(self)
+        return SanityChecker.check(self)
 
-class IceTopMCTreeSCModule( SCBaseModule ) :
+class IceTopMCTreeChecker( SanityChecker ) :
     def __init__(self):
-        SCBaseModule.__init__(self)
+        SanityChecker.__init__(self)
 
     # returns True if all is well
     def check( self, frame ) : 
         # call the base class 'check' method
-        return SCBaseModule.check(self)
+        return SanityChecker.check(self)

@@ -1,4 +1,4 @@
-class SCBaseModule :
+class SanityChecker :
     def __init__(self):
         self.registry = dict()
 
@@ -13,10 +13,6 @@ class SCBaseModule :
     def register( self, c_str ):
         self.registry[ c_str ] = self.__dict__[ c_str ] 
 
-    def reset_registry( self ):
-        for k,c in self.registry.items() :
-            c.reset()
-        
     # what to do if there's a failure
     def fail( self ) :
         for k,c in self.registry.items() :
