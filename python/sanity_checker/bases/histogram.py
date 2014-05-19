@@ -11,7 +11,7 @@ class Histogram :
         self.data = list()
         self.draw_args = draw_args
 
-    def fresh_copy(self):
+    def copy(self):
         d = deepcopy(self.draw_args)
         return Histogram(self.frame_op, d)
         
@@ -32,15 +32,15 @@ class Histogram :
             self.hist = histfactory.generate_hist1d( self.data,
                                                      bins = self.draw_args["bins"])
 
-    def draw(self, path = "./") : 
-        pylab.figure()
+    def draw(self, path = "./", stats = True) : 
         self.hist.line(log = self.draw_args["log"] \
                        if "log" in self.draw_args else False)
         if "xticks_args" in self.draw_args :
             pylab.xticks(*(self.draw_args["xticks_args"]),
                          **(self.draw_args["xticks_kwargs"]))
 
-        self.hist.statbox()
+        if stats :
+            self.hist.statbox()
 
         if "title" in self.draw_args :
             pylab.title(self.draw_args["title"])
@@ -51,8 +51,16 @@ class Histogram :
         if "xlabel" in self.draw_args :
             pylab.xlabel(self.draw_args["xlabel"])
 
+    def save(self, path = "./") : 
+        pylab.figure()
+        self.draw()
         if not path.endswith("/") : path += "/"
         pylab.savefig(path + self.draw_args["figname"])
+
+    def save_as(self, filename) : 
+        pylab.figure()
+        self.draw()
+        pylab.savefig(filename)
 
     def __iadd__(self, other):
         self.hist += other.hist
