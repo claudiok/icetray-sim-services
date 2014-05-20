@@ -3,20 +3,20 @@ from icecube import dataclasses as dc
 
 import sys
 
-from ..modules.mctree_checkers import MCTreeSCModule
-from ..modules.mctree_checkers import InIceMCTreeSCModule
-from ..modules.mctree_checkers import IceTopMCTreeSCModule
+from ..modules.mctree_checkers import MCTreeChecker
+from ..modules.mctree_checkers import InIceMCTreeChecker
+from ..modules.mctree_checkers import IceTopMCTreeChecker
 
 RunConfigurations = dict()
-RunConfigurations["corsika_weighted"] = [ MCTreeSCModule, InIceMCTreeSCModule ]
-RunConfigurations["corsika_unweighted"] = [ MCTreeSCModule, InIceMCTreeSCModule ]
-RunConfigurations["nugen_numu"] = [ MCTreeSCModule, InIceMCTreeSCModule ]
-RunConfigurations["nugen_nue"] = [ MCTreeSCModule, InIceMCTreeSCModule ]
-RunConfigurations["nugen_nutau"] = [ MCTreeSCModule, InIceMCTreeSCModule ]
-RunConfigurations["genie_numu"] = [ MCTreeSCModule, InIceMCTreeSCModule ]
-RunConfigurations["genie_nue"] = [ MCTreeSCModule, InIceMCTreeSCModule ]
-RunConfigurations["genie_nutau"] = [ MCTreeSCModule, InIceMCTreeSCModule ]
-RunConfigurations["icetop"] = [ MCTreeSCModule, IceTopMCTreeSCModule ]
+RunConfigurations["corsika_weighted"] = [ MCTreeChecker, InIceMCTreeChecker ]
+RunConfigurations["corsika_unweighted"] = [ MCTreeChecker, InIceMCTreeChecker ]
+RunConfigurations["nugen_numu"] = [ MCTreeChecker, InIceMCTreeChecker ]
+RunConfigurations["nugen_nue"] = [ MCTreeChecker, InIceMCTreeChecker ]
+RunConfigurations["nugen_nutau"] = [ MCTreeChecker, InIceMCTreeChecker ]
+RunConfigurations["genie_numu"] = [ MCTreeChecker, InIceMCTreeChecker ]
+RunConfigurations["genie_nue"] = [ MCTreeChecker, InIceMCTreeChecker ]
+RunConfigurations["genie_nutau"] = [ MCTreeChecker, InIceMCTreeChecker ]
+RunConfigurations["icetop"] = [ MCTreeChecker, IceTopMCTreeChecker ]
 
 from ..histograms.primary_energy import primary_energy_h
 from ..histograms.primary_type import primary_type_h
@@ -76,8 +76,15 @@ histograms.append(trig_source_h)
 histograms.append(trig_ICtypeid_h)
 
 HistogramConfigurations = dict()
-HistogramConfigurations["corsika"] = histograms 
-HistogramConfigurations["numu"] = histograms 
-HistogramConfigurations["nue"] = histograms 
-HistogramConfigurations["nutau"] = histograms 
-HistogramConfigurations["icetop"] = histograms 
+HistogramConfigurations["corsika_weighted"] = histograms
+HistogramConfigurations["corsika_unweighted"] = histograms
+HistogramConfigurations["nugen_numu"] = histograms
+HistogramConfigurations["nugen_nue"] = histograms
+HistogramConfigurations["nugen_nutau"] = histograms
+HistogramConfigurations["genie_numu"] = histograms
+HistogramConfigurations["genie_nue"] = histograms
+HistogramConfigurations["genie_nutau"] = histograms
+HistogramConfigurations["icetop"] = histograms
+
+
+
