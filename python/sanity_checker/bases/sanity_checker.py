@@ -1,27 +1,21 @@
 class SanityChecker :
     def __init__(self):
-        self.registry = dict()
+        self.registry = list()
 
     # returns True if all is well
     def check( self ):
 
         all_is_well = True
-        for k,c in self.registry.items() :
-            all_is_well = all_is_well and c.is_within_tolerance()
+        for c in self.registry :
+            all_is_well = all_is_well and not c.fail()
         return all_is_well
-
-    def register( self, c_str ):
-        self.registry[ c_str ] = self.__dict__[ c_str ] 
 
     # what to do if there's a failure
     def fail( self ) :
-        for k,c in self.registry.items() :
-            if not c.is_within_tolerance() :
-                print("FAIL : ",c.failure_msg)
+        for c in self.registry :
+            if c.fail() : print("FAIL : ",c.failure_msg)                
 
-    def __getstate__( self ) :
-       return self.registry
+    # setup the tests
+    def setup_test( self, frame ) :
+        pass
 
-    def __setstate__( self, state ) :
-        self.registry = state
-        self.__dict__.update( state )
