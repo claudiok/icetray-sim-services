@@ -19,6 +19,7 @@ def _frame_op(frame):
         return [(type_to_int_dict[t.key.source], weight) \
                 if t.key.source in type_to_int_dict else (7, weight) \
                 for t in frame["I3TriggerHierarchy"]]
+    return []
 
 _labels = list()
 for i in range(8):

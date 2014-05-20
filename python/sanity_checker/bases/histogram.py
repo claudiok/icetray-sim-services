@@ -22,6 +22,7 @@ class Histogram :
         
     def fill(self, frame):
         rval = self.frame_op(frame)
+        if rval == None : return
         if numpy.isscalar(rval) or \
                isinstance(rval, tuple) :
             self.data.append( rval )
@@ -87,6 +88,6 @@ class Histogram :
         state = { "hist" : self.hist,
                   "frame_op" : self.frame_op,
                   "draw_args" : self.draw_args,
-                  "name" : self.instance_name
+                  "name" : self.name
                   }
         return state

@@ -7,8 +7,8 @@ class Counter :
     def assert_true( self, cond ):
         self._counter = 0 if cond else self._counter + 1
 
-    def fail(self):
-        return self._counter > self._tolerance 
+    def check(self):
+        return self._counter <= self._tolerance 
 
     def __getstate__( self ):
 
