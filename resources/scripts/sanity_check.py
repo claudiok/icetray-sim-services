@@ -63,9 +63,8 @@ from os.path import expandvars
 fn = expandvars("$I3_BUILD/sim-services/resources/simprod_reference_files/CORSIKA.pickle" )
 from icecube.sim_services.sanity_checker import SimulationSanityChecker
 tray.AddModule( SimulationSanityChecker, "sanitycheck",
-		RunType = "CORSIKA" ,
-		GenerateReferences = True ,
-		OutputRefFilename = fn )
+		RunType = "CORSIKA_Weighted" ,
+		OutputFilename = fn )
 
 tray.AddModule("Dump", "dump")
 tray.AddModule("TrashCan", "the can")
