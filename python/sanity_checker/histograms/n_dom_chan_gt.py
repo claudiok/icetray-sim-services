@@ -1,14 +1,14 @@
 import numpy
 from icecube import dataclasses
 from ..bases.histogram import Histogram
-from .utils import bins, data_livetime
+from .utils import bins, event_weight
 
 from icecube.dataclasses.trigger_hierarchy_recipes import n_triggers
 
 def _frame_op(frame):
     if "I3TriggerHierarchy" in frame \
            and "InIceRawData" in frame :
-        weight = 1./data_livetime(frame)
+        weight = event_weight(frame)
         th = frame["I3TriggerHierarchy"]
         if n_triggers(th, sourceID = dataclasses.I3Trigger.GLOBAL,
                       typeID = dataclasses.I3Trigger.THROUGHPUT) > 0 :

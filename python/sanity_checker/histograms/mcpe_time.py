@@ -2,11 +2,11 @@ import numpy
 from I3Tray import I3Units
 from icecube import dataclasses
 from ..bases.histogram import Histogram
-from .utils import bins, data_livetime
+from .utils import bins, event_weight
 
 def _frame_op(frame):
     if "I3MCPESeriesMap" in frame :
-        weight = 1./data_livetime(frame)
+        weight = event_weight(frame)
         t = list()
         for omkey, peseries in frame["I3MCPESeriesMap"] :
             t.extend([pe.time for pe in peseries])

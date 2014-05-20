@@ -1,11 +1,11 @@
 import numpy
 from icecube import dataclasses
 from ..bases.histogram import Histogram
-from .utils import bins, data_livetime
+from .utils import bins, event_weight
 
 def _frame_op(frame):
     if "InIceRawData" in frame :
-        weight = 1./data_livetime(frame)
+        weight = event_weight(frame)
         strings = list(set([omkey.string for omkey,d in frame["InIceRawData"]]))
         return [(s,weight) for s in strings]
     return []

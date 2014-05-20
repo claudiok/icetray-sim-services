@@ -1,10 +1,10 @@
 import numpy
 from icecube import dataclasses
 from ..bases.histogram import Histogram
-from .utils import bins, data_livetime
+from .utils import bins, event_weight
 
 def _frame_op(frame):
-    weight = 1./data_livetime(frame)
+    weight = event_weight(frame)
     if "I3MCPESeriesMap" in frame :
         return (len(frame["I3MCPESeriesMap"]), weight)
     return -1

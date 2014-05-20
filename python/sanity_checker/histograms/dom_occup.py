@@ -2,7 +2,7 @@ import numpy
 from I3Tray import I3Units
 from icecube import dataclasses
 from ..bases.histogram import Histogram
-from .utils import bins, data_livetime, event_weight
+from .utils import bins, event_weight, event_weight
 
 def _frame_op(frame):
     if "I3Geometry" in frame \

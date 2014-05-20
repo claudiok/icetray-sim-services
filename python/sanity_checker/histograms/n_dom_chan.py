@@ -1,11 +1,11 @@
 import numpy
 from icecube import dataclasses
 from ..bases.histogram import Histogram
-from .utils import bins, data_livetime
+from .utils import bins, event_weight
 
 def _frame_op(frame):
     if frame.Has("InIceRawData") :
-        weight = 1./data_livetime(frame)
+        weight = event_weight(frame)
         return (len(frame["InIceRawData"]), weight)
     return []
 

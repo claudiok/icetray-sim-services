@@ -1,7 +1,7 @@
 import numpy
 from icecube import dataclasses
 from ..bases.histogram import Histogram
-from .utils import data_livetime
+from .utils import event_weight
 
 type_to_int_dict = {dataclasses.I3Trigger.IN_ICE : 0,
                     dataclasses.I3Trigger.ICE_TOP : 1,
@@ -15,7 +15,7 @@ type_to_int_dict = {dataclasses.I3Trigger.IN_ICE : 0,
 
 def _frame_op(frame):
     if "I3TriggerHierarchy" in frame :
-        weight = 1./data_livetime(frame)
+        weight = event_weight(frame)
         return [(type_to_int_dict[t.key.source], weight) \
                 if t.key.source in type_to_int_dict else (7, weight) \
                 for t in frame["I3TriggerHierarchy"]]

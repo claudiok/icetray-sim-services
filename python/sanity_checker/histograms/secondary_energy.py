@@ -3,7 +3,7 @@ from math import log10
 from icecube import dataclasses
 from I3Tray import I3Units
 from ..bases.histogram import Histogram
-from .utils import bins, data_livetime
+from .utils import bins, event_weight
 
 def _frame_op(frame):
     e = list()
