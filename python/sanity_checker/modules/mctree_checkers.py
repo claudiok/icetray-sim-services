@@ -17,23 +17,24 @@ except ImportError :
 from I3Tray import I3Units
 from icecube import dataclasses as dc
 from icecube.sim_services.sanity_checker.utils.counter import Counter
-from icecube.sim_services.sanity_checker.bases.sanity_checker checker import SanityChecker
+from icecube.sim_services.sanity_checker.bases.sanity_checker import SanityChecker
 
 class MCTreeChecker( SanityChecker ) :
     def __init__(self):
         SanityChecker.__init__(self)
 
         self.negLengthParticleCounter = Counter( tolerance = 0 )
-        self.negLengthParticleCounter.failure_msg = "Particles should not have negative lengths."
-        self.register( "negLengthParticleCounter" )
+        self.registry.append( self.negLengthParticleCounter )
 
     # returns True if all is well
     def check( self, frame ):
         mctree = frame.Get("I3MCTree")
         for p in mctree :
             # no particles should have negative lengths
-            self.negLengthParticleCounter.assert( (not isnan(p.length)) \
-                                                          and p.length < 0 )
+            self.negLengthParticleCounter.assert_true( not isnan(p.length) \
+                                                       and p.length >= 0 )
+            self.negLengthParticleCounter.failure_msg = "Particles should not have negative lengths.  p.length = %f" % p.length
+            
         # call the base class 'check' method
         return SanityChecker.check(self)
 
@@ -51,10 +52,10 @@ class InIceMCTreeChecker( SanityChecker ) :
         self.noInIceParticlesCounter.failure_msg = "Too many events with no InIce particles."
         self.unpropagatedTausCounter.failure_msg = "InIce tau not propagated correctly."
 
-        self.register( "nanLengthTrackCounter" )
-        self.register( "noInIceMuonsCounter" )
-        self.register( "noInIceParticlesCounter" )
-        self.register( "unpropagatedTausCounter" )
+        self.registry.append(self.nanLengthTrackCounter)
+        self.registry.append(self.noInIceMuonsCounter)
+        self.registry.append(self.noInIceParticlesCounter)
+        self.registry.append(self.unpropagatedTausCounter)
 
     # returns True if all is well
     def check( self, frame ):
@@ -73,7 +74,7 @@ class InIceMCTreeChecker( SanityChecker ) :
                      or p.type == dc.I3Particle.TauPlus \
                      or p.type == dc.I3Particle.TauPlus ) :
 
-                    self.nanLengthTrackCounter.assert( isnan(p.length) )
+                    self.nanLengthTrackCounter.assert_true( not isnan(p.length) )
                     n_inice_muons += 1
 
                 # tau specific checks
@@ -87,11 +88,11 @@ class InIceMCTreeChecker( SanityChecker ) :
                         self.unpropagatedTausCounter.failure_msg += "  This test fails if InIce taus above 1TeV have no daughters or 0 length."
                         self.unpropagatedTausCounter.failure_msg += "  tau energy = %f TeV\n" % p.energy/I3Units.TeV
                         self.unpropagatedTausCounter.failure_msg += "  tau length = %f m\n" % p.length/I3Units.m
-                        self.unpropagatedTausCounter.failure_msg += "  n daughters = %d\n" % len(mctree.get_daughters(p)
-                        self.unpropagatedTausCounter.assert( True )
+                        self.unpropagatedTausCounter.failure_msg += "  n daughters = %d\n" % len(mctree.get_daughters(p))
+                        self.unpropagatedTausCounter.assert_true(False)
 
-        self.noInIceMuonsCounter.assert( n_inice_muons == 0 )
-        self.noInIceParticlesCounter.assert( n_inice_particles == 0 )
+        self.noInIceMuonsCounter.assert_true( n_inice_muons > 0 )
+        self.noInIceParticlesCounter.assert_true( n_inice_particles > 0 )
 
         # call the base class 'check' method
         return SanityChecker.check(self)
