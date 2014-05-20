@@ -45,6 +45,7 @@ from ..histograms.n_mcpulses import n_mcpulses_h
 from ..histograms.mcpe_time import mcpe_time_h
 from ..histograms.trig_source import trig_source_h
 from ..histograms.trig_ICtypeid import trig_ICtypeid_h
+from ..histograms.n_mcpe_noise_chan import n_mcpe_noise_chan_h
 
 histograms = list()
 histograms.append(primary_energy_h)
@@ -74,6 +75,7 @@ histograms.append(n_mcpulses_h)
 histograms.append(mcpe_time_h)
 histograms.append(trig_source_h)
 histograms.append(trig_ICtypeid_h)
+histograms.append(n_mcpe_noise_chan_h)
 
 HistogramConfigurations = dict()
 HistogramConfigurations["corsika_weighted"] = histograms
