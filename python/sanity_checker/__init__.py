@@ -34,10 +34,10 @@ class SimulationSanityChecker( I3Module ) :
             raise Exception
 
         if self.run_type not in RunConfigurations :
-            print("unknown run '%s' type passed as a parameter " % self.run_type)
+            print("Unknown RunType '%s' type passed as a parameter " % self.run_type)
             print("here's a list of possible run types to choose from ( note : case is not important ) :")
-            for key, value in RunConfigurations.items() :
-                print("  ", key)
+            for key, value in RunConfigurations.iteritems() :
+                print("  %s" % key)
             raise Exception
 
         # FIXME : This should not be a requirement
