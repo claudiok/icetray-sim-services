@@ -51,4 +51,5 @@ _draw_args = { "bins" : 15,
                }
 
 trig_ICtypeid_h = Histogram(frame_op = _frame_op,
-                            draw_args = _draw_args)
+                            draw_args = _draw_args,
+                            name = 'trig_ICtypeid')

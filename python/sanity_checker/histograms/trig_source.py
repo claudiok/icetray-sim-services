@@ -40,4 +40,5 @@ _draw_args = { "bins" : 8,
                }
 
 trig_source_h = Histogram(frame_op = _frame_op,
-                          draw_args = _draw_args)
+                          draw_args = _draw_args,
+                          name = 'trig_source')

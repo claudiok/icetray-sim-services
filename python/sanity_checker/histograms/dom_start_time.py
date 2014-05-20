@@ -23,4 +23,5 @@ _draw_args = { "bins" : bins(100,10000/I3Units.ns,12000/I3Units.ns),
                "log" : True }
 
 dom_start_time_h = Histogram(frame_op = _frame_op,
-                             draw_args = _draw_args)
+                             draw_args = _draw_args,
+                             name = 'dom_start_time')

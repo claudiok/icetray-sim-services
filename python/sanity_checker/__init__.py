@@ -40,15 +40,12 @@ class SimulationSanityChecker( I3Module ) :
                 print("  %s" % key)
             raise Exception
 
-        # FIXME : This should not be a requirement
-        # Sanity Checkers can only have a trivial ctor
-        # Store objects in the dictionary and not classes
-        self.sanity_check_modules = [ cls() for cls in RunConfigurations[ self.run_type ] ]        
+        self.sanity_check_modules = [ obj for obj in RunConfigurations[ self.run_type ] ]        
 
         # Generate the dictionary of histograms, where the key is the histogram's title
         self.histograms = dict()
         for h in HistogramConfigurations[ self.run_type ] :
-            self.histograms[h.draw_args["title"]] = h
+            self.histograms[h.name] = h
 
 
     def DAQ( self, frame ):

@@ -16,4 +16,5 @@ _draw_args = { "bins" : bins(200,0,200),
                "log" : True }
 
 n_pmt_chan_h = Histogram(frame_op = _frame_op,
-                         draw_args = _draw_args)
+                         draw_args = _draw_args,
+                         name = 'n_pmt_chan')

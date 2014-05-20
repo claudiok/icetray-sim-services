@@ -15,4 +15,5 @@ _draw_args = { "bins" : bins(100,0,100),
                "log" : True }
 
 n_mu_h = Histogram(frame_op = _frame_op,
-                   draw_args = _draw_args)
+                   draw_args = _draw_args,
+                   name = 'n_mu')

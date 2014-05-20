@@ -19,3 +19,7 @@ class SanityChecker :
     def setup_test( self, frame ) :
         pass
 
+    def pprint(self) :
+        lidx = str(self).find('icecube.sim_services') + len('')
+        ridx = str(self).find(' instance at')
+        return str(self)[lidx:ridx]

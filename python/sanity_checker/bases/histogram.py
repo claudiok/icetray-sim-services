@@ -5,14 +5,15 @@ import numpy
 from ..kombu import histfactory
 
 class Histogram :
-    def __init__(self, frame_op, draw_args, setup_test = lambda frame : True ): 
+    def __init__(self, frame_op, draw_args, name, setup_test = lambda frame : True ): 
         self.hist = None
         self.frame_op = frame_op
         self.data = list()
         self.draw_args = draw_args
         self.setup_test = setup_test
+        self.name = name
 
-    def add_test(name, func) :
+    def add_test(self, name, func) :
         self.__dict__[test + name] = func
 
     def copy(self):
@@ -85,6 +86,7 @@ class Histogram :
     def __getstate__(self) :
         state = { "hist" : self.hist,
                   "frame_op" : self.frame_op,
-                  "draw_args" : self.draw_args 
+                  "draw_args" : self.draw_args,
+                  "name" : self.instance_name
                   }
         return state

@@ -17,5 +17,6 @@ _draw_args = { "bins" : bins(40,0,40),
                "log" : True }
 
 mcpes_h = Histogram(frame_op = _frame_op,
-                    draw_args = _draw_args)
+                    draw_args = _draw_args,
+                    name = 'mcpes')
 

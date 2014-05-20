@@ -25,4 +25,5 @@ _draw_args = { "bins" : bins(110,-550*I3Units.m,550*I3Units.m),
                "log" : True }
 
 dom_occup_h = Histogram(frame_op = _frame_op,
-                        draw_args = _draw_args)
+                        draw_args = _draw_args,
+                        name = 'dom_occup')

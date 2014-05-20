@@ -67,6 +67,7 @@ _draw_args = { "bins" : 30,
                "xticks_kwargs" : _xticks_kwargs}
 
 secondary_type_h = Histogram(frame_op = _frame_op,
-                             draw_args = _draw_args)
+                             draw_args = _draw_args,
+                             name = "secondary_type")
 
 

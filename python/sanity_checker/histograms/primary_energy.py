@@ -15,4 +15,5 @@ _draw_args = { "bins" : bins(50,0,10),
                "log" : True}
 
 primary_energy_h = Histogram(frame_op = _frame_op,
-                             draw_args = _draw_args)
+                             draw_args = _draw_args,
+                             name = "primary_energy")
