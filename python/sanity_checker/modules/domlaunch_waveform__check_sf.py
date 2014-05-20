@@ -24,7 +24,7 @@ class DOMLaunchWaveFormChecker( SanityChecker ) :
         SanityChecker.__init__(self)
 
         self.empty_launch = Counter( tolerance = 0 )
-        self.registry.append( self.negLengthParticleCounter )
+        self.registry.append( self.empty_launch )
 
     # returns True if all is well
     def check( self, frame ):
@@ -39,7 +39,7 @@ class DOMLaunchWaveFormChecker( SanityChecker ) :
                     count_sum += sum(raw_wf)
                 
                 self.empty_launch.assert_true( count_sum>0)
-                self.negLengthParticleCounter.failure_msg = "DOM %s had empty waveforms even though it was in LC" % d
+                self.empty_launch.failure_msg = "DOM %s had empty waveforms even though it was in LC" % d
             
         # call the base class 'check' method
         return SanityChecker.check(self)
