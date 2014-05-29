@@ -4,7 +4,6 @@ class SanityChecker :
 
     # returns True if all is well
     def check( self ):
-
         all_is_well = True
         for c in self.registry :
             all_is_well = all_is_well and c.check()
@@ -13,7 +12,8 @@ class SanityChecker :
     # what to do if there's a failure
     def fail( self ) :
         for c in self.registry :
-            if not c.check() : print("FAIL : ",c.failure_msg)                
+            if not c.check() :
+                print("FAIL : %s" % c.failure_msg) 
 
     # setup the tests
     def setup_test( self, frame ) :
