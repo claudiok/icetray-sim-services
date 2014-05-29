@@ -3,20 +3,19 @@ from icecube import dataclasses as dc
 
 import sys
 
-from ..modules.mctree_checkers import MCTreeChecker
 from ..modules.mctree_checkers import InIceMCTreeChecker
 from ..modules.mctree_checkers import IceTopMCTreeChecker
 
 RunConfigurations = dict()
-RunConfigurations["corsika_weighted"] = [ MCTreeChecker(), InIceMCTreeChecker() ]
-RunConfigurations["corsika_unweighted"] = [ MCTreeChecker(), InIceMCTreeChecker() ]
-RunConfigurations["nugen_numu"] = [ MCTreeChecker(), InIceMCTreeChecker() ]
-RunConfigurations["nugen_nue"] = [ MCTreeChecker(), InIceMCTreeChecker() ]
-RunConfigurations["nugen_nutau"] = [ MCTreeChecker(), InIceMCTreeChecker() ]
-RunConfigurations["genie_numu"] = [ MCTreeChecker(), InIceMCTreeChecker() ]
-RunConfigurations["genie_nue"] = [ MCTreeChecker(), InIceMCTreeChecker() ]
-RunConfigurations["genie_nutau"] = [ MCTreeChecker(), InIceMCTreeChecker() ]
-RunConfigurations["icetop"] = [ MCTreeChecker(), IceTopMCTreeChecker() ]
+RunConfigurations["corsika_weighted"] = [InIceMCTreeChecker()]
+RunConfigurations["corsika_unweighted"] = [InIceMCTreeChecker()]
+RunConfigurations["nugen_numu"] = [InIceMCTreeChecker()]
+RunConfigurations["nugen_nue"] = [InIceMCTreeChecker()]
+RunConfigurations["nugen_nutau"] = [InIceMCTreeChecker()]
+RunConfigurations["genie_numu"] = [InIceMCTreeChecker()]
+RunConfigurations["genie_nue"] = [InIceMCTreeChecker()]
+RunConfigurations["genie_nutau"] = [InIceMCTreeChecker()]
+RunConfigurations["icetop"] = [IceTopMCTreeChecker()]
 
 from ..histograms.primary_energy import primary_energy_h
 from ..histograms.primary_type import primary_type_h
