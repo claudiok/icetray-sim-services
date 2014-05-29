@@ -20,13 +20,17 @@ class SimulationSanityChecker( I3Module ) :
         self.AddParameter("OutputFilename", "Name of output pickle file", None )
         # FIXME : What should be the default of the data livetime?
         self.AddParameter("HistoDataLiveTime", "Live time of the data", 1 )
+        self.AddParameter("Prescale", "Prescale", 1 )
         self.AddOutBox("OutBox")
+
+        self._daq_frame_counter = 0
 
     def Configure( self ):
 
         self.run_type = self.GetParameter("RunType").lower()
         self.outfilename = self.GetParameter("OutputFilename")
         self.datalivetime = self.GetParameter("HistoDataLiveTime")
+        self.prescale = self.GetParameter("Prescale")
 
         # no input filename
         if not self.run_type :
@@ -49,6 +53,13 @@ class SimulationSanityChecker( I3Module ) :
 
 
     def DAQ( self, frame ):
+        self._daq_frame_counter += 1
+        if self._daq_frame_counter % self.prescale != 0 :
+            print ("...skipping frame %d" % self._daq_frame_counter)
+            self.PushFrame( frame )
+            return        
+        print frame
+
         all_is_well = True
         for obj in self.sanity_check_modules :            
             try :
@@ -80,7 +91,6 @@ class SimulationSanityChecker( I3Module ) :
 
         for t,h in self.histograms.iteritems() :
             h.generate_histogram()
-            h.draw()
 
         if self.outfilename :
             f = open( self.outfilename, "w")        
