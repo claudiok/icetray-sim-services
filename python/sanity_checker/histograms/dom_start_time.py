@@ -5,7 +5,6 @@ from ..bases.histogram import Histogram
 from .utils import bins, event_weight
 
 def _frame_op(frame):
-    print frame
     if frame.Has("InIceRawData") :
         launches = frame["InIceRawData"]
         weight = event_weight(frame)
