@@ -51,7 +51,8 @@ if not result :
         print("%s : %s " % (testname, result))
         if not result : n_fail += 1
     print("%d out of %d tests failed" % (n_fail, len(report)))
-    raise Exception
+    if n_fail != 0 :
+        raise Exception
             
     
 
