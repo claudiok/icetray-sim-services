@@ -50,10 +50,10 @@ if not result :
     for testname, result_local in report.iteritems() :
         print("%s : %s " % (testname, result_local))
         if not result_local :
+            print ("  n_fail = %d" % n_fail)
             n_fail += 1
     print("%d out of %d tests failed" % (n_fail, len(report)))
-    if n_fail != 0 :
-        raise Exception
+    raise Exception
             
     
 
