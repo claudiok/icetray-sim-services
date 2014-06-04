@@ -47,9 +47,10 @@ for run_type, histograms in HistogramConfigurations.iteritems() :
 
 if not result :
     n_fail = 0
-    for testname, result in report.iteritems() :
-        print("%s : %s " % (testname, result))
-        if not result : n_fail += 1
+    for testname, result_local in report.iteritems() :
+        print("%s : %s " % (testname, result_local))
+        if not result_local :
+            n_fail += 1
     print("%d out of %d tests failed" % (n_fail, len(report)))
     if n_fail != 0 :
         raise Exception
