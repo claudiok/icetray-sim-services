@@ -5,7 +5,9 @@ from ..bases.histogram import Histogram
 from .utils import bins
 
 def _frame_op(frame):
-    return [cos(p.energy) for p in frame["I3MCTree"].primaries]    
+    if "I3MCTree" in frame :
+        return [cos(p.dir.zenith) for p in frame["I3MCTree"].primaries]
+    return []
 
 _draw_args = { "bins" : bins(50,0,1),
                "xlabel" : r"$\cos(\theta)$",
