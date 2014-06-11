@@ -18,7 +18,7 @@ class Histogram :
 
     def copy(self):
         d = deepcopy(self.draw_args)
-        return Histogram(self.frame_op, d)
+        return Histogram(self.frame_op, d, self.name)
         
     def fill(self, frame):
         rval = self.frame_op(frame)
@@ -38,9 +38,9 @@ class Histogram :
             self.hist = histfactory.generate_hist1d( self.data,
                                                      bins = self.draw_args["bins"])
 
-    def draw(self, path = "./", stats = True) : 
+    def draw(self, path = "./", stats = True, label = None) : 
         self.hist.line(log = self.draw_args["log"] \
-                       if "log" in self.draw_args else False)
+                       if "log" in self.draw_args else False, label = label)
         if "xticks_args" in self.draw_args :
             pylab.xticks(*(self.draw_args["xticks_args"]),
                          **(self.draw_args["xticks_kwargs"]))
