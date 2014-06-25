@@ -7,12 +7,13 @@ from .utils import bins, event_weight
 
 def _frame_op(frame):
     e = list()
-    tree = frame["I3MCTree"]
-    for p in tree :
-        if (p.type == dataclasses.I3Particle.MuMinus \
-            or p.type == dataclasses.I3Particle.MuPlus) \
-            and tree.depth(p) > 0 :               
-            e.append(log10(p.energy/I3Units.GeV))
+    if "I3MCTree" in frame :
+        tree = frame["I3MCTree"]
+        for p in tree :
+            if (p.type == dataclasses.I3Particle.MuMinus \
+                or p.type == dataclasses.I3Particle.MuPlus) \
+                and tree.depth(p) > 0 :               
+                e.append(log10(p.energy/I3Units.GeV))
     return e
 
 _draw_args = { "bins" : bins(50,0,10),

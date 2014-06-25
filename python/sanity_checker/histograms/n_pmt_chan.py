@@ -7,7 +7,7 @@ def _frame_op(frame):
     if "I3MCPulseSeriesMap" in frame :
         weight = event_weight(frame)
         return (len(frame["I3MCPulseSeriesMap"]), weight)
-    return -1
+    return None
 
 _draw_args = { "bins" : bins(200,0,200),
                "xlabel" : "nchan",

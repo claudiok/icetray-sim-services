@@ -6,7 +6,9 @@ from ..bases.histogram import Histogram
 from .utils import bins
 
 def _frame_op(frame):
-    return [log10(p.energy/I3Units.GeV) for p in frame["I3MCTree"].primaries]    
+    if "I3MCTree" in frame :
+        return [log10(p.energy/I3Units.GeV) for p in frame["I3MCTree"].primaries]
+    return []
 
 _draw_args = { "bins" : bins(50,0,10),
                "xlabel" : r"$\log_{10}(\rm{E/GeV})$",

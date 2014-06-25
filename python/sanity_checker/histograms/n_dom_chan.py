@@ -4,7 +4,7 @@ from ..bases.histogram import Histogram
 from .utils import bins, event_weight
 
 def _frame_op(frame):
-    if frame.Has("InIceRawData") :
+    if "InIceRawData" in frame :
         weight = event_weight(frame)
         return (len(frame["InIceRawData"]), weight)
     return []

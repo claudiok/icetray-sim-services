@@ -5,15 +5,17 @@ from ..bases.histogram import Histogram
 from .utils import bins
 
 def _frame_op(frame):
-    tree = frame["I3MCTree"]
-    z = list()
-    for p in tree :
-        if (p.type == dataclasses.I3Particle.MuMinus \
-            or p.type == dataclasses.I3Particle.MuPlus) \
-            and tree.depth(p) > 0 :               
-            z.append(p.dir.zenith/I3Units.degree)
-    return z
-
+    if "I3MCTree" in frame :
+        tree = frame["I3MCTree"]
+        z = list()
+        for p in tree :
+            if (p.type == dataclasses.I3Particle.MuMinus \
+                or p.type == dataclasses.I3Particle.MuPlus) \
+                and tree.depth(p) > 0 :               
+                z.append(p.dir.zenith/I3Units.degree)
+        return z
+    return None
+        
 _draw_args = { "bins" : bins(50,0,180),
                "xlabel" : r"$\theta(\rm{deg})$",
                "title" : "Secondary Zenith (mu+,mu-) Spectrum",

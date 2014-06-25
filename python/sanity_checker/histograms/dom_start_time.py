@@ -5,13 +5,11 @@ from ..bases.histogram import Histogram
 from .utils import bins, event_weight
 
 def _frame_op(frame):
-    if frame.Has("InIceRawData") :
-        launches = frame["InIceRawData"]
+    if "InIceRawData" in frame :
+        launch_map = frame["InIceRawData"]
         weight = event_weight(frame)
-        rval = list()
-        for k,v in launches :
-            rval.extend([(d.time,weight) for d in v])
-        return rval
+        return [(launch.time, weight) for omkey, launch_series in launch_map \
+                for launch in launch_series]
     return []
 
 _draw_args = { "bins" : bins(100,10000/I3Units.ns,12000/I3Units.ns),

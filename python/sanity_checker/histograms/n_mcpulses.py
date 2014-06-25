@@ -6,7 +6,7 @@ from .utils import bins
 def _frame_op(frame):
     if "I3MCPulseSeriesMap" in frame :
         return sum([len(v) for k,v in frame["I3MCPulseSeriesMap"]])
-    return -1
+    return None
 
 _draw_args = { "bins" : bins(40,0,40),
                "xlabel" : "N",

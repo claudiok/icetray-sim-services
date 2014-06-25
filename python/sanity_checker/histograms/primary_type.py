@@ -47,9 +47,11 @@ type_to_int_dict = {dataclasses.I3Particle.EPlus : 0,
                     }
 
 def _frame_op(frame):
-    return [type_to_int_dict[p.type] \
-            if p.type in type_to_int_dict else 41\
-            for p in frame["I3MCTree"].primaries]
+    if "I3MCTree" in frame :
+        return [type_to_int_dict[p.type] \
+                if p.type in type_to_int_dict else 41\
+                for p in frame["I3MCTree"].primaries]
+    return []
     
 _labels = list()
 for i in range(42):

@@ -4,9 +4,11 @@ from ..bases.histogram import Histogram
 from .utils import bins
 
 def _frame_op(frame):
-    return[ len([1 for p in frame["I3MCTree"]\
-                 if (p.type == dataclasses.I3Particle.MuMinus or \
-                     p.type == dataclasses.I3Particle.MuPlus)]) ]
+    if "I3MCTree" in frame :
+        return[ len([1 for p in frame["I3MCTree"]\
+                        if (p.type == dataclasses.I3Particle.MuMinus or \
+                            p.type == dataclasses.I3Particle.MuPlus)]) ]
+    return []
 
 _draw_args = { "bins" : bins(100,0,100),
                "xlabel" : "N",

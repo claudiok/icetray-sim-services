@@ -1,19 +1,18 @@
 import numpy
 from icecube import dataclasses
 from ..bases.histogram import Histogram
-from .utils import bins, event_weight
+from .utils import bins
 
 def _frame_op(frame):
-    weight = event_weight(frame)
-    nchannel = 0
     if "I3MCPESeriesMap" in frame :
+        nchannel = 0
         for dom, mcpeseries in frame["I3MCPESeriesMap"]:
             for mcpe in mcpeseries:
                 if(mcpe.major_ID == 0 and mcpe.minor_ID == 0):
                     nchannel +=1
                     break     
-        return (nchannel, weight)
-    return -1
+        return nchannel
+    return None
 
 _draw_args = { "bins" : bins(200,0,200),
                "xlabel" : "nchan",

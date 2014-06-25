@@ -30,6 +30,7 @@ from ..histograms.dom_start_time import dom_start_time_h
 from ..histograms.dom_occup import dom_occup_h
 from ..histograms.mcpes import mcpes_h
 from ..histograms.pe_occup import pe_occup_h
+from ..histograms.pulse_occup import pulse_occup_h
 from ..histograms.n_dom_chan import n_dom_chan_h
 from ..histograms.n_dom_chan_smt import n_dom_chan_smt_h
 from ..histograms.n_dom_chan_str import n_dom_chan_str_h
@@ -42,6 +43,7 @@ from ..histograms.mu_length import mu_length_h
 from ..histograms.n_mu import n_mu_h
 from ..histograms.n_mcpulses import n_mcpulses_h
 from ..histograms.mcpe_time import mcpe_time_h
+from ..histograms.mcpulse_time import mcpulse_time_h
 from ..histograms.trig_source import trig_source_h
 from ..histograms.trig_ICtypeid import trig_ICtypeid_h
 from ..histograms.n_mcpe_noise_chan import n_mcpe_noise_chan_h
@@ -60,6 +62,7 @@ histograms.append(dom_start_time_h)
 histograms.append(dom_occup_h)
 histograms.append(mcpes_h)
 histograms.append(pe_occup_h)
+histograms.append(pulse_occup_h)
 histograms.append(n_dom_chan_h)
 histograms.append(n_dom_chan_smt_h)
 histograms.append(n_dom_chan_str_h)
@@ -72,6 +75,7 @@ histograms.append(mu_length_h)
 histograms.append(n_mu_h)
 histograms.append(n_mcpulses_h)
 histograms.append(mcpe_time_h)
+histograms.append(mcpulse_time_h)
 histograms.append(trig_source_h)
 histograms.append(trig_ICtypeid_h)
 histograms.append(n_mcpe_noise_chan_h)

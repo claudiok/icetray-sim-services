@@ -6,13 +6,14 @@ from ..bases.histogram import Histogram
 from .utils import bins, event_weight
 
 def _frame_op(frame):
-    tree = frame["I3MCTree"]
     z = list()
-    for p in tree :
-        if (p.type == dataclasses.I3Particle.MuMinus \
-            or p.type == dataclasses.I3Particle.MuPlus) \
-            and tree.depth(p) > 0 :               
-            z.append(cos(p.dir.zenith))
+    if "I3MCTree" in frame :        
+        tree = frame["I3MCTree"]
+        for p in tree :
+            if (p.type == dataclasses.I3Particle.MuMinus \
+                or p.type == dataclasses.I3Particle.MuPlus) \
+                and tree.depth(p) > 0 :               
+                z.append(cos(p.dir.zenith))
     return z
 
 _draw_args = { "bins" : bins(50,0,1),

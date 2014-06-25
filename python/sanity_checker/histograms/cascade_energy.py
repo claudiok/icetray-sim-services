@@ -8,8 +8,7 @@ def _frame_op(frame):
     if "I3MCTree" in frame :
         t = frame["I3MCTree"]
         return [p.energy for p in t if p.is_cascade]                
-    else:
-        return []
+    return []
 
 _draw_args = { "bins" : bins(100,0,100.*I3Units.GeV),
                "xlabel" : "E(GeV)",

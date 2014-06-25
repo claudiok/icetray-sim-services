@@ -6,10 +6,11 @@ from .utils import bins, event_weight
 def _frame_op(frame):
     weight = event_weight(frame)
     if "I3MCPESeriesMap" in frame :
-        return sum([len(v) for k,v in frame["I3MCPESeriesMap"]])
-    return -1
+        return sum([pe.npe for omkey, peseries in frame["I3MCPESeriesMap"]\
+                    for pe in peseries])
+    return None
 
-_draw_args = { "bins" : bins(40,0,40),
+_draw_args = { "bins" : bins(200,0,200),
                "xlabel" : "N",
                "title" : "N MCPEs",
                "figname" : "mcpes.png",

@@ -13,9 +13,7 @@ def _frame_op(frame):
         if n_triggers(th, sourceID = dataclasses.I3Trigger.IN_ICE,
                       typeID = dataclasses.I3Trigger.SIMPLE_MULTIPLICITY) > 0 :
             return (len(frame["InIceRawData"]), weight)
-        else:
-            return (-1,1)
-    return (-1,1)
+    return None
     
 _draw_args = { "bins" : bins(200,0,200),
                "xlabel" : "NChan",

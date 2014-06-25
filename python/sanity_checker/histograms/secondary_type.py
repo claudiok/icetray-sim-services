@@ -35,15 +35,17 @@ type_to_int_dict = {dataclasses.I3Particle.Gamma : 0,
                     }
 
 def _frame_op(frame):
-    tree = frame["I3MCTree"]
-    types = list()
-    for p in tree :
-        if tree.depth(p) > 0 :
-            if p.type in type_to_int_dict :
-                types.append(type_to_int_dict[p.type])
-            else :
-                types.append(29)
-    return types
+    if "I3MCTree" in frame :            
+        tree = frame["I3MCTree"]
+        types = list()
+        for p in tree :
+            if tree.depth(p) > 0 :
+                if p.type in type_to_int_dict :
+                    types.append(type_to_int_dict[p.type])
+                else :
+                    types.append(29)
+        return types
+    return None
 
 _labels = list()
 for i in range(30):

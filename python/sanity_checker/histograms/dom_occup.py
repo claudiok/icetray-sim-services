@@ -9,12 +9,9 @@ def _frame_op(frame):
        and "InIceRawData" in frame :
         weight = event_weight(frame)
         geo = frame["I3Geometry"].omgeo
-        launches = frame["InIceRawData"]
-        rval = list()
-        for k,v in launches :
-            z = geo[k].position.z
-            rval.append((z,weight*len(v)))
-        return rval
+        launch_map = frame["InIceRawData"]
+        return [ (geo[omkey].position.z, len(launch_series) * weight) \
+                 for omkey, launch_series in launch_map ]
     return []
 
 _draw_args = { "bins" : bins(110,-550*I3Units.m,550*I3Units.m),

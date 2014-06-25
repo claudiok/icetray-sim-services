@@ -5,9 +5,11 @@ from ..bases.histogram import Histogram
 from .utils import bins
 
 def _frame_op(frame):
-    if "I3MCPESeriesMap" in frame :
-        return [pe.time for omkey, peseries in frame["I3MCPESeriesMap"] \
-                for pe in peseries]
+    if "I3MCPulseSeriesMap" in frame :
+        weight = event_weight(frame)
+        return [(pulse.time, weight * pulse.charge) \
+                omkey, pulseseries in frame["I3MCPulseSeriesMap"] \
+                for pulse in pulseseries ]
     return []
 
 _draw_args = { "bins" : bins(100,10000/I3Units.ns,12000/I3Units.ns),
