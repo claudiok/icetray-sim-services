@@ -14,7 +14,7 @@ class Histogram :
         self.name = name
 
     def add_test(self, name, func) :
-        self.__dict__[test + name] = func
+        self.__dict__["test" + name] = func
 
     def copy(self):
         d = deepcopy(self.draw_args)
@@ -26,8 +26,9 @@ class Histogram :
         if numpy.isscalar(rval) or \
                isinstance(rval, tuple) :
             self.data.append( rval )
-        else : self.data.extend( rval )
-
+        else :
+            self.data.extend( rval )
+            
     def generate_histogram(self) :
         if len(self.data) > 0 \
            and isinstance(self.data[0], tuple) :

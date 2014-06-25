@@ -41,7 +41,7 @@ for run_type, histograms in HistogramConfigurations.iteritems() :
             for test in dir(hist) :
                 if test.startswith("test") and callable(getattr(hist,test)) :
                     key = "%s : %s" % (hist.name,test)
-                    test_result = getattr(module,test)(frame)
+                    test_result = getattr(hist,test)(hist,frame)
                     report[key] = test_result
                     result = result and test_result
 
