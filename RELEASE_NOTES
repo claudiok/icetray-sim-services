@@ -2,6 +2,17 @@
 # $Author: olivas $
 # $Date: 2011-10-10 $
 
+July 10, 2014 Alex Olivas  (olivas@icecube.umd.edu)
+--------------------------------------------------------------------
+V01-05-00 - Minor Release - Mostly histogramming stuff.
+  o Restored HistoDataLiveTime for comparisons to data.
+  o Added 'event_weight' convenience function.
+  o Added embedded test suite to force users to write tests for their histograms.
+  o Added Prescale parameter to the SimulationSanityChecker module.
+  o Some support for the new 'weighting' project.  More is needed.
+  o Histogram comparison is included in this release.
+
+
 June 27, 2012 Alex Olivas  (olivas@icecube.umd.edu)
 --------------------------------------------------------------------
 Revisions : 
