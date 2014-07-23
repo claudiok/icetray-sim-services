@@ -21,7 +21,7 @@ _draw_args = { "bins" : bins(110,-550*I3Units.m,550*I3Units.m),
                "ylabel" : r"$\Gamma(\rm{Hz})$",
                "log" : True }
 
-pe_occup_h = Histogram(frame_op = _frame_op,
+pulse_occup_h = Histogram(frame_op = _frame_op,
                        draw_args = _draw_args,
                        name = 'pulse_occup')
 
