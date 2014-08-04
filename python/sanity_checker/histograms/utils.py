@@ -8,6 +8,11 @@ def bins(nbins, min, max) :
 # Units of s^-1
 def event_weight(frame) :
 
+    if "I3MCWeightDict" in frame : 
+        weightmap = frame["I3MCWeightDict"]
+        datalivetime = frame["DataLiveTime"].value / I3Units.second
+        return datalivetime * weightmap["OneWeight"] / weightmap["NEvents"]
+
     if "GaisserH3aWeight" in frame :
         return frame["GaisserH3aWeight"].value
 
@@ -30,11 +35,6 @@ def event_weight(frame) :
         else :
             return weightmap["Weight"] * weightmap["DiplopiaWeight"] / timescale
     
-    if "I3MCWeightDict" in frame : 
-        weightmap = frame["I3MCWeightDict"]
-        datalivetime = frame["DataLiveTime"].value / I3Units.second
-        return datalivetime * weightmap["OneWeight"] / weightmap["NEvents"]
-
     if "DataLiveTime" in frame :
         datalivetime = frame["DataLiveTime"].value / I3Units.second
         return 1./ datalivetime
