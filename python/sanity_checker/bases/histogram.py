@@ -1,4 +1,7 @@
-import pylab
+import matplotlib as mpl
+mpl.use('agg')
+import matplotlib.pyplot as plt
+
 import copy 
 from copy import deepcopy
 import numpy
@@ -43,31 +46,31 @@ class Histogram :
         self.hist.line(log = self.draw_args["log"] \
                        if "log" in self.draw_args else False, label = label)
         if "xticks_args" in self.draw_args :
-            pylab.xticks(*(self.draw_args["xticks_args"]),
+            plt.xticks(*(self.draw_args["xticks_args"]),
                          **(self.draw_args["xticks_kwargs"]))
 
         if stats :
             self.hist.statbox()
 
         if "title" in self.draw_args :
-            pylab.title(self.draw_args["title"])
+            plt.title(self.draw_args["title"])
 
         if "ylabel" in self.draw_args :
-            pylab.ylabel(self.draw_args["ylabel"])
+            plt.ylabel(self.draw_args["ylabel"])
 
         if "xlabel" in self.draw_args :
-            pylab.xlabel(self.draw_args["xlabel"])
+            plt.xlabel(self.draw_args["xlabel"])
 
     def save(self, path = "./") : 
-        pylab.figure()
+        plt.figure()
         self.draw()
         if not path.endswith("/") : path += "/"
-        pylab.savefig(path + self.draw_args["figname"])
+        plt.savefig(path + self.draw_args["figname"])
 
     def save_as(self, filename) : 
-        pylab.figure()
+        plt.figure()
         self.draw()
-        pylab.savefig(filename)
+        plt.savefig(filename)
 
     def __iadd__(self, other):
         self.hist += other.hist
