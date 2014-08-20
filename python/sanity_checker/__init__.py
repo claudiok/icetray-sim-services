@@ -55,10 +55,8 @@ class SimulationSanityChecker( I3Module ) :
     def DAQ( self, frame ):
         self._daq_frame_counter += 1
         if self._daq_frame_counter % self.prescale != 0 :
-            print ("...skipping frame %d" % self._daq_frame_counter)
             self.PushFrame( frame )
             return        
-        print frame
 
         all_is_well = True
         for obj in self.sanity_check_modules :            
