@@ -73,6 +73,8 @@ private:
 				    muonRange_(p.GetEnergy()) < minRange_/cos_theta : true;
 			} else if (p.IsNeutrino()) {
 				return dropNeutrinos_;
+			} else {
+				return true;
 			}
 		}
 		
