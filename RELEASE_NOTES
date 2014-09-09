@@ -2,6 +2,12 @@
 # $Author: olivas $
 # $Date: 2011-10-10 $
 
+September 9, 2014 Alex Olivas (olivas@icecube.umd.edu)
+--------------------------------------------------------------------
+V01-05-03 - Bugfix release
+  o Following matplotlib's recommendations for batch processing of plots.
+  o I3InIceCORSIKATrimmer - Drop particles that aren't InIce muons or neutrinos.
+
 July 10, 2014 Alex Olivas  (olivas@icecube.umd.edu)
 --------------------------------------------------------------------
 V01-05-00 - Minor Release - Mostly histogramming stuff.
