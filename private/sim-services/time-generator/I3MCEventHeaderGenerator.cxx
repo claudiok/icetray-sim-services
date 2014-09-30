@@ -41,7 +41,7 @@ class I3MCEventHeaderGenerator : public I3Module
    * where you still want unique event IDs.
    */
   bool incEventID_;
-
+  double dt_;
 };
 
 I3_MODULE(I3MCEventHeaderGenerator);
@@ -70,7 +70,7 @@ I3MCEventHeaderGenerator::I3MCEventHeaderGenerator(const I3Context& ctx) : I3Mod
 	AddParameter("RunNumber", "Run Number", runNumber_);
 	AddParameter("EventID", "Event ID", eventID_);
 	AddParameter("IncrementEventID", "Increment Event ID (default =  false)", incEventID_);
-
+	AddParameter("TimeIncrement", "Time increment between frames",dt_);
 	AddOutBox("OutBox");
 }
 
@@ -84,7 +84,7 @@ void I3MCEventHeaderGenerator::Configure()
 	GetParameter("RunNumber", runNumber_);
 	GetParameter("EventID", eventID_);
 	GetParameter("IncrementEventID", incEventID_);
-
+        GetParameter("TimeIncrement", dt_);
 	if(mjd_ != INT_MIN &&
 	    (year_ != DEFAULT_YEAR || daqTime_ != DEFAULT_DAQTIME ))
 		log_fatal("Ambiguous settings : Please choose either Mjd or Year and DAQTime.  Not both.");
@@ -99,8 +99,9 @@ void I3MCEventHeaderGenerator::Configure()
 
 void I3MCEventHeaderGenerator::DAQ(I3FramePtr fr) 
 {
-      I3Time evtTime(year_, daqTime_);
-
+  
+  I3Time evtTime(year_, daqTime_);//The reason behind the factor 10 is that DAQ time is in 0.1 nano seconds.
+      daqTime_ += dt_ * 10.0;
       I3EventHeaderPtr eventHeader_(new I3EventHeader);
       eventHeader_->SetStartTime(evtTime);
       eventHeader_->SetRunID(runNumber_);
