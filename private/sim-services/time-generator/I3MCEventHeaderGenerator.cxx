@@ -12,6 +12,7 @@
 #include <dataclasses/physics/I3EventHeader.h>
 #include <dataclasses/I3Time.h>
 #include <icetray/I3Bool.h>
+#include <icetray/I3Units.h>
 
 class I3MCEventHeaderGenerator : public I3Module
 {
@@ -60,7 +61,8 @@ I3MCEventHeaderGenerator::I3MCEventHeaderGenerator(const I3Context& ctx) : I3Mod
   mjd_ns_(DEFAULT_MJD_NANOSECONDS),
   runNumber_(0),
   eventID_(0),
-  incEventID_(false)
+  incEventID_(false),
+  dt_(0)
 {
 	AddParameter("Year", "Year of the run", year_);
 	AddParameter("DAQTime", "DAQTime of the run in 1/10 of ns", daqTime_);
@@ -100,8 +102,8 @@ void I3MCEventHeaderGenerator::Configure()
 void I3MCEventHeaderGenerator::DAQ(I3FramePtr fr) 
 {
   
-  I3Time evtTime(year_, daqTime_);//The reason behind the factor 10 is that DAQ time is in 0.1 nano seconds.
-      daqTime_ += dt_ * 10.0;
+      I3Time evtTime(year_, daqTime_);
+      daqTime_ += dt_ / I3Units::ns * 10.0;//The reason behind the factor 10 is that DAQ time is in 0.1 nano seconds.
       I3EventHeaderPtr eventHeader_(new I3EventHeader);
       eventHeader_->SetStartTime(evtTime);
       eventHeader_->SetRunID(runNumber_);
