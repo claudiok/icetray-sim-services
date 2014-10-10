@@ -14,7 +14,7 @@ from icecube.MuonGun.segments import GenerateBundles
 from os.path import expandvars
 from os import unlink
 
-gcd = expandvars("$I3_PORTS/test-data/sim/GeoCalibDetectorStatus_IC80_DC6.54655.i3.gz")
+gcd = expandvars("$I3_TESTDATA/sim/GeoCalibDetectorStatus_IC80_DC6.54655.i3.gz")
 
 def make_propagators():
 	"""
