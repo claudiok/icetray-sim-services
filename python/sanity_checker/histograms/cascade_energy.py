@@ -27,11 +27,10 @@ def _setup_test(frame):
 
 def _basic(self, frame):
     return self.hist.bincontent.sum() == 100
-    
+
             
 cascade_energy_h = Histogram(frame_op = _frame_op,
                              draw_args = _draw_args,
-                             name = 'cascade_energy',
-                             setup_test = _setup_test)
+                             name = 'cascade_energy')
 
-cascade_energy_h.add_test("basic", _basic)
+cascade_energy_h.add_test("basic", _basic, _setup_test)

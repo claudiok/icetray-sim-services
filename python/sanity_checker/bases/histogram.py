@@ -8,17 +8,18 @@ import numpy
 from ..kombu import histfactory
 
 class Histogram :
-    def __init__(self, frame_op, draw_args, name, setup_test = lambda frame : True ): 
+    def __init__(self, frame_op, draw_args, name): 
         self.hist = None
         self.frame_op = frame_op
         self.data = list()
         self.draw_args = draw_args
-        self.setup_test = setup_test
+        self.setup_test = dict()
         self.name = name
 
-    def add_test(self, name, func) :
+    def add_test(self, name, func, setup) :
         self.__dict__["test" + name] = func
-
+        self.setup_test["test" + name] = setup
+        
     def copy(self):
         d = deepcopy(self.draw_args)
         return Histogram(self.frame_op, d, self.name)
