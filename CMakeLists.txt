@@ -49,5 +49,4 @@ i3_test_scripts(resources/tests/propagator_state_storage.py
   #resources/tests/all_your_tests_are_belong_to_us.py
   resources/tests/sanity_checker_module_tests.py
   resources/tests/sanity_checker_histogram_tests.py
-  resources/tests/test_library_clash.py
 )
