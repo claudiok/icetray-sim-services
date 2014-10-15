@@ -36,7 +36,7 @@ class InIceMCTreeChecker( SanityChecker ) :
         self.unpropagatedTausCounter.failure_msg = "InIce tau not propagated correctly."
 
         self.registry.append(self.nanLengthTrackCounter)
-        self.registry.append(self.negLengthTrackCounter )
+        self.registry.append(self.negLengthTrackCounter)
         self.registry.append(self.noInIceMuonsCounter)
         self.registry.append(self.noInIceParticlesCounter)
         self.registry.append(self.unpropagatedTausCounter)
