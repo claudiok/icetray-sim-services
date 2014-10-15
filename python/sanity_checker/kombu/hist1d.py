@@ -350,7 +350,10 @@ class hist1d(histogram):
         else:
             kw = {"color":color}
             kw.update(kwargs)
-            p.plot(xpoints, ypoints, "k-", **kw) 
+            p.plot(xpoints, ypoints, "k-", **kw)
+            yplot = [ypoints[idx] for idx in range(1, len(ypoints), 2)]
+            xplot = [(xpoints[idx] + xpoints[idx+1])/2. for idx in range(1,len(xpoints)-1,2)]
+            p.errorbar(xplot, yplot, yerr = binerror) 
             minvalue = min( bincontent.min(), minvalue )
             maxvalue = max( 1.3*bincontent.max() , maxvalue )
             
