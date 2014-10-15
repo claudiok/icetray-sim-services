@@ -18,29 +18,7 @@ _draw_args = { "bins" : bins(50,0,10),
                "figname" : "primary_energy.png",
                "log" : True}
 
-
-def _setup_test(frame):
-    t = dataclasses.I3MCTree()
-    p0 = dataclasses.I3Particle()
-    p0.energy = 0
-    p1 = dataclasses.I3Particle()
-    p1.energy = -1
-    p2 = dataclasses.I3Particle()
-    p2.energy = 1
-
-    t.add_primary(p0)
-    t.add_primary(p1)
-    t.add_primary(p2)
-
-    frame["I3MCTree"] = t
-
-
-def _log10(self, frame):    
-    print "log10 : self.hist.bincontent.sum() = ", self.hist.bincontent.sum()
-    return self.hist.bincontent.sum() == 1
-
 primary_energy_h = Histogram(frame_op = _frame_op,
                              draw_args = _draw_args,
                              name = "primary_energy")
 
-primary_energy_h.add_test("log10", _log10, _setup_test)
