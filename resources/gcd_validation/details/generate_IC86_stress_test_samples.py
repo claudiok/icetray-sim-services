@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 
 from os.path import expandvars
-from I3Tray import I3Units
 from optparse import OptionParser
 parser = OptionParser()
 
 parser.add_option("-g","--gcd_file",
-                  dest="gcd_file", default=expandvars("$I3_BUILD/GeoCalibDetectorStatus_IC86.55697_corrected.i3.gz"),
+                  dest="gcd_file",
+                  default=expandvars("$I3_BUILD/GeoCalibDetectorStatus_IC86.55697_corrected.i3.gz"),
                   help="I3File which contains the GCD.")
 
 parser.add_option("-o","--output_path",
@@ -14,7 +14,7 @@ parser.add_option("-o","--output_path",
                   help="Path to store the I3File.")
 
 parser.add_option("-f","--output_filename",
-                  dest="output_filename", default="st.i3.gz",
+                  dest="OUTPUT_FILENAME", default="st.i3.gz",
                   help="Filename of the output I3File.")
 
 parser.add_option("-m","--nhits_per_DOM", type = "int",
@@ -34,7 +34,7 @@ parser.add_option("-d","--binwidth", type = "float",
                   help="Width of the hit binning.")
 
 parser.add_option("-n","--nevents", type="int",
-                  dest="nevents", default=5,
+                  dest="nevents", default=6,
                   help="Number of events to generate")
 
 parser.add_option("-u","--FearTheTurtle", 
@@ -43,15 +43,19 @@ parser.add_option("-u","--FearTheTurtle",
 
 (options, args) = parser.parse_args()
 
+from I3Tray import I3Units
 from I3Tray import I3Tray
 
 options.binwidth *= I3Units.ns
 options.time_const *= I3Units.ns
 
+# FIXME : try the import and dump plots to a user-configured
+# plot_dir (perhaps in sim-services/gcd_validation/plots)
 if options.fear_the_turtle:
     import numpy
     import pylab
-    from loot.plotting import I3Hist
+    # This doesn't exist anymore
+    #from loot.plotting import I3Hist
 
 import os
 import sys
@@ -68,6 +72,8 @@ from icecube import DOMLauncher
 from icecube import WaveCalibrator
 from icecube import wavedeform
 from icecube.sim_services.gcd_validation.pe_generator import StressTestPEGenerator
+
+icetray.logging.rotating_files(options.LOGFILE)
 
 ###
 # Generate the hit series to feed to I3TestGenericSource
@@ -109,26 +115,30 @@ if options.binhits :
         w,le = numpy.histogram(times,range=(TMIN,TMAX),bins=nbins)
         t = [t0+(options.binwidth/2.0) for t0 in le]
 
-        h = I3Hist(times,range=(TMIN,TMAX),bins=nbins)
-        h.draw(label="Unbinned")
-        h.fit(hpdf,[10,0.01])
-        h.drawf(label="Fit PDF")
-        pylab.plot(t,w,label="Binned")
-        pylab.title("Test Hit Distribution")
-        pylab.xlabel("t(ns)")
-        pylab.ylabel("NHits/%2.2fns" % options.binwidth)
-        pylab.legend()
-        figpath = expandvars("$HOME/work/plots/stress-tests")
-        figname = figpath + ("/hit_dist_NPE%d_tc%3.3f_BW%2.2fns.png" % \
-                             (options.nhits_per_DOM,options.time_const,options.binwidth))
-        pylab.savefig(figname)
+        # FIXME : Make me work again.
+        # Just use pylab's histogram class.
+        # This was written back in the day when it *really* sucked.
+        # Now it only slightly sucks.
+#        
+#        h = I3Hist(times,range=(TMIN,TMAX),bins=nbins)
+#        h.draw(label="Unbinned")
+#        h.fit(hpdf,[10,0.01])
+#        h.drawf(label="Fit PDF")
+#        pylab.plot(t,w,label="Binned")
+#        pylab.title("Test Hit Distribution")
+#        pylab.xlabel("t(ns)")
+#        pylab.ylabel("NHits/%2.2fns" % options.binwidth)
+#        pylab.legend()
+#        figpath = expandvars("$HOME/work/plots/stress-tests")
+#        figname = figpath + ("/hit_dist_NPE%d_tc%3.3f_BW%2.2fns.png" % \
+#                             (options.nhits_per_DOM,options.time_const,options.binwidth))
+#        pylab.savefig(figname)
         
 else:
     w = list()
     t = times
 
 tray = I3Tray()
-
 
 tray.AddModule("I3InfiniteSource", "source",\
                prefix = options.gcd_file , \
@@ -142,15 +152,6 @@ tray.AddModule("I3MCEventHeaderGenerator","time-gen")(
         ("DAQTime",time.utc_daq_time),
         ("RunNumber",999)
         )
-
-# some GCDs come with driving times and some don't
-def DrivingTime( frame ):
-    if "DrivingTime" in frame : 
-        del frame["DrivingTime"]
-        frame.Put("DrivingTime", time )
-        
-tray.AddModule( DrivingTime, "dt",\
-                Streams = [icetray.I3Frame.DAQ] )
 
 tray.AddService("I3SPRNGRandomServiceFactory","random")(
 	("Seed",1),
@@ -173,30 +174,13 @@ tray.AddModule('I3WaveCalibrator', 'wavecal',\
 tray.AddModule('I3Wavedeform', 'DeformInIce',\
                UseDOMsimulatorTemplates = False)
 
-tray.AddModule("Dump","dump")
-
-
-fn = options.output_path 
-fn += "IC86_"
-fn += "n%d_" % options.nhits_per_DOM
-fn += "tc%3.3f_" % options.time_const
-if options.binhits :
-    fn += "dt%2.2f_" % options.binwidth
-fn += options.output_filename
-
 tray.AddModule("I3Writer","writer",
-    filename = fn,\
-    Streams = [icetray.I3Frame.Geometry,\
+    filename = options.OUTPUT_FILENAME,\
+    Streams = [icetray.I3Frame.TrayInfo,\
+               icetray.I3Frame.Geometry,\
                icetray.I3Frame.Calibration,\
                icetray.I3Frame.DetectorStatus,\
                icetray.I3Frame.DAQ],\
-    SkipKeys = ["IceTopRawData",\
-                "ATWDPortiaPulse",\
-                "PortiaEvent",\
-                "InitialHitSeriesReco",\
-                "I3EventHeader",\
-                "FADCPortiaPulse",\
-                "FADCPulseSeries"]\
     )
 
 tray.AddModule("TrashCan", "the can")

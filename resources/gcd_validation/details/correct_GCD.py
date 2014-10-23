@@ -1,5 +1,21 @@
 #!/usr/bin/env python
 
+from optparse import OptionParser
+parser = OptionParser()
+parser.add_option("-i","--infile",
+                  dest="INFILE", default = None,
+                  help="GCD file to correct.")
+
+parser.add_option("-o","--outfile",
+                  dest="OUTFILE", default = None,
+                  help="Corrected GCD file.")
+
+parser.add_option("-l","--logfile",
+                  dest="LOGFILE", default="./gcd_logfile" ,
+                  help="Name of logfile.")
+
+(options, args) = parser.parse_args()
+
 import os
 import sys
 from os.path import expandvars
@@ -12,24 +28,19 @@ from icecube import dataio
 from icecube import simclasses
 from icecube.icetray import OMKey
 
-from optparse import OptionParser
-parser = OptionParser()
-parser.add_option("-i","--infile",
-                  dest="INFILE", default = None,
-                  help="GCD file to correct.")
-
-parser.add_option("-o","--outfile",
-                  dest="OUTFILE", default = None,
-                  help="Corrected GCD file.")
-(options, args) = parser.parse_args()
+logfile = open(options.LOGFILE, "a")
 
 if not options.INFILE :
-    print("you must specify and input file.")
-    sys.exit()
+    msg = "ERROR : You must specify and input file."
+    logfile.write(msg)
+    print(msg)
+    sys.exit(1)
 
 if not options.OUTFILE :
-    print("you must specify and output file.")
-    sys.exit()
+    msg = "ERROR : You must specify and output file."
+    logfile.write(msg)
+    print(msg)    
+    sys.exit(1)
 
 infile = dataio.I3File(options.INFILE)
 
@@ -50,17 +61,17 @@ status = status_frame.Get('I3DetectorStatus')
 
 badOMs = list()
 if "BadDomsList" in status_frame :
-    print("Found a BadDomsList in the frame.  Gonna use it.")
+    logfile.write("Found a BadDomsList in the frame.  Gonna use it.\n")
     badOMs = status_frame.Get("BadDomsList")
 else:
     print(status_frame)
     try :
         from icecube.BadDomList import bad_dom_list_static
         badOMs = bad_dom_list_static.IC86_static_bad_dom_list()
-    except ImportError :
-        print("ERROR : BadDomsList wasn't found in the frame")
-        print("and either the BadDomList doesn't exist or")
-        print("there's no static_bad_dom_list.")
+    except ImportError :        
+        logfile.write("ERROR : BadDomsList wasn't found in the frame\n")
+        logfile.write("and either the BadDomList doesn't exist or\n")
+        logfile.write("there's no static_bad_dom_list.\n")
         sys.exit(1)
 
 dom_geo = geometry.omgeo
@@ -94,8 +105,8 @@ for omkey, omgeo in dom_geo:
         threshold /= I3Units.mV
 
         if threshold < 0 :
-            print('Pathological PMT discriminator threshold')
-            print('  %s  threshold = %2.2f mV' % (str(omkey), threshold))
+            logfile.write('Pathological PMT discriminator threshold')
+            logfile.write('  %s  threshold = %2.2f mV' % (str(omkey), threshold))
             fit = dataclasses.LinearFit()
             fit.slope = NaN
             fit.intercept = NaN
@@ -103,18 +114,18 @@ for omkey, omgeo in dom_geo:
 
             dc = calibration.dom_cal[omkey]
             thresh = dataclasses.spe_pmt_threshold(domstat, dc)
-            print('  correcting to %2.2f mV' % thresh/I3Units.mV )
+            logfile.write('  correcting to %2.2f mV' % thresh/I3Units.mV )
 
         if omgeo.omtype == dataclasses.I3OMGeo.IceCube :
             if omkey not in badOMs and isnan( domcal.dom_noise_rate ) :
-                print("ERROR : no valid noise rate for this DOM %s " % str(omkey))
-                print("  NOT CORRECTING")
+                logfile.write("ERROR : no valid noise rate for this DOM %s " % str(omkey))
+                logfile.write("  NOT CORRECTING")
 
             if isnan(domcal.relative_dom_eff) :
                 if omkey.string in strings_IC86 :
                     new_RDE =1.35 if e in high_QE else 1.0
                     calibration.dom_cal[omkey].relative_dom_eff = new_RDE                    
-                    print(" correcting RDE from 'nan' to %.2f in %s" % \
+                    logfile.write(" correcting RDE from 'nan' to %.2f in %s" % \
                           (new_RDE,omkey))
 
             # check for unusually low noise DOMs that were
@@ -124,7 +135,7 @@ for omkey, omgeo in dom_geo:
                 if noiseRate < 400 * I3Units.hertz :
                     new_rate = noiseRate + 1*I3Units.kilohertz
                     calibration.dom_cal[omkey].dom_noise_rate = new_rate
-                    print("  correcting noise from %fHz to %fHz in %s" % \
+                    logfile.write("  correcting noise from %fHz to %fHz in %s" % \
                           (noiseRate/I3Units.hertz,
                            new_rate/I3Units.hertz,omkey))
                            
@@ -146,7 +157,7 @@ for tkey, ts in status.trigger_status :
 # now we clean out the AMANDA geometry as well
 for omkey, i3omgeo in geometry.omgeo:
   if i3omgeo.omtype == dataclasses.I3OMGeo.AMANDA :
-    print("Removing AMANDA OM %s from the geometry." % str(omkey))
+    logfile.write("Removing AMANDA OM %s from the geometry." % str(omkey))
     del geometry.omgeo[omkey]
 
 del geo_frame['I3Geometry']
@@ -166,7 +177,7 @@ outfile.push(status_frame)
 outfile.close()
 
 # now correct the baselines
-print("Correcting baselines ... ")
+logfile.write("Correcting baselines ... ")
 
 from icecube import icetray
 from icecube import dataio
@@ -186,26 +197,24 @@ new_outfile_fn = options.OUTFILE.replace(".i3","_beacon.i3") \
 
 tray.AddModule("I3Writer", "writer", \
                filename = new_outfile_fn, \
-               streams=[icetray.I3Frame.Geometry, \
+               streams=[icetray.I3Frame.TrayInfo,
+                        icetray.I3Frame.Geometry, \
                         icetray.I3Frame.Calibration, \
                         icetray.I3Frame.DetectorStatus])
-
-tray.AddModule("TrashCan", "YesWeCan")
 
 tray.Execute()
 tray.Finish()
 
-print("Done correcting baselines.")
+logfile.write("...done correcting baselines.")
 
-print("Injecting vuvuzela parameters ... ")
+logfile.write("Injecting vuvuzela parameters ... ")
 import subprocess
 
 I3_BUILD = expandvars("$I3_BUILD")
-print(I3_BUILD +"/vuvuzela/resources/data/parameters.dat")
 cmd = I3_BUILD + "/vuvuzela/resources/scripts/InjectNoiseParameters.py"
 subprocess.call([ cmd, \
                   "-i", new_outfile_fn, \
                   "-o", new_outfile_fn.replace("_beacon","_vuvuzela"), \
                   "-t", I3_BUILD +"/vuvuzela/resources/data/parameters.dat" ])
 
-print("Done injecting vuvuzela parameters.")
+logfile.write("Done injecting vuvuzela parameters.")

@@ -1,5 +1,15 @@
 #!/usr/bin/env python
 
+from optparse import OptionParser
+
+parser = OptionParser()
+parser.add_option("-i","--inputfile", dest="GCDFILENAME",help="GCD file.")
+(options, args) = parser.parse_args()
+
+if not options.GCDFILENAME :
+    print("You must specify a GCD file. (e.g. '-i <GCD_FILENAME>')")
+    sys.exit(1)
+
 import sys
 import os
 import math
@@ -11,7 +21,7 @@ from icecube import simclasses
 
 from gcd_setup import gcd_extract 
 
-gcd = gcd_extract()
+gcd = gcd_extract(options.GCDFILENAME)
 
 dom_geo_map = gcd['dom_geo_map']
 dom_cal_map = gcd['dom_cal_map']
@@ -20,7 +30,6 @@ vem_cal_map = gcd['vem_cal_map']
 station_geo_map = gcd['station_geo_map']
 bad_dom_list = gcd['bad_dom_list']
 high_qe_dom_list = gcd['high_qe_dom_list']
-
 
 geo_strings_to_check = range(1,87)
 for string in geo_strings_to_check:
@@ -57,6 +66,7 @@ from icecube.DOMLauncher.gcd_test import pmt_response_sim_test
 from icecube.DOMLauncher.gcd_test import dom_launcher_test
 #from icecude.topsimulator.gcd_test import top_simulator_test
 
+all_pass = True
 for omkey, i3omgeo in dom_geo_map:
 
     if omkey not in bad_dom_list \
@@ -70,4 +80,15 @@ for omkey, i3omgeo in dom_geo_map:
         pass_pmt = pmt_response_sim_test(omkey, domcal, domstat)
         pass_dom_launcher = dom_launcher_test(omkey, i3omgeo, domcal, domstat)
         #pass_top_sim = top_simulator_test(omkey, i3omgeo, domcal, domstat)
+
+        all_pass = pass_phm \
+            and pass_vuvuzela \
+            and pass_pmt \
+            and pass_dom_launcher
+
+# report back to the mothership
+if not all_pass :
+    sys.exit(1)
+else :
+    sys.exit(0)        
 

@@ -3,18 +3,9 @@
 from icecube import icetray
 from icecube import dataio
 
-def gcd_extract():
-    from optparse import OptionParser
-
-    parser = OptionParser()
-    parser.add_option("-i","--inputfile", dest="GCDFILE",help="GCD file.")
-    (options, args) = parser.parse_args()
-
-    if not options.GCDFILE :
-        print("You must specify a GCD file. (e.g. '-i <GCD_FILENAME>')")
-        sys.exit()
+def gcd_extract(gcd_filename):
     
-    gcdfile = dataio.I3File(options.GCDFILE)
+    gcdfile = dataio.I3File(gcd_filename)
 
     frame = gcdfile.pop_frame()
     while not frame.Has('I3Geometry'):
