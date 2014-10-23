@@ -64,7 +64,7 @@ if err_code != 0 : sys.exit(err_code)
 # Now correct the GCD file that was just generated
 ###
 in_filename = "GeoCalibDetectorStatus_"+options.SEASON+"."+str(MJD)+"_candidate.i3.gz"
-out_filename = "GeoCalibDetectorStatus_"+options.SEASON+"."+str(MJD)+"_corrected.i3.gz"
+out_filename = "GeoCalibDetectorStatus_"+options.SEASON+"."+str(MJD)+".i3.gz"
 print("Correcting the GCD file...")
 script = SCRIPT_PATH + "correct_GCD.py"
 err_code = subprocess.call([script,
