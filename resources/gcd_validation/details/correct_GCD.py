@@ -169,49 +169,9 @@ cal_frame['I3Calibration'] = calibration
 del status_frame['I3DetectorStatus']
 status_frame['I3DetectorStatus'] = status
 
-
-#outfile = dataio.I3File(options.OUTFILE, dataio.I3File.Mode.Writing)
-outfile = dataio.I3File("./corrected_gcd.i3.gz", dataio.I3File.Mode.Writing)
+outfile = dataio.I3File(options.OUTFILE, dataio.I3File.Mode.Writing)
 outfile.push(geo_frame)
 outfile.push(cal_frame)
 outfile.push(status_frame)
 outfile.close()
 
-# now correct the baselines
-logfile.write("Correcting baselines ... ")
-
-from icecube import icetray
-from icecube import dataio
-from icecube import WaveCalibrator
-import I3Tray
-
-tray = I3Tray.I3Tray()
-tray.AddModule("I3Reader", "reader", "./corrected_gcd.i3.gz")
-
-# Simulation: no baseline offsets
-# Copy DOMCal baselines into calibrations as they go by
-tray.AddModule(WaveCalibrator.DOMCalBaselineModule, "domcal_baseliner")
-
-tray.AddModule("I3Writer", "writer", \
-               filename = "./gcd_with_beacons.i3.gz", \
-               streams=[icetray.I3Frame.TrayInfo,
-                        icetray.I3Frame.Geometry, \
-                        icetray.I3Frame.Calibration, \
-                        icetray.I3Frame.DetectorStatus])
-
-tray.Execute()
-tray.Finish()
-
-logfile.write("...done correcting baselines.")
-
-logfile.write("Injecting vuvuzela parameters ... ")
-import subprocess
-
-I3_BUILD = expandvars("$I3_BUILD")
-cmd = I3_BUILD + "/vuvuzela/resources/scripts/InjectNoiseParameters.py"
-subprocess.call([ cmd, \
-                  "-i", "./gcd_with_beacons.i3.gz", \
-                  "-o", options.OUTFILE, \
-                  "-t", I3_BUILD +"/vuvuzela/resources/data/parameters.dat" ])
-
-logfile.write("Done injecting vuvuzela parameters.")
