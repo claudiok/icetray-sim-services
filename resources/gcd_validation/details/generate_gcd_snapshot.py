@@ -31,8 +31,12 @@ from icecube import phys_services
 from icecube import dataio
 from icecube import I3Db
 from icecube import BadDomList
+from icecube import vuvuzela
+from icecube import WaveCalibrator
 
 icetray.logging.rotating_files(options.LOGFILE)
+icetray.set_log_level_for_unit('Inject', icetray.I3LogLevel.LOG_TRACE)
+
 
 tray = I3Tray()
 
@@ -103,19 +107,19 @@ tray.AddModule('I3BadDomListModule', 'BadDomsSLC',
                AddGoodSlcOnlyKeys  = False,
                )
 
-tray.AddModule("FrameCheck","framecheck",
-               ensure_physics_has = ["DrivingTime",
-                                     "I3Geometry",
-                                     "I3DetectorStatus",
-                                     "I3Calibration"] )
+tray.AddModule(WaveCalibrator.DOMCalBaselineModule, "domcal_baseliner")
 
-fn = "GeoCalibDetectorStatus_"+options.SEASON+"."+str(options.MJD)+"_candidate.i3.gz"
+tray.AddModule("Inject", "InjectNoiseParams",
+	       InputNoiseFile = \
+           expandvars("$I3_SRC/vuvuzela/resources/data/parameters.dat"),
+	       )
+
 tray.AddModule("I3Writer","writer",
                streams = [icetray.I3Frame.TrayInfo, \
                           icetray.I3Frame.Geometry, \
                           icetray.I3Frame.Calibration, \
                           icetray.I3Frame.DetectorStatus],
-               filename= fn )
+               filename = "./gcd_snapshot.i3.gz" )
 
 def dump(frame):
     f = open(options.LOGFILE, 'a')
