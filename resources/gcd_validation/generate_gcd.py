@@ -63,12 +63,11 @@ if err_code != 0 : sys.exit(err_code)
 ###
 # Now correct the GCD file that was just generated
 ###
-in_filename = "GeoCalibDetectorStatus_"+options.SEASON+"."+str(MJD)+"_candidate.i3.gz"
 out_filename = "GeoCalibDetectorStatus_"+options.SEASON+"."+str(MJD)+".i3.gz"
 print("Correcting the GCD file...")
 script = SCRIPT_PATH + "correct_GCD.py"
 err_code = subprocess.call([script,
-                    "-i" , in_filename, 
+                    "-i" , "./gcd_snapshot.i3.gz", 
                     "-o" , out_filename, 
                     "-l", options.LOGFILE])
 print("...done correcting GCD file. %s" \
@@ -113,8 +112,9 @@ logfile.write(svn_info)
 
 import datetime
 timestamp = str(datetime.datetime.now())
-logfile.write("%s\n" % timestamp)
+logfile.write("TIMESTAMP : %s\n" % timestamp)
 
 cmd = ["md5sum", out_filename]
 check_sum = subprocess.check_output(cmd)
+logfile.write("MD5SUM : %s\n" % timestamp)
 
