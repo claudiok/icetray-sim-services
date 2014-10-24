@@ -76,12 +76,13 @@ for omkey, i3omgeo in dom_geo_map:
         domstat = dom_status_map[omkey]
 
         pass_phm = photonics_hit_maker_test(omkey, i3omgeo, domcal)
-        pass_vuvuzela = vuvuzela_test(omkey, domcal)
+        pass_vuvuzela = vuvuzela_test(omkey, i3omgeo, domcal)
         pass_pmt = pmt_response_sim_test(omkey, domcal, domstat)
         pass_dom_launcher = dom_launcher_test(omkey, i3omgeo, domcal, domstat)
         #pass_top_sim = top_simulator_test(omkey, i3omgeo, domcal, domstat)
 
-        all_pass = pass_phm \
+        all_pass = all_pass \
+            and pass_phm \
             and pass_vuvuzela \
             and pass_pmt \
             and pass_dom_launcher
