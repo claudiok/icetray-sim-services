@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+# we have to import here because defaults below use it
+from I3Tray import I3Units 
+
 from os.path import expandvars
 from optparse import OptionParser
 parser = OptionParser()
@@ -21,7 +24,7 @@ parser.add_option("-m","--nhits_per_DOM", type = "int",
                   dest="nhits_per_DOM", default=20,
                   help="Number of hits per DOM")
 
-parser.add_option("-l","--time_const", type = "float",
+parser.add_option("-t","--time_const", type = "float",
                   dest="time_const", default=0.01*I3Units.ns,
                   help="Time Constant")
 
@@ -41,9 +44,13 @@ parser.add_option("-u","--FearTheTurtle",
                   action="store_true", dest = "fear_the_turtle", default=False,
                   help="System has numpy, pylab, and pilfer installed.")
 
+parser.add_option("-l","--logfile",
+                  dest="LOGFILE", default="./gcd_logfile" ,
+                  help="Name of logfile.")
+
+
 (options, args) = parser.parse_args()
 
-from I3Tray import I3Units
 from I3Tray import I3Tray
 
 options.binwidth *= I3Units.ns
@@ -162,7 +169,8 @@ tray.AddModule(StressTestPEGenerator ,"pes",\
                Streams = [icetray.I3Frame.DAQ],\
                hit_times = t, weights = w )
 
-tray.AddModule("Vuvuzela","noise")
+tray.AddModule("Vuvuzela","noise",
+               SimulateNewDOMs = True)
 
 tray.AddModule("PMTResponseSimulator","pmt")
 
@@ -171,8 +179,7 @@ tray.AddModule("DOMLauncher","domsim")
 tray.AddModule('I3WaveCalibrator', 'wavecal',\
                Launches = "I3DOMLaunchSeriesMap")
    
-tray.AddModule('I3Wavedeform', 'DeformInIce',\
-               UseDOMsimulatorTemplates = False)
+tray.AddModule('I3Wavedeform', 'DeformInIce')
 
 tray.AddModule("I3Writer","writer",
     filename = options.OUTPUT_FILENAME,\
@@ -183,7 +190,12 @@ tray.AddModule("I3Writer","writer",
                icetray.I3Frame.DAQ],\
     )
 
+tray.AddModule("Dump","dump")
+    
 tray.AddModule("TrashCan", "the can")
 
 tray.Execute(options.nevents)
 tray.Finish()
+
+# report all is well to the mothership
+sys.exit(0)
