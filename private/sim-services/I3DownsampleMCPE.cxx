@@ -114,8 +114,24 @@ void I3DownsampleMCPE::DAQ(I3FramePtr frame)
             for (I3MCPESeries::const_iterator series_iter = pe_series.begin();
                  series_iter != pe_series.end(); ++series_iter)
             {
-	      if( rng_->Uniform(1) < sampleFrac_ )
-		(*output)[omkey].push_back(*series_iter);
+
+	      // if the MCPE has only 1 pe (most cases), randomly decide                                                                //  whether to keep it or throw it                                                                           
+
+	      if(series_iter->npe <= 1)
+		{
+		  if( rng_->Uniform(1) < sampleFrac_ )
+		    (*output)[omkey].push_back(*series_iter);
+		}
+
+	      // If the MCPE has multiple pe (rare), draw the number to keep                                             
+	      //  from a binomial distribution.                                                                          
+	      else
+		{
+		  int binomialSample = rng_->Binomial(series_iter->npe, sampleFrac_);
+		  I3MCPE newMCPE = *series_iter;
+		  newMCPE.npe = binomialSample;
+		  (*output)[omkey].push_back(newMCPE);
+		}
             }
         }
     
