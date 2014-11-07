@@ -2,7 +2,24 @@
 # $Author: olivas $
 # $Date: 2011-10-10 $
 
+November 7, 2014 Alex Olivas (olivas@icecube.umd.edu)
+--------------------------------------------------------------------
+V01-05-04 - Bugfix release
+  o New I3DownsampleMCPE class 
+  o I3MCEventHeaderGenerator - Added option to increment the DAQ time.
+  o Uses I3_TESTDATA instead of I3_PORTS/test-data
+  o Re-worked hobo test suite.   Not all modules and histograms have tests.  
+    When all modules and histograms have tests implemented we can enable
+    "all_your_tests_are_belong_to_us.py" which checks that they indeed all
+    have tests.
+  o The GCD validation scripts were updated.  One-stop-shop for GCD generation
+    is sim-services/resources/gcd_validation/generate_gcd.py.  That does the 
+    DB pull, correction, testing, and validation.  It also writes the svn info
+    and GCD checksum to the output logfile.
+  o An empty tree checker was added to the sanity checkers.
+    
 September 9, 2014 Alex Olivas (olivas@icecube.umd.edu)
+
 --------------------------------------------------------------------
 V01-05-03 - Bugfix release
   o Following matplotlib's recommendations for batch processing of plots.

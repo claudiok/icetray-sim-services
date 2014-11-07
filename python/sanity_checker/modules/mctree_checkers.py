@@ -23,18 +23,21 @@ class InIceMCTreeChecker( SanityChecker ) :
     def __init__(self):
         SanityChecker.__init__(self)
 
+        self.emptyTreeCounter = Counter( tolerance = 0 )
         self.negLengthTrackCounter = Counter( tolerance = 0 )
         self.nanLengthTrackCounter = Counter( tolerance = 0 )
         self.noInIceMuonsCounter = Counter( tolerance = 100 )
         self.noInIceParticlesCounter = Counter( tolerance = 0 )
         self.unpropagatedTausCounter = Counter( tolerance = 0 )
 
+        self.emptyTreeCounter.failure_msg = "Too many events with empty trees."
         self.nanLengthTrackCounter.failure_msg = "Too many events with NAN length InIce muons."
         self.negLengthTrackCounter.failure_msg = "Particles should not have negative lengths."
         self.noInIceMuonsCounter.failure_msg = "Too many events with no InIce muons."
         self.noInIceParticlesCounter.failure_msg = "Too many events with no InIce particles."
         self.unpropagatedTausCounter.failure_msg = "InIce tau not propagated correctly."
 
+        self.registry.append(self.emptyTreeCounter)
         self.registry.append(self.nanLengthTrackCounter)
         self.registry.append(self.negLengthTrackCounter)
         self.registry.append(self.noInIceMuonsCounter)
@@ -45,6 +48,8 @@ class InIceMCTreeChecker( SanityChecker ) :
     def check( self, frame ):
         mctree = frame.Get("I3MCTree")
 
+        self.emptyTreeCounter.assert_true( mctree.size() > 0 )
+        
         n_inice_muons = 0
         n_inice_particles = 0
         for p in mctree :
