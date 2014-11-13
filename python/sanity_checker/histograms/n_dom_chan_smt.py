@@ -3,7 +3,7 @@ from icecube import dataclasses
 from ..bases.histogram import Histogram
 from .utils import bins, event_weight
 
-from icecube.dataclasses.trigger_hierarchy_recipes import n_triggers
+from icecube.trigger_sim.trigger_hierarchy_recipes import n_triggers
 
 def _frame_op(frame):
     if "I3TriggerHierarchy" in frame \
