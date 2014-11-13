@@ -15,13 +15,14 @@ report = dict()
 for t in module_tests :
     frame = icetray.I3Frame()
     t.frame_setup(frame)
-    all_is_well = t.module.check(frame)
-    if not all_is_well :
-        t.module.fail()        
+
+    t.module.check(frame)
+    
+    test_result = t.test(t.module)
 
     key = "%s : %s " % (t.module.pprint(), t.name)
-    report[key] = all_is_well
-    all_tests_passed = all_tests_passed and all_is_well
+    report[key] = test_result
+    all_tests_passed = all_tests_passed and test_result
 
 if not all_tests_passed :
     n_fail = 0

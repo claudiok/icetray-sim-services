@@ -48,7 +48,7 @@ class InIceMCTreeChecker( SanityChecker ) :
     def check( self, frame ):
         mctree = frame.Get("I3MCTree")
 
-        self.emptyTreeCounter.assert_true( mctree.size() > 0 )
+        self.emptyTreeCounter.assert_true( len(mctree) > 0 )
         
         n_inice_muons = 0
         n_inice_particles = 0

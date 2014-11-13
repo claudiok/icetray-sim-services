@@ -1,18 +1,18 @@
 class Counter :
     def __init__( self, tolerance = 100 ):
         self.failure_msg = "i can't tolerate this anymore"
-        self._counter = 0
-        self._tolerance = tolerance
+        self.counter = 0
+        self.tolerance = tolerance
 
     def assert_true( self, cond ):
-        self._counter = 0 if cond else self._counter + 1
+        self.counter = 0 if cond else self.counter + 1
 
     def check(self):
-        return self._counter <= self._tolerance 
+        return self.counter <= self.tolerance 
 
     def __getstate__( self ):
 
         state = { "failure_msg" : self.failure_msg , \
-                  "_counter" : self._counter , \
-                  "_tolerance" :  self._tolerance }
+                  "counter" : self.counter , \
+                  "tolerance" :  self.tolerance }
         return state
