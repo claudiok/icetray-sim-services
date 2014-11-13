@@ -77,8 +77,8 @@ class InIceMCTreeChecker( SanityChecker ) :
                         print(p)
                         self.unpropagatedTausCounter.failure_msg += "\n"
                         self.unpropagatedTausCounter.failure_msg += "  This test fails if InIce taus above 1TeV have no daughters or 0 length."
-                        self.unpropagatedTausCounter.failure_msg += "    tau energy = %f TeV\n" % p.energy/I3Units.TeV
-                        self.unpropagatedTausCounter.failure_msg += "    tau length = %f m\n" % p.length/I3Units.m
+                        self.unpropagatedTausCounter.failure_msg += "    tau energy = %f TeV\n" % (p.energy/I3Units.TeV)
+                        self.unpropagatedTausCounter.failure_msg += "    tau length = %f m\n" % (p.length/I3Units.m)
                         self.unpropagatedTausCounter.failure_msg += "    n daughters = %d\n" % len(mctree.get_daughters(p))
                         self.unpropagatedTausCounter.assert_true(False)
                         
