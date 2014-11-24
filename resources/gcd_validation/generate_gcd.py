@@ -11,12 +11,12 @@ from os.path import expandvars
 # 'version' is the latest published version of the GCD.
 # So -1 versions mean one hasn't been generated yet.
 # https://wiki.icecube.wisc.edu/index.php/GCD_File_Info_for_Production
-season_params = { "2014" : {"MJD" : 56784, "version" : -1 } \
-                  "2013" : {"MJD" : 56429, "version" : 1  } \
-                  "2012" : {"MJD" : 56063, "version" : 1  } \
-                  "2011" : {"MJD" : 55697, "version" : 2  } \
-                  "IC79" : {"MJD" : 55380, "version" : -1 } \
-                  "IC59" : {"MJD" : 55000, "version" : -1 } \
+season_params = { "2014" : {"MJD" : 56784, "version" : -1 }, \
+                  "2013" : {"MJD" : 56429, "version" : 1  }, \
+                  "2012" : {"MJD" : 56063, "version" : 1  }, \
+                  "2011" : {"MJD" : 55697, "version" : 2  }, \
+                  "IC79" : {"MJD" : 55380, "version" : -1 }, \
+                  "IC59" : {"MJD" : 55000, "version" : -1 }, \
                   "IC40" : {"MJD" : 54649, "version" : -1 } \
                   }
 
@@ -29,11 +29,16 @@ parser.add_option("-s","--season",
 
 (options, args) = parser.parse_args()
 
+if options.SEASON not in season_params :
+    print("Season %s not supported." % options.SEASON)
+    sys.exit(1)
+ 
 print("Please be patient.  This will take several minutes.")
 
+MJD = season_params[options.SEASON]["MJD"]
 new_version = season_params[options.SEASON]["version"] + 1
 out_filename = "GeoCalibDetectorStatus_"+options.SEASON+"."+str(MJD)+"_V"+str(new_version)+".i3.gz"
-logfilename = out_filename.reaplce(".i3.gz",".log")
+logfilename = out_filename.replace(".i3.gz",".log")
 logfile = open(logfilename, "w")
 
 from icecube import icetray
@@ -50,7 +55,6 @@ if options.SEASON not in season_params.keys() :
     f.write(msg)
     sys.exit(1)
     
-MJD = season_params[options.SEASON]["MJD"]
 ###
 # First get the G, C, and D frames from the DB and generate a raw GCD file.
 # This also includes the Bad DOM list.

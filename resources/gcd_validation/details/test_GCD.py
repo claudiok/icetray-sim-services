@@ -80,7 +80,13 @@ for omkey, i3omgeo in dom_geo_map:
         pass_pmt = pmt_response_sim_test(omkey, domcal, domstat)
         pass_dom_launcher = dom_launcher_test(omkey, i3omgeo, domcal, domstat)
         #pass_top_sim = top_simulator_test(omkey, i3omgeo, domcal, domstat)
+        # add trigger-sim, clsim, and ppc
 
+        if not pass_phm : print ("FAIL : I3PhotonicsHitMaker")
+        if not pass_vuvzela : print ("FAIL : Vuvuzela")
+        if not pass_pmt : print ("FAIL : PMTResponseSimulator")
+        if not pass_dom_launcher : print ("FAIL : DOMLauncher")
+        
         all_pass = all_pass \
             and pass_phm \
             and pass_vuvuzela \

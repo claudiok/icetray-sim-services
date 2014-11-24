@@ -2,6 +2,11 @@
 # $Author: olivas $
 # $Date: 2011-10-10 $
 
+November 24, 2014 Alex Olivas (olivas@icecube.umd.edu)
+--------------------------------------------------------------------
+V01-05-05 - Bugfix release
+  o More tests for sanity checkers
+
 November 7, 2014 Alex Olivas (olivas@icecube.umd.edu)
 --------------------------------------------------------------------
 V01-05-04 - Bugfix release
