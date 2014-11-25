@@ -14,6 +14,7 @@ except ImportError :
         except ImportError :
             isnan = lambda x : str(x) == "nan"
 
+from math import sqrt
 from I3Tray import I3Units
 from icecube import dataclasses as dc
 from icecube.sim_services.sanity_checker.utils.counter import Counter
@@ -71,8 +72,18 @@ class InIceMCTreeChecker( SanityChecker ) :
                 # tau specific checks
                 if ( p.type == dc.I3Particle.TauPlus or \
                      p.type == dc.I3Particle.TauPlus ) :
-                    if( p.energy > 1*I3Units.TeV \
+
+                    # FIXME : PROPOSAL should be setting InActiveVolume
+                    # This is a kludge to get simprod going again
+                    # The actual active volume should be an 800m radius
+                    # and +/- 800m in z, but I'm gonna shave off 100m
+                    # in each just to be safe.
+                    radius = sqrt(p.pos.x**2 + p.pos.y**2)
+                    in_active_volume = bool(radius < 700.*I3Units.m and abs(p.pos.z**2) < 700*I3Units.m)
+                    if( in_active_volume \
+                        and p.energy > 1*I3Units.TeV \
                         and (p.length == 0 or len(mctree.get_daughters(p)) == 0 ) ):                             
+
                         print(mctree)
                         print(p)
                         self.unpropagatedTausCounter.failure_msg += "\n"
