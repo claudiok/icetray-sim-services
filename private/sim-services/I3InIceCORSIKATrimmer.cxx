@@ -45,13 +45,14 @@ public:
 		
 		// Clean up newly childless parents
 		for (I3MCTree::post_order_iterator p = mctree->begin_post(); p != mctree->end_post(); ) {
-			if (p->GetLocationType() != I3Particle::InIce && p.number_of_children() == 0u) {
+			if (p->GetLocationType() != I3Particle::InIce && mctree->number_of_children(p) == 0u) {
 				p = mctree->erase(p);
 				// If the node we just removed was not a leaf in the orignal tree,
 				// we may end up skipping leaf nodes, as erase() does not manipulate
 				// links in non-neighboring nodes. Descend to the next leaf to continue
 				// in true post-order.
-				p.descend_all();
+				// TODO: the new tree should fix this?
+				//p.descend_all();
 			} else {
 				p++;
 			}

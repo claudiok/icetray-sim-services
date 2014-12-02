@@ -113,7 +113,6 @@ void PropagatorServiceUtils::SecondPass(I3MCTreePtr& mctree_ptr,
     }    
     // just one last sanity check
     if( copy_iter == tree_copy->end() ||
-        ! tree_copy->is_valid( copy_iter ) ||
        t_iter->GetMinorID() != copy_iter->GetMinorID() ||
         t_iter->GetMajorID() != copy_iter->GetMajorID() ) 
       log_fatal("lost track of the particle");

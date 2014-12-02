@@ -126,7 +126,7 @@ I3_MODULE(I3MCPEtoI3MCHitConverter);
 
 void pe_to_hit(const I3MCPE& pe, I3MCHit& hit)
 {
-    hit.SetParticleID(pe.major_ID,pe.minor_ID);
+    hit.SetParticleID(pe.ID.majorID,pe.ID.minorID);
     hit.SetTime(pe.time);
     hit.SetNPE(pe.npe);
     hit.SetHitSource(I3MCHit::SPE);
