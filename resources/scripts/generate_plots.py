@@ -11,14 +11,16 @@ parser.add_option("-i","--infile",
                   help="Pickle file with the histograms.")
 
 parser.add_option("-p","--output_path",
-                  dest="OUTPATH", 
+                  dest="OUTPATH", default = './',
                   help="Path to dump the histograms.")
 
 (options, args) = parser.parse_args()
 
 import cPickle as pickle
 f = open(options.INFILE)
-histograms = pickle.load(f)
+contents = pickle.load(f)
 
-for title, hist in histograms.iteritems() :
-    hist.draw(path = options.OUTPATH)
+for title, hist in contents['Histograms'].iteritems() :
+    print title
+    #hist.draw(path = options.OUTPATH)
+    hist.save()

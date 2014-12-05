@@ -2,8 +2,7 @@ import numpy
 from I3Tray import I3Units
 
 def bins(nbins, min, max) :
-    db = float(max-min)/float(nbins)
-    return numpy.arange(min,max,db)
+    return nbins
 
 # Units of s^-1
 def event_weight(frame) :

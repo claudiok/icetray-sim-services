@@ -5,7 +5,8 @@ import matplotlib.pyplot as plt
 import copy
 from copy import deepcopy
 import numpy
-from ..kombu import histfactory
+from numpy import log10
+#from ..kombu import histfactory
 
 class Histogram :
     """
@@ -66,15 +67,19 @@ class Histogram :
         if len(self.data) == 0 : return
         if isinstance(self.data[0], tuple) \
           and len(self.data[0]) == 2 :
+            _data = [t[0] for t in self.data if not numpy.isnan(t[0])]
+            _weights = [t[1] for t in self.data if not numpy.isnan(t[0])]        
             # The data is weighted if the elements are tuples.
-            self.hist = histfactory.generate_hist1d( [t[0] for t in self.data], \
-                                                     weights = [t[1] for t in self.data], \
-                                                     bins = self.draw_args["bins"])
+            self.hist = numpy.histogram( _data, weights = _weights, bins = self.draw_args["bins"])
+            #self.hist = numpy.histogramdd( _data, weights = _weights, bins = self.draw_args["bins"])
+            #self.hist = plt.hist( _data, weights = _weights, bins = self.draw_args["bins"])
         else:
             # The elements of data should be scalars
             if numpy.isscalar(self.data[0]) :
-                self.hist = histfactory.generate_hist1d( self.data, \
-                                                        bins = self.draw_args["bins"])
+                _data = [d for d in self.data if not numpy.isnan(d)]
+                #self.hist = plt.hist( _data, bins = self.draw_args["bins"])
+                #self.hist = numpy.histogramdd( _data, bins = self.draw_args["bins"])
+                self.hist = numpy.histogram( _data, bins = self.draw_args["bins"])
             else:
                 print("Malformed data of type %s.", type(self.data[0]))
                 print("This needs to either be a 2-tuple or a scalar.")
@@ -91,15 +96,33 @@ class Histogram :
         stats - bool to display a stats box.
         label - Plot label.
         """
-        self.hist.line(log = self.draw_args["log"] \
-                       if "log" in self.draw_args else False, label = label)
+        if not self.hist : return 
+        #self.hist.line(log = self.draw_args["log"] \
+        #               if "log" in self.draw_args else False, label = label)
+        #self.hist.line(label = label)
 
+        _hist = self.hist[0]
+        _bin_edges = self.hist[1]
+
+        # need to make steps
+        x = list()
+        y = list()
+        bin_length = _bin_edges[1] - _bin_edges[0]
+        for be, hval in zip(_bin_edges, _hist):
+            if self.draw_args["log"] : hval = log10(hval)
+            x.append(be)
+            y.append(hval)        
+            x.append(be + bin_length)
+            y.append(hval)
+
+        plt.plot(x,y,"-")
+            
         if "xticks_args" in self.draw_args :
             plt.xticks(*(self.draw_args["xticks_args"]),
                          **(self.draw_args["xticks_kwargs"]))
 
-        if stats :
-            self.hist.statbox()
+        #if stats :
+        #    self.hist.statbox()
 
         if "title" in self.draw_args :
             plt.title(self.draw_args["title"])
