@@ -21,7 +21,7 @@ parser.add_option("-p","--path_to_i3files",
                   help="path to I3Files")
 
 parser.add_option("-n","--nevents", default = None,
-                  dest="NEVENTS", 
+                  dest="NEVENTS", type = 'int',
                   help="number of events to check")
 
 (options, args) = parser.parse_args()
@@ -61,7 +61,6 @@ if options.INPATH :
 
 tray = I3Tray()
 
-print(filelist)
 tray.AddModule("I3Reader", "read",
 	       filenamelist = filelist )
 
@@ -69,13 +68,9 @@ from os.path import expandvars
 from icecube.sim_services.sanity_checker import SimulationSanityChecker
 tray.AddModule( SimulationSanityChecker, "sanitycheck",
 		RunType = "CORSIKA_Weighted" ,
-                Prescale = 10,
+        Prescale = 10,
 		OutputFilename = options.OUTFILE )
 
-#tray.AddModule("Dump", "dump")
-#tray.AddModule("TrashCan", "the can")
-
-print(options.NEVENTS)
 if options.NEVENTS :
 	tray.Execute(options.NEVENTS)
 else:
