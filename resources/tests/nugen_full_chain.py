@@ -28,6 +28,7 @@ from icecube import trigger_sim
 
 import sys
 
+icetray.set_log_level(icetray.I3LogLevel.LOG_ERROR)
 
 tray = I3Tray()
 ev_n=100
@@ -191,9 +192,11 @@ class test(icetray.I3Module):
     def Finish(self):
         # in this particular sample only 16 frames are triggered.
         # this hard-coded value is only temporary
-        if self.n_frames == 0, :
+        if self.n_frames == 0 :
             print "No events triggered."
             sys.exit(1)
+        else :
+            print "PASS : %d frames triggered" % self.n_frames
 
 tray.AddModule(test)
 
