@@ -98,7 +98,6 @@ void I3RemoveLargeDT::Configure()
 void I3RemoveLargeDT::DAQ(I3FramePtr frame)
 {
     I3MCPESeriesMapPtr output(new I3MCPESeriesMap);
-    I3MCPESeriesMapPtr tmp(new I3MCPESeriesMap);
     std::vector< std::pair<OMKey,double> > hitpairs;
 
     I3MCPESeriesMapConstPtr input = frame->Get<I3MCPESeriesMapConstPtr>(inputResponse_);
@@ -106,22 +105,9 @@ void I3RemoveLargeDT::DAQ(I3FramePtr frame)
     {
             log_fatal("Frame is missing input response");
     }
-
     // First we copy the map to tmp in order to make sure the hits are time-sorted 
-    for (I3MCPESeriesMap::const_iterator map_iter = input->begin();
-             map_iter != input->end(); map_iter++)
-    {
-            const OMKey& omkey = map_iter->first; 
-            const I3MCPESeries &pe_series = map_iter->second;
+    I3MCPESeriesMapPtr tmp(new I3MCPESeriesMap(*input));
 
-            for (I3MCPESeries::const_iterator series_iter = pe_series.begin();
-                 series_iter != pe_series.end(); ++series_iter)
-            {
-                // this will insert an empty vector automatically in case there is none
-                (*tmp)[omkey].push_back(*series_iter);
-            }
-
-    }
 
     // Make sure the resultant reponses are in time order
     for (I3MCPESeriesMap::iterator map_iter = tmp->begin();
