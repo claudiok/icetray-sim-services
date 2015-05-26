@@ -9,13 +9,47 @@
  * @author Alex Olivas <olivas@icecube.umd.edu>
  *
  */
-
-#include "sim-services/time-generator/I3ModifyEventID.h"
+#include "icetray/I3TrayHeaders.h"
+#include "icetray/I3Tray.h"
+#include "icetray/I3Module.h"
+#include "dataclasses/I3Time.h"
 #include "dataclasses/physics/I3EventHeader.h"
 
-#include "icetray/I3TrayHeaders.h"
-#include "icetray/I3Module.h"
-#include "icetray/I3Tray.h"
+/** 
+ *@class I3ModifyEventID I3ModifyEventID.h 
+ */
+class I3ModifyEventID : public I3Module
+{
+ public:
+
+  I3ModifyEventID(const I3Context& ctx);
+  ~I3ModifyEventID();
+  
+  void Configure();
+  void DAQ(I3FramePtr frame);
+
+ private:
+  I3ModifyEventID();
+  I3ModifyEventID(const I3ModifyEventID&);
+  I3ModifyEventID& operator=(const I3ModifyEventID&);
+
+  //Start time of run period
+  int year_;
+  int64_t daqTime_;
+  int mjd_;
+  int mjd_s_;
+  double mjd_ns_;
+  unsigned runNumber_;
+  unsigned subRunNumber_;
+  unsigned startEID_;
+
+  bool modTime_;
+  bool modRunId_;
+  bool modEventId_;
+
+  SET_LOGGER("I3ModifyEventID");
+
+};
 
 I3_MODULE(I3ModifyEventID);
 

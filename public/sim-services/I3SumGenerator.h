@@ -46,6 +46,7 @@ class I3SumGenerator
    *@param terms   Number of terms in the sum
    */
   double Generate(int terms);
+
   /**
    *@brief      Initialise a SumGenerator
    *@param r            Pointer to random number service
@@ -75,45 +76,61 @@ class I3SumGenerator
    */
   int nBins_;
   /**
-   *Min of single term
+   * Min of single term
    */
   double xLo_;
-  /**Max of single term*/
+
+  /**
+   * Max of single term
+   */
   double xHi_;
   /**
    * Expectation value for single term
    */
   double expectVal_;
-  /** Standard deviation for single term */
+
+  /** 
+   * Standard deviation for single term 
+   */
   double stdDev_;
+
   /**
    * Vector of sum values (lookup table) for different cumulative probabilities
    */
   std::vector< std::vector<double> > X_;
+
   /**
    * Number of bins in finer lookup tables for use in low probability tail
    */
   int nBinsLow_;
+
   /** Number of bins in finer lookup tables for use in high probability tail */
   int nBinsHigh_;
+
   /**
    * Max probability for which to use the low P lookup table
    */
   double PLow_;
+
   /** Min probability for which to use the high P lookup table */
   double PHigh_;
+
   /**
    * Stepsize for cubic root of probability in low tail
    */
   double binStepLow_;
+
   /** Stepsize for cubic root of distance from unity in high P tail */
   double binStepHigh_;
+
   /**
    * Lookup table for low P tail
    */
   std::vector< std::vector<double> > XLow_;
+
   /** Lookup table for high P tail */
   std::vector< std::vector<double> > XHigh_;
+
   /**
   * Pointer to random number generator service
   */

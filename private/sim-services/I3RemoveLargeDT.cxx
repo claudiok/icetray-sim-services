@@ -28,70 +28,58 @@
 #include "icetray/I3Module.h"
 #include "simclasses/I3MCPE.h"
 
+namespace{
+  bool compare(const I3MCPE& lhs, const I3MCPE& rhs){
+    if(lhs.time < rhs.time) return true;
+    return false;
+  }
+}
+
 /**
- * Combines several I3MCPEHitSeriesMaps into one.
+ * Clips any PEs later than MaxDeltaT, taken with respect to the earliest
+ * PE in the frame.
  */
-class I3RemoveLargeDT: public I3Module
-{
+class I3RemoveLargeDT: public I3Module {
 public:
-    I3RemoveLargeDT(const I3Context& ctx);
-    virtual ~I3RemoveLargeDT();
-
-    virtual void Configure();
-    virtual void DAQ(I3FramePtr frame);
-    virtual void Finish();
-
+  I3RemoveLargeDT(const I3Context& ctx);
+  ~I3RemoveLargeDT(){};
+  
+  void Configure();
+  void DAQ(I3FramePtr frame);
+  void Finish(){};
+  
 private:
-    std::string inputResponse_;
-    std::string outputResponse_;
-    double maxdt_;
-    bool presorted_;
-
-    static bool compare(const I3MCPE& lhs, const I3MCPE& rhs)
-    {
-        if(lhs.time < rhs.time) return true;
-        return false;
-    }
-
-    static bool compare_hitpairs(const std::pair<OMKey,double>& lhs, const std::pair<OMKey,double>& rhs)
-    {
-        if(lhs.second < rhs.second) return true;
-        return false;
-    }
-
-
-
-    SET_LOGGER("I3RemoveLargeDT");
+  std::string inputResponse_;
+  std::string outputResponse_;
+  double maxdt_;
+  bool presorted_;
+  
+  SET_LOGGER("I3RemoveLargeDT");
 };
 
 I3RemoveLargeDT::I3RemoveLargeDT(const I3Context& ctx) :
-I3Module(ctx),
-inputResponse_("I3MCPESeriesMap"),
-outputResponse_("CleanedI3MCPESeriesMap"),
-maxdt_(100*I3Units::ms),
-presorted_(true)
+  I3Module(ctx),
+  inputResponse_("I3MCPESeriesMap"),
+  outputResponse_("CleanedI3MCPESeriesMap"),
+  maxdt_(100*I3Units::ms),
+  presorted_(true)
 {
-    AddParameter("MaxDeltaT",
-        "Maximum gap between adjecent hits",
-        maxdt_); 
-    AddParameter("InputResponse",
-        "Name of the input response series",
-        inputResponse_); 
-
-    AddParameter("OutputResponse",
-        "Name of the output response series",
-        outputResponse_); 
-
-    AddParameter("PreSorted",
-        "PEs are already sorted in time",
-        presorted_); 
-
-    AddOutBox("OutBox");
-}
-
-I3RemoveLargeDT::~I3RemoveLargeDT()
-{
-
+  AddParameter("MaxDeltaT",
+               "Maximum gap between adjecent hits",
+               maxdt_); 
+  AddParameter("InputResponse",
+               "Name of the input response series",
+               inputResponse_); 
+  
+  AddParameter("OutputResponse",
+               "Name of the output response series",
+               outputResponse_); 
+  
+  AddParameter("PreSorted",
+               "PEs are already sorted in time",
+               presorted_); 
+  
+  AddOutBox("OutBox");
 }
 
 void I3RemoveLargeDT::Configure()
@@ -104,70 +92,61 @@ void I3RemoveLargeDT::Configure()
 
 void I3RemoveLargeDT::DAQ(I3FramePtr frame)
 {
-    I3MCPESeriesMapPtr output(new I3MCPESeriesMap);
-    std::vector< std::pair<OMKey,double> > hitpairs;
-
     I3MCPESeriesMapConstPtr input = frame->Get<I3MCPESeriesMapConstPtr>(inputResponse_);
     if(!input)
     {
             log_fatal("Frame is missing input response");
     }
-    // First we copy the map to tmp in order to make sure the hits are time-sorted 
-    I3MCPESeriesMapPtr tmp(new I3MCPESeriesMap(*input));
 
-    // Make sure the resultant reponses are in time order
-    if (!presorted_) { 
-	    log_trace("Sorting MCPE series");
-	    for (I3MCPESeriesMap::iterator map_iter = tmp->begin(); 
-			    map_iter != tmp->end(); map_iter++) 
-	    { 
-		    I3MCPESeries::iterator beginning = map_iter->second.begin(); 
-		    I3MCPESeries::iterator ending = map_iter->second.end(); 
-		    std::sort(beginning,ending,compare); 
-	    }
-    } else
-	    log_trace("Input MCPE series are assumed to be time-sorted");
-    
-    for (I3MCPESeriesMap::const_iterator map_iter = tmp->begin();
-	 map_iter != tmp->end(); map_iter++)
-        {
-            const OMKey& omkey = map_iter->first; 
-            const I3MCPESeries &pe_series = map_iter->second;
+    // determine the earliest and latest hits
+    // also sorting in-place, which is why we're iterating
+    // over the output map, which at this point is just a 
+    // copy of the input map.
+    double earliest_time(input->begin()->second.front().time);
+    double latest_time(input->begin()->second.front().time);
+    I3MCPESeriesMapPtr output(new I3MCPESeriesMap(*input));
+    for (I3MCPESeriesMap::iterator map_iter = output->begin(); 
+         map_iter != output->end(); map_iter++){ 
 
-            // get initial hit for OM and store it in map for later comparison
-            double tt = pe_series.begin()->time;
-            hitpairs.push_back( std::make_pair(omkey,tt) );
+      if (!presorted_) { 
+        std::sort(map_iter->second.begin(), map_iter->second.end(), compare); 
+      }
 
-            for (I3MCPESeries::const_iterator series_iter = pe_series.begin();
-                 series_iter != pe_series.end(); ++series_iter)
-            {
+      if(map_iter->second.front().time < earliest_time){ 
+        earliest_time = map_iter->second.front().time;
+      }
 
-	      if(series_iter->time - tt > maxdt_) 
-		break; // all remaining hits happen too late
-	      (*output)[omkey].push_back(*series_iter);
-	      tt = series_iter->time;
-            }
-        }
-    std::vector< std::pair<OMKey,double> >::iterator pairiter;
-    std::vector< std::pair<OMKey,double> >::iterator firstpair = hitpairs.begin();
-    std::vector< std::pair<OMKey,double> >::iterator lastpair  = hitpairs.end();
-    std::sort(firstpair,lastpair,compare_hitpairs);
-
-    double ttt = hitpairs.begin()->second;
-    for (pairiter = hitpairs.begin(); 
-		    pairiter != hitpairs.end(); pairiter++)
-    {
-         const OMKey& omkey = pairiter->first;
-         const double t = pairiter->second;
-         if ( t-ttt > maxdt_ ) {
-		 (*output)[omkey] = I3MCPESeries();
-	 }
-	 else {
-            ttt = t;
-	 }
+      if(map_iter->second.back().time > latest_time){ 
+        latest_time = map_iter->second.back().time;
+      }
     }
- 
-    // In case we are ovewritting object
+
+    if(latest_time - earliest_time > maxdt_){
+      // need to remove anything later than maxdt_
+      // otherwise there's nothing to do
+    
+      for (I3MCPESeriesMap::iterator map_iter = output->begin();
+           map_iter != output->end(); map_iter++){
+
+        // if the latest PE is before maxdt_, the whole series is
+        if(map_iter->second.back().time - earliest_time < maxdt_)
+          continue; // go to the next DOM
+        
+        // if the earliest PE is after maxdt_, the whole series is
+        if(map_iter->second.front().time - earliest_time > maxdt_){
+          map_iter->second.clear();
+          continue; // go to the next DOM
+        }
+
+        // at this point maxdt_ is within the [front, back], so
+        // should be safe to pop off the back until all of the PEs
+        // are less than maxdt_
+        while(map_iter->second.back().time - earliest_time > maxdt_)
+          map_iter->second.pop_back();
+      }        
+    }
+
+    // In case we are overwriting object
     if (outputResponse_ == inputResponse_) {
       frame->Put("old"+inputResponse_,input);
       frame->Delete(inputResponse_);
@@ -175,12 +154,6 @@ void I3RemoveLargeDT::DAQ(I3FramePtr frame)
     frame->Put(outputResponse_, output);
     PushFrame(frame,"OutBox");
 }      
-
-void I3RemoveLargeDT::Finish()
-{
-
-}
-
 
 I3_MODULE(I3RemoveLargeDT);
 
