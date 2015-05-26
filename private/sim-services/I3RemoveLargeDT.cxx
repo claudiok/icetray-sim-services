@@ -45,6 +45,7 @@ private:
     std::string inputResponse_;
     std::string outputResponse_;
     double maxdt_;
+    bool presorted_;
 
     static bool compare(const I3MCPE& lhs, const I3MCPE& rhs)
     {
@@ -67,7 +68,8 @@ I3RemoveLargeDT::I3RemoveLargeDT(const I3Context& ctx) :
 I3Module(ctx),
 inputResponse_("I3MCPESeriesMap"),
 outputResponse_("CleanedI3MCPESeriesMap"),
-maxdt_(100*I3Units::ms)
+maxdt_(100*I3Units::ms),
+presorted_(true)
 {
     AddParameter("MaxDeltaT",
         "Maximum gap between adjecent hits",
@@ -79,6 +81,10 @@ maxdt_(100*I3Units::ms)
     AddParameter("OutputResponse",
         "Name of the output response series",
         outputResponse_); 
+
+    AddParameter("PreSorted",
+        "PEs are already sorted in time",
+        presorted_); 
 
     AddOutBox("OutBox");
 }
@@ -93,6 +99,7 @@ void I3RemoveLargeDT::Configure()
     GetParameter("MaxDeltaT", maxdt_); 
     GetParameter("InputResponse", inputResponse_); 
     GetParameter("OutputResponse", outputResponse_); 
+    GetParameter("PreSorted", presorted_); 
 }
 
 void I3RemoveLargeDT::DAQ(I3FramePtr frame)
@@ -108,16 +115,19 @@ void I3RemoveLargeDT::DAQ(I3FramePtr frame)
     // First we copy the map to tmp in order to make sure the hits are time-sorted 
     I3MCPESeriesMapPtr tmp(new I3MCPESeriesMap(*input));
 
-
     // Make sure the resultant reponses are in time order
-    for (I3MCPESeriesMap::iterator map_iter = tmp->begin();
-         map_iter != tmp->end(); map_iter++)
-    {
-        I3MCPESeries::iterator beginning = map_iter->second.begin();
-        I3MCPESeries::iterator ending = map_iter->second.end();
-        std::sort(beginning,ending,compare);
-    }
-
+    if (!presorted_) { 
+	    log_trace("Sorting MCPE series");
+	    for (I3MCPESeriesMap::iterator map_iter = tmp->begin(); 
+			    map_iter != tmp->end(); map_iter++) 
+	    { 
+		    I3MCPESeries::iterator beginning = map_iter->second.begin(); 
+		    I3MCPESeries::iterator ending = map_iter->second.end(); 
+		    std::sort(beginning,ending,compare); 
+	    }
+    } else
+	    log_trace("Input MCPE series are assumed to be time-sorted");
+    
     for (I3MCPESeriesMap::const_iterator map_iter = tmp->begin();
 	 map_iter != tmp->end(); map_iter++)
         {
