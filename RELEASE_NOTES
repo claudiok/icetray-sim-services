@@ -2,6 +2,10 @@
 # $Author: olivas $
 # $Date: 2011-10-10 $
 
+On the trunk :
+  o Added I3RemoveLargeDT module to remove outliers that caused simulation 
+    to use enormous amounts of memory.
+
 November 24, 2014 Alex Olivas (olivas@icecube.umd.edu)
 --------------------------------------------------------------------
 V01-05-05 - Bugfix release
