@@ -8,7 +8,7 @@ def _frame_op(frame):
         nchannel = 0
         for dom, mcpeseries in frame["I3MCPESeriesMap"]:
             for mcpe in mcpeseries:
-                if(mcpe.major_ID == 0 and mcpe.minor_ID == 0):
+                if(mcpe.ID.majorID == 0 and mcpe.ID.minorID == 0):
                     nchannel +=1
                     break     
         return nchannel
