@@ -13,7 +13,11 @@ This project contains the following classes, none of which are documented, so yo
 - I3PropagatorModule
 - I3InIceCORSIKATrimmer
 - I3CombineMCPE
-- I3RemoveLargeDT
+- I3RemoveLargeDT - Removes any I3MCPEs with times beyond the distribution's median time +/- MaxDeltaT/2.
+ * MaxDeltaT (Default : 100ms) - Largest time span of PEs in an event.
+ * InputResponse (Default : "I3MCPESeriesMap") - Name of input I3MCPESeriesMap.
+ * OutputResponse (Default : "OutputResponse") - Name of output I3MCPESeriesMap.
+ * PreSorted (Default : true ) - If false PEs will be sorted. 
    
 Sanity Checkers
 ----------------

@@ -4,7 +4,8 @@
 
 On the trunk :
   o Added I3RemoveLargeDT module to remove outliers that caused simulation 
-    to use enormous amounts of memory.
+    to use enormous amounts of memory.  Anything outside the time window
+    from the median of the distribution is clipped.
 
 November 24, 2014 Alex Olivas (olivas@icecube.umd.edu)
 --------------------------------------------------------------------

@@ -24,15 +24,39 @@
  * @author Juan Carlos Diaz-Velez
  */
 
-#include <icetray/I3Units.h>
-#include "icetray/I3Module.h"
-#include "simclasses/I3MCPE.h"
+#include <boost/foreach.hpp>
 
+#include <icetray/I3Units.h>
+#include <icetray/I3Module.h>
+#include <simclasses/I3MCPE.h>
+
+// these are utilities we're going to use later
 namespace{
+  // for time ordering vectors of I3MCPEs
   bool compare(const I3MCPE& lhs, const I3MCPE& rhs){
     if(lhs.time < rhs.time) return true;
     return false;
   }
+
+  // this is mostly for clipping I3MCPEs outside a time range
+  struct outside_time_range{
+  private:
+    double min_time_;
+    double max_time_;
+   
+  public:
+    int n_outliers;
+
+    outside_time_range(double min_time, double max_time) :
+      min_time_(min_time),
+      max_time_(max_time),
+      n_outliers(0)
+    {};
+
+    bool operator()(const I3MCPE& pe){
+      return ((pe.time < min_time_) || (pe.time > max_time_));
+    }
+  };
 }
 
 /**
@@ -65,7 +89,7 @@ I3RemoveLargeDT::I3RemoveLargeDT(const I3Context& ctx) :
   presorted_(true)
 {
   AddParameter("MaxDeltaT",
-               "Maximum gap between adjecent hits",
+              "Largest time span of PEs in an event.",
                maxdt_); 
   AddParameter("InputResponse",
                "Name of the input response series",
@@ -92,67 +116,80 @@ void I3RemoveLargeDT::Configure()
 
 void I3RemoveLargeDT::DAQ(I3FramePtr frame)
 {
-    I3MCPESeriesMapConstPtr input = frame->Get<I3MCPESeriesMapConstPtr>(inputResponse_);
-    if(!input)
-    {
-            log_fatal("Frame is missing input response");
-    }
-
-    // determine the earliest and latest hits
-    // also sorting in-place, which is why we're iterating
-    // over the output map, which at this point is just a 
-    // copy of the input map.
-    double earliest_time(input->begin()->second.front().time);
-    double latest_time(input->begin()->second.front().time);
-    I3MCPESeriesMapPtr output(new I3MCPESeriesMap(*input));
-    for (I3MCPESeriesMap::iterator map_iter = output->begin(); 
-         map_iter != output->end(); map_iter++){ 
-
-      if (!presorted_) { 
-        std::sort(map_iter->second.begin(), map_iter->second.end(), compare); 
-      }
-
-      if(map_iter->second.front().time < earliest_time){ 
-        earliest_time = map_iter->second.front().time;
-      }
-
-      if(map_iter->second.back().time > latest_time){ 
-        latest_time = map_iter->second.back().time;
-      }
-    }
-
-    if(latest_time - earliest_time > maxdt_){
-      // need to remove anything later than maxdt_
-      // otherwise there's nothing to do
+  if(!frame->Has(inputResponse_)){ // push and return
+    log_fatal("I3MCPESeriesMap '%s' doesn't exist in the frame.", inputResponse_.c_str());
+  }
     
-      for (I3MCPESeriesMap::iterator map_iter = output->begin();
-           map_iter != output->end(); map_iter++){
-
-        // if the latest PE is before maxdt_, the whole series is
-        if(map_iter->second.back().time - earliest_time < maxdt_)
-          continue; // go to the next DOM
-        
-        // if the earliest PE is after maxdt_, the whole series is
-        if(map_iter->second.front().time - earliest_time > maxdt_){
-          map_iter->second.clear();
-          continue; // go to the next DOM
-        }
-
-        // at this point maxdt_ is within the [front, back], so
-        // should be safe to pop off the back until all of the PEs
-        // are less than maxdt_
-        while(map_iter->second.back().time - earliest_time > maxdt_)
-          map_iter->second.pop_back();
-      }        
+  I3MCPESeriesMapConstPtr input = frame->Get<I3MCPESeriesMapConstPtr>(inputResponse_);
+  
+  // determine the earliest and latest hits
+  // also sorting in-place, which is why we're iterating
+  // over the output map, which at this point is just a 
+  // copy of the input map.
+  double earliest_time(std::numeric_limits<double>::max());
+  double latest_time(std::numeric_limits<double>::min());
+  
+  // we're going to use this to calculate the mean
+  // ...but only if we need to
+  // we could use pe_times to determine the earliest and
+  // latest times, but i don't want to have to sort this
+  // if i don't have to.
+  std::vector<double> pe_times;
+  
+  I3MCPESeriesMapPtr output(new I3MCPESeriesMap(*input));
+  for (I3MCPESeriesMap::iterator map_iter = output->begin(); 
+       map_iter != output->end(); map_iter++){ 
+    
+    if (!presorted_) { 
+      std::sort(map_iter->second.begin(), map_iter->second.end(), compare); 
     }
-
-    // In case we are overwriting object
-    if (outputResponse_ == inputResponse_) {
-      frame->Put("old"+inputResponse_,input);
-      frame->Delete(inputResponse_);
+    
+    if(map_iter->second.front().time < earliest_time){ 
+      earliest_time = map_iter->second.front().time;
     }
-    frame->Put(outputResponse_, output);
-    PushFrame(frame,"OutBox");
+    
+    if(map_iter->second.back().time > latest_time){ 
+      latest_time = map_iter->second.back().time;
+    }
+    
+    BOOST_FOREACH(const I3MCPE& pe, map_iter->second){
+      pe_times.push_back(pe.time);
+    }
+  }
+  
+  // quickly determine if there's even any heavy lifting to do
+  if(latest_time - earliest_time > maxdt_){
+    // need to remove anything outside the time range
+    // start lifting heavy things...
+    std::sort(pe_times.begin(), pe_times.end());
+    
+    double median_time = *(pe_times.begin() + pe_times.size()/2);    
+    double min_time(median_time - maxdt_/2);
+    double max_time(median_time + maxdt_/2);
+    outside_time_range is_outlier(min_time, max_time);
+    for (I3MCPESeriesMap::iterator map_iter = output->begin();
+         map_iter != output->end(); map_iter++){
+      
+      // check to see if the whole series is in range first
+      if(!is_outlier(map_iter->second.front()) &&
+         !is_outlier(map_iter->second.back())){
+        continue; // go to the next DOM
+      }
+      
+      // nope...gotta clip some
+      I3MCPESeries::iterator new_end = 
+        std::remove_if(map_iter->second.begin(), map_iter->second.end(), is_outlier);        
+      map_iter->second.resize(std::distance(map_iter->second.begin(),new_end));
+    }        
+  }
+  
+  // In case we are overwriting object
+  if (outputResponse_ == inputResponse_) {
+    frame->Put("old"+inputResponse_,input);
+    frame->Delete(inputResponse_);
+  }
+  frame->Put(outputResponse_, output);
+  PushFrame(frame,"OutBox");
 }      
 
 I3_MODULE(I3RemoveLargeDT);
