@@ -1,33 +1,33 @@
 i3_project(sim-services
   PYTHON_DEST icecube/sim_services
-	PYTHON_DIR python
+  PYTHON_DIR python
 )
 
 # define the lists used to build the basic library
 SET(LIB_${PROJECT_NAME}_SOURCEFILES
-	private/sim-services/I3SumGenerator.cxx
-	private/sim-services/I3MCTreeHybridSimulationSplitter.cxx
-	private/sim-services/I3PropagatorService.cxx
-	private/sim-services/I3InIceCORSIKATrimmer.cxx
-	private/sim-services/I3MCEventHeaderGenerator.cxx
-	private/sim-services/I3ModifyEventID.cxx
-	private/sim-services/I3PropagatorModule.cxx
-	private/sim-services/I3CombineMCPE.cxx
-	private/sim-services/I3DownsampleMCPE.cxx
-	private/sim-services/I3MCPEtoI3MCHitConverter.cxx
-	private/sim-services/I3RemoveLargeDT.cxx
+  private/sim-services/I3SumGenerator.cxx
+  private/sim-services/I3MCTreeHybridSimulationSplitter.cxx
+  private/sim-services/I3PropagatorService.cxx
+  private/sim-services/I3InIceCORSIKATrimmer.cxx
+  private/sim-services/I3MCEventHeaderGenerator.cxx
+  private/sim-services/I3ModifyEventID.cxx
+  private/sim-services/I3PropagatorModule.cxx
+  private/sim-services/I3CombineMCPE.cxx
+  private/sim-services/I3DownsampleMCPE.cxx
+  private/sim-services/I3MCPEtoI3MCHitConverter.cxx
+  private/sim-services/I3RemoveLargeDT.cxx
 )
 SET(LIB_${PROJECT_NAME}_TOOLS python boost )
 
 i3_add_library(sim-services
-	${LIB_${PROJECT_NAME}_SOURCEFILES}
+  ${LIB_${PROJECT_NAME}_SOURCEFILES}
 
-	USE_TOOLS ${LIB_${PROJECT_NAME}_TOOLS}
+  USE_TOOLS ${LIB_${PROJECT_NAME}_TOOLS}
 
-	USE_PROJECTS icetray
-	phys-services
-	dataclasses
-	simclasses
+  USE_PROJECTS icetray
+  phys-services
+  dataclasses
+  simclasses
 )
 
 add_subdirectory(private/pybindings)
