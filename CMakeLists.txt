@@ -1,6 +1,7 @@
 i3_project(sim-services
-  PYTHON_DEST icecube/sim_services
   PYTHON_DIR python
+  PYTHON_DEST icecube/sim_services
+  DOCS_DIR resources/docs
 )
 
 # define the lists used to build the basic library
