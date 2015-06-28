@@ -205,6 +205,9 @@ void I3PropagatorModule::DAQ(I3FramePtr frame)
 
     // allocate the output I3MCTree
     I3MCTreePtr outputMCTree(new I3MCTree(*inputMCTree));
+    
+    // extra stuff to be filled into the frame after propagation
+    I3PropagatorService::DiagnosticMapPtr protoFrame(new I3PropagatorService::DiagnosticMap);
 
     // Extract a list of particles to work on
     std::deque<std::pair<I3MCTree::iterator, I3PropagatorServicePtr> > particlesToPropagate;
@@ -236,7 +239,7 @@ void I3PropagatorModule::DAQ(I3FramePtr frame)
 
         // propagate it!
         const std::vector<I3Particle> children =
-        currentPropagator->Propagate(*currentParticle_it, frame);
+        currentPropagator->Propagate(*currentParticle_it, protoFrame);
 
         // Insert each of the children into the tree. While at it,
         // check to see if any of them are on the list and should be propagated.
@@ -260,6 +263,15 @@ void I3PropagatorModule::DAQ(I3FramePtr frame)
         frame->Put(inputMCTreeName_, outputMCTree);
     } else {
         frame->Put(outputMCTreeName_, outputMCTree);
+    }
+    
+    // store auxiliary information from the propagators
+    BOOST_FOREACH(const I3PropagatorService::DiagnosticMap::value_type &pair,
+        std::make_pair(protoFrame->begin(), protoFrame->end()))
+    {
+        if (frame->Has(pair.first))
+            log_fatal_stream("Frame already contains a key '"<<pair.first<<"'");
+        frame->Put(pair.first, pair.second);
     }
     
     // that's it!

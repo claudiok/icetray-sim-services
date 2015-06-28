@@ -9,7 +9,7 @@ random number sequence.
 
 from icecube import icetray, dataclasses, dataio
 from I3Tray import I3Tray
-from icecube import MuonGun, phys_services, sim_services
+from icecube import MuonGun, phys_services, sim_services, simclasses
 from icecube.MuonGun.segments import GenerateBundles
 from os.path import expandvars
 from os import unlink
@@ -102,6 +102,8 @@ def check(fname='foo.i3', fraction=0.1):
 		return randomService.uniform(0, 1) < (1-fraction)
 	tray.AddModule(drop_random_events, 'triggerhappy', Streams=[icetray.I3Frame.DAQ])
 	
+	tray.Add("Rename", keys=["MMCTrackList", "OldMMCTrackList"])
+	
 	tray.AddModule('I3PropagatorModule', 'propagator', PropagatorServices=make_propagators(),
 	    RandomService=randomService, RNGStateName="RNGState", InputMCTreeName="RemadeMCTree", OutputMCTreeName="RemadeMCTree")
 	
@@ -112,9 +114,13 @@ def check(fname='foo.i3', fraction=0.1):
 		"""
 		def setUp(self):
 			self.orig_tree = self.frame['I3MCTree']
+			self.orig_mmctracks = self.frame['OldMMCTrackList']
 			self.new_tree = self.frame['RemadeMCTree']
+			self.new_mmctracks = self.frame['MMCTrackList']
+			
 		def testTotalSize(self):
 			self.assertEquals(len(self.orig_tree), len(self.new_tree))
+			self.assertEquals(len(self.orig_mmctracks), len(self.new_mmctracks))
 		def testParticleContent(self):
 			
 			for p1, p2 in zip(self.orig_tree, self.new_tree):
@@ -128,6 +134,11 @@ def check(fname='foo.i3', fraction=0.1):
 					self.assertEquals(getattr(p1.pos, d), getattr(p2.pos, d))
 				for d in 'zenith', 'azimuth':
 					self.assertEquals(getattr(p1.dir, d), getattr(p2.dir, d))
+			for t1, t2 in zip(self.orig_mmctracks, self.new_mmctracks):
+				for prop in 'E', 'X', 'Y', 'Z', 'T':
+					for location in 'i', 'c', 'f':
+						method = 'Get'+prop+location
+						self.assertEquals(getattr(t1, method)(), getattr(t2, method)()) 
 	
 	tray.AddModule(icetray.I3TestModuleFactory(MCTreeCompare), 'testy', Streams=[icetray.I3Frame.DAQ])
 	

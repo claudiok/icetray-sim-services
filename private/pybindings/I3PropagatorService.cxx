@@ -7,7 +7,7 @@ namespace bp = boost::python;
 struct I3PropagatorServiceWrapper : I3PropagatorService, bp::wrapper<I3PropagatorService>
 {
     // pure virtual
-    virtual std::vector<I3Particle> Propagate(I3Particle& p, I3FramePtr frame) {
+    virtual std::vector<I3Particle> Propagate(I3Particle& p, DiagnosticMapPtr frame) {
         // python needs to be able to change this, so provide it with a pointer
         I3ParticlePtr p_(new I3Particle(p));
 
