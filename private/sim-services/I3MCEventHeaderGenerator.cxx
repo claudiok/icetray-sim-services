@@ -20,27 +20,39 @@ class I3MCEventHeaderGenerator : public I3Module
 
   I3MCEventHeaderGenerator(const I3Context&);
   void Configure();
-  void DAQ(I3FramePtr fr);	
+  void DAQ(I3FramePtr fr);
 
   SET_LOGGER("I3MCEventHeaderGenerator");
 
  private:
 
-  //Start time of run period
+  /// Year of the run period
   int year_;
+
+  /// Time since the beginning of the year in 1/10 ns.
   int64_t daqTime_;
+
+  /// MJD 
   int mjd_;
+
+  /// MJD seconds
   int mjd_s_;
+
+  /// MJD nanoseconds
   double mjd_ns_;
+
+  /// Run Number
   unsigned runNumber_;
+
+  /// Event ID
   unsigned eventID_;
 
-  /**
-   * If true this service will increment the eventID after adding
-   * one to the frame.  This is useful for looking at untriggered events
-   * where you still want unique event IDs.
-   */
+  /// If true this module will increment the eventID after adding
+  /// one to the frame.  This is useful for looking at untriggered events
+  /// where you still want unique event IDs.
   bool incEventID_;
+
+  /// Time difference between frames.
   double dt_;
 };
 
@@ -63,59 +75,58 @@ I3MCEventHeaderGenerator::I3MCEventHeaderGenerator(const I3Context& ctx) : I3Mod
   incEventID_(false),
   dt_(0)
 {
-	AddParameter("Year", "Year of the run", year_);
-	AddParameter("DAQTime", "DAQTime of the run in 1/10 of ns", daqTime_);
-	AddParameter("MJD","Modified Julian Date",mjd_);
-	AddParameter("MJDSeconds","Number of seconds after the start of the MJD.",mjd_s_);
-	AddParameter("MJDNanoSeconds","Number of nanoseconds after the start of the second given in MJDSeconds.",mjd_ns_);
-	AddParameter("RunNumber", "Run Number", runNumber_);
-	AddParameter("EventID", "Event ID", eventID_);
-	AddParameter("IncrementEventID", "Increment Event ID (default =  false)", incEventID_);
-	AddParameter("TimeIncrement", "Time increment between frames",dt_);
-	AddOutBox("OutBox");
+  AddParameter("Year", "Year of the run", year_);
+  AddParameter("DAQTime", "DAQTime of the run in 1/10 of ns", daqTime_);
+  AddParameter("MJD","Modified Julian Date",mjd_);
+  AddParameter("MJDSeconds","Number of seconds after the start of the MJD.",mjd_s_);
+  AddParameter("MJDNanoSeconds","Number of nanoseconds after the start of the second given in MJDSeconds.",mjd_ns_);
+  AddParameter("RunNumber", "Run Number", runNumber_);
+  AddParameter("EventID", "Event ID", eventID_);
+  AddParameter("IncrementEventID", "Increment Event ID (default =  false)", incEventID_);
+  AddParameter("TimeIncrement", "Time increment between frames",dt_);
+  AddOutBox("OutBox");
 }
 
 void I3MCEventHeaderGenerator::Configure()
 {
-	GetParameter("Year", year_);
-	GetParameter("DAQTime", daqTime_);
-	GetParameter("MJD",mjd_);
-	GetParameter("MJDSeconds",mjd_s_);
-	GetParameter("MJDNanoSeconds",mjd_ns_);
-	GetParameter("RunNumber", runNumber_);
-	GetParameter("EventID", eventID_);
-	GetParameter("IncrementEventID", incEventID_);
-        GetParameter("TimeIncrement", dt_);
-	if(mjd_ != INT_MIN &&
-	    (year_ != DEFAULT_YEAR || daqTime_ != DEFAULT_DAQTIME ))
-		log_fatal("Ambiguous settings : Please choose either Mjd or Year and DAQTime.  Not both.");
+  GetParameter("Year", year_);
+  GetParameter("DAQTime", daqTime_);
+  GetParameter("MJD",mjd_);
+  GetParameter("MJDSeconds",mjd_s_);
+  GetParameter("MJDNanoSeconds",mjd_ns_);
+  GetParameter("RunNumber", runNumber_);
+  GetParameter("EventID", eventID_);
+  GetParameter("IncrementEventID", incEventID_);
+  GetParameter("TimeIncrement", dt_);
+  if(mjd_ != INT_MIN &&
+     (year_ != DEFAULT_YEAR || daqTime_ != DEFAULT_DAQTIME ))
+    log_fatal("Ambiguous settings : Please choose either Mjd or Year and DAQTime.  Not both.");
 
-	if(mjd_ != INT_MIN){
-		I3Time t;
-		t.SetModJulianTime(mjd_,mjd_s_,mjd_ns_);
-		year_ = t.GetUTCYear();
-		daqTime_ = t.GetUTCDaqTime();
-	}
+  if(mjd_ != INT_MIN){
+    I3Time t;
+    t.SetModJulianTime(mjd_,mjd_s_,mjd_ns_);
+    year_ = t.GetUTCYear();
+    daqTime_ = t.GetUTCDaqTime();
+  }
 }
 
-void I3MCEventHeaderGenerator::DAQ(I3FramePtr fr) 
+void I3MCEventHeaderGenerator::DAQ(I3FramePtr fr)
 {
-  
-      I3Time evtTime(year_, daqTime_);
-      daqTime_ += dt_ / I3Units::ns * 10.0;//The reason behind the factor 10 is that DAQ time is in 0.1 nano seconds.
-      I3EventHeaderPtr eventHeader_(new I3EventHeader);
-      eventHeader_->SetStartTime(evtTime);
-      eventHeader_->SetRunID(runNumber_);
-      eventHeader_->SetSubRunID(0);
-      eventHeader_->SetEventID(eventID_);
-      fr->Put<I3EventHeader>(eventHeader_);
 
-      if(incEventID_) eventID_++;
+  I3Time evtTime(year_, daqTime_);
+  daqTime_ += dt_ / I3Units::ns * 10.0;//The reason behind the factor 10 is that DAQ time is in 0.1 nano seconds.
+  I3EventHeaderPtr eventHeader_(new I3EventHeader);
+  eventHeader_->SetStartTime(evtTime);
+  eventHeader_->SetRunID(runNumber_);
+  eventHeader_->SetSubRunID(0);
+  eventHeader_->SetEventID(eventID_);
+  fr->Put<I3EventHeader>(eventHeader_);
 
-      I3BoolPtr incID(new I3Bool(incEventID_));
-      fr->Put("MCTimeIncEventID",incID);
+  if(incEventID_) eventID_++;
 
-      PushFrame(fr);
+  I3BoolPtr incID(new I3Bool(incEventID_));
+  fr->Put("MCTimeIncEventID",incID);
+
+  PushFrame(fr);
 
 }
-
