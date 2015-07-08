@@ -3,6 +3,8 @@
 # $Date: 2011-10-10 $
 
 On the trunk :
+  o Added a default for I3MCPEtoI3MCHitConverter.  I3MCPESeries seems perfectly
+    reasonable to me.
   o Removed virtual keyword from module methods.  This usually signals to 
     users that this is a base class (especially if the destructor is virtual),
     and therefore OK to inherit from.  This is not the case with these modules.
