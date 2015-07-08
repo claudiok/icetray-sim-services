@@ -3,6 +3,7 @@
 # $Date: 2011-10-10 $
 
 On the trunk :
+  o Added I3ModifyStartTime as a replacement for I3ModifyEventID.
   o Added I3RemoveLargeDT module to remove outliers that caused simulation 
     to use enormous amounts of memory.  Anything outside the time window
     from the median of the distribution is clipped.
