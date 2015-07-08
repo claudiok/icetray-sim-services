@@ -37,53 +37,49 @@
 class I3CombineMCPE : public I3ConditionalModule
 {
 public:
-    I3CombineMCPE(const I3Context& ctx);
-    virtual ~I3CombineMCPE();
+  I3CombineMCPE(const I3Context& ctx);
+  ~I3CombineMCPE(){};
 
-    virtual void Configure();
-    virtual void DAQ(I3FramePtr frame);
-    virtual void Finish();
-
-private:
-    std::vector<std::string> inputResponses_;
-    std::string outputResponse_;
-
-    static bool compare(const I3MCPE& lhs, const I3MCPE& rhs)
-    {
-        if(lhs.time < rhs.time) return true;
-        return false;
-    }
+  void Configure();
+  void DAQ(I3FramePtr frame);
+  void Finish(){};
 
 private:
-    SET_LOGGER("I3CombineMCPE");
+  std::vector<std::string> inputResponses_;
+  std::string outputResponse_;
+
+private:
+  SET_LOGGER("I3CombineMCPE");
 };
 
+namespace{
+  bool time_ordered(const I3MCPE& lhs, const I3MCPE& rhs){
+    return (lhs.time < rhs.time);
+  }
+}
 
 I3CombineMCPE::I3CombineMCPE(const I3Context& ctx) :
 I3ConditionalModule(ctx),
 outputResponse_("CombinedMCPEs")
 {
-    AddParameter("InputResponses",
-        "Vector of names of the input response serieses to combine (no DEFAULT)",
-        inputResponses_); 
+  AddParameter("InputResponses",
+               "Vector of names of the input response serieses to combine (no DEFAULT)",
+               inputResponses_);
 
-    AddParameter("OutputResponse",
-        "Name of the output response series",
-        outputResponse_); 
+  AddParameter("OutputResponse",
+               "Name of the output response series",
+               outputResponse_);
 
-    AddOutBox("OutBox");
+  AddOutBox("OutBox");
 }
-
-I3CombineMCPE::~I3CombineMCPE()
-{
-
-}
-
 
 void I3CombineMCPE::Configure()
 {
-    GetParameter("InputResponses", inputResponses_); 
-    GetParameter("OutputResponse", outputResponse_); 
+    GetParameter("InputResponses", inputResponses_);
+    GetParameter("OutputResponse", outputResponse_);
+
+    if(inputResponses_.empty())
+      log_fatal("No input responses set.");
 }
 
 void I3CombineMCPE::DAQ(I3FramePtr frame)
@@ -98,7 +94,8 @@ void I3CombineMCPE::DAQ(I3FramePtr frame)
 
         if(!input)
         {
-            log_warn("Frame is missing an input response. Combining the ones I can find.");
+          log_warn("Frame is missing an input response '%s'. Combining the ones I can find.",
+                   initer->c_str());
             continue;
         }
 
@@ -124,17 +121,11 @@ void I3CombineMCPE::DAQ(I3FramePtr frame)
     {
         I3MCPESeries::iterator beginning = map_iter->second.begin();
         I3MCPESeries::iterator ending = map_iter->second.end();
-        std::sort(beginning,ending,compare);
+        std::sort(beginning,ending,time_ordered);
     }
 
     frame->Put(outputResponse_, output);
     PushFrame(frame,"OutBox");
-}      
-
-void I3CombineMCPE::Finish()
-{
-
 }
-
 
 I3_MODULE(I3CombineMCPE);

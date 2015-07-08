@@ -39,5 +39,6 @@ i3_test_scripts(resources/tests/propagator_state_storage.py
   resources/tests/sanity_checker_module_tests.py
   resources/tests/sanity_checker_histogram_tests.py
   resources/tests/test_modify_start_time.py
+  resources/tests/test_combine_PEs.py
   #resources/tests/nugen_full_chain.py
 )
