@@ -36,11 +36,17 @@ add_subdirectory(private/pybindings)
 
 i3_test_scripts(resources/tests/propagator_state_storage.py
   #resources/tests/all_your_tests_are_belong_to_us.py
+  #resources/tests/nugen_full_chain.py
   resources/tests/sanity_checker_module_tests.py
   resources/tests/sanity_checker_histogram_tests.py
   resources/tests/test_modify_start_time.py
   resources/tests/test_combine_PEs.py
   resources/tests/test_down_sample_mcpe.py
   resources/tests/test_mcpe_to_mchit_converter.py
-  #resources/tests/nugen_full_chain.py
+  # Uncomment the follow line and feel free to comment
+  # on ticket #1044 : http://code.icecube.wisc.edu/projects/icecube/ticket/1044
+  # Not sure what the problem is, but my money's on the node removal in the
+  # new I3MCTree.  I'd also hedge my bets and put something down on I3InIceCORSIKATrimmer
+  # not erasing elements from the new style tree properly. 
+  #resources/tests/test_inice_corsika_trimmer.py
 )
