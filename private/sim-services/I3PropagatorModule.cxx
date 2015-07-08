@@ -61,20 +61,19 @@ public:
     /**
      * Destroys an instance of this class
      */
-    virtual ~I3PropagatorModule();
+    ~I3PropagatorModule();
     
     /**
      * This module takes a configuration parameter and so it must be configured.
      */
-    virtual void Configure();
+    void Configure();
     
     /**
      * The module needs to process Physics frames
      */
-    virtual void DAQ(I3FramePtr frame);
+    void DAQ(I3FramePtr frame);
     
 private:
-    // parameters
     
     /// Parameter: Name of the I3MCTree frame object. 
     std::string inputMCTreeName_;
@@ -106,8 +105,6 @@ private:
 };
 
 
-
-// The module
 I3_MODULE(I3PropagatorModule);
 
 I3PropagatorModule::I3PropagatorModule(const I3Context& context) 
