@@ -29,7 +29,6 @@ class I3MCEventHeaderGenerator : public I3Module
   //Start time of run period
   int year_;
   int64_t daqTime_;
-  std::string eventServiceName_;
   int mjd_;
   int mjd_s_;
   double mjd_ns_;
