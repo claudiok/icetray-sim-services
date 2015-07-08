@@ -11,12 +11,13 @@ SET(LIB_${PROJECT_NAME}_SOURCEFILES
   private/sim-services/I3PropagatorService.cxx
   private/sim-services/I3InIceCORSIKATrimmer.cxx
   private/sim-services/I3MCEventHeaderGenerator.cxx
-  private/sim-services/I3ModifyEventID.cxx
+  private/sim-services/I3ModifyStartTime.cxx
   private/sim-services/I3PropagatorModule.cxx
   private/sim-services/I3CombineMCPE.cxx
   private/sim-services/I3DownsampleMCPE.cxx
   private/sim-services/I3MCPEtoI3MCHitConverter.cxx
   private/sim-services/I3RemoveLargeDT.cxx
+  private/sim-services/I3ModifyEventID.cxx # deprecated
 )
 SET(LIB_${PROJECT_NAME}_TOOLS python boost )
 
@@ -37,5 +38,6 @@ i3_test_scripts(resources/tests/propagator_state_storage.py
   #resources/tests/all_your_tests_are_belong_to_us.py
   resources/tests/sanity_checker_module_tests.py
   resources/tests/sanity_checker_histogram_tests.py
+  resources/tests/test_modify_start_time.py
   #resources/tests/nugen_full_chain.py
 )
