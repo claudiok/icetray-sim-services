@@ -31,7 +31,7 @@ class Source(icetray.I3Module):
         self.PushFrame(frame)
         
 
-class TestI3ModifyStartTime(unittest.TestCase):
+class TestI3CombineMCPE(unittest.TestCase):
 
     def setUp(self):
         self.tray = I3Tray()
@@ -46,7 +46,7 @@ class TestI3ModifyStartTime(unittest.TestCase):
             self.assertTrue("CombinedMCPEs" in frame)
             self.assertEqual(len(frame["CombinedMCPEs"]), 2)
             
-        self.tray.AddModule(TestModule)
+        self.tray.AddModule(TestModule, streams = [icetray.I3Frame.DAQ])
         self.tray.Execute(1)
 
     def test_combine_PE_maps_user_defined_output(self):
@@ -59,7 +59,7 @@ class TestI3ModifyStartTime(unittest.TestCase):
             self.assertTrue("NewOutput" in frame)
             self.assertEqual(len(frame["NewOutput"]), 2)
             
-        self.tray.AddModule(TestModule)
+        self.tray.AddModule(TestModule, streams = [icetray.I3Frame.DAQ])
         self.tray.Execute(1)
 
     def test_failure(self):

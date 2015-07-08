@@ -38,7 +38,7 @@ class TestI3ModifyStartTime(unittest.TestCase):
             self.assertNotEqual(event_start_time, dataclasses.I3EventHeader().start_time)
             
             
-        self.tray.AddModule(TestModule)
+        self.tray.AddModule(TestModule, streams = [icetray.I3Frame.DAQ])
 
         self.tray.Execute(1)
 
