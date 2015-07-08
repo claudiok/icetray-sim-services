@@ -42,12 +42,12 @@ class TestI3ModifyStartTime(unittest.TestCase):
 
         self.tray.Execute(1)
 
-    def test_failure(self):
-                
+    def test_failure(self):            
         self.tray.AddModule("I3ModifyStartTime")
+        self.assertRaises(RuntimeError, self.Execute)
 
-        with self.assertRaises(RuntimeError):
-            self.tray.Execute(1)
-        
+    def Execute(self):
+        self.tray.Execute(1)
+                
 if __name__ == '__main__':
     unittest.main()

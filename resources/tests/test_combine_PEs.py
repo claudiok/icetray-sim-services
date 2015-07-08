@@ -65,8 +65,10 @@ class TestI3ModifyStartTime(unittest.TestCase):
     def test_failure(self):
         # user needs to specify the input.  there is no reasonable default.
         self.tray.AddModule("I3CombineMCPE")
-        with self.assertRaises(RuntimeError):
-            self.tray.Execute(1)
+        self.assertRaises(RuntimeError, self.Execute)
+
+    def Execute(self):
+        self.tray.Execute(1)
         
 if __name__ == '__main__':
     unittest.main()
