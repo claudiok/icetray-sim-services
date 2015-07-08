@@ -123,7 +123,7 @@ for omkey, omgeo in dom_geo:
 
             if isnan(domcal.relative_dom_eff) :
                 if omkey.string in strings_IC86 :
-                    new_RDE =1.35 if e in high_QE else 1.0
+                    new_RDE = 1.35 if e in high_QE else 1.0
                     calibration.dom_cal[omkey].relative_dom_eff = new_RDE                    
                     logfile.write(" correcting RDE from 'nan' to %.2f in %s" % \
                           (new_RDE,omkey))
