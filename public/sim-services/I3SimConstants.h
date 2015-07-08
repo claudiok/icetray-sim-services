@@ -20,8 +20,6 @@
  * Just a namespace filled with constants -- add a line
  * <tt> using namespace I3SimConstants </tt> to get access to them
  * directly, or just use @c I3SimConstants::pi, for example.
- *
- * @todo probably need more constants here.   Add them here when you need them.
  */
 namespace I3SimConstants
 {
