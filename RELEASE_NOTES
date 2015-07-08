@@ -3,7 +3,14 @@
 # $Date: 2011-10-10 $
 
 On the trunk :
-  o Added I3ModifyStartTime as a replacement for I3ModifyEventID.
+  o Removed virtual keyword from module methods.  This usually signals to 
+    users that this is a base class (especially if the destructor is virtual),
+    and therefore OK to inherit from.  This is not the case with these modules.
+    Do not inherit from classes that were not designed to be base classes.
+  o Added I3ModifyStartTime as a replacement for I3ModifyEventID.  I3ModifyEventID
+    is deprecated.  It modifies more than just the event ID and is actually only
+    still used to set the event start time.  The interface was crufty anyway and
+    from the days when we could only pass built-in C++ types as python parameters. 
   o Added I3RemoveLargeDT module to remove outliers that caused simulation 
     to use enormous amounts of memory.  Anything outside the time window
     from the median of the distribution is clipped.
