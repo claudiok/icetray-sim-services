@@ -59,7 +59,7 @@ class Source(icetray.I3Module):
         ########################################################
         nu_tau = dataclasses.I3Particle()
         nu_tau.type = dataclasses.I3Particle.NuTau
-        nu_tau.location_type = dataclasses.I3Particle.Anywhere
+        nu_tau.location_type = dataclasses.I3Particle.InIce
 
         ########################################################
         # I3InIceCORSIKATrimmer claims it's removing newly     #
@@ -97,29 +97,30 @@ class TestInIceCORSIKATrimmer(unittest.TestCase):
 
         def TestModule(frame):
             self.assertTrue("I3MCTree" in frame)
-            # started with 5 and now there should be 4 (3 nu)
+            # started with 6 and now there should be 5
+            # only the trimmed_muon below threshold should be trimmed
             print len(frame["I3MCTree"])
             mctree = frame["I3MCTree"]
             print mctree
-            self.assertEqual(len(frame["I3MCTree"]), 4)
+            self.assertEqual(len(frame["I3MCTree"]), 5)
 
         self.tray.AddModule(TestModule, streams = [icetray.I3Frame.DAQ])
         self.tray.Execute(1)
 
-#    def test_inice_corsika_trimmer_drop_nu(self):
-#
-#        self.tray.AddModule("I3InIceCORSIKATrimmer", RemoveNeutrinos = True)
-#
-#        def TestModule(frame):
-#            self.assertTrue("I3MCTree" in frame)
-#            print len(frame["I3MCTree"])
-#            mctree = frame["I3MCTree"]
-#            print mctree
-#            # started with 5 and now there should be 2 
-#            self.assertEqual(len(frame["I3MCTree"]), 2)
-#
-#        self.tray.AddModule(TestModule, streams = [icetray.I3Frame.DAQ])
-#        self.tray.Execute(1)
+    def test_inice_corsika_trimmer_drop_nu(self):
+
+        self.tray.AddModule("I3InIceCORSIKATrimmer", RemoveNeutrinos = True)
+
+        def TestModule(frame):
+            self.assertTrue("I3MCTree" in frame)
+            print len(frame["I3MCTree"])
+            mctree = frame["I3MCTree"]
+            print mctree
+            # started with 6 and now there should be 1 
+            self.assertEqual(len(frame["I3MCTree"]), 1)
+
+        self.tray.AddModule(TestModule, streams = [icetray.I3Frame.DAQ])
+        self.tray.Execute(1)
 
 if __name__ == '__main__':
     unittest.main()
