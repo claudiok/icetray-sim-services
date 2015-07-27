@@ -19,33 +19,34 @@ modify the existing checkers, but this is not necessary, especially if the check
 you're writing isn't particularly CPU intensive.
 
 * **SimulationSanityChecker** - This is the I3Module that you add to the end of your 
-chain and has only two parameters.  This module currently lives in 
-sim-services/python/sanity_checker/__init__.py.
-- **RunType** - This will be a string that identifies the type of run you're checking.  
-(e.g. "CORSIKA" See Run Configurations below )
-- **GenerateReferences** - A boolean, normally False, which when set to True will 
-trigger the generation of reference histograms.
+  chain and has only two parameters.  This module currently lives in 
+  sim-services/python/sanity_checker/__init__.py.
 
-- **Run Configurations** - This is a simple dictionary that maps strings 
-( e.g. "CORSIKA" - the parameter that's passed to SimulationSanityChecker ) to a list 
-of sanity checkers that should be installed.
+  - **RunType** - This will be a string that identifies the type of run you're checking.  
+    (e.g. "CORSIKA" See Run Configurations below )
+  - **GenerateReferences** - A boolean, normally False, which when set to True will 
+    trigger the generation of reference histograms.
+
+  - **Run Configurations** - This is a simple dictionary that maps strings 
+    ( e.g. "CORSIKA" - the parameter that's passed to SimulationSanityChecker ) to a list 
+    of sanity checkers that should be installed.
 
 - **Sanity Checker** - These are the modules in the RunConfigurations list that are run.  
-They inherit from Checker ( in sim-services/python/sanity_checker/checker.py ).  We'll go 
-into this in more depth later.
+  They inherit from Checker ( in sim-services/python/sanity_checker/checker.py ).  We'll go 
+  into this in more depth later.
 
 * **Counter** - This is a simple class used by sanity checkers to keep track of how 
-often an **undesirable** condition occurs.  The ``tolerance`` can be passed to the 
-constructor.  When the internal counter ( counting the number of times the undesirable 
-conditions occurs ) reaches the tolerance, the run is stopped.  **It's important to know 
-that when the condition is true, the counter resets to 0.**  This should be used for 
-conditions that should really never happen, but will happen under certain reasonable 
-conditions.  For example, if the muon propagator is not installed all of the events will 
-contain unpropagated muons ( i.e. InIce muons whose length is NaN ).  There are some 
-cases where this is perfectly reasonable, but should not be common.  
+  often an **undesirable** condition occurs.  The ``tolerance`` can be passed to the 
+  constructor.  When the internal counter ( counting the number of times the undesirable 
+  conditions occurs ) reaches the tolerance, the run is stopped.  **It's important to know 
+  that when the condition is true, the counter resets to 0.**  This should be used for 
+  conditions that should really never happen, but will happen under certain reasonable 
+  conditions.  For example, if the muon propagator is not installed all of the events will 
+  contain unpropagated muons ( i.e. InIce muons whose length is NaN ).  There are some 
+  cases where this is perfectly reasonable, but should not be common.  
 
 * **Histogram** - Now that numpy and pylab are (or can be shipped) on all nodes, 
-histogramming is done with a slim version of dashi_, called kombu.  More below.
+  histogramming is done with a slim version of dashi_, called kombu.  More below.
 
 .. _dashi : http://www.ifh.de/~middell/dashi/
 
@@ -57,15 +58,18 @@ Those modules can contain various checkers for different run configurations.
 
 Usage
 =====
+
 Running Sanity Checkers on Your Sample
 --------------------------------------
 The first thing you might want to do is run the SimulationSanityChecker on your sample.  
 Simply add the following to your script and set the ''RunType'' accordingly 
 (See [[IceSim Sanity Checker Reference]] for a list of configurations).
-::
- from icecube.sim_services.sanity_checker import SimulationSanityChecker
- tray.AddModule( SimulationSanityChecker, "sanitycheck",
- 	 	RunType = "CORSIKA_weighted" )
+
+.. code-block:: python
+
+    from icecube.sim_services.sanity_checker import SimulationSanityChecker
+    tray.AddModule( SimulationSanityChecker, "sanitycheck",
+        RunType = "CORSIKA_weighted" )
 
 Adding More Checks to Existing Sanity Checkers
 ----------------------------------------------
@@ -73,13 +77,14 @@ That was great and all, but there's a problem you want to flag that's currently 
 All you want to add is a small tweak to the existing sanity checkers.  For 
 "CORSIKA_weighted" the module that checks the I3MCTree is called ``InIceTreeChecker`` and 
 lives in sim-services/python/sanity_checker/modules/mctree_checkers.py
- ( NB : This is where all of the modules are and should be the only modules most people 
+( NB : This is where all of the modules are and should be the only modules most people 
 should modify. ).
 
 Let's say you want to add the check for stochastics on muons.  Below is a slim sanity 
 checker that currently only checks for NaN-length InIce muons.
 
-::
+.. code-block:: python
+
  from icecube.sim_services.sanity_checkers.bases.sanity_checker import SanityChecker
  class InIceTreeChecker( SanityChecker ) :
      def __init__(self):
@@ -108,7 +113,8 @@ and register it.  If you don't like the default tolerance ( of 100 - meaning 'on
 the run if there are 100 events in a row meeting this condition' ), pass it to the Counter's 
 constructor.
 
-::
+.. code-block:: python
+
    self.daughterlessCounter = Counter( tolerance = 10 ) 
    self.daughterlessCounter.failure_msg = "Too many events with daughterless InIce muons."
    self.register( "daughterlessCounter"  )
@@ -117,7 +123,8 @@ Now in the 'check' method, this is where you're going to get whatever you need o
 frame, form the condition, and pass a bool to your Counter's ``assert_true`` method.  Adding 
 the following lines in the loop ( and check for InIce muons ) should do the trick.
 
-::
+.. code-block:: python
+
    stochastics = mctree.get_daughters( p )
    self.daughterlessCounter.assert_true( len(stochastics) == 0 )
 
@@ -131,7 +138,8 @@ Customizing the Failure Message
 In the above example, say you wanted to add a little more information about why the run 
 stopped.  Nothing's preventing you from modifying the failure message on-the-fly.
 
-::
+.. code-block:: python
+
    stochastics = mctree.get_daughters( p )
    self.daughterlessCounter.assert_true( len(stochastics) == 0 )
    self.daughterlessCounter.failure_msg = "Gone %d frames without any daughters for the any InIce mouns." \
@@ -146,13 +154,16 @@ You're going to start by putting your code in sim-services/resources/tests/sanit
 (if you're testing a histogram).
 
 Write two functions :
+
 * setup - This takes a frame and loads it with the appropriate data.
 * test - This returns True or False (pass/fail, respectively).  This takes a module, which is 
   the SanityChecker or histogram you're testing.
 
 Sanity Checker example
 ======================
-::
+
+.. code-block:: python
+
   def setup_foo(frame) :
       frame["foo"] = dataclasses.I3Double(42)
 
@@ -161,7 +172,9 @@ Sanity Checker example
 
 Histogram example
 =================
-::
+
+.. code-block:: python
+
   def setup_bar(frame) :
       frame["bar"] = dataclasses.I3Double(42)
 
@@ -170,7 +183,9 @@ Histogram example
 
 Create a Test object
 ====================
-::
+
+.. code-block:: python
+
   from foobar import FooSanityChecker 
   from foobar import FooHistogram
 

@@ -1,6 +1,14 @@
 Sim-services
 ============
 
+.. toctree::
+   :maxdepth: 3
+   
+   release_notes
+
+Undocumented Code
+-----------------
+
 This project contains the following classes, none of which are documented, so you have to look at the source code to see what they do.  This is highly sub-optimal and will be fixed in the next release.
 
 - I3ModifyStartTime - Modifies the start time in the I3EventHeader in the frame.
