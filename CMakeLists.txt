@@ -34,6 +34,17 @@ i3_add_library(sim-services
 
 add_subdirectory(private/pybindings)
 
+# The following tests need matplotlib installed :
+#
+#  * all_your_tests_are_belong_to_us.py
+#  * sanity_checker_module_tests.py
+#  * sanity_checker_histogram_tests.py
+#
+# Now we could disable them if matplotlib isn't
+# installed, but these test things that are going
+# to be run in production.  It's better to have
+# them fail on the bots than bring production to
+# a screaching halt.
 i3_test_scripts(resources/tests/propagator_state_storage.py
   #resources/tests/all_your_tests_are_belong_to_us.py
   #resources/tests/nugen_full_chain.py
