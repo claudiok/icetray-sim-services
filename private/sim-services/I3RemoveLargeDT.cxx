@@ -16,12 +16,21 @@
  * CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
  *
- * $Id: I3RemoveLargeDT.cxx 108207 2013-07-13 15:19:02Z juancarlos $
+ * $Id$
  *
  * @file I3RemoveLargeDT.cxx
- * @version $Revision: $
- * @date $Date: $
+ * @version $Revision$
+ * @date $Date$
  * @author Juan Carlos Diaz-Velez
+ *
+ * @brief Removes photo-electron hits that are separated in time by a factor 
+ * larger than maxDT/2 from the median time (where maxDT is the maximum size of the trigger window).
+ * 
+ * The purpose is to eliminate hits that, while physically related to a triggered
+ * event, would never be associated to that event by the DAQ.
+ * The long gaps will otherwise be filled by noise and beacon hits in DOMLauncher
+ * and will unnecessarily blow up memory consumption.
+ * 
  */
 
 #include <boost/foreach.hpp>
@@ -117,19 +126,21 @@ void I3RemoveLargeDT::Configure()
 void I3RemoveLargeDT::DAQ(I3FramePtr frame)
 {
   if(!frame->Has(inputResponse_)){ // push and return
-    log_fatal("I3MCPESeriesMap '%s' doesn't exist in the frame.", inputResponse_.c_str());
+    log_fatal("I3MCPESeriesMap '%s' doesn't exist in the frame.", 
+	inputResponse_.c_str());
   }
 
-  I3MCPESeriesMapConstPtr input = frame->Get<I3MCPESeriesMapConstPtr>(inputResponse_);
+  I3MCPESeriesMapConstPtr 
+	  input = frame->Get<I3MCPESeriesMapConstPtr>(inputResponse_);
 
   // determine the earliest and latest hits
   // also sorting in-place, which is why we're iterating
   // over the output map, which at this point is just a
   // copy of the input map.
-  double earliest_time(std::numeric_limits<double>::max());
-  double latest_time(std::numeric_limits<double>::min());
+  double earliest_time = std::numeric_limits<double>::max();
+  double latest_time = std::numeric_limits<double>::min();
 
-  // we're going to use this to calculate the mean
+  // we're going to use this to calculate the median
   // ...but only if we need to
   // we could use pe_times to determine the earliest and
   // latest times, but i don't want to have to sort this
@@ -144,13 +155,8 @@ void I3RemoveLargeDT::DAQ(I3FramePtr frame)
       std::sort(map_iter->second.begin(), map_iter->second.end(), compare);
     }
 
-    if(map_iter->second.front().time < earliest_time){
-      earliest_time = map_iter->second.front().time;
-    }
-
-    if(map_iter->second.back().time > latest_time){
-      latest_time = map_iter->second.back().time;
-    }
+    earliest_time = std::min(map_iter->second.front().time, earliest_time);
+    latest_time = std::max(map_iter->second.back().time, latest_time);
 
     BOOST_FOREACH(const I3MCPE& pe, map_iter->second){
       pe_times.push_back(pe.time);
@@ -178,8 +184,13 @@ void I3RemoveLargeDT::DAQ(I3FramePtr frame)
 
       // nope...gotta clip some
       I3MCPESeries::iterator new_end =
-        std::remove_if(map_iter->second.begin(), map_iter->second.end(), is_outlier);
-      map_iter->second.resize(std::distance(map_iter->second.begin(),new_end));
+        std::remove_if(
+		map_iter->second.begin(), 
+		map_iter->second.end(), 
+		is_outlier);
+
+      map_iter->second.resize( 
+                std::distance(map_iter->second.begin(), new_end));
     }
   }
 

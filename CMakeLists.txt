@@ -55,4 +55,5 @@ i3_test_scripts(resources/tests/propagator_state_storage.py
   resources/tests/test_down_sample_mcpe.py
   resources/tests/test_mcpe_to_mchit_converter.py
   resources/tests/test_inice_corsika_trimmer.py
+  resources/tests/remove_large_dt_pes.py
 )

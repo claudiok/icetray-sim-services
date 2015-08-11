@@ -36,7 +36,7 @@ class pe_inserter(icetray.I3Module):
         times = sorted([pe.time for pe in peseries])
         median_time = times[int(len(times)/2.)]
                    
-        # put 500 outside the time window
+        # put 250 outside the time window
         for i in range(250):
             pe = simclasses.I3MCPE()
             time = min_time - random.uniform(100*I3Units.ms, 1000*I3Units.ms)

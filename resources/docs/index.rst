@@ -21,12 +21,18 @@ This project contains the following classes, none of which are documented, so yo
 - I3PropagatorModule - Propagates all particles found in an MCTree.
 - I3InIceCORSIKATrimmer - Removes muons that have no chance of reaching the detector.
 - I3CombineMCPE - Combines several I3MCPEHitSeriesMaps into one.
-- I3RemoveLargeDT - Removes any I3MCPEs with times beyond the distribution's median time +/- MaxDeltaT/2.
 
 Deprecated Modules
 ------------------
 * I3ModifyEventID - This modified more than the event ID *and* it was actually only used to set the start time, so this has been replaced with I3ModifyStartTime.
    
+I3RemoveLargeDT 
+---------------
+.. toctree:: 
+   :titlesonly: 
+
+   remove_large_dt
+
 Sanity Checkers
 ----------------
 .. toctree:: 
