@@ -24,7 +24,7 @@ SET(LIB_${PROJECT_NAME}_TOOLS python boost )
 i3_add_library(sim-services
   ${LIB_${PROJECT_NAME}_SOURCEFILES}
 
-  USE_TOOLS ${LIB_${PROJECT_NAME}_TOOLS}
+  USE_TOOLS ${LIB_${PROJECT_NAME}_TOOLS} scipy
 
   USE_PROJECTS icetray
   phys-services
