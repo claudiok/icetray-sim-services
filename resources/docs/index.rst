@@ -1,5 +1,7 @@
-Sim-services
+sim-services
 ============
+
+**Maintainer** : Alex Olivas
 
 .. toctree::
    :maxdepth: 3
