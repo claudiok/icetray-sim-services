@@ -8,6 +8,7 @@
 #include <dataclasses/physics/I3Particle.h>
 #include <phys-services/I3RandomService.h>
 
+/// @brief Base class for particle propagators
 class I3PropagatorService {
   public:
     I3_FORWARD_DECLARATION(DiagnosticMap);

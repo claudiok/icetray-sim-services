@@ -35,6 +35,13 @@ I3RemoveLargeDT
 
    remove_large_dt
 
+I3PropagatorModule 
+------------------
+.. toctree:: 
+   :titlesonly: 
+
+   propagators
+
 Sanity Checkers
 ----------------
 .. toctree:: 
