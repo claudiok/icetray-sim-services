@@ -65,3 +65,11 @@ According to the coverage report, this module is barely tested. This is odd, bec
 - Lines - 1.6 %
 - Functions - 16.7 %
 - Branches - 0.6 %
+
+Review Response 
++++++++++++++++
+**A. Olivas 8/19/2015**
+
+* All suggestions in the Documentation section have been addressed.  The code is integrated into the meta-project docs and there's a page about the module, with a good intro.
+* Nearly all of the suggestions in Code have been addressed, with the exception of using boost::accumulators.  This is more of a wishlist item, but worth looking into, so it's a ticket for now and maybe it'll become a feature in a future release.
+* The Test coverage is not pretty good. 90.6% line coverage and 91.7% function coverage.

@@ -148,17 +148,16 @@ void I3RemoveLargeDT::DAQ(I3FramePtr frame)
   std::vector<double> pe_times;
 
   I3MCPESeriesMapPtr output(new I3MCPESeriesMap(*input));
-  for (I3MCPESeriesMap::iterator map_iter = output->begin();
-       map_iter != output->end(); map_iter++){
+  BOOST_FOREACH(I3MCPESeriesMap::value_type& map_pair, *output){
 
     if (!presorted_) {
-      std::sort(map_iter->second.begin(), map_iter->second.end(), compare);
+      std::sort(map_pair.second.begin(), map_pair.second.end(), compare);
     }
 
-    earliest_time = std::min(map_iter->second.front().time, earliest_time);
-    latest_time = std::max(map_iter->second.back().time, latest_time);
+    earliest_time = std::min(map_pair.second.front().time, earliest_time);
+    latest_time = std::max(map_pair.second.back().time, latest_time);
 
-    BOOST_FOREACH(const I3MCPE& pe, map_iter->second){
+    BOOST_FOREACH(const I3MCPE& pe, map_pair.second){
       pe_times.push_back(pe.time);
     }
   }
@@ -173,24 +172,23 @@ void I3RemoveLargeDT::DAQ(I3FramePtr frame)
     double min_time(median_time - maxdt_/2);
     double max_time(median_time + maxdt_/2);
     outside_time_range is_outlier(min_time, max_time);
-    for (I3MCPESeriesMap::iterator map_iter = output->begin();
-         map_iter != output->end(); map_iter++){
+    BOOST_FOREACH(I3MCPESeriesMap::value_type& map_pair, *output){
 
       // check to see if the whole series is in range first
-      if(!is_outlier(map_iter->second.front()) &&
-         !is_outlier(map_iter->second.back())){
+      if(!is_outlier(map_pair.second.front()) &&
+         !is_outlier(map_pair.second.back())){
         continue; // go to the next DOM
       }
 
       // nope...gotta clip some
       I3MCPESeries::iterator new_end =
         std::remove_if(
-		map_iter->second.begin(), 
-		map_iter->second.end(), 
+		map_pair.second.begin(), 
+		map_pair.second.end(), 
 		is_outlier);
 
-      map_iter->second.resize( 
-                std::distance(map_iter->second.begin(), new_end));
+      map_pair.second.resize(std::distance(map_pair.second.begin(), new_end));
+                
     }
   }
 
