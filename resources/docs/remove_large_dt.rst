@@ -17,6 +17,7 @@ The way I3RemoveLargeDT works is very simple.
  #) Build a vector of all PE times. At the same time. Keep track of the minimum and maximum time.
  #) If t_max - t_min < MaxDeltaT, no need to go any further since all hits are contained in the desired time window.
  #) Else: 
+
    #) Sort vector of PE times and calculate median time (middle element in vector).
    #) Iterate through I3MCPESeriesMap again and delete hits with time t, such that abs(t-t_med) > MaxDeltaT.
 
