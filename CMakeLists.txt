@@ -19,20 +19,24 @@ SET(LIB_${PROJECT_NAME}_SOURCEFILES
   private/sim-services/I3RemoveLargeDT.cxx
   private/sim-services/I3ModifyEventID.cxx # deprecated
 )
-SET(LIB_${PROJECT_NAME}_TOOLS python boost )
+SET(LIB_${PROJECT_NAME}_TOOLS python boost scipy )
 
 i3_add_library(sim-services
   ${LIB_${PROJECT_NAME}_SOURCEFILES}
 
-  USE_TOOLS ${LIB_${PROJECT_NAME}_TOOLS} scipy
+  USE_TOOLS ${LIB_${PROJECT_NAME}_TOOLS}
 
-  USE_PROJECTS icetray
-  phys-services
-  dataclasses
-  simclasses
+  USE_PROJECTS icetray phys-services dataclasses simclasses
 )
 
-add_subdirectory(private/pybindings)
+i3_add_pybindings(sim_services
+  private/pybindings/I3SumGenerator.cxx
+  private/pybindings/I3PropagatorService.cxx
+  private/pybindings/I3SimConstants.cxx
+  private/pybindings/module.cxx
+  USE_TOOLS ${LIB_${PROJECT_NAME}_TOOLS}
+  USE_PROJECTS sim-services
+)
 
 # The following tests need matplotlib installed :
 #
