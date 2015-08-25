@@ -33,8 +33,11 @@ void register_I3PropagatorService()
     {
         bp::scope I3PropagatorService_scope = 
         bp::class_<I3PropagatorServiceWrapper, boost::shared_ptr<I3PropagatorServiceWrapper>, boost::noncopyable>("I3PropagatorService")
-        .def("Propagate", bp::pure_virtual(&I3PropagatorService::Propagate), (bp::args("particle"), bp::args("diagnostics")=NULL))
+        .def("Propagate", bp::pure_virtual(&I3PropagatorService::Propagate), (bp::args("particle"), bp::args("diagnostics")=boost::shared_ptr<I3PropagatorService::DiagnosticMap>()))
         .def("SetRandomNumberGenerator", bp::pure_virtual(&I3PropagatorService::SetRandomNumberGenerator))
+        ;
+        
+        bp::class_<I3PropagatorService::DiagnosticMap, boost::shared_ptr<I3PropagatorService::DiagnosticMap> >("DiagnosticMap", bp::no_init)
         ;
     }
     
