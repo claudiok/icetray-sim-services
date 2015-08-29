@@ -7,7 +7,8 @@ Release Notes
 
 trunk
 -----
-
+* No longer adding beacon baselines to GCD files.  We're only generating V4
+  simulation with DOMLauncher. (r136995)
 * Added a default for I3MCPEtoI3MCHitConverter.  I3MCPESeries seems perfectly
   reasonable to me.
 * Removed virtual keyword from module methods.  This usually signals to 
