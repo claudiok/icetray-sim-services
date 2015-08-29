@@ -107,8 +107,6 @@ tray.AddModule('I3BadDomListModule', 'BadDomsSLC',
                AddGoodSlcOnlyKeys  = False,
                )
 
-tray.AddModule(WaveCalibrator.DOMCalBaselineModule, "domcal_baseliner")
-
 tray.AddModule("Inject", "InjectNoiseParams",
 	       InputNoiseFile = \
            expandvars("$I3_SRC/vuvuzela/resources/data/parameters.dat"),
