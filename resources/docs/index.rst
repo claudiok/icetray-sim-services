@@ -13,7 +13,6 @@ Undocumented Code
 
 This project contains the following classes, none of which are documented, so you have to look at the source code to see what they do.  This is highly sub-optimal and will be fixed in the next release.
 
-- I3ModifyStartTime - Modifies the start time in the I3EventHeader in the frame.
 - I3SimConstants - A list of static variables commonly used by physics simulation specifically cross-section calculations
 - I3PropagatorService - Abstract base class for lepton propagator services.
 - I3SumGenerator - A class for generating the sum of several random numbers which all have the same probability density.

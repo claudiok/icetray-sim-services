@@ -94,8 +94,8 @@ I3ModifyEventID::~I3ModifyEventID(){}
 
 void I3ModifyEventID::Configure()
 {
-  log_error("This module is deprecated.  Switch to I3ModifyStartTime.");
-  log_error("If you'd like to modify something in the I3EventHeader other than the start time submit a ticket.");
+  log_error("This module is deprecated.");
+  log_error("If you actually need it please submit a ticket requesting that it not be deprecated.");
   GetParameter("StartEventID", startEID_);
   GetParameter("Year", year_);
   GetParameter("DAQTime", daqTime_);

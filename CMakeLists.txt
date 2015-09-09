@@ -11,7 +11,6 @@ SET(LIB_${PROJECT_NAME}_SOURCEFILES
   private/sim-services/I3PropagatorService.cxx
   private/sim-services/I3InIceCORSIKATrimmer.cxx
   private/sim-services/I3MCEventHeaderGenerator.cxx
-  private/sim-services/I3ModifyStartTime.cxx
   private/sim-services/I3PropagatorModule.cxx
   private/sim-services/I3CombineMCPE.cxx
   private/sim-services/I3DownsampleMCPE.cxx
@@ -54,7 +53,6 @@ i3_test_scripts(resources/tests/propagator_state_storage.py
   #resources/tests/nugen_full_chain.py
   resources/tests/sanity_checker_module_tests.py
   resources/tests/sanity_checker_histogram_tests.py
-  resources/tests/test_modify_start_time.py
   resources/tests/test_combine_PEs.py
   resources/tests/test_down_sample_mcpe.py
   resources/tests/test_mcpe_to_mchit_converter.py
