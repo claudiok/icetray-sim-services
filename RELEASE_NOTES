@@ -7,6 +7,7 @@ Release Notes
 
 trunk
 -----
+* Removed I3ModifyStartTime - This shouldn't be needed. (r137412)
 * No longer adding beacon baselines to GCD files.  We're only generating V4
   simulation with DOMLauncher. (r136995)
 * Added a default for I3MCPEtoI3MCHitConverter.  I3MCPESeries seems perfectly
