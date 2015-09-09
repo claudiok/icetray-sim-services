@@ -3,7 +3,9 @@
 #include <dataclasses/physics/I3MCTree.h>
 #include <dataclasses/I3Constants.h>
 
-// Remove muons that have no chance of reaching the detector
+/**
+ * @brief Remove muons that have no chance of reaching the detector
+ */
 class I3InIceCORSIKATrimmer : public I3ConditionalModule {
 public:
 	I3InIceCORSIKATrimmer(const I3Context &ctx) : I3ConditionalModule(ctx)

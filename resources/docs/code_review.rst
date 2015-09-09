@@ -1,5 +1,5 @@
-Reviewed by H. Dembinski 05/29/15
-=================================
+I3RemoveLargeDT - Reviewed by H. Dembinski 05/29/15
+=================================================== 
 
 URL: http://code.icecube.wisc.edu/svn/projects/sim-services/trunk/private/I3RemoveLargeDT.cxx
 

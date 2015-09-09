@@ -22,15 +22,6 @@
  * @version $Revision$
  * @date $Date$
  * @author Juan Carlos Diaz-Velez
- *
- * @brief Removes photo-electron hits that are separated in time by a factor 
- * larger than maxDT/2 from the median time (where maxDT is the maximum size of the trigger window).
- * 
- * The purpose is to eliminate hits that, while physically related to a triggered
- * event, would never be associated to that event by the DAQ.
- * The long gaps will otherwise be filled by noise and beacon hits in DOMLauncher
- * and will unnecessarily blow up memory consumption.
- * 
  */
 
 #include <boost/foreach.hpp>
@@ -69,6 +60,15 @@ namespace{
 }
 
 /**
+ * @brief Removes photo-electron hits that are separated in time by a factor 
+ * larger than maxDT/2 from the median time (where maxDT is the maximum size 
+ * of the trigger window).
+ * 
+ * The purpose is to eliminate hits that, while physically related to a triggered
+ * event, would never be associated to that event by the DAQ.
+ * The long gaps will otherwise be filled by noise and beacon hits in DOMLauncher
+ * and will unnecessarily blow up memory consumption.
+ * 
  * Clips any PEs later than MaxDeltaT, taken with respect to the earliest
  * PE in the frame.
  */

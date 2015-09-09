@@ -35,11 +35,12 @@
 void pe_to_hit(const I3MCPE&, I3MCHit&);
 
 /**
- * Converts an I3MCPESeriesMap to an I3MCHitSeriesMap.
+ * @brief Converts an I3MCPESeriesMap to an I3MCHitSeriesMap.
  */
 class I3MCPEtoI3MCHitConverter: public I3ConditionalModule
 {
 public:
+
   I3MCPEtoI3MCHitConverter(const I3Context& ctx);
   ~I3MCPEtoI3MCHitConverter(){};
 

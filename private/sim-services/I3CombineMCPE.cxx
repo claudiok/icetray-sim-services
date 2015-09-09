@@ -32,7 +32,7 @@
 #include "simclasses/I3MCPE.h"
 
 /**
- * Combines several I3MCPEHitSeriesMaps into one.
+ * @brief Combines several I3MCPEHitSeriesMaps into one.
  */
 class I3CombineMCPE : public I3ConditionalModule
 {

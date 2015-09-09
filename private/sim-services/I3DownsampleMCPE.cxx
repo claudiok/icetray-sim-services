@@ -26,10 +26,11 @@
 #include "simclasses/I3MCPE.h"
 
 /**
- * Randomly downsample MCPEs from one collection to another
+ *@brief Randomly downsample MCPEs from one collection to another
  */
 class I3DownsampleMCPE : public I3ConditionalModule{
 public:
+
   I3DownsampleMCPE(const I3Context& ctx);
   ~I3DownsampleMCPE(){};
   

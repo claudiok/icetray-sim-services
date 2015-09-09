@@ -40,7 +40,7 @@
 
 
 /**
- * Propagates all particles found in an MCTree that have
+ * @brief Propagates all particles found in an MCTree that have
  * configured I3PropagatorServices. If one service returns
  * another particle that can be propagated by another service,
  * it will be passed to that one. The results, in turn, will
