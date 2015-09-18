@@ -78,6 +78,7 @@ from icecube.vuvuzela.gcd_test import vuvuzela_test
 from icecube.DOMLauncher.gcd_test import pmt_response_sim_test
 from icecube.DOMLauncher.gcd_test import dom_launcher_test
 from icecube.topsimulator.gcd_test import topsimulator_test
+from icecube.trigger_sim.gcd_test import trigger_sim_test
 
 all_pass = True
 for omkey, i3omgeo in dom_geo_map:
@@ -92,6 +93,7 @@ for omkey, i3omgeo in dom_geo_map:
         pass_vuvuzela = vuvuzela_test(omkey, i3omgeo, domcal)
         pass_pmt = pmt_response_sim_test(omkey, domcal, domstat)
         pass_dom_launcher = dom_launcher_test(omkey, i3omgeo, domcal, domstat)
+        pass_trigger_sim = trigger_sim_test(omkey, i3omgeo)
         # add trigger-sim, clsim, and ppc
         if i3omgeo.omtype == dataclasses.I3OMGeo.OMType.IceTop:
             if omkey.string in station_geo_map:
@@ -108,6 +110,7 @@ for omkey, i3omgeo in dom_geo_map:
         if not pass_vuvuzela : print ("FAIL : Vuvuzela")
         if not pass_pmt : print ("FAIL : PMTResponseSimulator")
         if not pass_dom_launcher : print ("FAIL : DOMLauncher")
+        if not pass_trigger_sim : print ("FAIL : trigger-sim")
         if not pass_top_sim : print ("FAIL : I3TopSimulator")
 
         all_pass = all_pass \
@@ -115,6 +118,7 @@ for omkey, i3omgeo in dom_geo_map:
             and pass_vuvuzela \
             and pass_pmt \
             and pass_dom_launcher \
+            and pass_trigger_sim \
             and pass_top_sim
 
 # report back to the mothership
