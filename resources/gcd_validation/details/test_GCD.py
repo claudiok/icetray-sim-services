@@ -1,6 +1,18 @@
 #!/usr/bin/env python
-
+'''
+A sanity checker for GCD files used in simprod.
+'''
+import sys
+import os
+import math
+from os.path import expandvars
 from optparse import OptionParser
+
+from icecube import icetray
+from icecube import dataclasses
+from icecube import simclasses
+
+from gcd_setup import gcd_extract 
 
 parser = OptionParser()
 parser.add_option("-i","--inputfile", dest="GCDFILENAME",help="GCD file.")
@@ -10,16 +22,6 @@ if not options.GCDFILENAME :
     print("You must specify a GCD file. (e.g. '-i <GCD_FILENAME>')")
     sys.exit(1)
 
-import sys
-import os
-import math
-from os.path import expandvars
-
-from icecube import icetray
-from icecube import dataclasses
-from icecube import simclasses
-
-from gcd_setup import gcd_extract 
 
 gcd = gcd_extract(options.GCDFILENAME)
 
@@ -51,6 +53,17 @@ for string in c_and_d_strings_to_check :
         if omkey in dom_status_map :
             found_stat = True
         if omkey.om > 60 and string < 82:
+            if omkey.string not in station_geo_map:
+                print('%s is missing from stationgeo' % omkey.string)
+            else:
+                station = station_geo_map[omkey.string]
+                found_tank = False
+                for tank in station:
+                    if omkey in tank.omkey_list:
+                        found_tank = True
+                        break
+                if not found_tank:
+                    print('%s is missing in tanks' % omkey)
             if omkey in vem_cal_map:
                 found_vemcal = True
             else :
@@ -64,7 +77,7 @@ from icecube.photonics_service.gcd_test import photonics_hit_maker_test
 from icecube.vuvuzela.gcd_test import vuvuzela_test
 from icecube.DOMLauncher.gcd_test import pmt_response_sim_test
 from icecube.DOMLauncher.gcd_test import dom_launcher_test
-#from icecude.topsimulator.gcd_test import top_simulator_test
+from icecube.topsimulator.gcd_test import topsimulator_test
 
 all_pass = True
 for omkey, i3omgeo in dom_geo_map:
@@ -79,19 +92,30 @@ for omkey, i3omgeo in dom_geo_map:
         pass_vuvuzela = vuvuzela_test(omkey, i3omgeo, domcal)
         pass_pmt = pmt_response_sim_test(omkey, domcal, domstat)
         pass_dom_launcher = dom_launcher_test(omkey, i3omgeo, domcal, domstat)
-        #pass_top_sim = top_simulator_test(omkey, i3omgeo, domcal, domstat)
         # add trigger-sim, clsim, and ppc
+        if i3omgeo.omtype == dataclasses.I3OMGeo.OMType.IceTop:
+            if omkey.string in station_geo_map:
+                station = station_geo_map[omkey.string]
+                for tank in station:
+                    if omkey in tank.omkey_list:
+                        vemcal = vem_cal_map[omkey]
+                        pass_top_sim = topsimulator_test(omkey, tank, domcal, vemcal, domstat)
+                        break
+        else:
+            pass_top_sim = True
 
         if not pass_phm : print ("FAIL : I3PhotonicsHitMaker")
-        if not pass_vuvzela : print ("FAIL : Vuvuzela")
+        if not pass_vuvuzela : print ("FAIL : Vuvuzela")
         if not pass_pmt : print ("FAIL : PMTResponseSimulator")
         if not pass_dom_launcher : print ("FAIL : DOMLauncher")
-        
+        if not pass_top_sim : print ("FAIL : I3TopSimulator")
+
         all_pass = all_pass \
             and pass_phm \
             and pass_vuvuzela \
             and pass_pmt \
-            and pass_dom_launcher
+            and pass_dom_launcher \
+            and pass_top_sim
 
 # report back to the mothership
 if not all_pass :
