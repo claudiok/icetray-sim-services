@@ -40,10 +40,6 @@ parser.add_option("-n","--nevents", type="int",
                   dest="nevents", default=6,
                   help="Number of events to generate")
 
-parser.add_option("-u","--FearTheTurtle", 
-                  action="store_true", dest = "fear_the_turtle", default=False,
-                  help="System has numpy, pylab, and pilfer installed.")
-
 parser.add_option("-l","--logfile",
                   dest="LOGFILE", default="./gcd_logfile" ,
                   help="Name of logfile.")
@@ -55,14 +51,6 @@ from I3Tray import I3Tray
 
 options.binwidth *= I3Units.ns
 options.time_const *= I3Units.ns
-
-# FIXME : try the import and dump plots to a user-configured
-# plot_dir (perhaps in sim-services/gcd_validation/plots)
-if options.fear_the_turtle:
-    import numpy
-    import pylab
-    # This doesn't exist anymore
-    #from loot.plotting import I3Hist
 
 import os
 import sys
@@ -84,19 +72,23 @@ icetray.logging.rotating_files(options.LOGFILE)
 
 ###
 # Generate the hit series to feed to I3TestGenericSource
+#
+# FIXME : This should be moved to a separate file, maybe in
+# the lib section of sim_services.  Perhaps it's time to start
+# thinking about breaking this out of sim-services too.  This
+# is more of a tool that can run anywhere and isn't used in
+# production.
+#
+# Also docs should be added for IceTop verification.  The
+# default settings are fine for InIce, but IceTop requires
+# significantly larger signals to launch.
 ###
 TMIN = 0.*I3Units.microsecond
-TMAX = 2.*I3Units.microsecond
+TMAX = 0.01*I3Units.microsecond
 
-if options.fear_the_turtle:
-    hpdf = lambda b,x : b[0] * x * numpy.exp(-b[1]*x)
-    x = numpy.arange(TMIN,TMAX,0.01*I3Units.ns)
-    max_y = max(hpdf([1,options.time_const],x))
-else:
-    hpdf = lambda b,x : b[0] * x * math.exp(-b[1]*x)
-    x = [TMIN + i*0.01*I3Units.ns for i in range(int((TMAX-TMIN)/0.01*I3Units.ns))]
-    max_y = max([hpdf([1,options.time_const],xi) for xi in x])
-
+hpdf = lambda b,x : b[0] * x * math.exp(-b[1]*x)
+x = [TMIN + i*0.01*I3Units.ns for i in range(int((TMAX-TMIN)/0.01*I3Units.ns))]
+max_y = max([hpdf([1,options.time_const],xi) for xi in x])
 
 times = list()
 for i in range(options.nhits_per_DOM):
@@ -120,27 +112,7 @@ if options.binhits :
                 w[bin] += 1
     else:
         w,le = numpy.histogram(times,range=(TMIN,TMAX),bins=nbins)
-        t = [t0+(options.binwidth/2.0) for t0 in le]
-
-        # FIXME : Make me work again.
-        # Just use pylab's histogram class.
-        # This was written back in the day when it *really* sucked.
-        # Now it only slightly sucks.
-#        
-#        h = I3Hist(times,range=(TMIN,TMAX),bins=nbins)
-#        h.draw(label="Unbinned")
-#        h.fit(hpdf,[10,0.01])
-#        h.drawf(label="Fit PDF")
-#        pylab.plot(t,w,label="Binned")
-#        pylab.title("Test Hit Distribution")
-#        pylab.xlabel("t(ns)")
-#        pylab.ylabel("NHits/%2.2fns" % options.binwidth)
-#        pylab.legend()
-#        figpath = expandvars("$HOME/work/plots/stress-tests")
-#        figname = figpath + ("/hit_dist_NPE%d_tc%3.3f_BW%2.2fns.png" % \
-#                             (options.nhits_per_DOM,options.time_const,options.binwidth))
-#        pylab.savefig(figname)
-        
+        t = [t0+(options.binwidth/2.0) for t0 in le]        
 else:
     w = list()
     t = times

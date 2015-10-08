@@ -4,6 +4,12 @@ from I3Tray import *
 from icecube import icetray, dataclasses, dataio, simclasses
 from os.path import expandvars
 
+import matplotlib as mpl
+mpl.use('Agg')
+import matplotlib.pyplot as plt
+
+import pylab
+
 from optparse import OptionParser
 parser = OptionParser()
 
@@ -14,13 +20,18 @@ parser.add_option("-m","--nhits_per_DOM", type = "int",
                   dest="nhits_per_DOM", default=20,
                   help="Number of hits per DOM")
 
+parser.add_option("-p","--plots", action="store_true",
+                  dest="GENERATE_PLOTS", default = False,
+                  help="Number of hits per DOM")
+
 (options, args) = parser.parse_args()
 
 f = dataio.I3File(options.INFILE)
 
 infile = dataio.I3File(options.INFILE) 
 status_frame = infile.pop_frame()
-while not status_frame.Has('I3DetectorStatus'): status_frame = infile.pop_frame()
+while not status_frame.Has('I3DetectorStatus'):
+    status_frame = infile.pop_frame()
 status = status_frame.Get('I3DetectorStatus')
 badDOMList = list()
 badDOMListSLC = list()
@@ -47,7 +58,7 @@ omgeo = get_omgeo( dataio.I3File(options.INFILE) )
 domcal = get_domcal( dataio.I3File(options.INFILE) )
 domstat = get_domstatus( dataio.I3File(options.INFILE) )
 goodDOMList = [omkey for omkey,g in omgeo \
-               if omkey not in badDOMList and omkey.om <= 60 and omkey.string > 0]
+               if omkey not in badDOMList and omkey.string > 0]
 
 counter = 0
 bad_doms_with_hits = list()
@@ -60,13 +71,34 @@ while f.more():
     print("[  Frame %d ]" % (counter))
     print(frame)
 
-    rpmap = frame.Get("WavedeformPulses")
     pulsemap = frame.Get("I3MCPulseSeriesMap")
     dlmap = frame.Get("I3DOMLaunchSeriesMap")
+    calwfmap = frame.Get("CalibratedWaveforms")
+    rpmap = frame.Get("WavedeformPulses")
 
     # make sure this DOM is not in the bad DOM list
     for omkey, rpseries in rpmap :
+        
         charge = sum([rp.charge for rp in rpseries])
+        if len(rpseries) == 0 :
+            print("%s : this DOM has an empty I3RecoPulseSeries" % str(omkey))
+            print("     beacon baseline ATWD0a = %f" % domcal[omkey].atwd_beacon_baseline[0,0])
+            print("     beacon baseline ATWD0b = %f" % domcal[omkey].atwd_beacon_baseline[0,1])
+            # how do the calibrated waveforms look?
+            if options.GENERATE_PLOTS:
+                atwd0 = calwfmap[omkey][0]
+                fig = plt.figure()
+                plt.plot(range(len(atwd0.waveform)), [v/I3Units.mV for v in atwd0.waveform])
+                fig.savefig("calibrated_ATWD0_%s_%s.png" % (omkey.string, omkey.om))
+                plt.clf()  
+
+                domlaunch = dlmap[omkey][0]
+                fig = plt.figure()                
+                pylab.plot(range(len(domlaunch.raw_atwd[0])), [v for v in domlaunch.raw_atwd[0]])
+                pylab.title("N_launches = %d LC_Bit = %s" % (len(dlmap[omkey]),domlaunch.lc_bit))
+                fig.savefig("launch_ATWD0_%s_%s.png" % (omkey.string, omkey.om))
+                plt.clf()  
+        
         # DOMs in the badDOMListSLC should have no waveforms at all
         if omkey in badDOMListSLC :
             print("%s : this DOM is in the BAD DOM List!!!" % str(omkey))
@@ -96,8 +128,23 @@ while f.more():
     for omkey in goodDOMList :
         if omkey not in rpmap:
             print("%s : this DOM is good but produced no hits!!!" % str(omkey))
+            print("     this is an %s DOM." % str(omgeo[omkey].omtype))
             if omkey not in pulsemap :
-                print("   %s : this DOM has no PMT waveform!!!" % str(omkey))
+                print("   %s : ERROR this DOM has no PMT waveform!!!" % str(omkey))
+            else:
+                charge = sum([pulse.charge for pulse in pulsemap[omkey]])
+                print("   %s : OK this DOM has a PMT waveform with charge %f" % (str(omkey), charge))
+
+            if omkey not in dlmap :
+                print("   %s : ERROR this DOM has no DOM launches!!!" % str(omkey))
+            else:
+                print("   %s : OK this DOM has %s launches." % len(dlmap[omkey]))
+
+            if omkey not in calwfmap :
+                print("   %s : ERROR this DOM has no calibrated waveforms!!!")
+            else:
+                print("   %s : OK this DOM has %d calibrated waveforms." % len(calwfmap[omkey]))
+
             if omkey not in domcal :
                 print("   %s : this DOM has no domcal entry!!!" % str(omkey))
             else:
@@ -106,6 +153,10 @@ while f.more():
                 print("   %s : this DOM has no domstat entry!!!" % str(omkey))
             else:
                 print("        voltage = %f V" % ( (domstat[omkey].pmt_hv)/I3Units.V))
+                print("        statusATWDa = %s" % domstat[omkey].status_atwd_a)
+                print("        statusATWDb = %s" % domstat[omkey].status_atwd_b)
+                print("        lcWindowPost = %s ns" % domstat[omkey].lc_window_post)
+
             if omkey in domcal and omkey in domstat :
                 print("        gain = %f " % ( dataclasses.pmt_gain(domstat[omkey],domcal[omkey]) ))
                 print("        ttime = %f ns " % ( dataclasses.transit_time(domstat[omkey],domcal[omkey])/I3Units.ns ))

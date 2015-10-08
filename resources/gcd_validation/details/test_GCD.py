@@ -14,6 +14,8 @@ from icecube import simclasses
 
 from gcd_setup import gcd_extract 
 
+from icecube.sim_services.gcd_validation.gcd_checks import all_standard_inice_strings_exist
+
 parser = OptionParser()
 parser.add_option("-i","--inputfile", dest="GCDFILENAME",help="GCD file.")
 (options, args) = parser.parse_args()
@@ -33,17 +35,14 @@ station_geo_map = gcd['station_geo_map']
 bad_dom_list = gcd['bad_dom_list']
 high_qe_dom_list = gcd['high_qe_dom_list']
 
-geo_strings_to_check = range(1,87)
-for string in geo_strings_to_check:
-    found = False
-    for omkey, i3omgeo in dom_geo_map:
-        if omkey.string == string :
-            found = True
-    if not found:
-        print("string %d does not exist in the geometry" % string)
+if not all_standard_inice_strings_exist(dom_geo_map):
+    print("Looks like you're missing some standard strings.")
 
-c_and_d_strings_to_check = range(1,87)
-for string in c_and_d_strings_to_check :
+# FIXME : Break this up into separate functions that test one
+#         thing.  Add some docs.  Read the coding standards.
+#         There's a great one like "Give one entity one cohesive
+#         responsibility."
+for string in range(1,87):
     found_cal = False
     found_stat = False
     found_vemcal = False
@@ -69,32 +68,35 @@ for string in c_and_d_strings_to_check :
             else :
                 print('%s is missing from the VEMCal' % omkey)
         if found_cal and found_stat : continue
-    if not found_cal : print('string %s is missing from the calibration' % string)
-    if not found_stat : print('string %s is missing from the detector status' % string)
+    if not found_cal :
+        print('string %s is missing from the calibration' % string)
+    if not found_stat :
+        print('string %s is missing from the detector status' % string)
 
 
-from icecube.photonics_service.gcd_test import photonics_hit_maker_test
 from icecube.vuvuzela.gcd_test import vuvuzela_test
 from icecube.DOMLauncher.gcd_test import pmt_response_sim_test
 from icecube.DOMLauncher.gcd_test import dom_launcher_test
 from icecube.topsimulator.gcd_test import topsimulator_test
 from icecube.trigger_sim.gcd_test import trigger_sim_test
 
+# This is True if every DOM passes individual tests.
 all_pass = True
 for omkey, i3omgeo in dom_geo_map:
 
     if omkey not in bad_dom_list \
            and omkey in dom_cal_map \
            and omkey in dom_status_map:
+        print("Testing DOM %s" % omkey)
         domcal = dom_cal_map[omkey]
         domstat = dom_status_map[omkey]
 
-        pass_phm = photonics_hit_maker_test(omkey, i3omgeo, domcal)
         pass_vuvuzela = vuvuzela_test(omkey, i3omgeo, domcal)
         pass_pmt = pmt_response_sim_test(omkey, domcal, domstat)
         pass_dom_launcher = dom_launcher_test(omkey, i3omgeo, domcal, domstat)
         pass_trigger_sim = trigger_sim_test(omkey, i3omgeo)
-        # add trigger-sim, clsim, and ppc
+        #pass_trigger_sim = trigger_sim_test(omkey, i3omgeo, domcal, domstat)
+        #pass_clsim = clsim_test(omkey, i3omgeo, domcal, domstat)
         if i3omgeo.omtype == dataclasses.I3OMGeo.OMType.IceTop:
             if omkey.string in station_geo_map:
                 station = station_geo_map[omkey.string]
@@ -106,7 +108,7 @@ for omkey, i3omgeo in dom_geo_map:
         else:
             pass_top_sim = True
 
-        if not pass_phm : print ("FAIL : I3PhotonicsHitMaker")
+        #if not pass_phm : print ("FAIL : I3PhotonicsHitMaker")
         if not pass_vuvuzela : print ("FAIL : Vuvuzela")
         if not pass_pmt : print ("FAIL : PMTResponseSimulator")
         if not pass_dom_launcher : print ("FAIL : DOMLauncher")
@@ -114,7 +116,6 @@ for omkey, i3omgeo in dom_geo_map:
         if not pass_top_sim : print ("FAIL : I3TopSimulator")
 
         all_pass = all_pass \
-            and pass_phm \
             and pass_vuvuzela \
             and pass_pmt \
             and pass_dom_launcher \
