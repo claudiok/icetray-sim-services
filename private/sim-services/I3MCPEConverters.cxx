@@ -1,4 +1,4 @@
-#include <simclasses/I3MCPEConverters.h>
+#include <sim-services/I3MCPEConverters.h>
 #include <dataclasses/physics/I3MCHit.h>
 #include <simclasses/I3MCPE.h>
 #include <boost/foreach.hpp>
