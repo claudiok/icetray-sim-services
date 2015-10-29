@@ -7,6 +7,8 @@ Release Notes
 
 trunk
 -----
+* Moved I3MCPEConverters here.  It wasn't used anywhere, but we'll keep it around
+  a while longer.  It was previously in simclasses, but didn't belong there. (r138939, r138940, r138941)
 * Removed I3ModifyStartTime - This shouldn't be needed. (r137412)
 * No longer adding beacon baselines to GCD files.  We're only generating V4
   simulation with DOMLauncher. (r136995)
