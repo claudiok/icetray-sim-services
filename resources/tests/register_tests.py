@@ -1,6 +1,0 @@
-from sanity_checker_histogram_tests import cascade_energy_tests
-from sanity_checker_histogram_tests import primary_energy_tests
-from sanity_checker_histogram_tests import secondary_energy_tests
-
-from sanity_checker_module_tests import mctree_checker_tests
-
