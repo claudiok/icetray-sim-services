@@ -20,7 +20,8 @@ import math
 from os.path import expandvars
 
 from I3Tray import I3Tray
-from icecube import simprod_scripts
+from icecube import phys_services, dataio
+from icecube.simprod.segments.PropagateMuons import PropagateMuons
 
 tray = I3Tray()
 
@@ -30,10 +31,9 @@ randomService = phys_services.I3SPRNGRandomService(
     nstreams = 10000,
     streamnum = 1)
 
+tray.AddModule("I3Reader", Filename = options.INFILE)               
 
-tray.AddModule("I3Reader", Infile = options.INFILE)               
-
-tray.AddSegment(simprod_scripts.PropagateMuons, 
+tray.AddSegment(PropagateMuons, 
     InputMCTreeName = "I3MCTree",
     OutputMCTreeName = "I3MCTree_new",
     RandomService = randomService
