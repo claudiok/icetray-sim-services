@@ -153,7 +153,6 @@ void I3SumGenerator::Initialise(I3RandomServicePtr r, boost::function<double(dou
      * distribution to be generated
      */
     XLow_[terms].resize(nBinsLow_+2);
-    binxBefore=0;
     binxAfter=1;
     for(int binP=0;binP<=nBinsLow_;binP++) {
       // Pick probabilities with non-uniform (cubically increasing) spacing
