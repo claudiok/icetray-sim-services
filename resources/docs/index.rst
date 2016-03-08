@@ -1,3 +1,5 @@
+.. _sim-services:
+
 sim-services
 ============
 
