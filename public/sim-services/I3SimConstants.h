@@ -124,8 +124,8 @@ namespace I3SimConstants
    
   /**
    *  Weak-mixing Angle
-   *  sin^{2} \hat{\theta} (M_{Z})
-   *  cos \theta_{W}
+   *  \f$sin^{2} \hat{\theta} (M_{Z})
+   *  cos \theta_{W}\f$
    */
      
   static const double sinsq_theta_W = 0.23116;
