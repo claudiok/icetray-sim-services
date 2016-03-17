@@ -112,7 +112,8 @@ script = SCRIPT_PATH + "validate_stress_test_samples.py"
 err_code = subprocess.call([script,
                     "-i", "stress_test_samples.i3.gz"])
 print("...done. %s" % "SUCCESS" if err_code == 0 else "FAILURE")
-if err_code != 0 : sys.exit(err_code)
+if err_code != 0 : 
+    sys.exit(err_code)
 
 ################################################################################
 # Write the svn info used to generate this file.                               #      
@@ -133,5 +134,5 @@ logfile.write("TIMESTAMP : %s\n" % timestamp)
 ################################################################################
 cmd = ["md5sum", out_filename]
 check_sum = subprocess.check_output(cmd)
-logfile.write("MD5SUM : %s\n" % timestamp)
+logfile.write("MD5SUM : %s\n" % check_sum)
 
