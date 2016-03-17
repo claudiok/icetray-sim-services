@@ -44,13 +44,6 @@ I3PropagatorModule
 
    propagators
 
-Sanity Checkers
-----------------
-.. toctree:: 
-   :titlesonly: 
-
-   sanity_checkers
-
 GCD Validation
 ----------------
 .. toctree:: 
