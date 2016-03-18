@@ -8,6 +8,8 @@ import math
 from os.path import expandvars
 from optparse import OptionParser
 
+from math import isnan
+
 from icecube import icetray
 from icecube import dataclasses
 from icecube import simclasses
@@ -80,6 +82,25 @@ from icecube.DOMLauncher.gcd_test import dom_launcher_test
 from icecube.topsimulator.gcd_test import topsimulator_test
 from icecube.trigger_sim.gcd_test import trigger_sim_test
 
+def photon_propagators_test(omkey, i3omgeo, domcal, domstat):
+    if i3omgeo.omtype != dataclasses.I3OMGeo.OMType.IceCube :
+        return True
+    
+    if isnan(i3omgeo.position.x) \
+       or isnan(i3omgeo.position.y) \
+       or isnan(i3omgeo.position.z) \
+       or isnan(domcal.relative_dom_eff) \
+       or domstat.pmt_hv <= 0. :
+
+        print('  %s  photon propagation !!' % (str(omkey)) )
+        print('     pos = %.2f' % i3omgeo.position )
+        print('     RDE = %.2f' % domcal.relative_dom_eff )
+        print('     PMT HV = %.2f' % domstat.pmt_hv )
+
+        return False
+    return True
+
+
 # This is True if every DOM passes individual tests.
 all_pass = True
 for omkey, i3omgeo in dom_geo_map:
@@ -94,9 +115,8 @@ for omkey, i3omgeo in dom_geo_map:
         pass_vuvuzela = vuvuzela_test(omkey, i3omgeo, domcal)
         pass_pmt = pmt_response_sim_test(omkey, domcal, domstat)
         pass_dom_launcher = dom_launcher_test(omkey, i3omgeo, domcal, domstat)
-        pass_trigger_sim = trigger_sim_test(omkey, i3omgeo)
-        #pass_trigger_sim = trigger_sim_test(omkey, i3omgeo, domcal, domstat)
-        #pass_clsim = clsim_test(omkey, i3omgeo, domcal, domstat)
+        pass_photon_propagators = photon_propagators_test(omkey, i3omgeo, domcal, domstat)
+
         if i3omgeo.omtype == dataclasses.I3OMGeo.OMType.IceTop:
             if omkey.string in station_geo_map:
                 station = station_geo_map[omkey.string]
@@ -108,18 +128,22 @@ for omkey, i3omgeo in dom_geo_map:
         else:
             pass_top_sim = True
 
-        #if not pass_phm : print ("FAIL : I3PhotonicsHitMaker")
-        if not pass_vuvuzela : print ("FAIL : Vuvuzela")
-        if not pass_pmt : print ("FAIL : PMTResponseSimulator")
-        if not pass_dom_launcher : print ("FAIL : DOMLauncher")
-        if not pass_trigger_sim : print ("FAIL : trigger-sim")
-        if not pass_top_sim : print ("FAIL : I3TopSimulator")
+        if not pass_vuvuzela : 
+            print ("FAIL : Vuvuzela")
+        if not pass_pmt : 
+            print ("FAIL : PMTResponseSimulator")
+        if not pass_dom_launcher : 
+            print ("FAIL : DOMLauncher")
+        if not pass_photon_propagators : 
+            print ("FAIL : ppc and clsim")
+        if not pass_top_sim : 
+            print ("FAIL : I3TopSimulator")
 
         all_pass = all_pass \
             and pass_vuvuzela \
             and pass_pmt \
+            and pass_photon_propagators \
             and pass_dom_launcher \
-            and pass_trigger_sim \
             and pass_top_sim
 
 # report back to the mothership
