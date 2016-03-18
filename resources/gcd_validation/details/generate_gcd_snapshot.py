@@ -3,7 +3,7 @@ from optparse import OptionParser
 
 parser = OptionParser()
 parser.add_option("-s","--season",
-                  dest="SEASON", default="2014" ,
+                  dest="SEASON", default="2015" ,
                   help="Season to generate %s")
 
 parser.add_option("-m","--mjd",
