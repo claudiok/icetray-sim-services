@@ -1,19 +1,29 @@
 #!/usr/bin/env python
+
+import sys
+try:
+    from icecube import I3Db
+except ImportError:
+    print("ERROR : This script needs I3Db to run.")
+    sys.exit(1)
+
 from I3Tray import I3Tray
 from I3Tray import I3Units
 
 from icecube import dataclasses as dc
 
 import os
-import sys
 from os.path import expandvars
 
 ################################################################################
 # 'version' is the latest published version of the GCD.                        #
 # So -1 versions mean one hasn't been generated yet.                           #
 # https://wiki.icecube.wisc.edu/index.php/GCD_File_Info_for_Production         #
+# Only increment the version when you plan to publish a new file.  This way    #
+# people can easily recreate the current published file.
 ################################################################################
-season_params = { "2014" : {"MJD" : 56784, "version" : -1 }, \
+season_params = { "2015" : {"MJD" : 57161, "version" : -1 }, \
+                  "2014" : {"MJD" : 56784, "version" : -1 }, \
                   "2013" : {"MJD" : 56429, "version" : 1  }, \
                   "2012" : {"MJD" : 56063, "version" : 1  }, \
                   "2011" : {"MJD" : 55697, "version" : 2  }, \
