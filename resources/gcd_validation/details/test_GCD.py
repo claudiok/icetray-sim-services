@@ -40,10 +40,10 @@ high_qe_dom_list = gcd['high_qe_dom_list']
 if not all_standard_inice_strings_exist(dom_geo_map):
     print("Looks like you're missing some standard strings.")
 
-# FIXME : Break this up into separate functions that test one
-#         thing.  Add some docs.  Read the coding standards.
-#         There's a great one like "Give one entity one cohesive
-#         responsibility."
+# See ticket : http://code.icecube.wisc.edu/projects/icecube/ticket/1594
+# Break this up into separate functions that test one thing.  
+# Add some docs.  Read the coding standards.
+# There's a great one like "Give one entity one cohesive responsibility."
 for string in range(1,87):
     found_cal = False
     found_stat = False

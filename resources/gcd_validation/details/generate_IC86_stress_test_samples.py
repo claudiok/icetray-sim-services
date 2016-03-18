@@ -73,7 +73,9 @@ icetray.logging.rotating_files(options.LOGFILE)
 ###
 # Generate the hit series to feed to I3TestGenericSource
 #
-# FIXME : This should be moved to a separate file, maybe in
+# See ticket : http://code.icecube.wisc.edu/projects/icecube/ticket/1594
+# 
+# This should be moved to a separate file, maybe in
 # the lib section of sim_services.  Perhaps it's time to start
 # thinking about breaking this out of sim-services too.  This
 # is more of a tool that can run anywhere and isn't used in
