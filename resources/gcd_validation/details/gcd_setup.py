@@ -24,6 +24,7 @@ def gcd_extract(gcd_filename):
     dom_geo_map = geometry.omgeo
     dom_cal_map = calibration.dom_cal
     dom_status_map = status.dom_status
+    trigger_status_map = status.trigger_status
     #for IceTop
     vem_cal_map = calibration.vem_cal
     station_geo_map = geometry.stationgeo
@@ -56,6 +57,7 @@ def gcd_extract(gcd_filename):
     result_dict['dom_geo_map'] = dom_geo_map
     result_dict['dom_cal_map'] = dom_cal_map
     result_dict['dom_status_map'] = dom_status_map
+    result_dict['trigger_status_map'] = trigger_status_map
     result_dict['vem_cal_map'] = vem_cal_map
     result_dict['station_geo_map'] = station_geo_map
     result_dict['bad_dom_list'] = bad_dom_list
