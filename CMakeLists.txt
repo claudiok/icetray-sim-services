@@ -19,6 +19,7 @@ SET(LIB_${PROJECT_NAME}_SOURCEFILES
   private/sim-services/I3RemoveLargeDT.cxx
   private/sim-services/I3ModifyEventID.cxx # deprecated
   private/sim-services/I3MCPEConverters.cxx
+  private/sim-services/MCPEMCPulseTools.cxx
 )
 SET(LIB_${PROJECT_NAME}_TOOLS python boost)
 
