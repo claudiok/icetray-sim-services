@@ -49,7 +49,6 @@ i3_test_scripts(resources/tests/propagator_state_storage.py
   resources/tests/remove_large_dt_pes.py
 )
 
-# Enable me again after clearing ticket : http://code.icecube.wisc.edu/projects/icecube/ticket/1618
 i3_test_executable(test 
   private/test/*.cxx
   USE_PROJECTS icetray simclasses
