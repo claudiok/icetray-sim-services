@@ -1,7 +1,6 @@
 #include <I3Test.h>
 #include <simclasses/I3MCPulse.h>
 #include <simclasses/I3MCPE.h>
-// #include <simclasses/I3ParticleIDMap.hpp>
 #include <sim-services/MCPEMCPulseTools.hpp>
 
 
@@ -34,8 +33,8 @@ TEST(1_MCPEMergingSortingMerging)
 {
     std::vector<I3MCPE> hits;
     ParticlePulseIndexMap aux;
-    I3ParticleID p1={538,16};
-    I3ParticleID p2={619,12};
+    I3ParticleID p1(538,16);
+    I3ParticleID p2(619,12);
     uint32_t hitIndex=0;
 
     //these two hits should be merged
@@ -80,7 +79,7 @@ TEST(1_MCPEMergingSortingMerging)
 
     // adding hits that appear to come within
     // the already sorted and merged hits
-    I3ParticleID p3={741,13};
+    I3ParticleID p3(741,13);
     hits.push_back(I3MCPE(p3,1.0,0.35));
     aux[p3].push_back(hitIndex++);
     hits.push_back(I3MCPE(p1,1.0,0.30));
@@ -139,8 +138,8 @@ TEST(2_MCPulseMergingSortingMerging)
 {
     std::vector<I3MCPulse> hits;
     ParticlePulseIndexMap aux;
-    I3ParticleID p1={538,16};
-    I3ParticleID p2={619,12};
+    I3ParticleID p1(538,16);
+    I3ParticleID p2(619,12);
     uint32_t hitIndex=0;
 
     //these two hits should be merged
@@ -183,7 +182,7 @@ TEST(2_MCPulseMergingSortingMerging)
     
     hitIndex=hits.size();
     
-    I3ParticleID p3={741,13};
+    I3ParticleID p3(741,13);
     hits.push_back(I3MCPulse(0.35,1.0));
     aux[p3].push_back(hitIndex++);
     hits.push_back(I3MCPulse(0.30,1.0));

@@ -21,7 +21,7 @@ namespace MCHitMerging
         I3MCPESeries::iterator hitIt, hitEnd;
         for(hitIt = hits.begin(), hitEnd = hits.end(); hitIt != hitEnd; hitIt++, counter++)
         {
-            I3ParticleID pid = {hitIt->ID.majorID, hitIt->ID.minorID};
+            I3ParticleID pid(hitIt->ID.majorID, hitIt->ID.minorID);
             particleMap[pid].push_back(counter);
             hitIt->ID.majorID = 0;
             hitIt->ID.minorID = -1;
@@ -58,7 +58,7 @@ namespace MCHitMerging
             I3MCPESeries::iterator hitIt, hitEnd;
             for(domIt->second.begin(), hitEnd=domIt->second.end(); hitIt != hitEnd; hitIt++, counter++)
             {
-                I3ParticleID pid = {hitIt->ID.majorID, hitIt->ID.minorID};
+                I3ParticleID pid(hitIt->ID.majorID, hitIt->ID.minorID);
                 particleMap[pid].push_back(counter);
                 hitIt->ID.majorID = 0;
                 hitIt->ID.minorID = -1;
