@@ -56,8 +56,7 @@ class TestGCDUtils(unittest.TestCase):
         tstat_map = dataclasses.I3TriggerStatusMap()
         tstat_map[tkey] = tstat
         
-        obj = gcd_utils.put_triggerstatus(tstat_map, self.gcd_file, "./newGCD.i3.gz")
-        self.assertNotEqual(obj, None, "fail")
-
+        obj = gcd_utils.put_triggerstatus(tstat_map, self.gcd_file, "./GCD_test_utils.i3.gz")
+        self.assertNotEqual(obj, None, "fail")    
         
 unittest.main()
