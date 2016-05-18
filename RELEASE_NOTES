@@ -12,6 +12,7 @@ April 8, 2016 Alex Olivas (olivas@icecube.umd.edu)
 --------------------------------------------------------------------
 
 V01-06-00 - Bugfix release
+
 * Moved I3MCPEConverters here.  It wasn't used anywhere, but we'll keep it around
   a while longer.  It was previously in simclasses, but didn't belong there. (r138939, r138940, r138941)
 * Removed I3ModifyStartTime - This shouldn't be needed. (r137412)
