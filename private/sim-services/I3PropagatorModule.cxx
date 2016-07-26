@@ -32,7 +32,6 @@
 #include "dataclasses/physics/I3Particle.h"
 #include "dataclasses/physics/I3MCTree.h"
 #include "dataclasses/physics/I3MCTreeUtils.h"
-#include "dataclasses/I3TreeUtils.h"
 
 #include "phys-services/I3RandomService.h"
 
