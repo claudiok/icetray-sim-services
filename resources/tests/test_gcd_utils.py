@@ -35,8 +35,8 @@ class TestGCDUtils(unittest.TestCase):
 
     def test_put_triggerstatus(self):
         tkey = dataclasses.TriggerKey()
-        tkey.source = dataclasses.I3Trigger.IN_ICE
-        tkey.type = dataclasses.I3Trigger.SIMPLE_MULTIPLICITY
+        tkey.source = dataclasses.IN_ICE
+        tkey.type = dataclasses.SIMPLE_MULTIPLICITY
         tkey.config_id = 999
 
         tstat = dataclasses.I3TriggerStatus()

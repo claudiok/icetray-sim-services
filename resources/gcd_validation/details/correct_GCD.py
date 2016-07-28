@@ -146,12 +146,12 @@ for omkey, omgeo in dom_geo:
 # only SM, Cluster, Cylinder, and SlowMonopole
 # so that's all we're keeping
 for tkey, ts in status.trigger_status :
-    if ( tkey.source != dataclasses.I3Trigger.IN_ICE \
-         and tkey.source != dataclasses.I3Trigger.ICE_TOP) or \
-         ( tkey.type != dataclasses.I3Trigger.SIMPLE_MULTIPLICITY and
-           tkey.type != dataclasses.I3Trigger.STRING and
-           tkey.type != dataclasses.I3Trigger.VOLUME and
-           tkey.type != dataclasses.I3Trigger.SLOW_PARTICLE ) :
+    if ( tkey.source != dataclasses.IN_ICE \
+         and tkey.source != dataclasses.ICE_TOP) or \
+         ( tkey.type != dataclasses.SIMPLE_MULTIPLICITY and
+           tkey.type != dataclasses.STRING and
+           tkey.type != dataclasses.VOLUME and
+           tkey.type != dataclasses.SLOW_PARTICLE ) :
         del status.trigger_status[tkey]
 
 # now we clean out the AMANDA geometry as well
