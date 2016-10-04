@@ -11,6 +11,7 @@
 
 #include <icetray/I3Units.h>
 #include <dataclasses/I3Constants.h>
+#include <dataclasses/physics/I3Particle.h>
 #include <cmath>
 
 /**
@@ -140,6 +141,27 @@ namespace I3SimConstants
   static const double sin_theta_C = 0.4561;
    
   static const double cos_theta_C = 0.9746;
+  
+  /** 
+   *  Shower development parameters, taken from IceCube IR icecube/201210001
+   */
+  struct ShowerParameters {
+      /** 
+       * @param[in] type    Type of particle that initiates the shower
+       * @param[in] energy  Energy of the primary particle
+       * @param[in] density Density of the medium
+       */
+      ShowerParameters(I3Particle::ParticleType type, double energy,
+          double density=0.9216*(I3Units::g/I3Units::cm3));
+      /** Shape parameter of a gamma distribution (dimensionless) */
+      double a; 
+      /** Scale length of a gamma distribution (meters) */
+      double b;
+      /** Ratio of total cherenkov track yield relative to EM cascade */
+      double emScale;
+      /** Standard deviation of relative flucuations in the shower light yield */
+      double emScaleSigma;
+  };
 
 };
 
