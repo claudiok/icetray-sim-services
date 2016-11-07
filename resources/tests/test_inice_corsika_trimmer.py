@@ -79,7 +79,7 @@ class Source(icetray.I3Module):
         mctree.add_primary(nu_tau)
         mctree.append_child(nu_tau, mu_plus)
 
-        print mctree
+        print(mctree)
         
         frame["I3MCTree"] = mctree
         self.PushFrame(frame)
@@ -99,9 +99,9 @@ class TestInIceCORSIKATrimmer(unittest.TestCase):
             self.assertTrue("I3MCTree" in frame)
             # started with 6 and now there should be 5
             # only the trimmed_muon below threshold should be trimmed
-            print len(frame["I3MCTree"])
+            print(len(frame["I3MCTree"]))
             mctree = frame["I3MCTree"]
-            print mctree
+            print(mctree)
             self.assertEqual(len(frame["I3MCTree"]), 5)
 
         self.tray.AddModule(TestModule, streams = [icetray.I3Frame.DAQ])
@@ -113,9 +113,9 @@ class TestInIceCORSIKATrimmer(unittest.TestCase):
 
         def TestModule(frame):
             self.assertTrue("I3MCTree" in frame)
-            print len(frame["I3MCTree"])
+            print(len(frame["I3MCTree"]))
             mctree = frame["I3MCTree"]
-            print mctree
+            print(mctree)
             # started with 6 and now there should be 1 
             self.assertEqual(len(frame["I3MCTree"]), 1)
 
