@@ -27,23 +27,28 @@ public:
 	                                  I3Particle::ParticleType scatteredType,
 	                                  boost::shared_ptr<I3RandomService> random) const;
 	
+	///\param energy the neutrino energy in GeV
+	///\return the cross section in in squae meters
 	double evaluateTotalCrossSection(double energy) const;
 
 	const splinetable& getCrossSection() const{ return(crossSection); }
 
 	I3CrossSection(){
 		memset(&crossSection,0,sizeof(splinetable));
+		memset(&totalCrossSection,0,sizeof(splinetable));
 	}
 
 	///\param dd_crossSectionFile path to the doubly-differential cross section spline to load
 	///\param total_crossSectionFile path to the total cross section file to load
 	I3CrossSection(std::string dd_crossSectionFile, std::string total_crossSectionFile){
 		memset(&crossSection,0,sizeof(splinetable));
+		memset(&totalCrossSection,0,sizeof(splinetable));
 		load(dd_crossSectionFile, total_crossSectionFile);
 	}
 
 	~I3CrossSection(){
 		splinetable_free(&crossSection);
+		splinetable_free(&totalCrossSection);
 	}
 
 	///\param dd_crossSectionFile path to the doubly-differential cross section spline to load
@@ -52,7 +57,7 @@ public:
 
 private:
 	splinetable crossSection;
-	std::vector<std::pair<double,double> > total_crossSection;
+	splinetable totalCrossSection;
 };
 
 #endif //I3CROSSSECTION_H

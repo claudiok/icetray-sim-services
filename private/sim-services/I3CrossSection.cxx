@@ -2,10 +2,6 @@
 #include <fstream>
 
 namespace{
-	bool lowerEnergy(const std::pair<double,double>& r1, double en){
-		return(r1.first<en);
-	}
-
 	double particleMass(I3Particle::ParticleType type){
 		I3Particle p(I3Particle::Null,type);
 		if(!p.HasMass()){
@@ -108,11 +104,13 @@ I3CrossSection::sampleFinalState(double energy,
 		if(x[2]<crossSection.extents[2][0]
 		   || x[2]>crossSection.extents[2][1])
 			accept=false;
-
-		if(accept)
-			accept=!tablesearchcenters(&crossSection,xp.data(),cxp.data());
 		if(!accept)
 			continue;
+
+		accept=!tablesearchcenters(&crossSection,xp.data(),cxp.data());
+		if(!accept)
+			continue;
+		
 		propxp=1;
 		double measure=pow(10.,xp[1]+xp[2]);
 		double eval=ndsplineeval(&crossSection,xp.data(),cxp.data(),0);
@@ -135,35 +133,35 @@ I3CrossSection::sampleFinalState(double energy,
 }
 
 double I3CrossSection::evaluateTotalCrossSection(double energy) const{
-	std::vector<std::pair<double,double> >::const_iterator it=
-	std::lower_bound(total_crossSection.begin(),total_crossSection.end(),energy,lowerEnergy);
-	if(it==total_crossSection.begin() || it==total_crossSection.end())
-		log_fatal_stream("Energy out of range of available total cross section: "
-		                 << energy/I3Units::GeV << " GeV");
-	double c1=(it-1)->second;
-	double c2=it->second;
-	double x=(energy-(it-1)->first)/(it->first-(it-1)->first);
-	return((1-x)*c1 + x*c2);
+	double log_energy=log10(energy);
+	//check preconditions
+	if(log_energy<totalCrossSection.extents[0][0]
+	   || log_energy>totalCrossSection.extents[0][1])
+	log_fatal_stream("Interaction energy out of cross section table range: ["
+	                 << pow(10.,totalCrossSection.extents[0][0]) << " GeV,"
+	                 << pow(10.,totalCrossSection.extents[0][1]) << " GeV]");
+	//evaluate
+	int center;
+	tablesearchcenters(&totalCrossSection,&log_energy,&center);
+	double log_xs=ndsplineeval(&totalCrossSection,&log_energy,&center,0);
+	return(pow(10.,log_xs));
 }
 
 void I3CrossSection::load(std::string dd_crossSectionFile, std::string total_crossSectionFile){
 	int status=readsplinefitstable(dd_crossSectionFile.c_str(),&crossSection);
 	if(status!=0)
-		log_fatal_stream("Failed to read cross section data from spline fits file '"
+		log_fatal_stream("Failed to read cross section data from spline FITS file '"
 		                 << dd_crossSectionFile << "': error code " << status);
 	if(crossSection.ndim!=3)
 		log_fatal_stream("cross section spline has " << crossSection.ndim
 		                 << " dimensions, should have 3 (log10(E), log10(x), log10(y))");
 	
-	std::ifstream totalFile(total_crossSectionFile.c_str());
-	if(!totalFile)
-		log_fatal_stream("Failed to open total cross section data file '"
-		                 << total_crossSectionFile << '\'');
-	double e, c;
-	while(totalFile >> e >> c)
-		total_crossSection.push_back(std::make_pair(e,c));
-	if(!totalFile.eof() && totalFile.fail())
-		log_fatal_stream("Input failure from total cross section data file '"
-		                 << total_crossSectionFile << '\'');
+	status=readsplinefitstable(total_crossSectionFile.c_str(),&totalCrossSection);
+	if(status!=0)
+		log_fatal_stream("Failed to read cross section data from spline FITS file '"
+		                 << total_crossSectionFile << "': error code " << status);
+	if(totalCrossSection.ndim!=1)
+		log_fatal_stream("Total cross section spline has " << totalCrossSection.ndim
+		                 << " dimensions, should have 1, log10(E)");
 }
 
