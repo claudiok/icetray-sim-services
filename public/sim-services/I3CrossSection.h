@@ -32,6 +32,7 @@ public:
 	double evaluateTotalCrossSection(double energy) const;
 
 	const splinetable& getCrossSection() const{ return(crossSection); }
+	const splinetable& getTotalCrossSection() const{ return(totalCrossSection); }
 
 	I3CrossSection(){
 		memset(&crossSection,0,sizeof(splinetable));
