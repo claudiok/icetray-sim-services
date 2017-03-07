@@ -22,6 +22,7 @@ SET(LIB_${PROJECT_NAME}_SOURCEFILES
   private/sim-services/MCPEMCPulseTools.cxx
   private/sim-services/I3SimConstants.cxx
   private/sim-services/I3CrossSection.cxx
+  private/sim-services/I3PrimaryPulseMapper.cxx
 )
 SET(LIB_${PROJECT_NAME}_TOOLS python boost)
 
