@@ -7,6 +7,9 @@ Release Notes
 
 trunk
 -----
+* Added I3PrimaryPulseMapper from sim-services to generate an I3ParticleIDMap that associates MCPulses with
+  the primary of the particle that produced them. PMTResponseSimulator adds an I3ParticleIDMap that maps pulses with
+  the particle that produced them but often these secondary particles are not saved in order to save space on disc.
 
 April 8, 2016 Alex Olivas (olivas@icecube.umd.edu)
 --------------------------------------------------------------------
