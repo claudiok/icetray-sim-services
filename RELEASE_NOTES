@@ -9,7 +9,7 @@ trunk
 -----
 
 March 24, 2017 Juan Carlos Diaz-Velez (juancarlos@icecube.wisc.edu)
------
+-------------------------------------------------------------------
 
 V01-07-00 - Incremental release
 
@@ -18,7 +18,7 @@ V01-07-00 - Incremental release
   the particle that produced them but often these secondary particles are not saved in order to save space on disc.
 
 April 8, 2016 Alex Olivas (olivas@icecube.umd.edu)
---------------------------------------------------------------------
+--------------------------------------------------
 
 V01-06-00 - Bugfix release
 
@@ -29,45 +29,45 @@ V01-06-00 - Bugfix release
   simulation with DOMLauncher. (r136995)
 * Added a default for I3MCPEtoI3MCHitConverter.  I3MCPESeries seems perfectly
   reasonable to me.
-* Removed virtual keyword from module methods.  This usually signals to 
+* Removed virtual keyword from module methods.  This usually signals to
   users that this is a base class (especially if the destructor is virtual),
   and therefore OK to inherit from.  This is not the case with these modules.
   Do not inherit from classes that were not designed to be base classes.
 * Added I3ModifyStartTime as a replacement for I3ModifyEventID.  I3ModifyEventID
   is deprecated.  It modifies more than just the event ID and is actually only
   still used to set the event start time.  The interface was crufty anyway and
-  from the days when we could only pass built-in C++ types as python parameters. 
-* Added I3RemoveLargeDT module to remove outliers that caused simulation 
+  from the days when we could only pass built-in C++ types as python parameters.
+* Added I3RemoveLargeDT module to remove outliers that caused simulation
   to use enormous amounts of memory.  Anything outside the time window
   from the median of the distribution is clipped.
 
 November 24, 2014 Alex Olivas (olivas@icecube.umd.edu)
---------------------------------------------------------------------
+------------------------------------------------------
 
 V01-05-05 - Bugfix release
 
 * More tests for sanity checkers
 
 November 7, 2014 Alex Olivas (olivas@icecube.umd.edu)
---------------------------------------------------------------------
+-----------------------------------------------------
 
 V01-05-04 - Bugfix release
 
-* New I3DownsampleMCPE class 
+* New I3DownsampleMCPE class
 * I3MCEventHeaderGenerator - Added option to increment the DAQ time.
 * Uses I3_TESTDATA instead of I3_PORTS/test-data
-* Re-worked hobo test suite.   Not all modules and histograms have tests.  
+* Re-worked hobo test suite.   Not all modules and histograms have tests.
   When all modules and histograms have tests implemented we can enable
   "all_your_tests_are_belong_to_us.py" which checks that they indeed all
   have tests.
 * The GCD validation scripts were updated.  One-stop-shop for GCD generation
-  is sim-services/resources/gcd_validation/generate_gcd.py.  That does the 
+  is sim-services/resources/gcd_validation/generate_gcd.py.  That does the
   DB pull, correction, testing, and validation.  It also writes the svn info
   and GCD checksum to the output logfile.
 * An empty tree checker was added to the sanity checkers.
-    
+
 September 9, 2014 Alex Olivas (olivas@icecube.umd.edu)
---------------------------------------------------------------------
+------------------------------------------------------
 
 V01-05-03 - Bugfix release
 
@@ -75,7 +75,7 @@ V01-05-03 - Bugfix release
 * I3InIceCORSIKATrimmer - Drop particles that aren't InIce muons or neutrinos.
 
 July 10, 2014 Alex Olivas  (olivas@icecube.umd.edu)
---------------------------------------------------------------------
+---------------------------------------------------
 
 V01-05-00 - Minor Release - Mostly histogramming stuff.
 
@@ -88,20 +88,20 @@ V01-05-00 - Minor Release - Mostly histogramming stuff.
 
 
 June 27, 2012 Alex Olivas  (olivas@icecube.umd.edu)
---------------------------------------------------------------------
+---------------------------------------------------
 
-Revisions : 
+Revisions :
 
 More fixes to PropagatorServiceUtils::Propagate.  The copy was not
 updated.  The original tree was updated and a pointer to the unadulterated
 copy was returned.  In addition to the tree pointer needed to be passed
 by reference.  It would have been nice if Alex-of-May-18th included
-a simple test along with revision 88449 that tested this.  The current 
+a simple test along with revision 88449 that tested this.  The current
 version ( V01-02-02 ) does include tests for all three flavors.  There
-are 6 tests ( two x three for each function and flavor ). 
+are 6 tests ( two x three for each function and flavor ).
 
 May 18, 2012 Alex Olivas  (olivas@icecube.umd.edu)
---------------------------------------------------------------------
+--------------------------------------------------
 
 Revisions : 88449
 
@@ -112,7 +112,6 @@ be propagated, causing an infinite loop.  Now the original tree
 is iterated over and a copy is updated.
 
 October 10, 2011 Alex Olivas  (olivas@icecube.umd.edu)
---------------------------------------------------------------------
+------------------------------------------------------
 
 Going to get serious about release notes for individual projects.
-
